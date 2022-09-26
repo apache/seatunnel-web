@@ -285,6 +285,8 @@ The text of each license is the standard Apache 2.0 license.
      (Apache License 2.0) swagger-annotations (io.swagger:swagger-annotations:1.5.10 - https://github.com/swagger-api/swagger-core/modules/swagger-annotations)
      (Apache License 2.0) swagger-models (io.swagger:swagger-models:1.5.10 - https://github.com/swagger-api/swagger-core/modules/swagger-models)
      (Apache License, Version 2.0) tomcat-embed-el (org.apache.tomcat.embed:tomcat-embed-el:9.0.63 - https://tomcat.apache.org/)
+     (Apache License, Version 2.0) scala-liberary (org.scala-lang:scala-library:jar:2.11.12 - https://www.scala-lang.org/) 
+         
 
 ========================================================================
 Eclipse Public License
