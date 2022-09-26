@@ -43,5 +43,3 @@ notifications:
   commits:      commits@seatunnel.apache.org
   issues:       commits@seatunnel.apache.org
   pullrequests: commits@seatunnel.apache.org
-  pullrequests_status:  commits@seatunnel.apache.org
-  pullrequests_comment: commits@seatunnel.apache.org
