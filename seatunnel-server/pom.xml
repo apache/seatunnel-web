@@ -43,6 +43,7 @@
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <jsoup.version>1.14.3</jsoup.version>
         <jwt.version>0.10.7</jwt.version>
+        <cron-utils.version>9.1.6</cron-utils.version>
     </properties>
 
     <dependencyManagement>

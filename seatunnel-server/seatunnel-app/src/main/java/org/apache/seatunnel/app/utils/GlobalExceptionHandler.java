@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,9 +45,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = IllegalStateException.class)
-    private Result<String> exceptionHandler(IllegalStateException e) {
+    private Result<String> illegalStateExceptionHandler(IllegalStateException e) {
         logError(e);
         return Result.failure(SeatunnelErrorEnum.ILLEGAL_STATE, e.getMessage());
+    }
+
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    private Result<String> expiredJwtException(ExpiredJwtException e) {
+        logError(e);
+        return Result.failure(SeatunnelErrorEnum.TOKEN_ILLEGAL, e.getMessage());
     }
 
     @ExceptionHandler(value = Exception.class)

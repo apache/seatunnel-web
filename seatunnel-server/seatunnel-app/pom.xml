@@ -176,6 +176,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.cronutils/cron-utils -->
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>cron-utils</artifactId>
+            <version>${cron-utils.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

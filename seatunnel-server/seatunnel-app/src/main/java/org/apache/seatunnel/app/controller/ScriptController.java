@@ -30,8 +30,6 @@ import org.apache.seatunnel.app.domain.response.script.ScriptParamRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptSimpleInfoRes;
 import org.apache.seatunnel.app.service.IScriptService;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -119,9 +117,6 @@ public class ScriptController {
 
     @GetMapping("/{scriptId}/param")
     @ApiOperation(value = "fetch script param", httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "script id", dataType = "Integer"),
-    })
     public Result<List<ScriptParamRes>> fetchScriptParam(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId) {
         return Result.success(iScriptService.fetchScriptParam(scriptId));
     }

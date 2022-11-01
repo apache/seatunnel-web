@@ -89,12 +89,12 @@ public class TaskController {
         return Result.success(iTaskService.listInstance(req));
     }
 
-    @PostMapping("/{scriptId}/execute")
+    @PostMapping("/{objectId}/execute")
     @ApiOperation(value = "execute script temporary", httpMethod = "POST")
-    Result<InstanceSimpleInfoRes> tmpExecute(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId,
+    Result<InstanceSimpleInfoRes> tmpExecute(@ApiParam(value = "object id", required = true) @PathVariable(value = "objectId") Long objectId,
                                              @RequestBody @NotNull ExecuteReq req,
                                              @ApiIgnore @UserId Integer operatorId) {
-        req.setScriptId(scriptId);
+        req.setObjectId(objectId);
         req.setOperatorId(operatorId);
 
         return Result.success(iTaskService.tmpExecute(req));
