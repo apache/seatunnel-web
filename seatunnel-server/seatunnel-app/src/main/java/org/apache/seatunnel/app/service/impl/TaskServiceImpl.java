@@ -34,6 +34,7 @@ import static com.cronutils.model.CronType.QUARTZ;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static com.cronutils.model.CronType.QUARTZ;
 
 import org.apache.seatunnel.app.common.ObjectTypeEnum;
 import org.apache.seatunnel.app.dal.dao.ISchedulerConfigDao;
