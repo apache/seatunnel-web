@@ -15,26 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.user;
+package org.apache.seatunnel.app.dal.entity;
 
-import com.google.common.collect.Maps;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
-import java.util.Map;
+import java.util.Date;
 
-@ApiModel(value = "userSimpleInfoRes", description = "user simple information")
 @Data
-public class UserSimpleInfoRes extends BaseUserInfoRes {
+public class JobDefine {
+    private Integer scriptId;
 
-    private String token;
+    private Integer schedulerConfigId;
 
-    public Map<String, Object> toMap() {
-        final Map<String, Object> userMap = Maps.newHashMap();
-        userMap.put("id", getId());
-        userMap.put("name", getName());
-        userMap.put("status", getStatus());
-        userMap.put("type", getType());
-        return userMap;
-    }
+    private Long jobId;
+
+    private Integer operatorId;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private String triggerExpression;
+
+    private Integer retryTimes;
+
+    private Integer retryInterval;
+
+    private Date activeStartTime;
+
+    private Date activeEndTime;
 }

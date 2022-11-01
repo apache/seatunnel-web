@@ -23,11 +23,13 @@ import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.SCHEDULER_CO
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.NEVER_TRIGGER_EXPRESSION;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_INTERVAL_DEFAULT;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
+import static com.cronutils.model.CronType.QUARTZ;
 
 import org.apache.seatunnel.app.dal.dao.ISchedulerConfigDao;
 import org.apache.seatunnel.app.dal.dao.IScriptDao;
 import org.apache.seatunnel.app.dal.dao.IScriptJobApplyDao;
 import org.apache.seatunnel.app.dal.dao.IScriptParamDao;
+import org.apache.seatunnel.app.dal.entity.JobDefine;
 import org.apache.seatunnel.app.dal.entity.SchedulerConfig;
 import org.apache.seatunnel.app.dal.entity.Script;
 import org.apache.seatunnel.app.dal.entity.ScriptJobApply;
@@ -57,6 +59,10 @@ import org.apache.seatunnel.spi.scheduler.dto.JobSimpleInfoDto;
 import org.apache.seatunnel.spi.scheduler.dto.SchedulerConfigDto;
 import org.apache.seatunnel.spi.scheduler.enums.ExecuteTypeEnum;
 
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -64,11 +70,14 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -92,6 +101,8 @@ public class TaskServiceImpl implements ITaskService {
 
     @Resource
     private IScriptJobApplyDao scriptJobApplyDaoImpl;
+
+    private static final CronDefinition CRON_DEFINITION = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
     @Override
     public Long pushScriptToScheduler(PushScriptDto pushScriptDto) {
@@ -166,6 +177,12 @@ public class TaskServiceImpl implements ITaskService {
                 .build();
         final PageData<JobSimpleInfoDto> jobPageData = iJobService.list(dto);
         final List<JobSimpleInfoRes> data = jobPageData.getData().stream().map(this::translate).collect(Collectors.toList());
+
+        final List<JobDefine> jobDefines = scriptJobApplyDaoImpl.selectJobDefineByJobIds(data.stream().map(JobSimpleInfoRes::getJobId).collect(Collectors.toList()));
+        final Map<Long, JobDefine> mapping = jobDefines.stream().collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
+
+        data.forEach(d -> d.setJobPlan(mapping.getOrDefault(d.getJobId(), new JobDefine()).getTriggerExpression()));
+
         final PageInfo<JobSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setData(data);
         pageInfo.setTotalCount(jobPageData.getTotalCount());
@@ -185,6 +202,25 @@ public class TaskServiceImpl implements ITaskService {
                 .build();
         final PageData<InstanceDto> instancePageData = iInstanceService.list(dto);
         final List<InstanceSimpleInfoRes> data = instancePageData.getData().stream().map(this::translate).collect(Collectors.toList());
+
+        final List<JobDefine> jobDefines = scriptJobApplyDaoImpl.selectJobDefineByJobIds(data.stream().map(InstanceSimpleInfoRes::getJobId).collect(Collectors.toList()));
+        final Map<Long, JobDefine> mapping = jobDefines.stream().collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
+
+        data.forEach(d -> {
+            final JobDefine jobDefine = mapping.get(d.getJobId());
+            CronParser parser = new CronParser(CRON_DEFINITION);
+
+            if (Objects.nonNull(jobDefine)) {
+                ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
+                Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
+
+                if (nextExecution.isPresent()) {
+                    final ZonedDateTime next = nextExecution.get();
+                    d.setNextExecutionTime(Date.from(next.toInstant()));
+                }
+            }
+        });
+
         final PageInfo<InstanceSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setData(data);
         pageInfo.setTotalCount(instancePageData.getTotalCount());
@@ -244,7 +280,9 @@ public class TaskServiceImpl implements ITaskService {
     private JobSimpleInfoRes translate(JobSimpleInfoDto dto) {
         return JobSimpleInfoRes.builder()
                 .jobId(dto.getJobId())
+                .jobName(dto.getJobName())
                 .jobStatus(dto.getJobStatus())
+                .publish(dto.getPublish())
                 .creatorName(dto.getCreatorName())
                 .menderName(dto.getMenderName())
                 .createTime(dto.getCreateTime())
@@ -263,6 +301,7 @@ public class TaskServiceImpl implements ITaskService {
                 .status(dto.getStatus())
                 .executionDuration(dto.getExecutionDuration())
                 .retryTimes(dto.getRetryTimes())
+                .runFrequency(dto.getRunFrequency())
                 .build();
     }
 

@@ -20,6 +20,7 @@ package org.apache.seatunnel.scheduler.dolphinscheduler.impl;
 import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinschedulerService;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessInstanceDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ProcessInstanceDto;
+import org.apache.seatunnel.scheduler.dolphinscheduler.enums.RunFrequencyEnum;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.spi.scheduler.IInstanceService;
 import org.apache.seatunnel.spi.scheduler.dto.InstanceDto;
@@ -62,6 +63,7 @@ public class InstanceServiceImpl implements IInstanceService {
                 .submitTime(t.getScheduleTime())
                 .executionDuration(t.getDuration())
                 .retryTimes(t.getRunTimes())
+                .runFrequency(RunFrequencyEnum.parse(t.getCommandType()).name())
                 .build()).collect(Collectors.toList());
         return new PageData<>(instancePageData.getTotalCount(), data);
     }
