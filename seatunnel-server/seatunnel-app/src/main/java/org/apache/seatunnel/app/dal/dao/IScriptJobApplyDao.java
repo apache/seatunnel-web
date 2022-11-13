@@ -29,4 +29,6 @@ public interface IScriptJobApplyDao {
     ScriptJobApply getByScriptId(Integer id);
 
     List<JobDefine> selectJobDefineByJobIds(List<Long> jobIds);
+
+    ScriptJobApply getByJobId(long jobId);
 }

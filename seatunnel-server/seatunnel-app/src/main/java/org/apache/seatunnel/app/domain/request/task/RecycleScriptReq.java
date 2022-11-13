@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 public class RecycleScriptReq {
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer")
     @NotNull
-    private int scriptId;
+    private long jobId;
     @ApiModelProperty(value = "operator id", required = true, dataType = "Integer")
     @NotNull
     private int operatorId;

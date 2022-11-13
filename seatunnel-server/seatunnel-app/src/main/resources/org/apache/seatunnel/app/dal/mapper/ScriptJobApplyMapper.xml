@@ -105,4 +105,11 @@
         scheduler_config b on
         a.script_id = b.script_id
     </select>
+
+    <select id="selectByJobId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from script_job_apply
+        where job_id = #{jobId,jdbcType=BIGINT}
+    </select>
 </mapper>

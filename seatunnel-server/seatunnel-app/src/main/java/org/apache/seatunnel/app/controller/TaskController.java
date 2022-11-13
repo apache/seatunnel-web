@@ -51,12 +51,12 @@ public class TaskController {
     @Resource
     private ITaskService iTaskService;
 
-    @PatchMapping("/{scriptId}/recycle")
-    @ApiOperation(value = "recycle script", httpMethod = "PATCH")
-    Result<Void> recycle(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId,
+    @PatchMapping("/{jobId}/recycle")
+    @ApiOperation(value = "recycle job", httpMethod = "PATCH")
+    Result<Void> recycle(@ApiParam(value = "job id", required = true) @PathVariable(value = "jobId") Long jobId,
                          @ApiIgnore @UserId Integer operatorId) {
         final RecycleScriptReq req = new RecycleScriptReq();
-        req.setScriptId(scriptId);
+        req.setJobId(jobId);
         req.setOperatorId(operatorId);
 
         iTaskService.recycleScriptFromScheduler(req);

@@ -36,4 +36,6 @@ public interface ScriptJobApplyMapper {
     ScriptJobApply selectByScriptId(@Param("scriptId") int scriptId);
 
     List<JobDefine> selectJobDefineByJobIds(@Param("jobIds") List<Long> jobIds);
+
+    ScriptJobApply selectByJobId(@Param("jobId") long jobId);
 }

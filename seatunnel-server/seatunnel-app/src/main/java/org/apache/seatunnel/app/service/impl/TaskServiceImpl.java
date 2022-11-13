@@ -22,12 +22,16 @@ import static org.apache.seatunnel.app.common.ObjectTypeEnum.JOB;
 import static org.apache.seatunnel.app.common.ObjectTypeEnum.SCRIPT;
 import static org.apache.seatunnel.server.common.Constants.UNDERLINE;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_JOB;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_SCRIPT;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.SCHEDULER_CONFIG_NOT_EXIST;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.NEVER_TRIGGER_EXPRESSION;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_INTERVAL_DEFAULT;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
 import static com.cronutils.model.CronType.QUARTZ;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 
 import org.apache.seatunnel.app.common.ObjectTypeEnum;
 import org.apache.seatunnel.app.dal.dao.ISchedulerConfigDao;
@@ -80,7 +84,6 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -126,7 +129,7 @@ public class TaskServiceImpl implements ITaskService {
 
         // check scheduler param
         SchedulerConfig config = schedulerConfigDaoImpl.getSchedulerConfig(scriptId);
-        if (Objects.isNull(config)) {
+        if (isNull(config)) {
             throw new SeatunnelException(SCHEDULER_CONFIG_NOT_EXIST);
         }
 
@@ -154,7 +157,7 @@ public class TaskServiceImpl implements ITaskService {
                 .build();
 
         ScriptJobApply apply = scriptJobApplyDaoImpl.getByScriptId(script.getId());
-        if (Objects.nonNull(apply)) {
+        if (nonNull(apply)) {
             jobDto.setJobId(apply.getJobId());
         }
 
@@ -168,8 +171,9 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public void recycleScriptFromScheduler(RecycleScriptReq req) {
-        final Script script = checkAndGetScript(req.getScriptId());
-        ScriptJobApply apply = scriptJobApplyDaoImpl.getByScriptId(script.getId());
+        ScriptJobApply apply = requireNonNull(scriptJobApplyDaoImpl.getByJobId(req.getJobId()), NO_SUCH_JOB::getTemplate);
+
+        final Script script = requireNonNull(scriptDaoImpl.getScript(apply.getScriptId()), NO_SUCH_JOB::getTemplate);
 
         final JobDto jobDto = JobDto.builder()
                 .jobId(apply.getJobId())
@@ -232,7 +236,7 @@ public class TaskServiceImpl implements ITaskService {
             final JobDefine jobDefine = mapping.get(d.getJobId());
             CronParser parser = new CronParser(CRON_DEFINITION);
 
-            if (Objects.nonNull(jobDefine)) {
+            if (nonNull(jobDefine)) {
                 ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
                 Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
 
@@ -334,7 +338,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     private InstanceSimpleInfoRes translate(InstanceDto dto) {
-        if (Objects.isNull(dto)) {
+        if (isNull(dto)) {
             return null;
         }
         return InstanceSimpleInfoRes.builder()
@@ -353,7 +357,7 @@ public class TaskServiceImpl implements ITaskService {
 
     private Script checkAndGetScript(int scriptId) {
         final Script script = scriptDaoImpl.getScript(scriptId);
-        if (Objects.isNull(script)) {
+        if (isNull(script)) {
             throw new SeatunnelException(NO_SUCH_SCRIPT);
         }
         return script;
@@ -370,7 +374,7 @@ public class TaskServiceImpl implements ITaskService {
                     .build();
             scriptJobApplyDaoImpl.insertOrUpdate(dto);
         }).whenComplete((_return, e) -> {
-            if (Objects.nonNull(e)) {
+            if (nonNull(e)) {
                 log.error("Store script and job mapping failed, please maintain this mapping manually. \n" +
                         "scriptId [{}], schedulerConfigId [{}], jobId [{}], userId [{}]", scriptId, schedulerConfigId, jobId, userId, e);
             }

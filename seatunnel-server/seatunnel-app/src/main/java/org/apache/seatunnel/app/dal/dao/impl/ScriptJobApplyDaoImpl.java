@@ -63,4 +63,9 @@ public class ScriptJobApplyDaoImpl implements IScriptJobApplyDao {
     public List<JobDefine> selectJobDefineByJobIds(List<Long> jobIds) {
         return scriptJobApplyMapper.selectJobDefineByJobIds(jobIds);
     }
+
+    @Override
+    public ScriptJobApply getByJobId(long jobId) {
+        return scriptJobApplyMapper.selectByJobId(jobId);
+    }
 }
