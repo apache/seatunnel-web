@@ -22,6 +22,7 @@ import static org.apache.seatunnel.app.common.ObjectTypeEnum.JOB;
 import static org.apache.seatunnel.app.common.ObjectTypeEnum.SCRIPT;
 import static org.apache.seatunnel.server.common.Constants.UNDERLINE;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_JOB;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_JOB;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_SCRIPT;
@@ -30,6 +31,9 @@ import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.NEV
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_INTERVAL_DEFAULT;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
 import static com.cronutils.model.CronType.QUARTZ;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -240,7 +244,7 @@ public class TaskServiceImpl implements ITaskService {
             final JobDefine jobDefine = mapping.get(d.getJobId());
             CronParser parser = new CronParser(CRON_DEFINITION);
 
-            if (nonNull(jobDefine)) {
+            if (Objects.nonNull(jobDefine)) {
                 ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
                 Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
 
