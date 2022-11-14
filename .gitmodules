@@ -1,3 +1,6 @@
 [submodule "seatunnel-main"]
 	path = seatunnel-main
 	url = https://github.com/apache/incubator-seatunnel.git
+[submodule "seatunnel-main-repository"]
+	path = seatunnel-main-repository
+	url = https://github.com/apache/incubator-seatunnel.git
