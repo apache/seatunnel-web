@@ -41,5 +41,6 @@ header:
     - '**/.gitkeep'
     - '**/com/typesafe/config/**'
     - 'seatunnel-main-repository/**'
+    - '**/.gitmodules'
 
   comment: on-failure
