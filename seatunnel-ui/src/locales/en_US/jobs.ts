@@ -23,6 +23,6 @@ export default {
   create_date: 'Create Date',
   publish: 'Publish',
   operation: 'Operation',
-  executed_immediately: 'Executed Immediately',
-  stop_plan: 'Stop Plan'
+  execute: 'Execute',
+  recycle: 'Recycle'
 }
