@@ -16,7 +16,6 @@
  */
 
 import { reactive, ref, h } from 'vue'
-import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NButton } from 'naive-ui'
 import { userList, userDelete, userEnable, userDisable } from '@/service/user'
@@ -119,15 +118,12 @@ export function useTable() {
   const getTableData = (params: any) => {
     if (state.loading) return
     state.loading = true
-    useAsyncState(
-      userList({ ...params }).then(
-        (res: ResponseTable<Array<UserDetail> | []>) => {
-          state.tableData = res.data.data
-          state.totalPage = res.data.totalPage
-          state.loading = false
-        }
-      ),
-      {}
+    userList({ ...params }).then(
+      (res: ResponseTable<Array<UserDetail> | []>) => {
+        state.tableData = res.data.data
+        state.totalPage = res.data.totalPage
+        state.loading = false
+      }
     )
   }
 

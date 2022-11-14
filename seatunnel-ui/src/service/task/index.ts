@@ -16,12 +16,7 @@
  */
 
 import { axios } from '@/service/service'
-import type {
-  TaskList,
-  TaskJobList,
-  TaskRecycle,
-  TaskExecute
-} from '@/service/task/types'
+import type { TaskList, TaskExecute } from '@/service/task/types'
 
 export function taskInstanceList(params: TaskList): any {
   return axios({
