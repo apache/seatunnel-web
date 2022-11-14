@@ -40,5 +40,6 @@ header:
     - '**/NOTICE'
     - '**/.gitkeep'
     - '**/com/typesafe/config/**'
+    - 'seatunnel-main-repository/**'
 
   comment: on-failure
