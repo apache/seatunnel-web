@@ -17,7 +17,8 @@
 
 package org.apache.seatunnel.dynamicforms.validate;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+
 import lombok.Data;
 import lombok.NonNull;
 
@@ -30,7 +31,7 @@ public class UnionNonEmptyValidate extends AbstractValidate {
     private final RequiredType requiredType = RequiredType.UNION_NON_EMPTY;
 
     public UnionNonEmptyValidate(@NonNull List<String> fields) {
-        Preconditions.checkArgument(fields.size() > 0);
+        checkArgument(fields.size() > 0);
         this.fields = fields;
     }
 }

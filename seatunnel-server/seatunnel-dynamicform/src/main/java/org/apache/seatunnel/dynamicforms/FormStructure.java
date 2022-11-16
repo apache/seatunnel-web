@@ -17,9 +17,10 @@
 
 package org.apache.seatunnel.dynamicforms;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -43,7 +44,7 @@ public class FormStructure {
 
     public FormStructure(@NonNull String name, @NonNull List<AbstractFormOption> formOptionList, Locale locale,
                          Map<String, Map<String, String>> apis) {
-        Preconditions.checkArgument(formOptionList.size() > 1);
+        checkArgument(formOptionList.size() > 1);
         this.name = name;
         this.forms = formOptionList;
         this.locales = locale;

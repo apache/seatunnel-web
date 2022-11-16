@@ -35,12 +35,7 @@ import java.util.stream.Collectors;
 public class FormStructureValidate {
 
     /**
-     * validate rules:
-     * <li>All data_integration.xxx need found xxx in locales</li>
-     * <li>All api used in select option need found in apis</li>
-     *
-     * @param formStructure
-     * @throws FormStructureValidateException
+     * validate rules
      */
     public static void validateFormStructure(@NonNull FormStructure formStructure)
         throws FormStructureValidateException {

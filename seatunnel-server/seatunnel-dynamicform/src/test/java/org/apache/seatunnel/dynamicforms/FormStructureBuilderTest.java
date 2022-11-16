@@ -17,9 +17,9 @@
 
 package org.apache.seatunnel.dynamicforms;
 
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.dynamicforms.exception.FormStructureValidateException;
 import org.apache.seatunnel.dynamicforms.validate.ValidateBuilder;
-import org.apache.seatunnel.common.utils.JsonUtils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,8 @@ public class FormStructureBuilderTest {
     @Test
     public void testFormStructureBuild() {
         Locale locale = new Locale();
-        locale.addZhCN("name_password_union_required", "用户名和密码都不能为空")
-            .addZhCN("username", "用户名")
+        locale.addZhCN("name_password_union_required", "all name and password are required")
+            .addZhCN("username", "username")
             .addEnUS("name_password_union_required", "all name and password are required")
             .addEnUS("username", "username");
 
@@ -101,14 +101,23 @@ public class FormStructureBuilderTest {
 
         String s = JsonUtils.toJsonString(testForm);
         String result =
-            "{\"name\":\"testForm\",\"locales\":{\"zh_CN\":{\"name_password_union_required\":\"用户名和密码都不能为空\",\"username\":\"用户名\"},\"en_US\":{\"name_password_union_required\":\"all name and password are required\",\"username\":\"username\"}},\"apis\":{\"getCity\":{\"method\":\"get\",\"url\":\"/api/get_city\"}},\"forms\":[{\"label\":\"i18n.username\",\"field\":\"username\",\"defaultValue\":null,\"description\":\"username\",\"clearable\":true,\"show\":{\"field\":\"checkType\",\"value\":\"nameAndPassword\"},\"placeholder\":\"username\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"i18n.name_password_union_required\",\"required\":false,\"fields\":[\"username\",\"password\"],\"requiredType\":\"union-non-empty\"},\"inputType\":\"text\",\"type\":\"input\"},{\"label\":\"password\",\"field\":\"password\",\"defaultValue\":null,\"description\":\"password\",\"clearable\":false,\"show\":{\"field\":\"checkType\",\"value\":\"nameAndPassword\"},\"placeholder\":\"password\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"i18n.name_password_union_required\",\"required\":false,\"fields\":[\"username\",\"password\"],\"requiredType\":\"union-non-empty\"},\"inputType\":\"password\",\"type\":\"input\"},{\"label\":\"content\",\"field\":\"context\",\"defaultValue\":null,\"description\":\"content\",\"clearable\":true,\"placeholder\":\"\",\"inputType\":\"textarea\",\"type\":\"input\"},{\"label\":\"checkType\",\"field\":\"checkType\",\"defaultValue\":\"no\",\"description\":\"check type\",\"clearable\":true,\"placeholder\":\"\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"required\",\"required\":true,\"type\":\"non-empty\"},\"options\":[{\"label\":\"no\",\"value\":\"no\"},{\"label\":\"nameAndPassword\",\"value\":\"nameAndPassword\"}],\"type\":\"select\"},{\"label\":\"city\",\"field\":\"city\",\"defaultValue\":null,\"description\":\"city\",\"clearable\":false,\"placeholder\":\"\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"required\",\"required\":true,\"type\":\"non-empty\"},\"api\":\"getCity\",\"type\":\"select\"}]}";
+            "{\"name\":\"testForm\",\"locales\":{\"zh_CN\":{\"name_password_union_required\":\"all name and password are required\",\"username\":\"username\"}" +
+                ",\"en_US\":{\"name_password_union_required\":\"all name and password are required\",\"username\":\"username\"}},\"apis\":{\"getCity\":{\"method\":\"get\",\"url\":\"/api/get_city\"}}" +
+                ",\"forms\":[{\"label\":\"i18n.username\",\"field\":\"username\",\"defaultValue\":null,\"description\":\"username\",\"clearable\":true,\"show\":{\"field\":\"checkType\",\"value\":\"nameAndPassword\"}" +
+                ",\"placeholder\":\"username\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"i18n.name_password_union_required\",\"required\":false,\"fields\":[\"username\",\"password\"],\"requiredType\":\"union-non-empty\"}" +
+                ",\"inputType\":\"text\",\"type\":\"input\"},{\"label\":\"password\",\"field\":\"password\",\"defaultValue\":null,\"description\":\"password\",\"clearable\":false,\"show\":{\"field\":\"checkType\",\"value\":\"nameAndPassword\"}" +
+                ",\"placeholder\":\"password\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"i18n.name_password_union_required\",\"required\":false,\"fields\":[\"username\",\"password\"],\"requiredType\":\"union-non-empty\"}" +
+                ",\"inputType\":\"password\",\"type\":\"input\"},{\"label\":\"content\",\"field\":\"context\",\"defaultValue\":null,\"description\":\"content\",\"clearable\":true,\"placeholder\":\"\",\"inputType\":\"textarea\",\"type\":\"input\"}" +
+                ",{\"label\":\"checkType\",\"field\":\"checkType\",\"defaultValue\":\"no\",\"description\":\"check type\",\"clearable\":true,\"placeholder\":\"\",\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"required\",\"required\":true,\"type\":\"non-empty\"}" +
+                ",\"options\":[{\"label\":\"no\",\"value\":\"no\"},{\"label\":\"nameAndPassword\",\"value\":\"nameAndPassword\"}],\"type\":\"select\"},{\"label\":\"city\",\"field\":\"city\",\"defaultValue\":null,\"description\":\"city\",\"clearable\":false,\"placeholder\":\"\"," +
+                "\"validate\":{\"trigger\":[\"input\",\"blur\"],\"message\":\"required\",\"required\":true,\"type\":\"non-empty\"},\"api\":\"getCity\",\"type\":\"select\"}]}";
         Assertions.assertEquals(result, s);
     }
 
     @Test
     public void testFormStructureValidate() {
         Locale locale = new Locale();
-        locale.addZhCN("name_password_union_required", "用户名和密码都不能为空")
+        locale.addZhCN("name_password_union_required", "all name and password are required")
             .addEnUS("name_password_union_required", "all name and password are required")
             .addEnUS("username", "username");
 
