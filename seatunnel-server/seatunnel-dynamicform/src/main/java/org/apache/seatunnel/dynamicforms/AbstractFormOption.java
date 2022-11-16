@@ -1,0 +1,99 @@
+package org.apache.seatunnel.dynamicforms;
+
+import org.apache.seatunnel.dynamicforms.validate.AbstractValidate;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Data
+public abstract class AbstractFormOption<T extends AbstractFormOption, V extends AbstractValidate> {
+
+    // support i18n
+    private final String label;
+    private final String field;
+    private String defaultValue;
+
+    // support i18n
+    private String description = "";
+    private boolean clearable;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, Object> show;
+
+    // support i18n
+    private String placeholder = "";
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private V validate;
+
+    public AbstractFormOption(@NonNull String label, @NonNull String field) {
+        this.label = label;
+        this.field = field;
+    }
+
+    public enum FormType {
+        @JsonProperty("input")
+        INPUT("input"),
+
+        @JsonProperty("select")
+        SELECT("select");
+
+        @Getter
+        private String formType;
+
+        FormType(String formType) {
+            this.formType = formType;
+        }
+    }
+
+    public T withShow(@NonNull String field, @NonNull Object value) {
+        if (this.show == null) {
+            this.show = new HashMap<>();
+        }
+
+        this.show.put("field", field);
+        this.show.put("value", value);
+        return (T) this;
+    }
+
+    public T withValidate(@NonNull V validate) {
+        this.validate = validate;
+        return (T) this;
+    }
+
+    public T withDefaultValue(@NonNull String defaultValue) {
+        this.defaultValue = defaultValue;
+        return (T) this;
+    }
+
+    public T withDescription(@NonNull String description) {
+        this.description = description;
+        return (T) this;
+    }
+
+    public T withI18nDescription(@NonNull String description) {
+        this.description = Locale.I18N_PREFIX + description;
+        return (T) this;
+    }
+
+    public T withClearable() {
+        this.clearable = true;
+        return (T) this;
+    }
+
+    public T withPlaceholder(@NonNull String placeholder) {
+        this.placeholder = placeholder;
+        return (T) this;
+    }
+
+    public T withI18nPlaceholder(@NonNull String placeholder) {
+        this.placeholder = Locale.I18N_PREFIX + placeholder;
+        return (T) this;
+    }
+}
