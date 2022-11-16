@@ -143,6 +143,8 @@ jobs:
         os: [ 'ubuntu-latest', 'windows-latest' ]
     timeout-minutes: 90
     steps:
+      - name: Support longpaths
+        run: git config --system core.longpaths true
       - uses: actions/checkout@v3
         with:
           submodules: true
