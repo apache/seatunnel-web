@@ -73,6 +73,7 @@
 
     <modules>
 	    <module>seatunnel-server</module>
+	    <module>seatunnel-main-repository/seatunnel-common</module>
     </modules>
 
     <properties>
