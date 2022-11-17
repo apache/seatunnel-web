@@ -133,21 +133,46 @@ jobs:
       - name: Check Dependencies Licenses
         run: tools/dependencies/checkLicense.sh
 
-  unit-test:
+  unit-test-ubuntu:
     name: Unit Test
     runs-on: ${{ matrix.os }}
     needs: [ sanity-check ]
     strategy:
       matrix:
         java: [ '8', '11' ]
-        os: [ 'ubuntu-latest', 'windows-latest' ]
+        os: [ 'ubuntu-latest' ]
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Run Unit tests
+        run: |
+          ./mvnw -B -T 1C clean verify -D"maven.test.skip"=false -D"checkstyle.skip"=true -D"license.skipAddThirdParty"=true --no-snapshot-updates
+        env:
+          MAVEN_OPTS: -Xmx2048m
+
+  unit-test-win:
+    name: Unit Test
+    runs-on: ${{ matrix.os }}
+    needs: [ sanity-check ]
+    strategy:
+      matrix:
+        java: [ '8', '11' ]
+        os: [ 'windows-latest' ]
+    timeout-minutes: 90
+    steps:
       - name: Support long paths
-        run: git config core.longpaths true
+        run: git config --system core.longpaths true
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
