@@ -286,7 +286,11 @@ The text of each license is the standard Apache 2.0 license.
      (Apache License 2.0) swagger-models (io.swagger:swagger-models:1.5.10 - https://github.com/swagger-api/swagger-core/modules/swagger-models)
      (Apache License, Version 2.0) tomcat-embed-el (org.apache.tomcat.embed:tomcat-embed-el:9.0.63 - https://tomcat.apache.org/)
      (Apache License, Version 2.0) scala-liberary (org.scala-lang:scala-library:jar:2.11.12 - https://www.scala-lang.org/) 
-         
+     (The Apache Software License, Version 2.0) Apache Log4j (org.apache.logging.log4j:log4j-api:2.17.1 - http://logging.apache.org/log4j/2.x/)
+     (The Apache Software License, Version 2.0) Apache Log4j (org.apache.logging.log4j:log4j-core:2.17.1 - http://logging.apache.org/log4j/2.x/)
+     (The Apache Software License, Version 2.0) Apache Log4j (org.apache.logging.log4j:log4j-slf4j-impl:2.17.1 - http://logging.apache.org/log4j/2.x/)
+     (The Apache Software License, Version 2.0) Apache Log4j (org.apache.logging.log4j:log4j-1.2-api:2.17.1 - http://logging.apache.org/log4j/2.x/)
+
 
 ========================================================================
 Eclipse Public License
@@ -322,6 +326,7 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
 
      (MIT License) SLF4J API Module (org.slf4j:slf4j-api:1.7.25 - http://www.slf4j.org)
      (MIT License) SLF4J LOG4J-12 Binding (org.slf4j:slf4j-log4j12:1.7.25 - http://www.slf4j.org)
+     (MIT License) SLF4J LOG4J-12 Binding (org.slf4j:jcl-over-slf4j:1.7.25 - http://www.slf4j.org)
      (The MIT License) jsoup Java HTML Parser (org.jsoup:jsoup:1.14.3 - https://jsoup.org/)
      (MIT License) JUL to SLF4J bridge (org.slf4j:jul-to-slf4j:1.7.36 - http://www.slf4j.org)     
 
