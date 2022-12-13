@@ -41,3 +41,17 @@ jwt:
   expireTime: 86400
   secretKey: https://github.com/apache/incubator-seatunnel
   algorithm: HS256
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  sql:
+    init:
+      schema-locations: classpath:script/seatunnel_server_h2.sql
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:seatunnel;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true
+    username: sa
+    password: ""
