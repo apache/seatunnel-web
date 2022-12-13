@@ -300,7 +300,8 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
      (EPL 2.0) Jakarta Servlet (jakarta.servlet:jakarta.servlet-api:4.0.4 - https://projects.eclipse.org/projects/ee4j.servlet)
      (EPL 2.0) Jakarta WebSocket - Server API (jakarta.websocket:jakarta.websocket-api:1.1.2 - https://projects.eclipse.org/projects/ee4j.websocket)
      (EPL 1.0) Logback Classic Module (ch.qos.logback:logback-classic:1.2.11 - http://logback.qos.ch/logback-classic)
-     (EPL 1.0)  Logback Core Module (ch.qos.logback:logback-core:1.2.11 - http://logback.qos.ch/logback-core)
+     (EPL 1.0) Logback Core Module (ch.qos.logback:logback-core:1.2.11 - http://logback.qos.ch/logback-core)
+     (EPL 1.0) h2 (com.h2database:h2:2.1.214 - https://h2database.com/)
 
 
 ========================================================================
