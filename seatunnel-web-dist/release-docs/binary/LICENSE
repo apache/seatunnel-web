@@ -227,7 +227,7 @@ The text of each license is the standard Apache 2.0 license.
      (Apache License 2.0) Hibernate Validator Engine (org.hibernate.validator:hibernate-validator:6.2.2.Final - http://hibernate.org/validator/hibernate-validator)
      (The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.12.6 - http://github.com/FasterXML/jackson)
      (The Apache Software License, Version 2.0) Jackson-core (com.fasterxml.jackson.core:jackson-core:2.12.6 - https://github.com/FasterXML/jackson-core)
-     (The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.6 - http://github.com/FasterXML/jackson)
+     (The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.7.1 - http://github.com/FasterXML/jackson)
      (The Apache Software License, Version 2.0) Jackson datatype: jdk8 (com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
      (The Apache Software License, Version 2.0) Jackson datatype: JSR310 (com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
      (The Apache Software License, Version 2.0) Jackson-module-parameter-names (com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-module-parameter-names)

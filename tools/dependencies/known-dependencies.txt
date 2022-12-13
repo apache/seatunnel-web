@@ -9,7 +9,7 @@ guava-19.0.jar
 hibernate-validator-6.2.2.Final.jar
 jackson-annotations-2.12.6.jar
 jackson-core-2.12.6.jar
-jackson-databind-2.12.6.jar
+jackson-databind-2.12.7.1.jar
 jackson-datatype-jdk8-2.13.3.jar
 jackson-datatype-jsr310-2.13.3.jar
 jackson-module-parameter-names-2.13.3.jar
