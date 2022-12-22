@@ -21,7 +21,7 @@
 -- ----------------------------
 -- Table structure for role
 -- ----------------------------
-DROP TABLE IF EXISTS `role`;
+DROP TABLE IF EXISTS `role` CASCADE;;
 CREATE TABLE `role` (
     `id` int(20) NOT NULL AUTO_INCREMENT,
     `type` int(2) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `role` (
     `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of role
@@ -39,7 +39,7 @@ CREATE TABLE `role` (
 -- ----------------------------
 -- Table structure for role_user_relation
 -- ----------------------------
-DROP TABLE IF EXISTS `role_user_relation`;
+DROP TABLE IF EXISTS `role_user_relation` CASCADE;
 CREATE TABLE `role_user_relation` (
     `id` int(20) NOT NULL AUTO_INCREMENT,
     `role_id` int(20) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE `role_user_relation` (
     `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of role_user_relation
@@ -56,7 +56,7 @@ CREATE TABLE `role_user_relation` (
 -- ----------------------------
 -- Table structure for scheduler_config
 -- ----------------------------
-DROP TABLE IF EXISTS `scheduler_config`;
+DROP TABLE IF EXISTS `scheduler_config` CASCADE;
 CREATE TABLE `scheduler_config` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `script_id` int(11) DEFAULT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `scheduler_config` (
     `creator_id` int(11) NOT NULL,
     `update_id` int(11) NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 -- ----------------------------
 -- Records of scheduler_config
 -- ----------------------------
@@ -78,7 +78,7 @@ CREATE TABLE `scheduler_config` (
 -- ----------------------------
 -- Table structure for script
 -- ----------------------------
-DROP TABLE IF EXISTS `script`;
+DROP TABLE IF EXISTS `script` CASCADE;
 CREATE TABLE `script` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `script` (
     `create_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of script
@@ -100,7 +100,7 @@ CREATE TABLE `script` (
 -- ----------------------------
 -- Table structure for script_job_apply
 -- ----------------------------
-DROP TABLE IF EXISTS `script_job_apply`;
+DROP TABLE IF EXISTS `script_job_apply` CASCADE;
 CREATE TABLE `script_job_apply` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `script_id` int(11) NOT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE `script_job_apply` (
     `create_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of script_job_apply
@@ -119,7 +119,7 @@ CREATE TABLE `script_job_apply` (
 -- ----------------------------
 -- Table structure for script_param
 -- ----------------------------
-DROP TABLE IF EXISTS `script_param`;
+DROP TABLE IF EXISTS `script_param` CASCADE;
 CREATE TABLE `script_param` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `script_id` int(11) DEFAULT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE `script_param` (
     `create_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of script_param
@@ -138,7 +138,7 @@ CREATE TABLE `script_param` (
 -- ----------------------------
 -- Table structure for user
 -- ----------------------------
-DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `user` CASCADE;
 CREATE TABLE `user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `username` varchar(255) NOT NULL,
@@ -148,7 +148,7 @@ CREATE TABLE `user` (
     `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of user
@@ -157,7 +157,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Table structure for user_login_log
 -- ----------------------------
-DROP TABLE IF EXISTS `user_login_log`;
+DROP TABLE IF EXISTS `user_login_log` CASCADE;
 CREATE TABLE `user_login_log` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
@@ -166,7 +166,7 @@ CREATE TABLE `user_login_log` (
     `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+);
 
 -- ----------------------------
 -- Records of user_login_log
