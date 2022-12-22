@@ -81,3 +81,4 @@ springfox-swagger2-2.6.1.jar
 swagger-annotations-1.5.10.jar
 swagger-models-1.5.10.jar
 tomcat-embed-el-9.0.63.jar
+h2-2.1.214.jar
