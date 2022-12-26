@@ -15,7 +15,7 @@
  * limitations under the License.
 */
 
--- CREATE DATABASE IF NOT EXISTS seatunnel;
+CREATE DATABASE IF NOT EXISTS seatunnel;
 
 
 -- ----------------------------
