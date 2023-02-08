@@ -17,7 +17,6 @@
 
 package org.apache.seatunnel.app.service.impl;
 
-import static org.apache.seatunnel.server.common.Constants.TOKEN;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED;
 
 import org.apache.seatunnel.app.common.UserTokenStatusEnum;
