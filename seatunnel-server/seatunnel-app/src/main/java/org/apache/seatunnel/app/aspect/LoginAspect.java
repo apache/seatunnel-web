@@ -65,6 +65,8 @@ public class LoginAspect {
         final String token = jwtUtils.genToken(data.toMap());
         response.setHeader(TOKEN, token);
 
+        data.setToken(token);
+
         final UserLoginLogDto logDto = UserLoginLogDto.builder()
                 .token(token)
                 .tokenStatus(UserTokenStatusEnum.ENABLE.enable())

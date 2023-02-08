@@ -15,26 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.user;
+package org.apache.seatunnel.scheduler.dolphinscheduler.enums;
 
-import com.google.common.collect.Maps;
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
-import java.util.Map;
+public enum ReleaseStateEnum {
+    ONLINE(true),
+    OFFLINE(false),
+    ;
 
-@ApiModel(value = "userSimpleInfoRes", description = "user simple information")
-@Data
-public class UserSimpleInfoRes extends BaseUserInfoRes {
+    private final boolean publish;
 
-    private String token;
+    ReleaseStateEnum(boolean publish) {
+        this.publish = publish;
+    }
 
-    public Map<String, Object> toMap() {
-        final Map<String, Object> userMap = Maps.newHashMap();
-        userMap.put("id", getId());
-        userMap.put("name", getName());
-        userMap.put("status", getStatus());
-        userMap.put("type", getType());
-        return userMap;
+    public static ReleaseStateEnum parse(String name) {
+        for (ReleaseStateEnum value : values()) {
+            if (value.name().equalsIgnoreCase(name)){
+                return value;
+            }
+        }
+        throw new SeatunnelException(SeatunnelErrorEnum.NO_SUCH_ELEMENT);
+    }
+
+    public boolean isPublish() {
+        return publish;
     }
 }

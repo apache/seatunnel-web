@@ -26,7 +26,9 @@ import java.util.Date;
 @Data
 public class JobSimpleInfoDto {
     private long jobId;
+    private String jobName;
     private String jobStatus;
+    private Boolean publish;
     private String creatorName;
     private String menderName;
     private Date createTime;

@@ -63,7 +63,7 @@
         from `user`
         where id = #{id,jdbcType=INTEGER}
     </select>
-    <select id="selectBySelectiveAndPage" resultType="org.apache.seatunnel.app.dal.entity.User">
+    <select id="selectBySelectiveAndPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `user`

@@ -19,12 +19,13 @@ package org.apache.seatunnel.app.domain.response;
 
 import io.swagger.annotations.ApiModel;
 
+import java.util.Collections;
 import java.util.List;
 
 @ApiModel(value = "pageInfo", description = "page info")
 @SuppressWarnings("MagicNumber")
 public class PageInfo<T> {
-    private List<T> data;
+    private List<T> data = Collections.emptyList();
     private Integer totalCount = 0;
     private Integer totalPage = 0;
     private Integer pageNo = 1;

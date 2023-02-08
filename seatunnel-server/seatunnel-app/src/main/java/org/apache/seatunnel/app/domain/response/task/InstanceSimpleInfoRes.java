@@ -40,10 +40,14 @@ public class InstanceSimpleInfoRes {
     private Date startTime;
     @ApiModelProperty(value = "end time", dataType = "Date")
     private Date endTime;
+    @ApiModelProperty(value = "next execution time", dataType = "Date")
+    private Date nextExecutionTime;
     @ApiModelProperty(value = "task status", dataType = "String")
     private String status;
     @ApiModelProperty(value = "execution duration", dataType = "String")
     private String executionDuration;
     @ApiModelProperty(value = "retry times", dataType = "Long")
     private long retryTimes;
+    @ApiModelProperty(value = "run frequency", dataType = "String")
+    private String runFrequency;
 }

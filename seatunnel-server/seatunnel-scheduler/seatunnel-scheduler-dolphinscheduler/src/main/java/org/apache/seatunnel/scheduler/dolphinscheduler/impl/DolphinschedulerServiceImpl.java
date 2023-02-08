@@ -153,6 +153,7 @@ import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobDto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -189,6 +190,10 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     private long defaultProjectCode;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    static {
+        MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

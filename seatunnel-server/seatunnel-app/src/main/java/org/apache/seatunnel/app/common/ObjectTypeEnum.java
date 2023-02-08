@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.user;
+package org.apache.seatunnel.app.common;
 
-import com.google.common.collect.Maps;
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
-import java.util.Map;
+import java.util.Objects;
 
-@ApiModel(value = "userSimpleInfoRes", description = "user simple information")
-@Data
-public class UserSimpleInfoRes extends BaseUserInfoRes {
+public enum ObjectTypeEnum {
+    SCRIPT,
+    JOB,
+    INSTANCE,
+    ;
 
-    private String token;
-
-    public Map<String, Object> toMap() {
-        final Map<String, Object> userMap = Maps.newHashMap();
-        userMap.put("id", getId());
-        userMap.put("name", getName());
-        userMap.put("status", getStatus());
-        userMap.put("type", getType());
-        return userMap;
+    public static ObjectTypeEnum parse(Integer type) {
+        if (Objects.nonNull(type)) {
+            for (ObjectTypeEnum value : ObjectTypeEnum.values()) {
+                if (value.ordinal() == type) {
+                    return value;
+                }
+            }
+        }
+        throw new SeatunnelException(SeatunnelErrorEnum.NO_SUCH_ELEMENT);
     }
 }

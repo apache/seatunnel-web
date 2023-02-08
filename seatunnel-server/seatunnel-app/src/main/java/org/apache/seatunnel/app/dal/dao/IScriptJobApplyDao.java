@@ -17,11 +17,18 @@
 
 package org.apache.seatunnel.app.dal.dao;
 
+import org.apache.seatunnel.app.dal.entity.JobDefine;
 import org.apache.seatunnel.app.dal.entity.ScriptJobApply;
 import org.apache.seatunnel.app.domain.dto.job.ScriptJobApplyDto;
+
+import java.util.List;
 
 public interface IScriptJobApplyDao {
     void insertOrUpdate(ScriptJobApplyDto dto);
 
     ScriptJobApply getByScriptId(Integer id);
+
+    List<JobDefine> selectJobDefineByJobIds(List<Long> jobIds);
+
+    ScriptJobApply getByJobId(long jobId);
 }

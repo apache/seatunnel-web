@@ -28,7 +28,9 @@ import java.util.Map;
 @Data
 public class ExecuteReq {
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer", hidden = true)
-    private Integer scriptId;
+    private Long objectId;
+    @ApiModelProperty(value = "object type", required = true, dataType = "Integer")
+    private Integer objectType;
     @ApiModelProperty(value = "execute content", required = true, dataType = "String")
     private String content;
     @ApiModelProperty(value = "operator id", required = true, dataType = "Integer", hidden = true)

@@ -51,12 +51,12 @@ public class TaskController {
     @Resource
     private ITaskService iTaskService;
 
-    @PatchMapping("/{scriptId}/recycle")
-    @ApiOperation(value = "recycle script", httpMethod = "PATCH")
-    Result<Void> recycle(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId,
+    @PatchMapping("/{jobId}/recycle")
+    @ApiOperation(value = "recycle job", httpMethod = "PATCH")
+    Result<Void> recycle(@ApiParam(value = "job id", required = true) @PathVariable(value = "jobId") Long jobId,
                          @ApiIgnore @UserId Integer operatorId) {
         final RecycleScriptReq req = new RecycleScriptReq();
-        req.setScriptId(scriptId);
+        req.setJobId(jobId);
         req.setOperatorId(operatorId);
 
         iTaskService.recycleScriptFromScheduler(req);
@@ -89,12 +89,12 @@ public class TaskController {
         return Result.success(iTaskService.listInstance(req));
     }
 
-    @PostMapping("/{scriptId}/execute")
+    @PostMapping("/{objectId}/execute")
     @ApiOperation(value = "execute script temporary", httpMethod = "POST")
-    Result<InstanceSimpleInfoRes> tmpExecute(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId,
+    Result<InstanceSimpleInfoRes> tmpExecute(@ApiParam(value = "object id", required = true) @PathVariable(value = "objectId") Long objectId,
                                              @RequestBody @NotNull ExecuteReq req,
                                              @ApiIgnore @UserId Integer operatorId) {
-        req.setScriptId(scriptId);
+        req.setObjectId(objectId);
         req.setOperatorId(operatorId);
 
         return Result.success(iTaskService.tmpExecute(req));
