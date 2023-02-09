@@ -17,7 +17,7 @@
 
 import { reactive, ref, h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NSpace, NButton } from 'naive-ui'
+import { NSpace, NButton, NTag } from 'naive-ui'
 import { userList, userDelete, userEnable, userDisable } from '@/service/user'
 import type { ResponseTable } from '@/service/types'
 import type { UserDetail } from '@/service/user/types'
@@ -42,6 +42,17 @@ export function useTable() {
       {
         title: t('user_manage.username'),
         key: 'name'
+      },
+      {
+        title: t('user_manage.status'),
+        key: 'status',
+        render: (row: any) => {
+          if (row.status === 0) {
+            return h(NTag, { type: 'success' }, t('user_manage.enable'))
+          } else if (row.status === 1) {
+            return h(NTag, { type: 'error' }, t('user_manage.disable'))
+          }
+        }
       },
       {
         title: t('user_manage.create_time'),

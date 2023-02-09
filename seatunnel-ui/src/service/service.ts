@@ -56,6 +56,7 @@ service.interceptors.response.use((res: AxiosResponse) => {
   if (res.data.success) return res.data
 
   handleError(res)
+  throw new Error()
 }, err)
 
 export { service as axios }

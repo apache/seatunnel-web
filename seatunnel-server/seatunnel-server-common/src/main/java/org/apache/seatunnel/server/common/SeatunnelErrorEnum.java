@@ -26,9 +26,11 @@ public enum SeatunnelErrorEnum {
     SCHEDULER_CONFIG_NOT_EXIST(10005, "scheduler config not exist", "This script's scheduler config not exist, please check your config."),
     JSON_TRANSFORM_FAILED(10006, "json transform failed", "Json transform failed, it may be a bug."),
 
-    USERNAME_PASSWORD_NO_MATCHED(10007, "username and password no matched", "The user name and password do not match, please check your input"),
+    USERNAME_PASSWORD_NO_MATCHED(10007, "username and password no matched", "The user name and password do not match, please check your input."),
 
     TOKEN_ILLEGAL(10008, "token illegal", "The token is expired or invalid, please login again."),
+
+    USER_STATUS_IS_DISABLE(10009, "user status is disable", "The user status is disable, please contact administrator."),
 
     /**
      * request dolphinscheduler failed

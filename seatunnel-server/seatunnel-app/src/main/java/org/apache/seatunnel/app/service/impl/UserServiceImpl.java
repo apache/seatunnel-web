@@ -18,7 +18,9 @@
 package org.apache.seatunnel.app.service.impl;
 
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USER_STATUS_IS_DISABLE;
 
+import org.apache.seatunnel.app.common.UserStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
@@ -78,7 +80,8 @@ public class UserServiceImpl implements IUserService {
         res.setId(userId);
 
         // 3. add to role
-        roleServiceImpl.addUserToRole(userId, addReq.getType().intValue());
+        // TODO waiting for optimization
+        // roleServiceImpl.addUserToRole(userId, addReq.getType().intValue());
         return res;
     }
 
@@ -141,6 +144,10 @@ public class UserServiceImpl implements IUserService {
         final User user = userDaoImpl.checkPassword(username, password);
         if (Objects.isNull(user)) {
             throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
+        }
+
+        if (UserStatusEnum.DISABLE.getCode() == user.getStatus().intValue()) {
+            throw new SeatunnelException(USER_STATUS_IS_DISABLE);
         }
         return translate(user);
     }

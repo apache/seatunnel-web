@@ -147,7 +147,8 @@ CREATE TABLE `user` (
     `type` tinyint(4) NOT NULL,
     `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY user_name_unique (user_name)
 );
 
 -- ----------------------------
@@ -171,3 +172,6 @@ CREATE TABLE `user_login_log` (
 -- ----------------------------
 -- Records of user_login_log
 -- ----------------------------
+
+-- username: admin , password: seatunnel
+INSERT INTO USER (username, password, status, type) VALUES ('admin', '8b14b530361fe2c195c06d349dba3ac7', 0, 1);
