@@ -72,7 +72,7 @@ spring-jcl-5.3.20.jar
 spring-jdbc-5.3.20.jar
 spring-plugin-core-1.2.0.RELEASE.jar
 spring-plugin-metadata-1.2.0.RELEASE.jar
-spring-tx-5.3.30.jar
+spring-tx-5.3.20.jar
 spring-web-5.3.20.jar
 spring-webmvc-5.3.20.jar
 springfox-core-2.6.1.jar
