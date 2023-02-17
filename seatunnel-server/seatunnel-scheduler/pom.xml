@@ -27,13 +27,14 @@
     <packaging>pom</packaging>
     <modules>
         <module>seatunnel-scheduler-dolphinscheduler</module>
+        <module>seatunnel-scheduler-api</module>
     </modules>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.seatunnel</groupId>
-            <artifactId>seatunnel-spi</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

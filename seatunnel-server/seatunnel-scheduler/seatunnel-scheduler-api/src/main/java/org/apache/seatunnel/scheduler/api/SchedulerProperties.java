@@ -15,13 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler.dto;
+package org.apache.seatunnel.scheduler.api;
 
-import lombok.Builder;
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-@Builder
 @Data
-public class InstanceLogDto {
-    private String logContent;
+@Configuration
+@ConfigurationProperties(prefix = "seatunnel.scheduler")
+public class SchedulerProperties {
+
+    private SchedulerTypeEnum type;
+    private DolphinScheduler dolphinscheduler = new DolphinScheduler();
+
+    @Data
+    public static class DolphinScheduler {
+        private String serviceUrl;
+        private String token;
+        private Long projectCode;
+        private String tenantCode;
+        private String workerGroup;
+        private String scriptDir;
+        private HttpConnect httpConnect;
+    }
+
+    @Data
+    public static class HttpConnect {
+        private Integer connectTimeout;
+    }
+
 }

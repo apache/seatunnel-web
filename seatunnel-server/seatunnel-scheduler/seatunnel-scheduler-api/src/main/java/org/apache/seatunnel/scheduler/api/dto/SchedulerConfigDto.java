@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler.dto;
+package org.apache.seatunnel.scheduler.api.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +24,10 @@ import java.util.Date;
 
 @Data
 @Builder
-public class ComplementDataDto {
+public class SchedulerConfigDto {
+    private int retryTimes;
+    private int retryInterval;
     private Date startTime;
     private Date endTime;
-    private Integer parallelismNum;
+    private String triggerExpression;
 }

@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler;
 
+import org.apache.seatunnel.scheduler.api.dto.InstanceLogDto;
+import org.apache.seatunnel.scheduler.api.dto.JobDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessDefinitionDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessInstanceDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListTaskInstanceDto;
@@ -28,12 +30,10 @@ import org.apache.seatunnel.scheduler.dolphinscheduler.dto.StartProcessDefinitio
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.TaskInstanceDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.UpdateProcessDefinitionDto;
 import org.apache.seatunnel.server.common.PageData;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
-import org.apache.seatunnel.spi.scheduler.dto.JobDto;
 
 import java.util.List;
 
-public interface IDolphinschedulerService {
+public interface IDolphinSchedulerService {
 
     ProcessDefinitionDto createOrUpdateProcessDefinition(UpdateProcessDefinitionDto dto);
 

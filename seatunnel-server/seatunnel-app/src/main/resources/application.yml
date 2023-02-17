@@ -28,16 +28,17 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-ds:
-  script:
-    dir: /dj
-  project:
-    default: test_dj
-  tenant:
-    default: default
-  api:
-    token: 12345678
-    prefix: http://127.0.0.1:12345/dolphinscheduler
+
+seatunnel:
+  scheduler:
+    type: dolphinscheduler
+    dolphinscheduler:
+      service-url: http://127.0.0.1:12345/dolphinscheduler
+      token: xxx
+      project-code: 5811145128992
+      tenant-code: default
+      worker-group: default
+      script-dir: /st
 
 jwt:
   expireTime: 86400

@@ -15,20 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler.dto;
+package org.apache.seatunnel.scheduler.api;
 
-import lombok.Builder;
-import lombok.Data;
+import org.apache.seatunnel.scheduler.api.dto.ExecuteDto;
+import org.apache.seatunnel.scheduler.api.dto.InstanceDto;
+import org.apache.seatunnel.scheduler.api.dto.JobDto;
+import org.apache.seatunnel.scheduler.api.dto.JobListDto;
+import org.apache.seatunnel.scheduler.api.dto.JobSimpleInfoDto;
+import org.apache.seatunnel.server.common.PageData;
 
-import java.util.Date;
+public interface IJobService {
 
-@Builder
-@Data
-public class JobSimpleInfoDto {
-    private long jobId;
-    private String jobStatus;
-    private String creatorName;
-    private String menderName;
-    private Date createTime;
-    private Date updateTime;
+    long submitJob(JobDto dto);
+
+    void offlineJob(JobDto dto);
+
+    PageData<JobSimpleInfoDto> list(JobListDto dto);
+
+    InstanceDto execute(ExecuteDto dto);
+
+    void kill(Long instanceId);
 }

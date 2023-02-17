@@ -15,21 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler.dto;
+package org.apache.seatunnel.scheduler.api.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Map;
+import java.util.Date;
 
 @Data
 @Builder
-public class JobDto {
-    private Long jobId;
-    private String jobName;
-    private String executorScript;
-    private String jobContent;
-    private Integer operatorId;
-    private Map<String, Object> params;
-    private SchedulerConfigDto schedulerConfigDto;
+public class InstanceDto {
+    private long instanceId;
+    private long jobId;
+    private String instanceName;
+    private Date submitTime;
+    private Date startTime;
+    private Date endTime;
+    private String status;
+    private String executionDuration;
+    private long retryTimes;
 }

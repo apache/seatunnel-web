@@ -15,15 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler;
+package org.apache.seatunnel.scheduler.api;
 
-import org.apache.seatunnel.server.common.PageData;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceDto;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceListDto;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
+public interface ISchedulerManager extends AutoCloseable {
 
-public interface IInstanceService {
-    PageData<InstanceDto> list(InstanceListDto dto);
+    IJobService getJobService();
 
-    InstanceLogDto queryInstanceLog(long instanceId);
+    IInstanceService getInstanceService();
 }

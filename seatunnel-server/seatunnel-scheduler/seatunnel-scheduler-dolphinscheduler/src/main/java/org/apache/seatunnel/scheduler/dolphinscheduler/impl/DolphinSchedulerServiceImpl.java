@@ -17,114 +17,117 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.impl;
 
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.CODE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.CODE_SUCCESS;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.CONDITION_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.CREATE_PROCESS_DEFINITION;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.CREATE_SCHEDULE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.CRONTAB;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DATA;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DATA_TOTAL;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DATA_TOTAL_LIST;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DEFAULT_FILE_SUFFIX;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DELAY_TIME_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DELETE_PROCESS_DEFINITION;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DEPENDENCE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DESCRIPTION_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.END_TIME;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.ENVIRONMENT_CODE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.ENVIRONMENT_CODE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.EXECUTE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.EXECUTE_TYPE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.FAILED_NODE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.FAILURE_STRATEGY;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.FAILURE_STRATEGY_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.FLAG_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.FULL_NAME;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.GEN_NUM;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.GEN_NUM_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.GEN_TASK_CODE_LIST;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOCAL_PARAMS_DIRECT_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOCAL_PARAMS_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOCATIONS;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOCATIONS_X_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOCATIONS_Y_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOG_DETAIL;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOG_LIMIT_NUM;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOG_LIMIT_NUM_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOG_MESSAGE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOG_SKIP_LINE_NUM;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.LOG_SKIP_LINE_NUM_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.MSG;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.ONLINE_CREATE_RESOURCE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PAGE_NO;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PAGE_NO_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PAGE_SIZE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PAGE_SIZE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.POST_TASK_VERSION_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PRE_TASK_CODE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PRE_TASK_VERSION_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_DEFINITION;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_DEFINITION_CODE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_DEFINITION_NAME;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_INSTANCE_ID;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_INSTANCE_LIST;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_INSTANCE_NAME;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_INSTANCE_PRIORITY;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_INSTANCE_PRIORITY_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.QUERY_LIST_PAGING;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.QUERY_PROCESS_DEFINITION_BY_NAME;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.QUERY_PROJECT_LIST_PAGING;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.QUERY_RESOURCE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.QUERY_SCHEDULE_LIST_PAGING;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.QUERY_TASK_LIST_PAGING;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RELEASE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RELEASE_STATE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RELEASE_STATE_OFFLINE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_ID;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_ID_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_SEPARATOR;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_TYPE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_TYPE_FILE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_TYPE_FILE_CONTENT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RESOURCE_TYPE_FILE_SUFFIX_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SCHEDULE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SCHEDULE_ID;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SCHEDULE_OFFLINE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SCHEDULE_ONLINE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SEARCH_VAL;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.START_PROCESS_INSTANCE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.START_TIME;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SUCCESS_NODE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.SWITCH_RESULT_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TASK_DEFINITION_JSON;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TASK_INSTANCE_ID;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TASK_PRIORITY_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TASK_RELATION_JSON;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TASK_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TENANT_CODE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TIMEOUT_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TIMEOUT_FLAG_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TIMEOUT_NOTIFY_STRATEGY_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TIMEZONE_ID;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TIMEZONE_ID_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TOKEN;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.UPDATE_CONTENT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.VERSION_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WAIT_START_TIMEOUT_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WARNING_GROUP_ID;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WARNING_GROUP_ID_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WARNING_TYPE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WARNING_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WORKER_GROUP;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WORKER_GROUP_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.CODE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.CODE_SUCCESS;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.CONDITION_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.CREATE_PROCESS_DEFINITION;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.CREATE_SCHEDULE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.CRONTAB;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DATA;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DATA_TOTAL;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DATA_TOTAL_LIST;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DEFAULT_FILE_SUFFIX;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DELAY_TIME_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DELETE_PROCESS_DEFINITION;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DEPENDENCE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DESCRIPTION_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.END_TIME;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.ENVIRONMENT_CODE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.ENVIRONMENT_CODE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.EXECUTE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.EXECUTE_TYPE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.FAILED_NODE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.FAILURE_STRATEGY;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.FAILURE_STRATEGY_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.FLAG_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.FULL_NAME;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.GEN_NUM;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.GEN_NUM_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.GEN_TASK_CODE_LIST;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOCAL_PARAMS_DIRECT_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOCAL_PARAMS_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOCATIONS;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOCATIONS_X_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOCATIONS_Y_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOG_DETAIL;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOG_LIMIT_NUM;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOG_LIMIT_NUM_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOG_MESSAGE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOG_SKIP_LINE_NUM;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.LOG_SKIP_LINE_NUM_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.MSG;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.ONLINE_CREATE_RESOURCE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PAGE_NO;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PAGE_NO_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PAGE_SIZE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PAGE_SIZE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.POST_TASK_VERSION_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PRE_TASK_CODE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PRE_TASK_VERSION_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_DEFINITION;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_DEFINITION_CODE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_DEFINITION_NAME;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_INSTANCE_ID;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_INSTANCE_LIST;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_INSTANCE_NAME;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_INSTANCE_PRIORITY;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_INSTANCE_PRIORITY_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.QUERY_LIST_PAGING;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.QUERY_PROCESS_DEFINITION_BY_NAME;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.QUERY_PROJECT_LIST_PAGING;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.QUERY_RESOURCE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.QUERY_SCHEDULE_LIST_PAGING;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.QUERY_TASK_LIST_PAGING;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RELEASE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RELEASE_STATE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RELEASE_STATE_OFFLINE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_ID;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_ID_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_SEPARATOR;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_TYPE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_TYPE_FILE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_TYPE_FILE_CONTENT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RESOURCE_TYPE_FILE_SUFFIX_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SCHEDULE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SCHEDULE_ID;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SCHEDULE_OFFLINE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SCHEDULE_ONLINE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SEARCH_VAL;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.START_PROCESS_INSTANCE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.START_TIME;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SUCCESS_NODE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.SWITCH_RESULT_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TASK_DEFINITION_JSON;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TASK_INSTANCE_ID;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TASK_PRIORITY_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TASK_RELATION_JSON;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TASK_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TENANT_CODE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TIMEOUT_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TIMEOUT_FLAG_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TIMEOUT_NOTIFY_STRATEGY_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TIMEZONE_ID;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TIMEZONE_ID_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TOKEN;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.UPDATE_CONTENT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.VERSION_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WAIT_START_TIMEOUT_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WARNING_GROUP_ID;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WARNING_GROUP_ID_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WARNING_TYPE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WARNING_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WORKER_GROUP;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WORKER_GROUP_DEFAULT;
 import static org.apache.seatunnel.scheduler.dolphinscheduler.utils.HttpUtils.createParamMap;
 import static org.apache.seatunnel.server.common.Constants.BLANK_SPACE;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_MATCHED_PROJECT;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.UNEXPECTED_RETURN_CODE;
 
+import org.apache.seatunnel.scheduler.api.SchedulerProperties;
+import org.apache.seatunnel.scheduler.api.dto.InstanceLogDto;
+import org.apache.seatunnel.scheduler.api.dto.JobDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.ExecuteTypeEnum;
-import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinschedulerService;
+import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinSchedulerService;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ConditionResult;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessDefinitionDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessInstanceDto;
@@ -149,8 +152,6 @@ import org.apache.seatunnel.server.common.DateUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
-import org.apache.seatunnel.spi.scheduler.dto.JobDto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -159,9 +160,6 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.jsoup.Connection;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -173,33 +171,28 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
-public class DolphinschedulerServiceImpl implements IDolphinschedulerService, InitializingBean {
+public class DolphinSchedulerServiceImpl implements IDolphinSchedulerService {
 
-    @Value("${ds.api.prefix}")
-    private String apiPrefix;
-    @Value("${ds.api.token}")
-    private String token;
-    @Value("${ds.tenant.default}")
-    private String defaultTenantName;
-    @Value("${ds.project.default}")
-    private String defaultProjectName;
-    @Value("${ds.script.dir}")
-    private String defaultScriptDir;
-    private long defaultProjectCode;
+    private final String serviceUrl;
+    private final String token;
+    private final String tenantCode;
+    private final String scriptDir;
+    private final long projectCode;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        final ProjectDto projectDto = queryProjectCodeByName(defaultProjectName);
-        defaultProjectCode = projectDto.getCode();
+    public DolphinSchedulerServiceImpl(SchedulerProperties.DolphinScheduler properties) {
+        this.serviceUrl = properties.getServiceUrl();
+        this.token = properties.getToken();
+        this.projectCode = properties.getProjectCode();
+        this.tenantCode = properties.getTenantCode();
+        this.scriptDir = properties.getScriptDir();
     }
 
     @Override
     public ProcessDefinitionDto createOrUpdateProcessDefinition(UpdateProcessDefinitionDto dto) {
         // gen task code
-        final List<Long> taskCodes = genTaskCodes(defaultProjectCode, GEN_NUM_DEFAULT);
+        final List<Long> taskCodes = genTaskCodes(projectCode, GEN_NUM_DEFAULT);
 
         // build taskDefinitionJson and taskRelationJson.
         final Long taskCode = taskCodes.get(0);
@@ -207,7 +200,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
         List<TaskRelationDto> taskRelationJson = buildTaskRelationJson(taskCode, dto.getTaskDescriptionDto());
         List<LocationDto> locations = buildLocation(taskCodes);
 
-        String url = apiPrefix.concat(String.format(CREATE_PROCESS_DEFINITION, defaultProjectCode));
+        String url = serviceUrl.concat(String.format(CREATE_PROCESS_DEFINITION, projectCode));
         Connection.Method method = Connection.Method.POST;
         if (Objects.nonNull(dto.getProcessDefinitionCode())) {
             method = Connection.Method.PUT;
@@ -219,7 +212,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
         final Map<String, String> paramMap = createParamMap(LOCATIONS, locations,
                 TASK_DEFINITION_JSON, this.objectToString(taskDefinitionJson),
                 TASK_RELATION_JSON, this.objectToString(taskRelationJson),
-                TENANT_CODE, defaultTenantName,
+                TENANT_CODE, tenantCode,
                 PROCESS_DEFINITION_NAME, dto.getName());
 
         final Map result = HttpUtils.builder()
@@ -238,7 +231,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public PageData<ProcessDefinitionDto> listProcessDefinition(ListProcessDefinitionDto dto) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(QUERY_LIST_PAGING, defaultProjectCode)))
+                .withUrl(serviceUrl.concat(String.format(QUERY_LIST_PAGING, projectCode)))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(SEARCH_VAL, dto.getName(), PAGE_NO, dto.getPageNo(), PAGE_SIZE, dto.getPageSize()))
                 .withToken(TOKEN, token)
@@ -260,7 +253,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public ProcessDefinitionDto fetchProcessDefinitionByName(String processDefinitionName) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(QUERY_PROCESS_DEFINITION_BY_NAME, defaultProjectCode)))
+                .withUrl(serviceUrl.concat(String.format(QUERY_PROCESS_DEFINITION_BY_NAME, projectCode)))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(PROCESS_DEFINITION_NAME, processDefinitionName))
                 .withToken(TOKEN, token)
@@ -274,7 +267,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public void startProcessDefinition(StartProcessDefinitionDto dto) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(START_PROCESS_INSTANCE, defaultProjectCode)))
+                .withUrl(serviceUrl.concat(String.format(START_PROCESS_INSTANCE, projectCode)))
                 .withMethod(Connection.Method.POST)
                 .withData(dto.toMap())
                 .withRequestBody(this.objectToString(null))
@@ -286,7 +279,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public void updateProcessDefinitionState(long processDefinitionCode, String processDefinitionName, String state) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(RELEASE, defaultProjectCode, processDefinitionCode)))
+                .withUrl(serviceUrl.concat(String.format(RELEASE, projectCode, processDefinitionCode)))
                 .withMethod(Connection.Method.POST)
                 .withData(createParamMap(PROCESS_DEFINITION_NAME, processDefinitionName, RELEASE_STATE, state))
                 .withRequestBody(this.objectToString(null))
@@ -314,7 +307,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
 
         map.put(SCHEDULE, this.objectToString(schedule));
 
-        String url = String.format(CREATE_SCHEDULE, defaultProjectCode);
+        String url = String.format(CREATE_SCHEDULE, projectCode);
 
         final List<SchedulerDto> schedulerDtos = listSchedule(dto.getJobId());
         boolean flag = false;
@@ -324,7 +317,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
         }
 
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(url))
+                .withUrl(serviceUrl.concat(url))
                 .withData(translate(map))
                 .withMethod(flag ? Connection.Method.PUT : Connection.Method.POST)
                 .withRequestBody(this.objectToString(null))
@@ -345,7 +338,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public List<SchedulerDto> listSchedule(long processDefinitionCode) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(QUERY_SCHEDULE_LIST_PAGING, defaultProjectCode)))
+                .withUrl(serviceUrl.concat(String.format(QUERY_SCHEDULE_LIST_PAGING, projectCode)))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(PROCESS_DEFINITION_CODE, processDefinitionCode, PAGE_NO, PAGE_NO_DEFAULT, PAGE_SIZE, PAGE_SIZE_DEFAULT))
                 .withToken(TOKEN, token)
@@ -362,7 +355,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public void scheduleOnline(int scheduleId) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(SCHEDULE_ONLINE, defaultProjectCode, scheduleId)))
+                .withUrl(serviceUrl.concat(String.format(SCHEDULE_ONLINE, projectCode, scheduleId)))
                 .withMethod(Connection.Method.POST)
                 .withData(createParamMap(SCHEDULE_ID, scheduleId))
                 .withToken(TOKEN, token)
@@ -373,7 +366,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public void scheduleOffline(int scheduleId) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(SCHEDULE_OFFLINE, defaultProjectCode, scheduleId)))
+                .withUrl(serviceUrl.concat(String.format(SCHEDULE_OFFLINE, projectCode, scheduleId)))
                 .withMethod(Connection.Method.POST)
                 .withData(createParamMap(SCHEDULE_ID, scheduleId))
                 .withToken(TOKEN, token)
@@ -385,7 +378,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     public List<Long> genTaskCodes(long projectCode, int num) {
         final String url = String.format(GEN_TASK_CODE_LIST, projectCode);
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(url))
+                .withUrl(serviceUrl.concat(url))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(GEN_NUM, num))
                 .withToken(TOKEN, token)
@@ -398,10 +391,10 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public ResourceDto createOrUpdateScriptContent(String resourceName, String content) {
         // check resource exists
-        final String fullName = defaultScriptDir.concat(RESOURCE_SEPARATOR.concat(resourceName));
-        final ResourceDto parentResourceDto = getResourceDto(defaultScriptDir, RESOURCE_TYPE_FILE);
+        final String fullName = scriptDir.concat(RESOURCE_SEPARATOR.concat(resourceName));
+        final ResourceDto parentResourceDto = getResourceDto(scriptDir, RESOURCE_TYPE_FILE);
         if (Objects.isNull(parentResourceDto)) {
-            throw new SeatunnelException(SeatunnelErrorEnum.NO_MATCHED_SCRIPT_SAVE_DIR, defaultScriptDir);
+            throw new SeatunnelException(SeatunnelErrorEnum.NO_MATCHED_SCRIPT_SAVE_DIR, scriptDir);
         }
         final ResourceDto dto = getResourceDto(fullName.concat(DEFAULT_FILE_SUFFIX), RESOURCE_TYPE_FILE);
         if (Objects.isNull(dto)) {
@@ -409,7 +402,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
                     .type(RESOURCE_TYPE_FILE)
                     .pid(parentResourceDto.getId())
                     .fileName(resourceName)
-                    .currentDir(defaultScriptDir)
+                    .currentDir(scriptDir)
                     .suffix(RESOURCE_TYPE_FILE_SUFFIX_DEFAULT)
                     .content(content)
                     .build();
@@ -424,7 +417,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public PageData<TaskInstanceDto> listTaskInstance(ListTaskInstanceDto dto) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(QUERY_TASK_LIST_PAGING, defaultProjectCode)))
+                .withUrl(serviceUrl.concat(String.format(QUERY_TASK_LIST_PAGING, projectCode)))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(PROCESS_INSTANCE_NAME, dto.getName(), PAGE_NO, dto.getPageNo(), PAGE_SIZE, dto.getPageSize()))
                 .withToken(TOKEN, token)
@@ -445,7 +438,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public void deleteProcessDefinition(long code) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(DELETE_PROCESS_DEFINITION, defaultProjectCode, code)))
+                .withUrl(serviceUrl.concat(String.format(DELETE_PROCESS_DEFINITION, projectCode, code)))
                 .withMethod(Connection.Method.DELETE)
                 .withToken(TOKEN, token)
                 .execute(Map.class);
@@ -455,7 +448,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     @Override
     public PageData<ProcessInstanceDto> listProcessInstance(ListProcessInstanceDto dto) {
         final Map result = HttpUtils.builder()
-            .withUrl(apiPrefix.concat(String.format(PROCESS_INSTANCE_LIST, defaultProjectCode)))
+            .withUrl(serviceUrl.concat(String.format(PROCESS_INSTANCE_LIST, projectCode)))
             .withMethod(Connection.Method.GET)
             .withData(createParamMap(SEARCH_VAL, dto.getName(), PAGE_NO, dto.getPageNo(), PAGE_SIZE, dto.getPageSize()))
             .withToken(TOKEN, token)
@@ -481,7 +474,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     public InstanceLogDto queryInstanceLog(long instanceId) {
 
         final Map result = HttpUtils.builder()
-            .withUrl(apiPrefix.concat(LOG_DETAIL))
+            .withUrl(serviceUrl.concat(LOG_DETAIL))
             .withData(createParamMap(TASK_INSTANCE_ID, instanceId, LOG_SKIP_LINE_NUM, LOG_SKIP_LINE_NUM_DEFAULT, LOG_LIMIT_NUM, LOG_LIMIT_NUM_DEFAULT))
             .withMethod(Connection.Method.GET)
             .withToken(TOKEN, token)
@@ -498,7 +491,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
 
     private ProjectDto queryProjectCodeByName(String projectName) throws IOException {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(QUERY_PROJECT_LIST_PAGING))
+                .withUrl(serviceUrl.concat(QUERY_PROJECT_LIST_PAGING))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(SEARCH_VAL, projectName, PAGE_NO, PAGE_NO_DEFAULT, PAGE_SIZE, PAGE_SIZE_DEFAULT))
                 .withToken(TOKEN, token)
@@ -515,7 +508,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
 
     private void execute(long processInstanceId, ExecuteTypeEnum executeType) {
         final Map result = HttpUtils.builder()
-            .withUrl(apiPrefix.concat(String.format(EXECUTE, defaultProjectCode)))
+            .withUrl(serviceUrl.concat(String.format(EXECUTE, projectCode)))
             .withMethod(Connection.Method.POST)
             .withRequestBody(this.objectToString(null))
             .withData(createParamMap(PROCESS_INSTANCE_ID, processInstanceId, EXECUTE_TYPE, executeType.name()))
@@ -608,7 +601,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
 
     private void updateContent(int id, String content) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(UPDATE_CONTENT, id)))
+                .withUrl(serviceUrl.concat(String.format(UPDATE_CONTENT, id)))
                 .withMethod(Connection.Method.PUT)
                 .withData(createParamMap(RESOURCE_ID, id, RESOURCE_TYPE_FILE_CONTENT, content))
                 .withRequestBody(this.objectToString(null))
@@ -620,7 +613,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     private void onlineCreateResource(OnlineCreateResourceDto createDto) {
         final Map<String, Object> map = createDto.toMap();
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(ONLINE_CREATE_RESOURCE))
+                .withUrl(serviceUrl.concat(ONLINE_CREATE_RESOURCE))
                 .withMethod(Connection.Method.POST)
                 .withData(translate(map))
                 .withRequestBody(this.objectToString(null))
@@ -631,7 +624,7 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
 
     private ResourceDto getResourceDto(String fullName, String fileType) {
         final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(QUERY_RESOURCE, RESOURCE_ID_DEFAULT)))
+                .withUrl(serviceUrl.concat(String.format(QUERY_RESOURCE, RESOURCE_ID_DEFAULT)))
                 .withMethod(Connection.Method.GET)
                 .withData(createParamMap(FULL_NAME, fullName, RESOURCE_TYPE, RESOURCE_TYPE_FILE))
                 .withToken(TOKEN, token)

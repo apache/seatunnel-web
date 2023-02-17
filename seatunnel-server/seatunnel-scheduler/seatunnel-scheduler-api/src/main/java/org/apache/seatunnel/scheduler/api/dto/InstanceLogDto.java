@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler.dto;
+package org.apache.seatunnel.scheduler.api.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
-public class InstanceListDto {
-    private String name;
-    private int pageNo;
-    private int pageSize;
+public class InstanceLogDto {
+    private String logContent;
 }

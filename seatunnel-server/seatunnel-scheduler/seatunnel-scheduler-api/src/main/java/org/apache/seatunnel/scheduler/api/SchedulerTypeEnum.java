@@ -15,18 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.spi.scheduler.dto;
+package org.apache.seatunnel.scheduler.api;
 
-import org.apache.seatunnel.spi.scheduler.enums.ExecuteTypeEnum;
-
-import lombok.Builder;
-import lombok.Data;
-
-@Data
-@Builder
-public class ExecuteDto {
-    private JobDto jobDto;
-    private ExecuteTypeEnum executeTypeEnum;
-    private ComplementDataDto complementDataDto;
-
+public enum SchedulerTypeEnum {
+    dolphinscheduler;
 }

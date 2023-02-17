@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class DolphinschedulerConstants {
+public class DolphinSchedulerConstants {
 
     /**
      * api url
@@ -173,6 +173,8 @@ public class DolphinschedulerConstants {
     public static final String EXECUTE_TYPE = "executeType";
     public static final int LOG_SKIP_LINE_NUM_DEFAULT = 0;
     public static final int LOG_LIMIT_NUM_DEFAULT = Integer.MAX_VALUE;
+    public static final long MAX_WAITING_TIMES_DEFAULT = 10;
+    public static final long WAITING_SLEEP_TIME_DEFAULT = 10;
 
     /**
      * response param

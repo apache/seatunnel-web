@@ -17,26 +17,37 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.impl;
 
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DEPENDENT_MODE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.DRY_RUN;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.EXEC_TYPE_COMPLEMENT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.EXEC_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.FAILURE_STRATEGY_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PAGE_NO_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PAGE_SIZE_MIN;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.PROCESS_INSTANCE_PRIORITY_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RELEASE_STATE_OFFLINE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RELEASE_STATE_ONLINE;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RUN_MODE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.RUN_MODE_PARALLEL;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.TASK_DEPEND_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WARNING_GROUP_ID_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WARNING_TYPE_DEFAULT;
-import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinschedulerConstants.WORKER_GROUP_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DEPENDENT_MODE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.DRY_RUN;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.EXEC_TYPE_COMPLEMENT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.EXEC_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.FAILURE_STRATEGY_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.MAX_WAITING_TIMES_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PAGE_NO_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PAGE_SIZE_MIN;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.PROCESS_INSTANCE_PRIORITY_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RELEASE_STATE_OFFLINE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RELEASE_STATE_ONLINE;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RUN_MODE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.RUN_MODE_PARALLEL;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.TASK_DEPEND_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WAITING_SLEEP_TIME_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WARNING_GROUP_ID_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WARNING_TYPE_DEFAULT;
+import static org.apache.seatunnel.scheduler.dolphinscheduler.constants.DolphinSchedulerConstants.WORKER_GROUP_DEFAULT;
 import static org.apache.seatunnel.server.common.Constants.COMMA;
 import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
 
-import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinschedulerService;
+import org.apache.seatunnel.scheduler.api.IInstanceService;
+import org.apache.seatunnel.scheduler.api.IJobService;
+import org.apache.seatunnel.scheduler.api.dto.ComplementDataDto;
+import org.apache.seatunnel.scheduler.api.dto.ExecuteDto;
+import org.apache.seatunnel.scheduler.api.dto.InstanceDto;
+import org.apache.seatunnel.scheduler.api.dto.InstanceListDto;
+import org.apache.seatunnel.scheduler.api.dto.JobDto;
+import org.apache.seatunnel.scheduler.api.dto.JobListDto;
+import org.apache.seatunnel.scheduler.api.dto.JobSimpleInfoDto;
+import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinSchedulerService;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessDefinitionDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ProcessDefinitionDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.SchedulerDto;
@@ -47,22 +58,9 @@ import org.apache.seatunnel.server.common.DateUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
-import org.apache.seatunnel.spi.scheduler.IInstanceService;
-import org.apache.seatunnel.spi.scheduler.IJobService;
-import org.apache.seatunnel.spi.scheduler.dto.ComplementDataDto;
-import org.apache.seatunnel.spi.scheduler.dto.ExecuteDto;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceDto;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceListDto;
-import org.apache.seatunnel.spi.scheduler.dto.JobDto;
-import org.apache.seatunnel.spi.scheduler.dto.JobListDto;
-import org.apache.seatunnel.spi.scheduler.dto.JobSimpleInfoDto;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
-import javax.annotation.Resource;
 
 import java.util.Date;
 import java.util.List;
@@ -70,19 +68,19 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
 public class JobServiceImpl implements IJobService {
-    @Resource
-    private IDolphinschedulerService iDolphinschedulerService;
 
-    @Resource
-    private IInstanceService iInstanceService;
+    private final IDolphinSchedulerService dolphinSchedulerService;
+    private final IInstanceService instanceService;
 
-    @Value("${maxWaitingTimes:10}")
-    private long maxWaitingTimes;
-    @Value("${waitingSleepTime:100}")
-    private long waitingSleepTime;
+    public JobServiceImpl(IDolphinSchedulerService dolphinSchedulerService, IInstanceService instanceService) {
+        this.dolphinSchedulerService = dolphinSchedulerService;
+        this.instanceService = instanceService;
+    }
+
+    private long maxWaitingTimes = MAX_WAITING_TIMES_DEFAULT;
+    private long waitingSleepTime = WAITING_SLEEP_TIME_DEFAULT;
 
     @Override
     public long submitJob(JobDto dto) {
@@ -91,16 +89,16 @@ public class JobServiceImpl implements IJobService {
         final ProcessDefinitionDto processDefinition = getProcessDefinitionDto(dto);
 
         dto.setJobId(processDefinition.getCode());
-        iDolphinschedulerService.updateProcessDefinitionState(processDefinition.getCode(), processDefinition.getName(), RELEASE_STATE_ONLINE);
-        final SchedulerDto schedulerDto = iDolphinschedulerService.createOrUpdateSchedule(dto);
-        iDolphinschedulerService.scheduleOnline(schedulerDto.getId());
+        dolphinSchedulerService.updateProcessDefinitionState(processDefinition.getCode(), processDefinition.getName(), RELEASE_STATE_ONLINE);
+        final SchedulerDto schedulerDto = dolphinSchedulerService.createOrUpdateSchedule(dto);
+        dolphinSchedulerService.scheduleOnline(schedulerDto.getId());
 
         return processDefinition.getCode();
     }
 
     @Override
     public void offlineJob(JobDto dto) {
-        iDolphinschedulerService.updateProcessDefinitionState(dto.getJobId(), dto.getJobName(), RELEASE_STATE_OFFLINE);
+        dolphinSchedulerService.updateProcessDefinitionState(dto.getJobId(), dto.getJobName(), RELEASE_STATE_OFFLINE);
     }
 
     @Override
@@ -110,7 +108,7 @@ public class JobServiceImpl implements IJobService {
         listDto.setPageNo(dto.getPageNo());
         listDto.setPageSize(dto.getPageSize());
 
-        final PageData<ProcessDefinitionDto> processPageData = iDolphinschedulerService.listProcessDefinition(listDto);
+        final PageData<ProcessDefinitionDto> processPageData = dolphinSchedulerService.listProcessDefinition(listDto);
         final List<JobSimpleInfoDto> data = processPageData.getData().stream().map(p -> JobSimpleInfoDto.builder()
                 .jobId(p.getCode())
                 .jobStatus(p.getReleaseState())
@@ -132,7 +130,7 @@ public class JobServiceImpl implements IJobService {
             // need to create a temporary process definition and execute it.
             processDefinition = getProcessDefinitionDto(jobDto);
             jobDto.setJobId(processDefinition.getCode());
-            iDolphinschedulerService.updateProcessDefinitionState(processDefinition.getCode(), processDefinition.getName(), RELEASE_STATE_ONLINE);
+            dolphinSchedulerService.updateProcessDefinitionState(processDefinition.getCode(), processDefinition.getName(), RELEASE_STATE_ONLINE);
         }
 
         final ComplementDataDto complementDataDto = dto.getComplementDataDto();
@@ -169,7 +167,7 @@ public class JobServiceImpl implements IJobService {
                 .dependentMode(DEPENDENT_MODE_DEFAULT)
                 .expectedParallelismNumber(parallelismNum)
                 .build();
-        iDolphinschedulerService.startProcessDefinition(startProcessDefinitionDto);
+        dolphinSchedulerService.startProcessDefinition(startProcessDefinitionDto);
 
         if (Objects.nonNull(processDefinition)){
 
@@ -185,7 +183,7 @@ public class JobServiceImpl implements IJobService {
                         .pageSize(PAGE_SIZE_MIN)
                         .name(processDefinition.getName())
                         .build();
-                final PageData<InstanceDto> instancePageData = iInstanceService.list(instanceListDto);
+                final PageData<InstanceDto> instancePageData = instanceService.list(instanceListDto);
                 if (!CollectionUtils.isEmpty(instancePageData.getData())) {
                     instanceDto = instancePageData.getData().get(0);
                     break;
@@ -200,7 +198,7 @@ public class JobServiceImpl implements IJobService {
 
             CompletableFuture.runAsync(() -> {
                 // clear temporary process definition
-                iDolphinschedulerService.updateProcessDefinitionState(code, name, RELEASE_STATE_OFFLINE);
+                dolphinSchedulerService.updateProcessDefinitionState(code, name, RELEASE_STATE_OFFLINE);
             }).whenComplete((_return, e) -> {
                 if (Objects.nonNull(e)) {
                     log.error("clear temporary process definition failed, process definition code is [{}], name is [{}]",
@@ -216,7 +214,7 @@ public class JobServiceImpl implements IJobService {
 
     @Override
     public void kill(Long instanceId) {
-        iDolphinschedulerService.killProcessInstance(instanceId);
+        dolphinSchedulerService.killProcessInstance(instanceId);
     }
 
     private ProcessDefinitionDto getProcessDefinitionDto(JobDto dto) {
@@ -238,6 +236,6 @@ public class JobServiceImpl implements IJobService {
                 .processDefinitionCode(dto.getJobId())
                 .build();
 
-        return iDolphinschedulerService.createOrUpdateProcessDefinition(processDto);
+        return dolphinSchedulerService.createOrUpdateProcessDefinition(processDto);
     }
 }

@@ -17,29 +17,28 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.impl;
 
-import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinschedulerService;
+import org.apache.seatunnel.scheduler.api.IInstanceService;
+import org.apache.seatunnel.scheduler.api.dto.InstanceDto;
+import org.apache.seatunnel.scheduler.api.dto.InstanceListDto;
+import org.apache.seatunnel.scheduler.api.dto.InstanceLogDto;
+import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinSchedulerService;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessInstanceDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ProcessInstanceDto;
 import org.apache.seatunnel.server.common.PageData;
-import org.apache.seatunnel.spi.scheduler.IInstanceService;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceDto;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceListDto;
-import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
 public class InstanceServiceImpl implements IInstanceService {
 
-    @Resource
-    private IDolphinschedulerService iDolphinschedulerService;
+    private final IDolphinSchedulerService dolphinSchedulerService;
+
+    public InstanceServiceImpl(IDolphinSchedulerService dolphinSchedulerService) {
+        this.dolphinSchedulerService = dolphinSchedulerService;
+    }
 
     @Override
     public PageData<InstanceDto> list(InstanceListDto dto) {
@@ -50,7 +49,7 @@ public class InstanceServiceImpl implements IInstanceService {
         listDto.setPageSize(dto.getPageSize());
 
         // use list process instance instead of list task instance.
-        final PageData<ProcessInstanceDto> instancePageData = iDolphinschedulerService.listProcessInstance(listDto);
+        final PageData<ProcessInstanceDto> instancePageData = dolphinSchedulerService.listProcessInstance(listDto);
 
         final List<InstanceDto> data = instancePageData.getData().stream().map(t -> InstanceDto.builder()
                 .instanceId(t.getId())
@@ -68,6 +67,6 @@ public class InstanceServiceImpl implements IInstanceService {
 
     @Override
     public InstanceLogDto queryInstanceLog(long instanceId) {
-        return iDolphinschedulerService.queryInstanceLog(instanceId);
+        return dolphinSchedulerService.queryInstanceLog(instanceId);
     }
 }
