@@ -98,6 +98,7 @@ const Modal = defineComponent({
                   onClick={onConfirm}
                   disabled={confirmDisabled}
                   loading={confirmLoading}
+                  type='primary'
                 >
                   {this.confirmText || t('modal.confirm')}
                 </NButton>
