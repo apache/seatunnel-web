@@ -26,11 +26,13 @@ const Dashboard = defineComponent({
   render() {
     return (
       <NLayout>
-        <NLayoutHeader>
+        <NLayoutHeader bordered>
           <Header />
         </NLayoutHeader>
-        <NLayoutContent>
-          <router-view class='px-32 py-12' />
+        <NLayoutContent style={{ height: 'calc(100vh - 65px)' }}>
+          <NLayout position='absolute' native-scrollbar={false}>
+            <router-view class='px-32 py-12' />
+          </NLayout>
         </NLayoutContent>
       </NLayout>
     )
