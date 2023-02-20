@@ -28,6 +28,8 @@ public class BaseUserInfoRes {
     private int id;
     @ApiModelProperty(value = "user name", dataType = "String")
     private String name;
+    @ApiModelProperty(value = "user token", dataType = "String")
+    private String token;
     @ApiModelProperty(value = "user status", dataType = "type")
     private byte status;
     @ApiModelProperty(value = "user type", dataType = "type")

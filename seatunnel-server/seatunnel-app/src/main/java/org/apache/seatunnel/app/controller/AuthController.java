@@ -41,8 +41,8 @@ public class AuthController {
     @GetMapping("/userRole")
     @ApiOperation(value = "check relation between user and role", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "user name", dataType = "String"),
-            @ApiImplicitParam(name = "roleName", value = "role name", dataType = "String"),
+        @ApiImplicitParam(name = "username", value = "user name", dataType = "String"),
+        @ApiImplicitParam(name = "roleName", value = "role name", dataType = "String"),
     })
     public Result<Boolean> userRole(@RequestParam("username") @NotNull String username, @RequestParam("roleName") @NotNull String roleName){
         final boolean b = roleServiceImpl.checkUserRole(username, roleName);
