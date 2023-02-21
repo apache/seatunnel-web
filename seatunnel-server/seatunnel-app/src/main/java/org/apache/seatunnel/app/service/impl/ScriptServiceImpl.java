@@ -24,7 +24,6 @@ import org.apache.seatunnel.app.common.ScriptParamStatusEnum;
 import org.apache.seatunnel.app.common.ScriptStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IScriptDao;
 import org.apache.seatunnel.app.dal.dao.IScriptParamDao;
-import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.Script;
 import org.apache.seatunnel.app.dal.entity.ScriptParam;
 import org.apache.seatunnel.app.domain.dto.job.PushScriptDto;
@@ -45,7 +44,6 @@ import org.apache.seatunnel.app.domain.response.script.ScriptSimpleInfoRes;
 import org.apache.seatunnel.app.service.IScriptService;
 import org.apache.seatunnel.app.service.ITaskService;
 import org.apache.seatunnel.app.utils.Md5Utils;
-import org.apache.seatunnel.scheduler.dolphinscheduler.impl.InstanceServiceImpl;
 import org.apache.seatunnel.server.common.PageData;
 
 import com.google.common.base.Strings;
@@ -68,12 +66,6 @@ public class ScriptServiceImpl implements IScriptService {
 
     @Resource
     private IScriptParamDao scriptParamDaoImpl;
-
-    @Resource
-    private InstanceServiceImpl instanceService;
-
-    @Resource
-    private IUserDao userDaoImpl;
 
     @Resource
     private ITaskService iTaskService;
