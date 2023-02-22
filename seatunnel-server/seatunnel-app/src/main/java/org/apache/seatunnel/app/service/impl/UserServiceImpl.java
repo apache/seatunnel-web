@@ -146,9 +146,6 @@ public class UserServiceImpl implements IUserService {
             throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
         }
 
-        if (UserStatusEnum.DISABLE.getCode() == user.getStatus().intValue()) {
-            throw new SeatunnelException(USER_STATUS_IS_DISABLE);
-        }
         return translate(user);
     }
 

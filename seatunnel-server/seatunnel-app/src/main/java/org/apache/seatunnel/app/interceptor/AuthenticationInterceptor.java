@@ -20,10 +20,12 @@ package org.apache.seatunnel.app.interceptor;
 import static org.apache.seatunnel.server.common.Constants.OPTIONS;
 import static org.apache.seatunnel.server.common.Constants.TOKEN;
 import static org.apache.seatunnel.server.common.Constants.USER_ID;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.TOKEN_ILLEGAL;
 import static io.jsonwebtoken.Claims.EXPIRATION;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.*;
 
+import org.apache.seatunnel.app.common.UserStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
+import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 import org.apache.seatunnel.app.security.JwtUtils;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -73,6 +75,14 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         final UserLoginLog userLoginLog = userDaoImpl.getLastLoginLog(userId);
         if (Objects.isNull(userLoginLog) || !userLoginLog.getTokenStatus()) {
             throw new SeatunnelException(TOKEN_ILLEGAL);
+        }
+
+        User user = userDaoImpl.getById(userId);
+        if (Objects.isNull(user)) {
+            throw new SeatunnelException(NO_SUCH_USER);
+        }
+        if (UserStatusEnum.DISABLE.getCode() == user.getStatus().intValue()) {
+            throw new SeatunnelException(USER_STATUS_IS_DISABLE);
         }
 
         final Integer expireDate = (Integer) map.get(EXPIRATION);
