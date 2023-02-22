@@ -18,13 +18,13 @@
 package org.apache.seatunnel.app.service.impl;
 
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USER_STATUS_IS_DISABLE;
 
-import org.apache.seatunnel.app.common.UserStatusEnum;
+import org.apache.seatunnel.app.common.UserTokenStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
 import org.apache.seatunnel.app.domain.dto.user.UpdateUserDto;
+import org.apache.seatunnel.app.domain.dto.user.UserLoginLogDto;
 import org.apache.seatunnel.app.domain.request.user.AddUserReq;
 import org.apache.seatunnel.app.domain.request.user.UpdateUserReq;
 import org.apache.seatunnel.app.domain.request.user.UserListReq;
@@ -32,6 +32,7 @@ import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
+import org.apache.seatunnel.app.security.JwtUtils;
 import org.apache.seatunnel.app.service.IRoleService;
 import org.apache.seatunnel.app.service.IUserService;
 import org.apache.seatunnel.app.utils.PasswordUtils;
@@ -55,6 +56,9 @@ public class UserServiceImpl implements IUserService {
 
     @Resource
     private IRoleService roleServiceImpl;
+
+    @Resource
+    private JwtUtils jwtUtils;
 
     @Value("${user.default.passwordSalt:seatunnel}")
     private String defaultSalt;
@@ -145,8 +149,18 @@ public class UserServiceImpl implements IUserService {
         if (Objects.isNull(user)) {
             throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
         }
+        UserSimpleInfoRes translate = translate(user);
+        final String token = jwtUtils.genToken(translate.toMap());
+        translate.setToken(token);
 
-        return translate(user);
+        final UserLoginLogDto logDto = UserLoginLogDto.builder()
+                .token(token)
+                .tokenStatus(UserTokenStatusEnum.ENABLE.enable())
+                .userId(user.getId())
+                .build();
+        userDaoImpl.insertLoginLog(logDto);
+
+        return translate;
     }
 
     private UserSimpleInfoRes translate(User user) {

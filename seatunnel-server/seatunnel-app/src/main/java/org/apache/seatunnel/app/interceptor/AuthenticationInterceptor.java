@@ -20,8 +20,10 @@ package org.apache.seatunnel.app.interceptor;
 import static org.apache.seatunnel.server.common.Constants.OPTIONS;
 import static org.apache.seatunnel.server.common.Constants.TOKEN;
 import static org.apache.seatunnel.server.common.Constants.USER_ID;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_USER;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.TOKEN_ILLEGAL;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USER_STATUS_IS_DISABLE;
 import static io.jsonwebtoken.Claims.EXPIRATION;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.*;
 
 import org.apache.seatunnel.app.common.UserStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IUserDao;

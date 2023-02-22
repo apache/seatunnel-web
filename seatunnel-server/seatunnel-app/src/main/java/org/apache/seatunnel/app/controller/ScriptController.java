@@ -120,7 +120,7 @@ public class ScriptController {
     @GetMapping("/{scriptId}/param")
     @ApiOperation(value = "fetch script param", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "script id", dataType = "Integer"),
+        @ApiImplicitParam(name = "id", value = "script id", dataType = "Integer"),
     })
     public Result<List<ScriptParamRes>> fetchScriptParam(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId) {
         return Result.success(iScriptService.fetchScriptParam(scriptId));
