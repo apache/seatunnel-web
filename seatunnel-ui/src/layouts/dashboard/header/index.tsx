@@ -19,7 +19,6 @@ import { defineComponent } from 'vue'
 import { NSpace } from 'naive-ui'
 import Logo from './logo'
 import Menu from './menu'
-import Setting from './setting'
 import User from './user'
 
 const Header = defineComponent({
@@ -31,10 +30,7 @@ const Header = defineComponent({
           <Logo />
           <Menu />
         </NSpace>
-        <NSpace>
-          <Setting />
-          <User />
-        </NSpace>
+        <User />
       </NSpace>
     )
   }
