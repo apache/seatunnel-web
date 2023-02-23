@@ -26,7 +26,7 @@ export function useTable() {
   const { t } = useI18n()
   const state = reactive({
     columns: [],
-    tableData: [{ username: '' }],
+    tableData: [],
     pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
@@ -120,7 +120,7 @@ export function useTable() {
     state.loading = true
     userList({ ...params }).then(
       (res: ResponseTable<Array<UserDetail> | []>) => {
-        state.tableData = res.data.data
+        state.tableData = res.data.data as any
         state.totalPage = res.data.totalPage
         state.loading = false
       }
