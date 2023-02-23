@@ -41,6 +41,7 @@ import static java.util.Objects.requireNonNull;
 import static com.cronutils.model.CronType.QUARTZ;
 
 import org.apache.seatunnel.app.common.ObjectTypeEnum;
+import org.apache.seatunnel.app.common.ScriptStatusEnum;
 import org.apache.seatunnel.app.dal.dao.ISchedulerConfigDao;
 import org.apache.seatunnel.app.dal.dao.IScriptDao;
 import org.apache.seatunnel.app.dal.dao.IScriptJobApplyDao;
@@ -91,9 +92,9 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -174,6 +175,10 @@ public class TaskServiceImpl implements ITaskService {
 
         // Use future to ensure that the page does not show exceptions due to database errors.
         syncScriptJobMapping(scriptId, userId, config.getId(), jobId);
+
+        // Update script status
+        script.setStatus((byte) ScriptStatusEnum.PUBLISHED.getCode());
+        scriptDaoImpl.updateStatus(script);
         return jobId;
     }
 
@@ -218,9 +223,9 @@ public class TaskServiceImpl implements ITaskService {
             });
 
             pageInfo.setData(data);
-            pageInfo.setTotalCount(jobPageData.getTotalCount());
             pageInfo.setPageNo(req.getPageNo());
             pageInfo.setPageSize(req.getPageSize());
+            pageInfo.setTotalCount(jobPageData.getTotalCount());
         }
 
         return pageInfo;
@@ -237,29 +242,31 @@ public class TaskServiceImpl implements ITaskService {
         final PageData<InstanceDto> instancePageData = iInstanceService.list(dto);
         final List<InstanceSimpleInfoRes> data = instancePageData.getData().stream().map(this::translate).collect(Collectors.toList());
 
-        final List<JobDefine> jobDefines = scriptJobApplyDaoImpl.selectJobDefineByJobIds(data.stream().map(InstanceSimpleInfoRes::getJobId).collect(Collectors.toList()));
-        final Map<Long, JobDefine> mapping = jobDefines.stream().collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
+        if (!CollectionUtils.isEmpty(data)) {
+            final List<JobDefine> jobDefines = scriptJobApplyDaoImpl.selectJobDefineByJobIds(data.stream().map(InstanceSimpleInfoRes::getJobId).collect(Collectors.toList()));
+            final Map<Long, JobDefine> mapping = jobDefines.stream().collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
 
-        data.forEach(d -> {
-            final JobDefine jobDefine = mapping.get(d.getJobId());
-            CronParser parser = new CronParser(CRON_DEFINITION);
+            data.forEach(d -> {
+                final JobDefine jobDefine = mapping.get(d.getJobId());
+                CronParser parser = new CronParser(CRON_DEFINITION);
 
-            if (Objects.nonNull(jobDefine)) {
-                ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
-                Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
+                if (Objects.nonNull(jobDefine)) {
+                    ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
+                    Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
 
-                if (nextExecution.isPresent()) {
-                    final ZonedDateTime next = nextExecution.get();
-                    d.setNextExecutionTime(Date.from(next.toInstant()));
+                    if (nextExecution.isPresent()) {
+                        final ZonedDateTime next = nextExecution.get();
+                        d.setNextExecutionTime(Date.from(next.toInstant()));
+                    }
                 }
-            }
-        });
+            });
+        }
 
         final PageInfo<InstanceSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setData(data);
-        pageInfo.setTotalCount(instancePageData.getTotalCount());
         pageInfo.setPageNo(req.getPageNo());
         pageInfo.setPageSize(req.getPageSize());
+        pageInfo.setTotalCount(instancePageData.getTotalCount());
 
         return pageInfo;
     }

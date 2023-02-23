@@ -28,8 +28,8 @@ public class BaseScriptInfoRes {
     private int id;
     @ApiModelProperty(value = "script name", dataType = "String")
     private String name;
-    @ApiModelProperty(value = "script status", dataType = "type")
-    private byte status;
+    @ApiModelProperty(value = "script status", dataType = "String")
+    private String status;
     @ApiModelProperty(value = "script type", dataType = "type")
     private byte type;
     @ApiModelProperty(value = "script creator id", required = true, dataType = "Integer")

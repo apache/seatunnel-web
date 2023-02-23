@@ -36,4 +36,6 @@ public interface IScriptDao {
     void deleteScript(int id);
 
     PageData<Script> list(ListScriptsDto dto, Integer pageNo, Integer pageSize);
+
+    void updateStatus(Script script);
 }

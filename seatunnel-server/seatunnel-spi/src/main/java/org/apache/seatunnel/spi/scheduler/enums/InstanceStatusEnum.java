@@ -15,17 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.request.script;
+package org.apache.seatunnel.spi.scheduler.enums;
 
-import org.apache.seatunnel.app.domain.request.BasePageReq;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
-@ApiModel(value = "scriptListReq", description = "script list")
-@Data
-public class ScriptListReq extends BasePageReq {
-    @ApiModelProperty(value = "script name", required = false, dataType = "String")
-    private String name;
+public enum InstanceStatusEnum {
+    RUNNING,
+    STOPPED,
+    FAILED,
+    SUCCESS,
+    UNKNOWN,
+    ;
 }

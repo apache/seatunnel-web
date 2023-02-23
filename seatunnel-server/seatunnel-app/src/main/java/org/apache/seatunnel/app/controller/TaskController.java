@@ -78,7 +78,7 @@ public class TaskController {
 
     @GetMapping("/instance")
     @ApiOperation(value = "list instance", httpMethod = "GET")
-    Result<PageInfo<InstanceSimpleInfoRes>> listInstance(@ApiParam(value = "job name") @RequestParam(required = false) String name,
+    Result<PageInfo<InstanceSimpleInfoRes>> listInstance(@ApiParam(value = "job name", required = false) @RequestParam(required = false) String name,
                                                          @ApiParam(value = "page num", required = true) @RequestParam Integer pageNo,
                                                          @ApiParam(value = "page size", required = true) @RequestParam Integer pageSize) {
         final InstanceListReq req = new InstanceListReq();

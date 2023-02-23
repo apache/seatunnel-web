@@ -93,7 +93,6 @@ public class ScriptController {
 
         final ScriptListReq req = new ScriptListReq();
         req.setName(name);
-        req.setStatus(status);
         req.setPageNo(pageNo);
         req.setPageSize(pageSize);
 
