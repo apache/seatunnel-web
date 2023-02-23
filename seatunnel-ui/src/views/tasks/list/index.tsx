@@ -77,15 +77,6 @@ const TasksList = defineComponent({
                   placeholder={this.t('tasks.task_name')}
                   style={{ width: '200px' }}
                 />
-                {/*<NSelect*/}
-                {/*  placeholder={this.t('tasks.state')}*/}
-                {/*  style={{ width: '200px' }}*/}
-                {/*  options={[*/}
-                {/*    { label: this.t('tasks.success'), value: 'success' },*/}
-                {/*    { label: this.t('tasks.fail'), value: 'fail' },*/}
-                {/*    { label: this.t('tasks.running'), value: 'running' }*/}
-                {/*  ]}*/}
-                {/*/>*/}
                 <NButton onClick={this.handleSearch}>
                   {this.t('tasks.search')}
                 </NButton>
