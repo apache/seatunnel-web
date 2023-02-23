@@ -26,7 +26,7 @@ export function useTable() {
   const { t } = useI18n()
   const state = reactive({
     columns: [],
-    tableData: [{ username: '' }],
+    tableData: [],
     pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
