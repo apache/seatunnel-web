@@ -17,85 +17,58 @@
 
 import { useI18n } from 'vue-i18n'
 import { h, reactive, ref } from 'vue'
-import { NButton, NSpace, NTag, NIcon } from 'naive-ui'
-import { UploadOutlined, DownloadOutlined } from '@vicons/antd'
+import { NButton, NSpace, NTag } from 'naive-ui'
+import { taskInstanceList } from '@/service/task'
+import type { ResponseTable } from '@/service/types'
+import type { JobDetail } from '@/service/task/types'
 
 export function useTable() {
   const { t } = useI18n()
 
   const state = reactive({
     columns: [],
-    tableData: [{ state: 'success' }, { state: 'fail' }, { state: 'running' }],
-    page: ref(1),
+    tableData: [],
+    pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
-    loading: ref(false)
+    loading: ref(false),
+    name: ref('')
   })
 
   const createColumns = (state: any) => {
     state.columns = [
       {
         title: t('tasks.task_name'),
-        key: 'task_name'
+        key: 'instanceName'
       },
       {
         title: t('tasks.state'),
-        key: 'state',
+        key: 'status',
         render: (row: any) => {
-          if (row.state === 'success') {
+          if (row.status === 'SUCCESS') {
             return h(NTag, { type: 'success' }, t('tasks.success'))
-          } else if (row.state === 'fail') {
+          } else if (row.status === 'FAILED') {
             return h(NTag, { type: 'error' }, t('tasks.fail'))
-          } else if (row.state === 'running') {
+          } else if (row.status === 'STOPPED') {
+            return h(NTag, { type: 'warning' }, t('tasks.stop'))
+          } else if (row.status === 'RUNNING') {
             return h(NTag, { type: 'info' }, t('tasks.running'))
+          } else {
+            return h(NTag, { type: 'default' }, t('tasks.unknown'))
           }
         }
       },
       {
         title: t('tasks.run_frequency'),
-        key: 'run_frequency'
+        key: 'runFrequency'
       },
       {
-        title: t('tasks.next_run'),
-        key: 'next_run'
+        title: t('tasks.start_time'),
+        key: 'startTime'
       },
       {
-        title: t('tasks.last_run'),
-        key: 'last_run'
-      },
-      {
-        title: t('tasks.last_total_bytes'),
-        key: 'last_total_bytes',
-        render: (row: any) =>
-          h(NSpace, {}, [
-            h(
-              NTag,
-              { type: 'success' },
-              { icon: h(NIcon, {}, h(UploadOutlined)), default: 12 + ' (KB)' }
-            ),
-            h(
-              NTag,
-              { type: 'error' },
-              { icon: h(NIcon, {}, h(DownloadOutlined)), default: 16 + ' (KB)' }
-            )
-          ])
-      },
-      {
-        title: t('tasks.last_total_records'),
-        key: 'last_total_records',
-        render: (row: any) =>
-          h(NSpace, {}, [
-            h(
-              NTag,
-              { type: 'success' },
-              { icon: h(NIcon, {}, h(UploadOutlined)), default: 66 }
-            ),
-            h(
-              NTag,
-              { type: 'error' },
-              { icon: h(NIcon, {}, h(DownloadOutlined)), default: 77 }
-            )
-          ])
+        title: t('tasks.end_time'),
+        key: 'endTime'
       },
       {
         title: t('tasks.operation'),
@@ -103,8 +76,14 @@ export function useTable() {
         render: (row: any) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, { text: true }, t('tasks.rerun')),
-              h(NButton, { text: true }, t('tasks.kill')),
+              h(NButton, {
+                text: true,
+                disabled: row.status === 'RUNNING'
+              }, t('tasks.rerun')),
+              h(NButton, {
+                text: true,
+                disabled: row.status !== 'RUNNING'
+              }, t('tasks.kill')),
               h(NButton, { text: true }, t('tasks.view_log'))
             ]
           })
@@ -112,5 +91,23 @@ export function useTable() {
     ]
   }
 
-  return { state, createColumns }
+  const getTableData = (params: any) => {
+    if (state.loading) return
+    state.loading = true
+    taskInstanceList({
+      pageNo: params.pageNo,
+      pageSize: params.pageSize,
+      name: params.name
+    }).then((res: ResponseTable<Array<JobDetail> | []>) => {
+      state.tableData = res.data.data as any
+      state.totalPage = res.data.totalPage
+      state.loading = false
+    })
+  }
+
+  return {
+    state,
+    createColumns,
+    getTableData
+  }
 }
