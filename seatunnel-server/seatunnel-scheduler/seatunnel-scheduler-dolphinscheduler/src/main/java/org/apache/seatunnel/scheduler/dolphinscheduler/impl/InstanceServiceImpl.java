@@ -21,6 +21,7 @@ import org.apache.seatunnel.scheduler.dolphinscheduler.IDolphinschedulerService;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ListProcessInstanceDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.ProcessInstanceDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.enums.RunFrequencyEnum;
+import org.apache.seatunnel.scheduler.dolphinscheduler.utils.StatusUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.spi.scheduler.IInstanceService;
 import org.apache.seatunnel.spi.scheduler.dto.InstanceDto;
@@ -57,7 +58,7 @@ public class InstanceServiceImpl implements IInstanceService {
                 .instanceId(t.getId())
                 .jobId(t.getProcessDefinitionCode())
                 .instanceName(t.getName())
-                .status(t.getState())
+                .status(StatusUtils.getDolphinSchedulerStatus(t.getState()).name())
                 .startTime(t.getStartTime())
                 .endTime(t.getEndTime())
                 .submitTime(t.getScheduleTime())

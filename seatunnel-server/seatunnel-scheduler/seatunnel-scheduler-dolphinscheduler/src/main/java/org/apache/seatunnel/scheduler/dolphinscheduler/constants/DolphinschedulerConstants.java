@@ -173,6 +173,7 @@ public class DolphinschedulerConstants {
     public static final String EXECUTE_TYPE = "executeType";
     public static final int LOG_SKIP_LINE_NUM_DEFAULT = 0;
     public static final int LOG_LIMIT_NUM_DEFAULT = Integer.MAX_VALUE;
+    public static final String STATE_TYPE = "stateType";
 
     /**
      * response param

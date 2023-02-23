@@ -149,7 +149,6 @@ public class ScriptServiceImpl implements IScriptService {
 
         final ListScriptsDto dto = ListScriptsDto.builder()
                 .name(scriptListReq.getName())
-                .status(scriptListReq.getStatus())
                 .build();
 
         PageData<Script> scriptPageData = scriptDaoImpl.list(dto, scriptListReq.getRealPageNo(), scriptListReq.getPageSize());
@@ -215,7 +214,7 @@ public class ScriptServiceImpl implements IScriptService {
         final ScriptSimpleInfoRes res = new ScriptSimpleInfoRes();
         res.setId(script.getId());
         res.setName(script.getName());
-        res.setStatus(script.getStatus());
+        res.setStatus(ScriptStatusEnum.parse(script.getStatus()));
         res.setType(script.getType());
         res.setCreatorId(script.getCreatorId());
         res.setMenderId(script.getMenderId());

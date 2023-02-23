@@ -80,11 +80,15 @@ public class ScriptDaoImpl implements IScriptDao {
     public PageData<Script> list(ListScriptsDto dto, Integer pageNo, Integer pageSize) {
         final Script script = new Script();
         script.setName(dto.getName());
-        script.setStatus(dto.getStatus());
 
         final List<Script> scripts = scriptMapper.selectBySelectiveAndPage(script, pageNo * pageSize, pageSize);
         int count = scriptMapper.countBySelectiveAndPage(script);
 
         return new PageData<Script>(count, scripts);
+    }
+
+    @Override
+    public void updateStatus(Script script) {
+        scriptMapper.updateStatus(script.getId(), script.getStatus());
     }
 }

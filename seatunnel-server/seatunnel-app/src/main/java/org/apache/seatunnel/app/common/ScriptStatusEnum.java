@@ -31,6 +31,18 @@ public enum ScriptStatusEnum {
         this.description = description;
     }
 
+    public static String parse(Byte status) {
+        if (status == null) {
+            throw new IllegalArgumentException("status is null");
+        }
+        for (ScriptStatusEnum scriptStatusEnum : ScriptStatusEnum.values()) {
+            if (scriptStatusEnum.getCode() == status) {
+                return scriptStatusEnum.getDescription();
+            }
+        }
+        throw new IllegalArgumentException("status is illegal");
+    }
+
     public int getCode() {
         return code;
     }
