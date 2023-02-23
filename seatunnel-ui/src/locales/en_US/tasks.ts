@@ -23,6 +23,8 @@ export default {
   stop: 'Stop',
   running: 'Running',
   unknown: 'Unknown',
+  unpublished: 'Unpublished',
+  published: 'Published',
   task_name: 'Task Name',
   state: 'State',
   run_frequency: 'Run Frequency',

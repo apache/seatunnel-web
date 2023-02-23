@@ -46,6 +46,7 @@ interface JobDetail {
   menderName: string
   publish: boolean
   updateTime: string
+  status?: string
 }
 
 export { TaskList, TaskJobList, TaskRecycle, TaskExecute, JobDetail }
