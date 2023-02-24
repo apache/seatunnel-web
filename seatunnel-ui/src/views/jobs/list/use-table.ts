@@ -27,7 +27,7 @@ export function useTable() {
 
   const state = reactive({
     columns: [],
-    tableData: [{}],
+    tableData: [],
     name: ref(null),
     pageNo: ref(1),
     pageSize: ref(10),
@@ -94,7 +94,7 @@ export function useTable() {
     state.loading = true
     taskJobList({ ...params }).then(
       (res: ResponseTable<Array<JobDetail> | []>) => {
-        state.tableData = res.data.data
+        state.tableData = res.data.data as any
         state.totalPage = res.data.totalPage
         state.loading = false
       }

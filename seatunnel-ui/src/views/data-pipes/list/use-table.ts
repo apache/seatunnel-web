@@ -17,15 +17,17 @@
 
 import { reactive, ref, h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NSpace, NButton, NIcon, NDropdown } from 'naive-ui'
-import { EllipsisOutlined } from '@vicons/antd'
+import { NSpace, NButton, NTag } from 'naive-ui'
+import { scriptList, scriptDelete } from '@/service/script'
+import type { ResponseTable } from '@/service/types'
+import type { ScriptDetail } from '@/service/script/types'
 
 export function useTable() {
   const { t } = useI18n()
   const state = reactive({
     columns: [],
-    tableData: [{ username: '' }],
-    page: ref(1),
+    tableData: [],
+    pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
     row: {},
@@ -42,43 +44,54 @@ export function useTable() {
       },
       {
         title: t('data_pipes.state'),
-        key: 'state'
+        key: 'status',
+        render: (row: ScriptDetail) => {
+          if (row.status === 'published') {
+            return h(NTag, { type: 'info' }, t('tasks.published'))
+          } else {
+            return h(NTag, { type: 'default' }, t('tasks.unpublished'))
+          }
+        }
       },
       {
-        title: t('data_pipes.executed_time'),
-        key: 'executedTime'
+        title: t('data_pipes.create_time'),
+        key: 'createTime'
       },
       {
-        title: t('data_pipes.modification_time'),
-        key: 'modificationTime'
+        title: t('data_pipes.update_time'),
+        key: 'updateTime'
       },
       {
         title: t('data_pipes.operation'),
         key: 'operation',
-        render: (row: any) =>
+        render: (row: ScriptDetail) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, { text: true }, t('data_pipes.execute')),
-              h(NButton, { text: true }, t('data_pipes.edit')),
+              h(NButton, {
+                text: true,
+                disabled: row.status !== 'published'
+              }, t('data_pipes.execute')),
+              h(NButton, {
+                text: true,
+                disabled: row.status === 'published'
+              }, t('data_pipes.edit')),
               h(
                 NButton,
-                { text: true, onClick: () => handlePublish(row) },
+                {
+                  text: true,
+                  disabled: row.status === 'published',
+                  onClick: () => handlePublish(row)
+                },
                 t('data_pipes.publish')
               ),
               h(
                 NButton,
                 {
                   text: true,
-                  trigger: 'click'
+                  disabled: row.status === 'published',
+                  onClick: () => handleDelete(row)
                 },
-                h(
-                  NDropdown,
-                  {
-                    options: [{ key: 'delete', label: t('data_pipes.delete') }],
-                    onClick: () => handleDelete(row)
-                  },
-                  h(NIcon, {}, h(EllipsisOutlined))
-                )
+                t('data_pipes.delete')
               )
             ]
           })
@@ -91,10 +104,39 @@ export function useTable() {
     state.row = row
   }
 
+  const handleConfirmDeleteModal = () => {
+    if (state.tableData.length === 1 && state.pageNo > 1) {
+      --state.pageNo
+    }
+
+    scriptDelete((state.row as ScriptDetail).id as number).then(() => {
+      state.showDeleteModal = false
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
   const handlePublish = (row: any) => {
     state.showPublishModal = true
     state.row = row
   }
 
-  return { state, createColumns }
+  const getTableData = (params: any) => {
+    if (state.loading) return
+    state.loading = true
+    scriptList(params).then((res: ResponseTable<Array<ScriptDetail> | []>) => {
+      state.tableData = res.data.data as any
+      state.totalPage = res.data.totalPage
+      state.loading = false
+    })
+  }
+
+  return {
+    state,
+    createColumns,
+    handleConfirmDeleteModal,
+    getTableData
+  }
 }

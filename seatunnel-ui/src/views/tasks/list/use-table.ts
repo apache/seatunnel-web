@@ -44,7 +44,7 @@ export function useTable() {
       {
         title: t('tasks.state'),
         key: 'status',
-        render: (row: any) => {
+        render: (row: JobDetail) => {
           if (row.status === 'SUCCESS') {
             return h(NTag, { type: 'success' }, t('tasks.success'))
           } else if (row.status === 'FAILED') {
@@ -73,7 +73,7 @@ export function useTable() {
       {
         title: t('tasks.operation'),
         key: 'operation',
-        render: (row: any) =>
+        render: (row: JobDetail) =>
           h(NSpace, null, {
             default: () => [
               h(NButton, {
