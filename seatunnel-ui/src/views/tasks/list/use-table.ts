@@ -76,15 +76,23 @@ export function useTable() {
         render: (row: JobDetail) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, {
-                text: true,
-                disabled: row.status === 'RUNNING'
-              }, t('tasks.rerun')),
-              h(NButton, {
-                text: true,
-                disabled: row.status !== 'RUNNING',
-                onClick: () => handleKill(row)
-              }, t('tasks.kill')),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status === 'RUNNING'
+                },
+                t('tasks.rerun')
+              ),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status !== 'RUNNING',
+                  onClick: () => handleKill(row)
+                },
+                t('tasks.kill')
+              ),
               h(NButton, { text: true }, t('tasks.view_log'))
             ]
           })
@@ -107,7 +115,7 @@ export function useTable() {
   }
 
   const handleKill = (row: JobDetail) => {
-    taskInstanceKill(row.jobId).then(res => {
+    taskInstanceKill(row.jobId).then((res) => {
       getTableData({
         pageSize: state.pageSize,
         pageNo: state.pageNo
