@@ -77,7 +77,7 @@ const TasksList = defineComponent({
                   placeholder={this.t('tasks.task_name')}
                   style={{ width: '200px' }}
                 />
-                <NButton onClick={this.handleSearch}>
+                <NButton onClick={this.handleSearch} type='primary'>
                   {this.t('tasks.search')}
                 </NButton>
               </NSpace>

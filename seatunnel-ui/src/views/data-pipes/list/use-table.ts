@@ -19,11 +19,14 @@ import { reactive, ref, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NButton, NTag } from 'naive-ui'
 import { scriptList, scriptDelete } from '@/service/script'
+import { useRouter } from 'vue-router'
 import type { ResponseTable } from '@/service/types'
 import type { ScriptDetail } from '@/service/script/types'
+import type { Router } from 'vue-router'
 
 export function useTable() {
   const { t } = useI18n()
+  const router: Router = useRouter()
   const state = reactive({
     columns: [],
     tableData: [],
@@ -40,7 +43,22 @@ export function useTable() {
     state.columns = [
       {
         title: t('data_pipes.name'),
-        key: 'name'
+        key: 'name',
+        render: (row: ScriptDetail) => {
+          return h(
+            NButton,
+            {
+              text: true,
+              type: 'primary',
+              onClick: () => {
+                router.push({
+                  path: `/data-pipes/${row.id}`
+                })
+              }
+            },
+            row.name
+          )
+        }
       },
       {
         title: t('data_pipes.state'),
@@ -67,14 +85,22 @@ export function useTable() {
         render: (row: ScriptDetail) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, {
-                text: true,
-                disabled: row.status !== 'published'
-              }, t('data_pipes.execute')),
-              h(NButton, {
-                text: true,
-                disabled: row.status === 'published'
-              }, t('data_pipes.edit')),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status !== 'published'
+                },
+                t('data_pipes.execute')
+              ),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status === 'published'
+                },
+                t('data_pipes.edit')
+              ),
               h(
                 NButton,
                 {
