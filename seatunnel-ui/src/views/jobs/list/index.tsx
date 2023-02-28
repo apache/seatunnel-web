@@ -69,7 +69,7 @@ const JobsList = defineComponent({
                   placeholder={this.t('jobs.data_pipe_name')}
                   style={{ width: '200px' }}
                 />
-                <NButton onClick={this.handleSearch}>
+                <NButton onClick={this.handleSearch} type='primary'>
                   {this.t('jobs.search')}
                 </NButton>
               </NSpace>

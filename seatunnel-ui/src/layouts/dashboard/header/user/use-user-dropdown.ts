@@ -15,21 +15,40 @@
  * limitations under the License.
  */
 
-import { reactive } from 'vue'
+import { reactive, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { NIcon } from 'naive-ui'
 import { userLogout } from '@/service/user'
 import { useUserStore } from '@/store/user'
+import { LogoutOutlined, QuestionCircleOutlined } from '@vicons/antd'
 import type { Router } from 'vue-router'
+import type { Component } from 'vue'
 
 export function useUserDropdown() {
   const router: Router = useRouter()
   const { t } = useI18n()
   const userStore = useUserStore()
 
+  const renderIcon = (icon: Component) => {
+    return () => {
+      return h(NIcon, null, {
+        default: () => h(icon)
+      })
+    }
+  }
+
   const dropdownOptions = [
-    { key: 'help', label: t('menu.help') },
-    { key: 'logout', label: t('menu.logout') }
+    {
+      key: 'help',
+      label: t('menu.help'),
+      icon: renderIcon(QuestionCircleOutlined)
+    },
+    {
+      key: 'logout',
+      label: t('menu.logout'),
+      icon: renderIcon(LogoutOutlined)
+    }
   ]
 
   const state = reactive({
