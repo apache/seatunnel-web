@@ -22,7 +22,7 @@ const Logo = defineComponent({
   setup() {},
   render() {
     return (
-      <NSpace justify='center' align='center' class='h-16 w-48'>
+      <NSpace justify='start' align='center' class='h-16 w-48 ml-12'>
         <h2 class='text-2xl font-bold'>SeaTunnel</h2>
       </NSpace>
     )
