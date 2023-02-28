@@ -36,5 +36,6 @@ export default {
   last_total_records: 'Last Total Records',
   rerun: 'Rerun',
   kill: 'Kill',
+  operation: 'Operation',
   view_log: 'View Log'
 }
