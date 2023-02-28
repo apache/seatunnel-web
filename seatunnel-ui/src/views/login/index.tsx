@@ -39,17 +39,20 @@ const Login = defineComponent({
       <NSpace
         justify='center'
         align='center'
-        class='w-full h-screen bg-blue-400'
+        class='w-full h-screen bg-gray-100'
       >
-        <div class='w-96 bg-white px-10 py-8'>
-          <h2 class='text-2xl mb-6'>{this.t('login.login_to_sea_tunnel')}</h2>
-          <NForm rules={this.rules} ref='loginFormRef'>
+        <div class='w-96 bg-white px-16 py-20 border border-gray-100 rounded-2xl'>
+          <h2 class='text-2xl mb-16 font-bold'>
+            {this.t('login.login_to_sea_tunnel')}
+          </h2>
+          <NForm rules={this.rules} ref='loginFormRef' class='mb-4'>
             <NFormItem
               label={this.t('login.username')}
               label-style={{ color: 'black' }}
               path='userName'
             >
               <NInput
+                clearable
                 allowInput={this.trim}
                 type='text'
                 v-model={[this.loginForm.username, 'value']}
@@ -64,6 +67,7 @@ const Login = defineComponent({
               path='userPassword'
             >
               <NInput
+                clearable
                 allowInput={this.trim}
                 type='password'
                 v-model={[this.loginForm.password, 'value']}
