@@ -18,7 +18,7 @@
 import { useI18n } from 'vue-i18n'
 import { h, reactive, ref } from 'vue'
 import { NButton, NSpace, NTag } from 'naive-ui'
-import { taskInstanceList } from '@/service/task'
+import { taskInstanceList, taskInstanceKill } from '@/service/task'
 import type { ResponseTable } from '@/service/types'
 import type { JobDetail } from '@/service/task/types'
 
@@ -76,14 +76,23 @@ export function useTable() {
         render: (row: JobDetail) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, {
-                text: true,
-                disabled: row.status === 'RUNNING'
-              }, t('tasks.rerun')),
-              h(NButton, {
-                text: true,
-                disabled: row.status !== 'RUNNING'
-              }, t('tasks.kill')),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status === 'RUNNING'
+                },
+                t('tasks.rerun')
+              ),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status !== 'RUNNING',
+                  onClick: () => handleKill(row)
+                },
+                t('tasks.kill')
+              ),
               h(NButton, { text: true }, t('tasks.view_log'))
             ]
           })
@@ -102,6 +111,15 @@ export function useTable() {
       state.tableData = res.data.data as any
       state.totalPage = res.data.totalPage
       state.loading = false
+    })
+  }
+
+  const handleKill = (row: JobDetail) => {
+    taskInstanceKill(row.instanceId as number).then(() => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
     })
   }
 
