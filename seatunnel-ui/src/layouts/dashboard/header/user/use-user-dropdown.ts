@@ -21,7 +21,11 @@ import { useRouter } from 'vue-router'
 import { NIcon } from 'naive-ui'
 import { userLogout } from '@/service/user'
 import { useUserStore } from '@/store/user'
-import { LogoutOutlined, QuestionCircleOutlined } from '@vicons/antd'
+import {
+  LogoutOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined
+} from '@vicons/antd'
 import type { Router } from 'vue-router'
 import type { Component } from 'vue'
 
@@ -45,6 +49,11 @@ export function useUserDropdown() {
       icon: renderIcon(QuestionCircleOutlined)
     },
     {
+      key: 'setting',
+      label: t('menu.setting'),
+      icon: renderIcon(SettingOutlined)
+    },
+    {
       key: 'logout',
       label: t('menu.logout'),
       icon: renderIcon(LogoutOutlined)
@@ -58,6 +67,8 @@ export function useUserDropdown() {
   const handleSelect = (key: string) => {
     if (key === 'help') {
       window.open('http://seatunnel.incubator.apache.org/versions/')
+    } else if (key === 'setting') {
+      router.push({ path: '/setting' })
     } else if (key === 'logout') {
       userLogout().then(() => {
         userStore.setUserInfo({})

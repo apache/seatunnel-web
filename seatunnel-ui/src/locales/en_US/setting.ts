@@ -16,12 +16,13 @@
  */
 
 export default {
-  data_pipes: 'Data Pipes',
-  jobs: 'Jobs',
-  manage: 'Manage',
-  user_manage: 'User Manage',
-  help: 'Help',
-  setting: 'Setting',
-  logout: 'Logout',
-  tasks: 'Tasks'
+  table_setting: 'Table Setting',
+  sequence_column: 'Sequence Column',
+  data_unique_value: 'Data Unique Value',
+  language_setting: 'Language Setting',
+  language: 'Language',
+  theme_setting: 'Theme Setting',
+  theme: 'Theme',
+  english: 'English',
+  light: 'Light'
 }

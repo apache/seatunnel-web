@@ -22,8 +22,7 @@ import {
   NDataTable,
   NInput,
   NPagination,
-  NSpace,
-  NSelect
+  NSpace
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useTable } from './use-table'

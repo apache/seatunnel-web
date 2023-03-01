@@ -32,10 +32,22 @@ const loginPage: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: components['login'],
-    meta: {
-      auth: []
-    }
+    component: components['login']
+  },
+  {
+    path: '/setting',
+    redirect: { name: 'setting' },
+    component: () => import('@/layouts/dashboard'),
+    children: [
+      {
+        path: '/setting',
+        name: 'setting',
+        component: components['setting'],
+        meta: {
+          title: 'setting'
+        }
+      }
+    ]
   }
 ]
 

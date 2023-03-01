@@ -14,14 +14,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export default {
-  data_pipes: 'Data Pipes',
-  jobs: 'Jobs',
-  manage: 'Manage',
-  user_manage: 'User Manage',
-  help: 'Help',
-  setting: 'Setting',
-  logout: 'Logout',
-  tasks: 'Tasks'
-}
