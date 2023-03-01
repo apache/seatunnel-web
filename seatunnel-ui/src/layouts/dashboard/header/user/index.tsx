@@ -38,7 +38,7 @@ const User = defineComponent({
       <NSpace
         justify='end'
         align='center'
-        class='h-16 w-48 mr-12'
+        class='h-16 mr-12'
         style={{ cursor: 'pointer' }}
       >
         <NDropdown
