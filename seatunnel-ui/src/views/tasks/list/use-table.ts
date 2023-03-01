@@ -115,7 +115,7 @@ export function useTable() {
   }
 
   const handleKill = (row: JobDetail) => {
-    taskInstanceKill(row.jobId).then((res) => {
+    taskInstanceKill(row.instanceId as number).then(() => {
       getTableData({
         pageSize: state.pageSize,
         pageNo: state.pageNo

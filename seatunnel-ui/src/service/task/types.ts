@@ -47,6 +47,7 @@ interface JobDetail {
   publish: boolean
   updateTime: string
   status?: string
+  instanceId?: number
 }
 
 export { TaskList, TaskJobList, TaskRecycle, TaskExecute, JobDetail }
