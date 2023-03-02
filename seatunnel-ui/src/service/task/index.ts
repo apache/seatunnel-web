@@ -49,7 +49,7 @@ export function taskRecycle(scriptId: number): any {
   })
 }
 
-export function taskInstanceDetail(taskInstanceId: number): any {
+export function taskInstanceLog(taskInstanceId: number): any {
   return axios({
     url: `/task/${taskInstanceId}`,
     method: 'get'

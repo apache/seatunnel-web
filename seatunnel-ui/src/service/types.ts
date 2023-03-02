@@ -31,4 +31,4 @@ type ResponseTable<T> = ResponseBasic<{
   data: T
 }>
 
-export { ResponseTable }
+export { ResponseBasic, ResponseTable }

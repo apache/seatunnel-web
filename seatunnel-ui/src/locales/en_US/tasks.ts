@@ -37,5 +37,6 @@ export default {
   rerun: 'Rerun',
   kill: 'Kill',
   operation: 'Operation',
-  view_log: 'View Log'
+  view_log: 'View Log',
+  log: 'Log'
 }

@@ -26,6 +26,7 @@ import {
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useTable } from './use-table'
+import LogModal from '@/views/tasks/list/components/log-modal'
 
 const TasksList = defineComponent({
   setup() {
@@ -50,6 +51,10 @@ const TasksList = defineComponent({
       requestData()
     }
 
+    const handleConfirmLogModal = () => {
+      state.showLogModal = false
+    }
+
     onMounted(() => {
       createColumns(state)
       requestData()
@@ -60,6 +65,7 @@ const TasksList = defineComponent({
       handleSearch,
       handlePageSize,
       requestData,
+      handleConfirmLogModal,
       ...toRefs(state)
     }
   },
@@ -104,6 +110,13 @@ const TasksList = defineComponent({
             </NSpace>
           </NSpace>
         </NCard>
+        {this.showLogModal && (
+          <LogModal
+            showModal={this.showLogModal}
+            row={this.row}
+            onConfirmModal={this.handleConfirmLogModal}
+          />
+        )}
       </NSpace>
     )
   }

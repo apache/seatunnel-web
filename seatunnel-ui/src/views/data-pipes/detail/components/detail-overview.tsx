@@ -19,7 +19,7 @@ import { defineComponent, onMounted, toRefs } from 'vue'
 import { NGi, NGrid, NSpace, NTabs, NTabPane, NDataTable } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useDetailOverview } from './use-detail-overview'
-import Log from '@/components/log'
+import Log from '@/views/data-pipes/components/log'
 
 const DetailOverview = defineComponent({
   setup() {
