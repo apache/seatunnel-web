@@ -32,7 +32,9 @@ export function useTable() {
     pageSize: ref(10),
     totalPage: ref(1),
     loading: ref(false),
-    name: ref('')
+    name: ref(''),
+    showLogModal: ref(false),
+    row: ref({})
   })
 
   const createColumns = (state: any) => {
@@ -93,7 +95,11 @@ export function useTable() {
                 },
                 t('tasks.kill')
               ),
-              h(NButton, { text: true }, t('tasks.view_log'))
+              h(
+                NButton,
+                { text: true, onClick: () => handleViewLog(row) },
+                t('tasks.view_log')
+              )
             ]
           })
       }
@@ -121,6 +127,11 @@ export function useTable() {
         pageNo: state.pageNo
       })
     })
+  }
+
+  const handleViewLog = (row: JobDetail) => {
+    state.showLogModal = true
+    state.row = row
   }
 
   return {
