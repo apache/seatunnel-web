@@ -16,6 +16,7 @@
  */
 
 export default {
+  id: 'Id',
   user_manage: 'User Manage',
   create: 'Create',
   username: 'Username',

@@ -16,6 +16,8 @@
  */
 
 export default {
+  instance_id: 'Instance Id',
+  job_id: 'Job Id',
   tasks: 'Tasks',
   search: 'Search',
   success: 'Success',

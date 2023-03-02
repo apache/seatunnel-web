@@ -15,16 +15,30 @@
  * limitations under the License.
  */
 
-export default {
-  script_id: 'Script Id',
-  job_id: 'Job Id',
-  jobs: 'Jobs',
-  search: 'Search',
-  data_pipe_name: 'Data Pipe Name',
-  plan: 'Plan',
-  create_date: 'Create Date',
-  publish: 'Publish',
-  operation: 'Operation',
-  execute: 'Execute',
-  recycle: 'Recycle'
+import { useSettingStore } from '@/store/setting'
+
+const getTableColumn = (data: Array<{ key: string; title: string }>) => {
+  const tableColumn = []
+  const settingStore = useSettingStore()
+
+  settingStore.getSequenceColumn &&
+    tableColumn.push({
+      title: '#',
+      key: 'index',
+      render: (row: any, index: number) => index + 1
+    })
+
+  settingStore.getDataUniqueValue &&
+    tableColumn.push(
+      ...data.map((i) => {
+        return {
+          title: i.title,
+          key: i.key
+        }
+      })
+    )
+
+  return tableColumn
 }
+
+export { getTableColumn }

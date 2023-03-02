@@ -16,6 +16,7 @@
  */
 
 export default {
+  id: 'Id',
   data_pipes: 'Data Pipes',
   create: 'Create',
   name: 'Name',

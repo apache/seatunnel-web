@@ -20,6 +20,7 @@ import { useI18n } from 'vue-i18n'
 import { NSpace, NButton, NTag } from 'naive-ui'
 import { scriptList, scriptDelete } from '@/service/script'
 import { useRouter } from 'vue-router'
+import { getTableColumn } from '@/common/table'
 import type { ResponseTable } from '@/service/types'
 import type { ScriptDetail } from '@/service/script/types'
 import type { Router } from 'vue-router'
@@ -41,6 +42,7 @@ export function useTable() {
 
   const createColumns = (state: any) => {
     state.columns = [
+      ...getTableColumn([{ key: 'id', title: t('data_pipes.id') }]),
       {
         title: t('data_pipes.name'),
         key: 'name',
@@ -125,7 +127,7 @@ export function useTable() {
     ]
   }
 
-  const handleDelete = (row: any) => {
+  const handleDelete = (row: ScriptDetail) => {
     state.showDeleteModal = true
     state.row = row
   }
@@ -144,7 +146,7 @@ export function useTable() {
     })
   }
 
-  const handlePublish = (row: any) => {
+  const handlePublish = (row: ScriptDetail) => {
     state.showPublishModal = true
     state.row = row
   }
