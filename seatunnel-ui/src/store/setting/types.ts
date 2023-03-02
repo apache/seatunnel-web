@@ -15,16 +15,9 @@
  * limitations under the License.
  */
 
-export default {
-  script_id: 'Script Id',
-  job_id: 'Job Id',
-  jobs: 'Jobs',
-  search: 'Search',
-  data_pipe_name: 'Data Pipe Name',
-  plan: 'Plan',
-  create_date: 'Create Date',
-  publish: 'Publish',
-  operation: 'Operation',
-  execute: 'Execute',
-  recycle: 'Recycle'
+interface SettingStore {
+  sequenceColumn: boolean
+  dataUniqueValue: boolean
 }
+
+export { SettingStore }

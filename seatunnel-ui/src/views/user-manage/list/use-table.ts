@@ -19,6 +19,7 @@ import { reactive, ref, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NButton } from 'naive-ui'
 import { userList, userDelete, userEnable, userDisable } from '@/service/user'
+import { getTableColumn } from '@/common/table'
 import type { ResponseTable } from '@/service/types'
 import type { UserDetail } from '@/service/user/types'
 
@@ -39,6 +40,7 @@ export function useTable() {
 
   const createColumns = (state: any) => {
     state.columns = [
+      ...getTableColumn([{ key: 'id', title: t('user_manage.id') }]),
       {
         title: t('user_manage.username'),
         key: 'name'

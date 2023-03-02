@@ -17,8 +17,9 @@
 
 import { useI18n } from 'vue-i18n'
 import { h, reactive, ref } from 'vue'
-import { NButton, NSpace, NSwitch } from 'naive-ui'
+import { NButton, NSpace } from 'naive-ui'
 import { taskJobList, taskExecute, taskRecycle } from '@/service/task'
+import { getTableColumn } from '@/common/table'
 import type { ResponseTable } from '@/service/types'
 import type { JobDetail } from '@/service/task/types'
 
@@ -37,6 +38,10 @@ export function useTable() {
 
   const createColumns = (state: any) => {
     state.columns = [
+      ...getTableColumn([
+        { key: 'scriptId', title: t('jobs.script_id') },
+        { key: 'jobId', title: t('jobs.job_id') }
+      ]),
       {
         title: t('jobs.data_pipe_name'),
         key: 'datapipeName'
@@ -48,16 +53,6 @@ export function useTable() {
       {
         title: t('jobs.create_date'),
         key: 'createTime'
-      },
-      {
-        title: t('jobs.publish'),
-        key: 'publish',
-        render: (row: JobDetail) =>
-          h(NSwitch, {
-            round: false,
-            defaultValue: row.publish,
-            disabled: true
-          })
       },
       {
         title: t('jobs.operation'),

@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NCard, NSwitch, NList, NListItem, NSelect } from 'naive-ui'
+import { useSettingStore } from '@/store/setting'
 
 const Setting = defineComponent({
   name: 'Setting',
@@ -36,13 +37,23 @@ const Setting = defineComponent({
             <NListItem>
               <NSpace justify='space-between' align='center'>
                 <span>{this.t('setting.sequence_column')}</span>
-                <NSwitch />
+                <NSwitch
+                  value={useSettingStore().getSequenceColumn}
+                  onUpdateValue={(s) => {
+                    useSettingStore().setSequenceColumn(s)
+                  }}
+                />
               </NSpace>
             </NListItem>
             <NListItem>
               <NSpace justify='space-between' align='center'>
                 <span>{this.t('setting.data_unique_value')}</span>
-                <NSwitch />
+                <NSwitch
+                  value={useSettingStore().getDataUniqueValue}
+                  onUpdateValue={(s) => {
+                    useSettingStore().setDataUniqueValue(s)
+                  }}
+                />
               </NSpace>
             </NListItem>
           </NList>

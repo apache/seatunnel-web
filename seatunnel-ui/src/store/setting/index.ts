@@ -14,3 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { defineStore } from 'pinia'
+import { SettingStore } from './types'
+
+export const useSettingStore = defineStore({
+  id: 'setting',
+  state: (): SettingStore => ({
+    sequenceColumn: false,
+    dataUniqueValue: false
+  }),
+  persist: true,
+  getters: {
+    getSequenceColumn(): boolean {
+      return this.sequenceColumn
+    },
+    getDataUniqueValue(): boolean {
+      return this.dataUniqueValue
+    }
+  },
+  actions: {
+    setSequenceColumn(status: boolean): void {
+      this.sequenceColumn = status
+    },
+    setDataUniqueValue(status: boolean): void {
+      this.dataUniqueValue = status
+    }
+  }
+})
