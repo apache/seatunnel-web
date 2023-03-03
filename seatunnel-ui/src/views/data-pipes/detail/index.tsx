@@ -19,7 +19,6 @@ import { defineComponent } from 'vue'
 import {
   NSpace,
   NCard,
-  NButton,
   NBreadcrumb,
   NBreadcrumbItem,
   NTabs,
@@ -55,24 +54,6 @@ const DataPipesDetail = defineComponent({
                   </NBreadcrumbItem>
                   <NBreadcrumbItem>user-order-tables-10</NBreadcrumbItem>
                 </NBreadcrumb>
-                <div
-                  class={['w-3', 'h-3', 'rounded-full', 'bg-green-400']}
-                ></div>
-                <span
-                  style={{
-                    fontSize: 'var(--n-font-size)',
-                    color: 'var(--n-item-text-color-active)'
-                  }}
-                >
-                  {this.t('data_pipes.stop')}
-                </span>
-              </NSpace>
-            ),
-            'header-extra': () => (
-              <NSpace>
-                <NButton secondary type='success'>{this.t('data_pipes.execute')}</NButton>
-                <NButton secondary type='error'>{this.t('data_pipes.kill')}</NButton>
-                <NButton secondary type='warning'>{this.t('data_pipes.stop')}</NButton>
               </NSpace>
             )
           }}

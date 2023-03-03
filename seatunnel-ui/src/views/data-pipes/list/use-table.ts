@@ -18,7 +18,8 @@
 import { reactive, ref, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NButton, NTag } from 'naive-ui'
-import { scriptList, scriptDelete } from '@/service/script'
+import { scriptList, scriptDelete, scriptPublish } from '@/service/script'
+import { taskExecute } from '@/service/task'
 import { useRouter } from 'vue-router'
 import { getTableColumn } from '@/common/table'
 import type { ResponseTable } from '@/service/types'
@@ -91,7 +92,8 @@ export function useTable() {
                 NButton,
                 {
                   text: true,
-                  disabled: row.status !== 'published'
+                  disabled: row.status !== 'published',
+                  onClick: () => handleExecute(row)
                 },
                 t('data_pipes.execute')
               ),
@@ -151,6 +153,28 @@ export function useTable() {
     state.row = row
   }
 
+  const handleConfirmPublishModal = () => {
+    scriptPublish((state.row as ScriptDetail).id as number).then(() => {
+      state.showPublishModal = false
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
+  const handleExecute = (row: ScriptDetail) => {
+    taskExecute(row.id, {
+      objectType: 0,
+      executeType: 0
+    }).then(() => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
   const getTableData = (params: any) => {
     if (state.loading) return
     state.loading = true
@@ -165,6 +189,7 @@ export function useTable() {
     state,
     createColumns,
     handleConfirmDeleteModal,
+    handleConfirmPublishModal,
     getTableData
   }
 }

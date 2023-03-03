@@ -98,7 +98,8 @@ export function useTable() {
 
   const handleExecute = (id: number) => {
     taskExecute(id, {
-      objectType: 1
+      objectType: 1,
+      executeType: 0
     }).then(() => {
       getTableData({
         pageSize: state.pageSize,

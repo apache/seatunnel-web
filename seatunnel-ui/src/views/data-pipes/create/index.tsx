@@ -127,15 +127,6 @@ const DataPipesCreate = defineComponent({
         <NCard>
           <NSpace vertical>
             <NSpace justify='end'>
-              <NButton secondary type='success'>
-                {this.t('data_pipes.execute')}
-              </NButton>
-              <NButton secondary type='error'>
-                {this.t('data_pipes.kill')}
-              </NButton>
-              <NButton secondary type='warning'>
-                {this.t('data_pipes.stop')}
-              </NButton>
               <NDropdown
                 trigger='click'
                 options={[

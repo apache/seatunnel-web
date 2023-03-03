@@ -61,7 +61,9 @@ const DataPipesEdit = defineComponent({
             'header-extra': () => (
               <NSpace>
                 <NButton secondary>{this.t('data_pipes.cancel')}</NButton>
-                <NButton secondary>{this.t('data_pipes.save')}</NButton>
+                <NButton secondary type='primary'>
+                  {this.t('data_pipes.save')}
+                </NButton>
               </NSpace>
             )
           }}
