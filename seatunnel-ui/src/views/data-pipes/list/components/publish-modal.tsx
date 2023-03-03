@@ -41,7 +41,9 @@ const PublishModal = defineComponent({
       ctx.emit('cancelModal', props.showModal)
     }
 
-    const handleConfirm = () => {}
+    const handleConfirm = () => {
+      ctx.emit('confirmModal')
+    }
 
     return { t, handleCancel, handleConfirm }
   },

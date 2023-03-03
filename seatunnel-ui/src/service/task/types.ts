@@ -34,6 +34,7 @@ interface TaskRecycle {
 
 interface TaskExecute {
   objectType: number
+  executeType: number
 }
 
 interface JobDetail {

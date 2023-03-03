@@ -34,9 +34,9 @@ export function taskJobList(params: TaskList): any {
   })
 }
 
-export function taskExecute(scriptId: number, data: TaskExecute): any {
+export function taskExecute(id: number, data: TaskExecute): any {
   return axios({
-    url: `/task/${scriptId}/execute`,
+    url: `/task/${id}/execute`,
     method: 'post',
     data
   })

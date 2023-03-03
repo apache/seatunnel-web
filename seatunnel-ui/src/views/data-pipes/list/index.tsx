@@ -32,7 +32,8 @@ const DataPipesList = defineComponent({
       state,
       createColumns,
       getTableData,
-      handleConfirmDeleteModal
+      handleConfirmDeleteModal,
+      handleConfirmPublishModal
     } = useTable()
 
     const requestData = () => {
@@ -47,10 +48,6 @@ const DataPipesList = defineComponent({
     }
 
     const handleCancelPublishModal = () => {
-      state.showPublishModal = false
-    }
-
-    const handleConfirmPublishModal = () => {
       state.showPublishModal = false
     }
 
