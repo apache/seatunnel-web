@@ -39,8 +39,8 @@ const Setting = defineComponent({
                 <span>{this.t('setting.sequence_column')}</span>
                 <NSwitch
                   value={useSettingStore().getSequenceColumn}
-                  onUpdateValue={(s) => {
-                    useSettingStore().setSequenceColumn(s)
+                  onUpdateValue={(v) => {
+                    useSettingStore().setSequenceColumn(v)
                   }}
                 />
               </NSpace>
@@ -50,8 +50,8 @@ const Setting = defineComponent({
                 <span>{this.t('setting.data_unique_value')}</span>
                 <NSwitch
                   value={useSettingStore().getDataUniqueValue}
-                  onUpdateValue={(s) => {
-                    useSettingStore().setDataUniqueValue(s)
+                  onUpdateValue={(v) => {
+                    useSettingStore().setDataUniqueValue(v)
                   }}
                 />
               </NSpace>
@@ -68,6 +68,30 @@ const Setting = defineComponent({
                     value={'english'}
                     options={[
                       { value: 'english', label: this.t('setting.english') }
+                    ]}
+                  />
+                </div>
+              </NSpace>
+            </NListItem>
+          </NList>
+        </NCard>
+        <NCard title={this.t('setting.request_setting')}>
+          <NList>
+            <NListItem>
+              <NSpace justify='space-between' align='center'>
+                <span>{this.t('setting.request_time')}</span>
+                <div class='w-56'>
+                  <NSelect
+                    value={useSettingStore().getRequestTimeValue}
+                    onUpdateValue={(v) => {
+                      useSettingStore().setRequestTimeValue(v)
+                    }}
+                    options={[
+                      { value: 3000, label: '3000ms' },
+                      { value: 6000, label: '6000ms' },
+                      { value: 10000, label: '10000ms' },
+                      { value: 20000, label: '20000ms' },
+                      { value: 30000, label: '30000ms' }
                     ]}
                   />
                 </div>
@@ -109,8 +133,8 @@ const Setting = defineComponent({
                 <div class='w-56'>
                   <NSelect
                     value={useSettingStore().getFilletValue}
-                    onUpdateValue={(s) => {
-                      useSettingStore().setFilletValue(s)
+                    onUpdateValue={(v) => {
+                      useSettingStore().setFilletValue(v)
                     }}
                     options={[
                       { value: 5, label: '5px' },

@@ -19,6 +19,7 @@ interface SettingStore {
   sequenceColumn: boolean
   dataUniqueValue: boolean
   fillet: number
+  requestTime: number
 }
 
 export { SettingStore }
