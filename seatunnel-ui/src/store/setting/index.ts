@@ -22,7 +22,8 @@ export const useSettingStore = defineStore({
   id: 'setting',
   state: (): SettingStore => ({
     sequenceColumn: false,
-    dataUniqueValue: false
+    dataUniqueValue: false,
+    fillet: 15
   }),
   persist: true,
   getters: {
@@ -31,6 +32,9 @@ export const useSettingStore = defineStore({
     },
     getDataUniqueValue(): boolean {
       return this.dataUniqueValue
+    },
+    getFilletValue(): number {
+      return this.fillet
     }
   },
   actions: {
@@ -39,6 +43,9 @@ export const useSettingStore = defineStore({
     },
     setDataUniqueValue(status: boolean): void {
       this.dataUniqueValue = status
+    },
+    setFilletValue(status: number): void {
+      this.fillet = status
     }
   }
 })

@@ -34,6 +34,13 @@ export function scriptAdd(data: ScriptAdd): any {
   })
 }
 
+export function scriptDetail(scriptId: number): any {
+  return axios({
+    url: `/script/${scriptId}`,
+    method: 'get'
+  })
+}
+
 export function scriptDelete(scriptId: number): any {
   return axios({
     url: `/script/${scriptId}`,
@@ -48,7 +55,7 @@ export function scriptContent(scriptId: number): any {
   })
 }
 
-export function scriptContentUpdate(scriptId: number, content: string): any {
+export function scriptUpdate(scriptId: number, content: string): any {
   return axios({
     url: `/script/${scriptId}/content`,
     method: 'put',

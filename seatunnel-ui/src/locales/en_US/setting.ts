@@ -24,5 +24,9 @@ export default {
   theme_setting: 'Theme Setting',
   theme: 'Theme',
   english: 'English',
-  light: 'Light'
+  light: 'Light',
+  model: 'Model',
+  hue: 'Hue',
+  purple: 'Purple',
+  fillet: 'Fillet'
 }
