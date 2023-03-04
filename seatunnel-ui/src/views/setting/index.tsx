@@ -116,7 +116,9 @@ const Setting = defineComponent({
                       { value: 5, label: '5px' },
                       { value: 10, label: '10px' },
                       { value: 15, label: '15px' },
-                      { value: 20, label: '20px' }
+                      { value: 20, label: '20px' },
+                      { value: 25, label: '25px' },
+                      { value: 30, label: '30px' }
                     ]}
                   />
                 </div>
