@@ -101,7 +101,12 @@ export function useTable() {
                 NButton,
                 {
                   text: true,
-                  disabled: row.status === 'published'
+                  disabled: row.status === 'published',
+                  onClick: () => {
+                    router.push({
+                      path: `/data-pipes/${row.id}/edit`
+                    })
+                  }
                 },
                 t('data_pipes.edit')
               ),

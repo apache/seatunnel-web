@@ -79,12 +79,44 @@ const Setting = defineComponent({
           <NList>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.theme')}</span>
+                <span>{this.t('setting.model')}</span>
                 <div class='w-56'>
                   <NSelect
                     value={'light'}
                     options={[
                       { value: 'light', label: this.t('setting.light') }
+                    ]}
+                  />
+                </div>
+              </NSpace>
+            </NListItem>
+            <NListItem>
+              <NSpace justify='space-between' align='center'>
+                <span>{this.t('setting.hue')}</span>
+                <div class='w-56'>
+                  <NSelect
+                    value={'purple'}
+                    options={[
+                      { value: 'purple', label: this.t('setting.purple') }
+                    ]}
+                  />
+                </div>
+              </NSpace>
+            </NListItem>
+            <NListItem>
+              <NSpace justify='space-between' align='center'>
+                <span>{this.t('setting.fillet')}</span>
+                <div class='w-56'>
+                  <NSelect
+                    value={useSettingStore().getFilletValue}
+                    onUpdateValue={(s) => {
+                      useSettingStore().setFilletValue(s)
+                    }}
+                    options={[
+                      { value: 5, label: '5px' },
+                      { value: 10, label: '10px' },
+                      { value: 15, label: '15px' },
+                      { value: 20, label: '20px' }
                     ]}
                   />
                 </div>

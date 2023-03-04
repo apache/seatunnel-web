@@ -39,7 +39,7 @@ export default {
       }
     },
     {
-      path: '/data-pipes/:dataPipeCode',
+      path: '/data-pipes/:dataPipeId',
       name: 'data-pipes-detail',
       component: components['data-pipes-detail'],
       meta: {
@@ -47,7 +47,7 @@ export default {
       }
     },
     {
-      path: '/data-pipes/:dataPipeCode/edit',
+      path: '/data-pipes/:dataPipeId/edit',
       name: 'data-pipes-edit',
       component: components['data-pipes-edit'],
       meta: {
