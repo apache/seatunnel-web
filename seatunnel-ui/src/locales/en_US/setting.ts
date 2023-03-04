@@ -20,6 +20,8 @@ export default {
   sequence_column: 'Sequence Column',
   data_unique_value: 'Data Unique Value',
   language_setting: 'Language Setting',
+  request_setting: 'Request Setting',
+  request_time: 'Request Time',
   language: 'Language',
   theme_setting: 'Theme Setting',
   theme: 'Theme',

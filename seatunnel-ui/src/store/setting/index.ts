@@ -23,7 +23,8 @@ export const useSettingStore = defineStore({
   state: (): SettingStore => ({
     sequenceColumn: false,
     dataUniqueValue: false,
-    fillet: 15
+    fillet: 15,
+    requestTime: 6000
   }),
   persist: true,
   getters: {
@@ -35,6 +36,9 @@ export const useSettingStore = defineStore({
     },
     getFilletValue(): number {
       return this.fillet
+    },
+    getRequestTimeValue(): number {
+      return this.requestTime
     }
   },
   actions: {
@@ -46,6 +50,9 @@ export const useSettingStore = defineStore({
     },
     setFilletValue(status: number): void {
       this.fillet = status
+    },
+    setRequestTimeValue(status: number): void {
+      this.requestTime = status
     }
   }
 })
