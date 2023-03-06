@@ -59,7 +59,9 @@ export function useTable() {
                 })
               }
             },
-            row.name
+            {
+              default: () => row.name
+            }
           )
         }
       },
@@ -68,9 +70,17 @@ export function useTable() {
         key: 'status',
         render: (row: ScriptDetail) => {
           if (row.status === 'published') {
-            return h(NTag, { type: 'info' }, t('tasks.published'))
+            return h(
+              NTag,
+              { type: 'info' },
+              { default: () => t('tasks.published') }
+            )
           } else {
-            return h(NTag, { type: 'default' }, t('tasks.unpublished'))
+            return h(
+              NTag,
+              { type: 'default' },
+              { default: () => t('tasks.unpublished') }
+            )
           }
         }
       },
@@ -95,7 +105,9 @@ export function useTable() {
                   disabled: row.status !== 'published',
                   onClick: () => handleExecute(row)
                 },
-                t('data_pipes.execute')
+                {
+                  default: () => t('data_pipes.execute')
+                }
               ),
               h(
                 NButton,
@@ -108,7 +120,9 @@ export function useTable() {
                     })
                   }
                 },
-                t('data_pipes.edit')
+                {
+                  default: () => t('data_pipes.edit')
+                }
               ),
               h(
                 NButton,
@@ -117,7 +131,7 @@ export function useTable() {
                   disabled: row.status === 'published',
                   onClick: () => handlePublish(row)
                 },
-                t('data_pipes.publish')
+                { default: () => t('data_pipes.publish') }
               ),
               h(
                 NButton,
@@ -126,7 +140,7 @@ export function useTable() {
                   disabled: row.status === 'published',
                   onClick: () => handleDelete(row)
                 },
-                t('data_pipes.delete')
+                { default: () => t('data_pipes.delete') }
               )
             ]
           })
