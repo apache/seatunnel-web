@@ -53,15 +53,35 @@ export function useTable() {
         key: 'status',
         render: (row: JobDetail) => {
           if (row.status === 'SUCCESS') {
-            return h(NTag, { type: 'success' }, t('tasks.success'))
+            return h(
+              NTag,
+              { type: 'success' },
+              { default: () => t('tasks.success') }
+            )
           } else if (row.status === 'FAILED') {
-            return h(NTag, { type: 'error' }, t('tasks.fail'))
+            return h(
+              NTag,
+              { type: 'error' },
+              { default: () => t('tasks.fail') }
+            )
           } else if (row.status === 'STOPPED') {
-            return h(NTag, { type: 'warning' }, t('tasks.stop'))
+            return h(
+              NTag,
+              { type: 'warning' },
+              { default: () => t('tasks.stop') }
+            )
           } else if (row.status === 'RUNNING') {
-            return h(NTag, { type: 'info' }, t('tasks.running'))
+            return h(
+              NTag,
+              { type: 'info' },
+              { default: () => t('tasks.running') }
+            )
           } else {
-            return h(NTag, { type: 'default' }, t('tasks.unknown'))
+            return h(
+              NTag,
+              { type: 'default' },
+              { default: () => t('tasks.unknown') }
+            )
           }
         }
       },
@@ -90,7 +110,7 @@ export function useTable() {
                   disabled: row.status === 'RUNNING',
                   onClick: () => handleRerun(row)
                 },
-                t('tasks.rerun')
+                { default: () => t('tasks.rerun') }
               ),
               h(
                 NButton,
@@ -99,12 +119,12 @@ export function useTable() {
                   disabled: row.status !== 'RUNNING',
                   onClick: () => handleKill(row)
                 },
-                t('tasks.kill')
+                { default: () => t('tasks.kill') }
               ),
               h(
                 NButton,
                 { text: true, onClick: () => handleViewLog(row) },
-                t('tasks.view_log')
+                { default: () => t('tasks.view_log') }
               )
             ]
           })

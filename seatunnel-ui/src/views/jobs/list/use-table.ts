@@ -67,7 +67,7 @@ export function useTable() {
                   disabled: row.jobStatus === 'OFFLINE',
                   onClick: () => handleExecute(row.jobId)
                 },
-                t('jobs.execute')
+                { default: () => t('jobs.execute') }
               ),
               h(
                 NButton,
@@ -76,7 +76,7 @@ export function useTable() {
                   disabled: row.jobStatus === 'OFFLINE',
                   onClick: () => handleRecycle(row.jobId)
                 },
-                t('jobs.recycle')
+                { default: () => t('jobs.recycle') }
               )
             ]
           })

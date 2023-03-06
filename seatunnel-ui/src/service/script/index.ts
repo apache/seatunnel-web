@@ -48,13 +48,6 @@ export function scriptDelete(scriptId: number): any {
   })
 }
 
-export function scriptContent(scriptId: number): any {
-  return axios({
-    url: `/script/${scriptId}/content`,
-    method: 'get'
-  })
-}
-
 export function scriptUpdate(scriptId: number, content: string): any {
   return axios({
     url: `/script/${scriptId}/content`,
@@ -62,20 +55,6 @@ export function scriptUpdate(scriptId: number, content: string): any {
     data: {
       content
     }
-  })
-}
-
-export function scriptParam(scriptId: number): any {
-  return axios({
-    url: `/script/${scriptId}/param`,
-    method: 'get'
-  })
-}
-
-export function scriptParamUpdate(scriptId: number): any {
-  return axios({
-    url: `/script/${scriptId}/param`,
-    method: 'put'
   })
 }
 

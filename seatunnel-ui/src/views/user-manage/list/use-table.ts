@@ -62,19 +62,22 @@ export function useTable() {
               h(
                 NButton,
                 { text: true, onClick: () => handleStatus(row) },
-                row.status === 1
-                  ? t('user_manage.enable')
-                  : t('user_manage.disable')
+                {
+                  default: () =>
+                    row.status === 1
+                      ? t('user_manage.enable')
+                      : t('user_manage.disable')
+                }
               ),
               h(
                 NButton,
                 { text: true, onClick: () => handleEdit(row) },
-                t('user_manage.edit')
+                { default: () => t('user_manage.edit') }
               ),
               h(
                 NButton,
                 { text: true, onClick: () => handleDelete(row) },
-                t('user_manage.delete')
+                { default: () => t('user_manage.delete') }
               )
             ]
           })
