@@ -30,10 +30,6 @@ import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RET
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
 import static com.cronutils.model.CronType.QUARTZ;
 import static java.util.Objects.requireNonNull;
-import static com.cronutils.model.CronType.QUARTZ;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 
 import org.apache.seatunnel.app.common.ObjectTypeEnum;
 import org.apache.seatunnel.app.common.ScriptStatusEnum;
@@ -89,7 +85,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -124,7 +119,7 @@ public class TaskServiceImpl implements ITaskService {
     public void initFuncMap(){
         executeFuncMap.put(SCRIPT, this::getExecuteDtoByScriptId);
         executeFuncMap.put(JOB, this::getExecuteDtoByJobId);
-        executeFuncMap.put(INSTANCE, null);
+        executeFuncMap.put(INSTANCE, this::getExecuteDtoByInstanceId);
     }
 
     @Override
@@ -282,11 +277,22 @@ public class TaskServiceImpl implements ITaskService {
         return this.translate(iJobService.execute(dto));
     }
 
+    private ExecuteDto getExecuteDtoByInstanceId(ExecuteReq req) {
+        // objectId of instance is jobId
+        return ExecuteDto.builder()
+                .jobDto(JobDto.builder()
+                        .jobId(req.getObjectId())
+                        .build())
+                .executeTypeEnum(ExecuteTypeEnum.RERUN)
+                .build();
+    }
+
     private ExecuteDto getExecuteDtoByJobId(ExecuteReq req) {
         return ExecuteDto.builder()
                 .jobDto(JobDto.builder()
                         .jobId(req.getObjectId())
                         .build())
+                .executeTypeEnum(ExecuteTypeEnum.parse(req.getExecuteType()))
                 .build();
     }
 

@@ -57,6 +57,7 @@ import org.apache.seatunnel.spi.scheduler.dto.InstanceListDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobListDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobSimpleInfoDto;
+import org.apache.seatunnel.spi.scheduler.enums.ExecuteTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -129,6 +130,12 @@ public class JobServiceImpl implements IJobService {
     @Override
     @SuppressWarnings("magicnumber")
     public InstanceDto execute(ExecuteDto dto) {
+
+        if (dto.getExecuteTypeEnum() == ExecuteTypeEnum.RERUN) {
+            iDolphinschedulerService.execute(dto.getJobDto().getJobId(), org.apache.seatunnel.scheduler.dolphinscheduler.ExecuteTypeEnum.REPEAT_RUNNING);
+            return null;
+        }
+
         ProcessDefinitionDto processDefinition = null;
         final JobDto jobDto = dto.getJobDto();
         if (Objects.isNull(jobDto.getJobId())) {

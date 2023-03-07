@@ -15,11 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.script;
+package org.apache.seatunnel.app.domain.dto.script;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
-public class AddEmptyScriptRes {
-    private int id;
+public class CreateScriptDto {
+    private String name;
+    private byte type;
+    private int creatorId;
+    private int menderId;
+    private byte status;
+    private String content;
 }

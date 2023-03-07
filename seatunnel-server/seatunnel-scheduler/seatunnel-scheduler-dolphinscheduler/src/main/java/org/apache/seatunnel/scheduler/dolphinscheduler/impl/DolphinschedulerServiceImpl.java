@@ -518,7 +518,8 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
         return projectDto;
     }
 
-    private void execute(long processInstanceId, ExecuteTypeEnum executeType) {
+    @Override
+    public void execute(long processInstanceId, ExecuteTypeEnum executeType) {
         final Map result = HttpUtils.builder()
             .withUrl(apiPrefix.concat(String.format(EXECUTE, defaultProjectCode)))
             .withMethod(Connection.Method.POST)
