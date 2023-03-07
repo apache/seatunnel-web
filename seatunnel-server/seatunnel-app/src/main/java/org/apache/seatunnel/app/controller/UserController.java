@@ -75,7 +75,7 @@ public class UserController {
 
     @GetMapping
     @ApiOperation(value = "user list", httpMethod = "GET")
-    public Result<PageInfo<UserSimpleInfoRes>> list(@ApiParam(value = "job name") @RequestParam(required = false) String name,
+    public Result<PageInfo<UserSimpleInfoRes>> list(@ApiParam(value = "user name") @RequestParam(required = false) String name,
                                                     @ApiParam(value = "page num", required = true) @RequestParam Integer pageNo,
                                                     @ApiParam(value = "page size", required = true) @RequestParam Integer pageSize) {
         final UserListReq req = new UserListReq();

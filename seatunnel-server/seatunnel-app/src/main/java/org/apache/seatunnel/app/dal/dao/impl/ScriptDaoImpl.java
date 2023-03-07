@@ -24,8 +24,8 @@ import org.apache.seatunnel.app.common.ScriptStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IScriptDao;
 import org.apache.seatunnel.app.dal.entity.Script;
 import org.apache.seatunnel.app.dal.mapper.ScriptMapper;
-import org.apache.seatunnel.app.domain.dto.script.AddEmptyScriptDto;
 import org.apache.seatunnel.app.domain.dto.script.CheckScriptDuplicateDto;
+import org.apache.seatunnel.app.domain.dto.script.CreateScriptDto;
 import org.apache.seatunnel.app.domain.dto.script.ListScriptsDto;
 import org.apache.seatunnel.app.domain.dto.script.UpdateScriptContentDto;
 import org.apache.seatunnel.server.common.PageData;
@@ -50,13 +50,14 @@ public class ScriptDaoImpl implements IScriptDao {
     }
 
     @Override
-    public int addEmptyScript(AddEmptyScriptDto dto) {
+    public int createScript(CreateScriptDto dto) {
         final Script script = new Script();
         script.setName(dto.getName());
         script.setType(dto.getType());
         script.setStatus(dto.getStatus());
         script.setCreatorId(dto.getCreatorId());
         script.setMenderId(dto.getMenderId());
+        script.setContent(dto.getContent());
         scriptMapper.insert(script);
         return script.getId();
     }
@@ -80,11 +81,15 @@ public class ScriptDaoImpl implements IScriptDao {
     public PageData<Script> list(ListScriptsDto dto, Integer pageNo, Integer pageSize) {
         final Script script = new Script();
         script.setName(dto.getName());
-        script.setStatus(dto.getStatus());
 
         final List<Script> scripts = scriptMapper.selectBySelectiveAndPage(script, pageNo * pageSize, pageSize);
         int count = scriptMapper.countBySelectiveAndPage(script);
 
         return new PageData<Script>(count, scripts);
+    }
+
+    @Override
+    public void updateStatus(Script script) {
+        scriptMapper.updateStatus(script.getId(), script.getStatus());
     }
 }

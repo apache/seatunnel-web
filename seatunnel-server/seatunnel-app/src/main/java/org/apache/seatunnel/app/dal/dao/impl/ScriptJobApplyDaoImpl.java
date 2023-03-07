@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.dal.dao.impl;
 
 import org.apache.seatunnel.app.dal.dao.IScriptJobApplyDao;
+import org.apache.seatunnel.app.dal.entity.JobDefine;
 import org.apache.seatunnel.app.dal.entity.ScriptJobApply;
 import org.apache.seatunnel.app.dal.mapper.ScriptJobApplyMapper;
 import org.apache.seatunnel.app.domain.dto.job.ScriptJobApplyDto;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -55,5 +57,15 @@ public class ScriptJobApplyDaoImpl implements IScriptJobApplyDao {
     @Override
     public ScriptJobApply getByScriptId(Integer id) {
         return scriptJobApplyMapper.selectByScriptId(id);
+    }
+
+    @Override
+    public List<JobDefine> selectJobDefineByJobIds(List<Long> jobIds) {
+        return scriptJobApplyMapper.selectJobDefineByJobIds(jobIds);
+    }
+
+    @Override
+    public ScriptJobApply getByJobId(long jobId) {
+        return scriptJobApplyMapper.selectByJobId(jobId);
     }
 }

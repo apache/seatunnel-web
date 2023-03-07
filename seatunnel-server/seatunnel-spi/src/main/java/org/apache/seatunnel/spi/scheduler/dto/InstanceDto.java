@@ -34,4 +34,5 @@ public class InstanceDto {
     private String status;
     private String executionDuration;
     private long retryTimes;
+    private String runFrequency;
 }

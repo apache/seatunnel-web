@@ -66,4 +66,6 @@ public interface IDolphinschedulerService {
     InstanceLogDto queryInstanceLog(long instanceId);
 
     void killProcessInstance(long processInstanceId);
+
+    void execute(long processInstanceId, ExecuteTypeEnum executeType);
 }

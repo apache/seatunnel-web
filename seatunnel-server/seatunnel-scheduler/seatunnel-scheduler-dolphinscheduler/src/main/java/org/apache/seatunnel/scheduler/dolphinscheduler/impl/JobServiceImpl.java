@@ -43,6 +43,7 @@ import org.apache.seatunnel.scheduler.dolphinscheduler.dto.SchedulerDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.StartProcessDefinitionDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.TaskDescriptionDto;
 import org.apache.seatunnel.scheduler.dolphinscheduler.dto.UpdateProcessDefinitionDto;
+import org.apache.seatunnel.scheduler.dolphinscheduler.enums.ReleaseStateEnum;
 import org.apache.seatunnel.server.common.DateUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -56,6 +57,7 @@ import org.apache.seatunnel.spi.scheduler.dto.InstanceListDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobListDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobSimpleInfoDto;
+import org.apache.seatunnel.spi.scheduler.enums.ExecuteTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -113,11 +115,13 @@ public class JobServiceImpl implements IJobService {
         final PageData<ProcessDefinitionDto> processPageData = iDolphinschedulerService.listProcessDefinition(listDto);
         final List<JobSimpleInfoDto> data = processPageData.getData().stream().map(p -> JobSimpleInfoDto.builder()
                 .jobId(p.getCode())
+                .jobName(p.getName())
                 .jobStatus(p.getReleaseState())
+                .publish(ReleaseStateEnum.parse(p.getReleaseState()).isPublish())
                 .createTime(p.getCreateTime())
                 .updateTime(p.getUpdateTime())
-                .creatorName(p.getUsername())
-                .menderName(p.getUsername())
+                .creatorName(p.getUserName())
+                .menderName(p.getModifyBy())
                 .build())
                 .collect(Collectors.toList());
         return new PageData<>(processPageData.getTotalCount(), data);
@@ -126,6 +130,12 @@ public class JobServiceImpl implements IJobService {
     @Override
     @SuppressWarnings("magicnumber")
     public InstanceDto execute(ExecuteDto dto) {
+
+        if (dto.getExecuteTypeEnum() == ExecuteTypeEnum.RERUN) {
+            iDolphinschedulerService.execute(dto.getJobDto().getJobId(), org.apache.seatunnel.scheduler.dolphinscheduler.ExecuteTypeEnum.REPEAT_RUNNING);
+            return null;
+        }
+
         ProcessDefinitionDto processDefinition = null;
         final JobDto jobDto = dto.getJobDto();
         if (Objects.isNull(jobDto.getJobId())) {
@@ -199,7 +209,7 @@ public class JobServiceImpl implements IJobService {
             }
 
             CompletableFuture.runAsync(() -> {
-                // clear temporary process definition
+                // offline temporary process definition
                 iDolphinschedulerService.updateProcessDefinitionState(code, name, RELEASE_STATE_OFFLINE);
             }).whenComplete((_return, e) -> {
                 if (Objects.nonNull(e)) {

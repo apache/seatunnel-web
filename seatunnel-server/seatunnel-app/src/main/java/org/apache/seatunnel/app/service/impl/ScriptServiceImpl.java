@@ -28,18 +28,19 @@ import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.Script;
 import org.apache.seatunnel.app.dal.entity.ScriptParam;
 import org.apache.seatunnel.app.domain.dto.job.PushScriptDto;
-import org.apache.seatunnel.app.domain.dto.script.AddEmptyScriptDto;
 import org.apache.seatunnel.app.domain.dto.script.CheckScriptDuplicateDto;
+import org.apache.seatunnel.app.domain.dto.script.CreateScriptDto;
 import org.apache.seatunnel.app.domain.dto.script.ListScriptsDto;
 import org.apache.seatunnel.app.domain.dto.script.UpdateScriptContentDto;
 import org.apache.seatunnel.app.domain.dto.script.UpdateScriptParamDto;
-import org.apache.seatunnel.app.domain.request.script.AddEmptyScriptReq;
+import org.apache.seatunnel.app.domain.request.script.CreateScriptReq;
 import org.apache.seatunnel.app.domain.request.script.PublishScriptReq;
 import org.apache.seatunnel.app.domain.request.script.ScriptListReq;
 import org.apache.seatunnel.app.domain.request.script.UpdateScriptContentReq;
 import org.apache.seatunnel.app.domain.request.script.UpdateScriptParamReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.script.AddEmptyScriptRes;
+import org.apache.seatunnel.app.domain.response.script.CreateScriptRes;
+import org.apache.seatunnel.app.domain.response.script.ScriptFullInfoRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptParamRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptSimpleInfoRes;
 import org.apache.seatunnel.app.service.IScriptService;
@@ -79,26 +80,27 @@ public class ScriptServiceImpl implements IScriptService {
     private ITaskService iTaskService;
 
     @Override
-    public AddEmptyScriptRes addEmptyScript(AddEmptyScriptReq addEmptyScriptReq) {
+    public CreateScriptRes createScript(CreateScriptReq createScriptReq) {
         // 1. check script name.
-        checkDuplicate(addEmptyScriptReq.getName(), addEmptyScriptReq.getCreatorId());
-        // 2. create an empty script
-        int scriptId = addEmptyScript(addEmptyScriptReq.getName(), addEmptyScriptReq.getCreatorId(), addEmptyScriptReq.getCreatorId(), addEmptyScriptReq.getType());
+        checkDuplicate(createScriptReq.getName(), createScriptReq.getCreatorId());
+        // 2. create  script
+        int scriptId = translate(createScriptReq.getName(), createScriptReq.getCreatorId(), createScriptReq.getCreatorId(), createScriptReq.getType(), createScriptReq.getContent());
 
-        final AddEmptyScriptRes res = new AddEmptyScriptRes();
+        final CreateScriptRes res = new CreateScriptRes();
         res.setId(scriptId);
         return res;
     }
 
-    private int addEmptyScript(String name, Integer creatorId, Integer menderId, Byte type) {
-        final AddEmptyScriptDto dto = AddEmptyScriptDto.builder()
+    private int translate(String name, Integer creatorId, Integer menderId, Byte type, String content) {
+        final CreateScriptDto dto = CreateScriptDto.builder()
                 .name(name)
                 .menderId(creatorId)
                 .creatorId(menderId)
                 .type(type)
                 .status((byte) ScriptStatusEnum.UNPUBLISHED.getCode())
+                .content(content)
                 .build();
-        return scriptDaoImpl.addEmptyScript(dto);
+        return scriptDaoImpl.createScript(dto);
     }
 
     private void checkDuplicate(String name, Integer creatorId) {
@@ -118,7 +120,7 @@ public class ScriptServiceImpl implements IScriptService {
 
         final boolean needSave = checkIfNeedSave(updateScriptContentReq.getScriptId(), contentMd5);
 
-        if (needSave){
+        if (needSave) {
             final UpdateScriptContentDto dto = UpdateScriptContentDto.builder()
                     .id(updateScriptContentReq.getScriptId())
                     .content(content)
@@ -149,7 +151,6 @@ public class ScriptServiceImpl implements IScriptService {
 
         final ListScriptsDto dto = ListScriptsDto.builder()
                 .name(scriptListReq.getName())
-                .status(scriptListReq.getStatus())
                 .build();
 
         PageData<Script> scriptPageData = scriptDaoImpl.list(dto, scriptListReq.getRealPageNo(), scriptListReq.getPageSize());
@@ -173,7 +174,7 @@ public class ScriptServiceImpl implements IScriptService {
     @Override
     public List<ScriptParamRes> fetchScriptParam(Integer id) {
         List<ScriptParam> scriptParamRes = scriptParamDaoImpl.getParamsByScriptId(id);
-        if (CollectionUtils.isEmpty(scriptParamRes)){
+        if (CollectionUtils.isEmpty(scriptParamRes)) {
             return Collections.emptyList();
         }
         return scriptParamRes.stream().map(this::translate).collect(Collectors.toList());
@@ -195,12 +196,20 @@ public class ScriptServiceImpl implements IScriptService {
     }
 
     @Override
-    public void publishScript(PublishScriptReq req){
+    public void publishScript(PublishScriptReq req) {
         final PushScriptDto dto = PushScriptDto.builder()
                 .scriptId(req.getScriptId())
                 .userId(req.getOperatorId())
                 .build();
         iTaskService.pushScriptToScheduler(dto);
+    }
+
+    @Override
+    public ScriptFullInfoRes detail(Integer scriptId) {
+        final Script script = scriptDaoImpl.getScript(scriptId);
+
+        checkState(Objects.nonNull(script), NO_SUCH_SCRIPT.getTemplate());
+        return translateToFull(script);
     }
 
     private ScriptParamRes translate(ScriptParam scriptParam) {
@@ -215,12 +224,26 @@ public class ScriptServiceImpl implements IScriptService {
         final ScriptSimpleInfoRes res = new ScriptSimpleInfoRes();
         res.setId(script.getId());
         res.setName(script.getName());
-        res.setStatus(script.getStatus());
+        res.setStatus(ScriptStatusEnum.parse(script.getStatus()));
         res.setType(script.getType());
         res.setCreatorId(script.getCreatorId());
         res.setMenderId(script.getMenderId());
         res.setCreateTime(script.getCreateTime());
         res.setUpdateTime(script.getUpdateTime());
+        return res;
+    }
+
+    private ScriptFullInfoRes translateToFull(Script script) {
+        final ScriptFullInfoRes res = new ScriptFullInfoRes();
+        res.setId(script.getId());
+        res.setName(script.getName());
+        res.setStatus(ScriptStatusEnum.parse(script.getStatus()));
+        res.setType(script.getType());
+        res.setCreatorId(script.getCreatorId());
+        res.setMenderId(script.getMenderId());
+        res.setCreateTime(script.getCreateTime());
+        res.setUpdateTime(script.getUpdateTime());
+        res.setContent(script.getContent());
         return res;
     }
 }

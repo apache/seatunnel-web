@@ -15,26 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.user;
+package org.apache.seatunnel.app.domain.request.script;
 
-import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
-@ApiModel(value = "userSimpleInfoRes", description = "user simple information")
 @Data
-public class UserSimpleInfoRes extends BaseUserInfoRes {
-
-    private String token;
-
-    public Map<String, Object> toMap() {
-        final Map<String, Object> userMap = Maps.newHashMap();
-        userMap.put("id", getId());
-        userMap.put("name", getName());
-        userMap.put("status", getStatus());
-        userMap.put("type", getType());
-        return userMap;
-    }
+@ApiModel(value = "addEmptyScriptReq", description = "add a new empty script")
+public class CreateScriptReq {
+    @ApiModelProperty(value = "script name", required = true, dataType = "String")
+    private String name;
+    @ApiModelProperty(value = "script type", required = true, dataType = "Byte")
+    @NotNull
+    private Byte type;
+    @ApiModelProperty(value = "script creator id", required = true, dataType = "Integer", hidden = true)
+    @NotNull
+    private Integer creatorId;
+    @ApiModelProperty(value = "script content", required = true, dataType = "String")
+    private String content;
 }

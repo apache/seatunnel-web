@@ -24,6 +24,19 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+    <resultMap id="JobDefineMap" type="org.apache.seatunnel.app.dal.entity.JobDefine">
+        <result column="script_id" jdbcType="INTEGER" property="scriptId"/>
+        <result column="scheduler_config_id" jdbcType="INTEGER" property="schedulerConfigId"/>
+        <result column="job_id" jdbcType="BIGINT" property="jobId"/>
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="trigger_expression" jdbcType="VARCHAR" property="triggerExpression"/>
+        <result column="retry_times" jdbcType="INTEGER" property="retryTimes"/>
+        <result column="retry_interval" jdbcType="INTEGER" property="retryInterval"/>
+        <result column="active_start_time" jdbcType="TIMESTAMP" property="activeStartTime"/>
+        <result column="active_end_time" jdbcType="TIMESTAMP" property="activeEndTime"/>
+    </resultMap>
     <sql id="Base_Column_List">
         id,
         script_id,
@@ -32,6 +45,19 @@
         operator_id,
         create_time,
         update_time
+    </sql>
+    <sql id="Job_Define_Column_List">
+        a.script_id,
+        a.scheduler_config_id,
+        a.job_id,
+        a.operator_id,
+        a.create_time,
+        a.update_time,
+        b.trigger_expression,
+        b.retry_times,
+        b.retry_interval,
+        b.active_start_time,
+        b.active_end_time
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -62,5 +88,28 @@
         <include refid="Base_Column_List"/>
         from script_job_apply
         where script_id = #{scriptId,jdbcType=INTEGER}
+    </select>
+    <select id="selectJobDefineByJobIds" resultMap="JobDefineMap">
+        select
+        <include refid="Job_Define_Column_List"/>
+        from
+            (select
+                <include refid="Base_Column_List"/>
+                from script_job_apply
+                where job_id in
+                <foreach collection="jobIds" item="item" separator="," open="(" close=")">
+                    #{item,jdbcType=BIGINT}
+                </foreach>
+            ) a
+        left join
+        scheduler_config b on
+        a.script_id = b.script_id
+    </select>
+
+    <select id="selectByJobId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from script_job_apply
+        where job_id = #{jobId,jdbcType=BIGINT}
     </select>
 </mapper>

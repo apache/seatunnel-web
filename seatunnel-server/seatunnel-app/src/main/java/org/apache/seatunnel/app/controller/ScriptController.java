@@ -19,19 +19,18 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.aspect.UserId;
 import org.apache.seatunnel.app.common.Result;
-import org.apache.seatunnel.app.domain.request.script.AddEmptyScriptReq;
+import org.apache.seatunnel.app.domain.request.script.CreateScriptReq;
 import org.apache.seatunnel.app.domain.request.script.PublishScriptReq;
 import org.apache.seatunnel.app.domain.request.script.ScriptListReq;
 import org.apache.seatunnel.app.domain.request.script.UpdateScriptContentReq;
 import org.apache.seatunnel.app.domain.request.script.UpdateScriptParamReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.script.AddEmptyScriptRes;
+import org.apache.seatunnel.app.domain.response.script.CreateScriptRes;
+import org.apache.seatunnel.app.domain.response.script.ScriptFullInfoRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptParamRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptSimpleInfoRes;
 import org.apache.seatunnel.app.service.IScriptService;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,21 +57,19 @@ public class ScriptController {
     private IScriptService iScriptService;
 
     @PostMapping
-    @ApiOperation(value = "add an empty script", httpMethod = "POST")
-    public Result<AddEmptyScriptRes> addEmptyScript(@RequestBody @NotNull AddEmptyScriptReq addEmptyScriptReq,
-                                                    @ApiIgnore @UserId Integer operatorId) {
-        addEmptyScriptReq.setCreatorId(operatorId);
-        return Result.success(iScriptService.addEmptyScript(addEmptyScriptReq));
+    @ApiOperation(value = "add an script with content", httpMethod = "POST")
+    public Result<CreateScriptRes> createScript(@RequestBody @NotNull CreateScriptReq createScriptReq,
+                                                  @ApiIgnore @UserId Integer operatorId) {
+        createScriptReq.setCreatorId(operatorId);
+        return Result.success(iScriptService.createScript(createScriptReq));
     }
 
     @PutMapping("/{scriptId}/content")
     @ApiOperation(value = "update script", httpMethod = "PUT")
     public Result<Void> updateScriptContent(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId,
-                                            @RequestBody @NotNull String content,
+                                            @RequestBody @NotNull UpdateScriptContentReq req,
                                             @ApiIgnore @UserId Integer operatorId) {
-        final UpdateScriptContentReq req = new UpdateScriptContentReq();
         req.setScriptId(scriptId);
-        req.setContent(content);
         req.setMenderId(operatorId);
 
         iScriptService.updateScriptContent(req);
@@ -95,7 +92,6 @@ public class ScriptController {
 
         final ScriptListReq req = new ScriptListReq();
         req.setName(name);
-        req.setStatus(status);
         req.setPageNo(pageNo);
         req.setPageSize(pageSize);
 
@@ -106,6 +102,11 @@ public class ScriptController {
     @ApiOperation(value = "fetch script content", httpMethod = "GET")
     public Result<String> fetchScriptContent(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId) {
         return Result.success(iScriptService.fetchScriptContent(scriptId));
+    }
+
+    @GetMapping("/{scriptId}")
+    public Result<ScriptFullInfoRes> detail(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId) {
+        return Result.success(iScriptService.detail(scriptId));
     }
 
     @PutMapping("/{scriptId}/param")
@@ -119,9 +120,6 @@ public class ScriptController {
 
     @GetMapping("/{scriptId}/param")
     @ApiOperation(value = "fetch script param", httpMethod = "GET")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "id", value = "script id", dataType = "Integer"),
-    })
     public Result<List<ScriptParamRes>> fetchScriptParam(@ApiParam(value = "script id", required = true) @PathVariable(value = "scriptId") Integer scriptId) {
         return Result.success(iScriptService.fetchScriptParam(scriptId));
     }

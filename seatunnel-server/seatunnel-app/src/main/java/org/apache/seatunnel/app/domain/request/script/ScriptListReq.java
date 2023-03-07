@@ -28,6 +28,4 @@ import lombok.Data;
 public class ScriptListReq extends BasePageReq {
     @ApiModelProperty(value = "script name", required = false, dataType = "String")
     private String name;
-    @ApiModelProperty(value = "script status", required = false, dataType = "Integer")
-    private Byte status;
 }

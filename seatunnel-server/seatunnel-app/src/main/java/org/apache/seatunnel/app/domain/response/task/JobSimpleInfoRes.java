@@ -17,6 +17,7 @@
 
 package org.apache.seatunnel.app.domain.response.task;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -29,9 +30,18 @@ import java.util.Date;
 @Builder
 public class JobSimpleInfoRes {
     @ApiModelProperty(value = "job id", dataType = "Long")
-    private long jobId;
+    private Long jobId;
+    @ApiModelProperty(value = "script id", dataType = "Long")
+    private Integer scriptId;
+    @ApiModelProperty(value = "job name", dataType = "String")
+    @JsonProperty("datapipeName")
+    private String jobName;
     @ApiModelProperty(value = "job status", dataType = "String")
     private String jobStatus;
+    @ApiModelProperty(value = "job plan", dataType = "String")
+    private String jobPlan;
+    @ApiModelProperty(value = "job is publish", dataType = "Boolean")
+    private Boolean publish;
     @ApiModelProperty(value = "job creator", dataType = "String")
     private String creatorName;
     @ApiModelProperty(value = "job mender", dataType = "String")

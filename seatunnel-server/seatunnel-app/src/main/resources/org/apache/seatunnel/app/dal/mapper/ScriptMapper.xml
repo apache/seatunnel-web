@@ -41,10 +41,11 @@
     </sql>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.apache.seatunnel.app.dal.entity.Script"
             useGeneratedKeys="true">
-        insert into `script` (name, type, status, creator_id, mender_id)
+        insert into `script` (name, type, status, creator_id, mender_id, content)
         VALUES (#{name,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
                 #{creatorId,jdbcType=INTEGER},
-                #{menderId,jdbcType=INTEGER})
+                #{menderId,jdbcType=INTEGER},
+                #{content,jdbcType=VARCHAR})
     </insert>
     <update id="updateContentByPrimaryKey">
         update `script`
@@ -69,11 +70,9 @@
         <include refid="Base_Column_List"/>
         from script
         <where>
+            `status` != 2
             <if test="script.name != null and script.name != ''">
                 and `name` = #{script.name,jdbcType=VARCHAR}
-            </if>
-            <if test="script.status != null">
-                and `status` = #{script.status,jdbcType=TINYINT}
             </if>
         </where>
         limit #{start,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
@@ -91,11 +90,9 @@
         count(1)
         from script
         <where>
+            `status` != 2
             <if test="script.name != null and script.name != ''">
                 and `name` = #{script.name,jdbcType=VARCHAR}
-            </if>
-            <if test="script.status != null">
-                and `status` = #{script.status,jdbcType=TINYINT}
             </if>
         </where>
     </select>

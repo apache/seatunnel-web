@@ -22,10 +22,11 @@ import lombok.Data;
 
 @Builder
 @Data
-public class AddEmptyScriptDto {
+public class CreateScriptDto {
     private String name;
     private byte type;
     private int creatorId;
     private int menderId;
     private byte status;
+    private String content;
 }

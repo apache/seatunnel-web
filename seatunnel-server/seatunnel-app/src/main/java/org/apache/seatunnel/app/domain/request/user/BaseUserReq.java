@@ -28,10 +28,10 @@ public class BaseUserReq {
     private String username;
     @ApiModelProperty(value = "user password", required = true, dataType = "String")
     private String password;
-    @ApiModelProperty(value = "user status", required = true, dataType = "Byte")
+    @ApiModelProperty(value = "user status", required = true, dataType = "Integer")
     @NotNull
     private Byte status;
-    @ApiModelProperty(value = "user type", required = true, dataType = "Byte")
+    @ApiModelProperty(value = "user type", required = true, dataType = "Integer")
     @NotNull
     private Byte type;
 }

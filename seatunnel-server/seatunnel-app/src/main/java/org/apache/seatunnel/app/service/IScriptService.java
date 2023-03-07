@@ -17,20 +17,21 @@
 
 package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.app.domain.request.script.AddEmptyScriptReq;
+import org.apache.seatunnel.app.domain.request.script.CreateScriptReq;
 import org.apache.seatunnel.app.domain.request.script.PublishScriptReq;
 import org.apache.seatunnel.app.domain.request.script.ScriptListReq;
 import org.apache.seatunnel.app.domain.request.script.UpdateScriptContentReq;
 import org.apache.seatunnel.app.domain.request.script.UpdateScriptParamReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.script.AddEmptyScriptRes;
+import org.apache.seatunnel.app.domain.response.script.CreateScriptRes;
+import org.apache.seatunnel.app.domain.response.script.ScriptFullInfoRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptParamRes;
 import org.apache.seatunnel.app.domain.response.script.ScriptSimpleInfoRes;
 
 import java.util.List;
 
 public interface IScriptService {
-    AddEmptyScriptRes addEmptyScript(AddEmptyScriptReq addEmptyScriptReq);
+    CreateScriptRes createScript(CreateScriptReq createScriptReq);
 
     void updateScriptContent(UpdateScriptContentReq updateScriptContentReq);
 
@@ -45,4 +46,6 @@ public interface IScriptService {
     void updateScriptParam(UpdateScriptParamReq updateScriptParamReq);
 
     void publishScript(PublishScriptReq req);
+
+    ScriptFullInfoRes detail(Integer scriptId);
 }

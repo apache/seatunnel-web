@@ -15,26 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.user;
+package org.apache.seatunnel.scheduler.dolphinscheduler.utils;
 
-import com.google.common.collect.Maps;
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
+import org.apache.seatunnel.spi.scheduler.enums.InstanceStatusEnum;
 
-import java.util.Map;
+public class StatusUtils {
 
-@ApiModel(value = "userSimpleInfoRes", description = "user simple information")
-@Data
-public class UserSimpleInfoRes extends BaseUserInfoRes {
-
-    private String token;
-
-    public Map<String, Object> toMap() {
-        final Map<String, Object> userMap = Maps.newHashMap();
-        userMap.put("id", getId());
-        userMap.put("name", getName());
-        userMap.put("status", getStatus());
-        userMap.put("type", getType());
-        return userMap;
+    public static InstanceStatusEnum getDolphinSchedulerStatus(String status) {
+        switch (status) {
+            case "SUBMITTED_SUCCESS":
+            case "RUNNING_EXECUTION":
+            case "DISPATCH":
+                return InstanceStatusEnum.RUNNING;
+            case "STOP":
+            case "KILL":
+                return InstanceStatusEnum.STOPPED;
+            case "FAILURE":
+                return InstanceStatusEnum.FAILED;
+            case "FORCED_SUCCESS":
+            case "SUCCESS":
+                return InstanceStatusEnum.SUCCESS;
+            default:
+                return InstanceStatusEnum.UNKNOWN;
+        }
     }
+
 }

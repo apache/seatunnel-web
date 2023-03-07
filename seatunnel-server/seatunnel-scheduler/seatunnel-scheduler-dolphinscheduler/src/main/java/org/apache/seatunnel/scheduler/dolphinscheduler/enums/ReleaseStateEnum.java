@@ -15,11 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.response.script;
+package org.apache.seatunnel.scheduler.dolphinscheduler.enums;
 
-import lombok.Data;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
-@Data
-public class AddEmptyScriptRes {
-    private int id;
+public enum ReleaseStateEnum {
+    ONLINE(true),
+    OFFLINE(false),
+    ;
+
+    private final boolean publish;
+
+    ReleaseStateEnum(boolean publish) {
+        this.publish = publish;
+    }
+
+    public static ReleaseStateEnum parse(String name) {
+        for (ReleaseStateEnum value : values()) {
+            if (value.name().equalsIgnoreCase(name)){
+                return value;
+            }
+        }
+        throw new SeatunnelException(SeatunnelErrorEnum.NO_SUCH_ELEMENT);
+    }
+
+    public boolean isPublish() {
+        return publish;
+    }
 }

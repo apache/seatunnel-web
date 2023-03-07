@@ -17,9 +17,12 @@
 
 package org.apache.seatunnel.app.dal.mapper;
 
+import org.apache.seatunnel.app.dal.entity.JobDefine;
 import org.apache.seatunnel.app.dal.entity.ScriptJobApply;
 
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ScriptJobApplyMapper {
     int deleteByPrimaryKey(Integer id);
@@ -31,4 +34,8 @@ public interface ScriptJobApplyMapper {
     void update(ScriptJobApply record);
 
     ScriptJobApply selectByScriptId(@Param("scriptId") int scriptId);
+
+    List<JobDefine> selectJobDefineByJobIds(@Param("jobIds") List<Long> jobIds);
+
+    ScriptJobApply selectByJobId(@Param("jobId") long jobId);
 }

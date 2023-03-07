@@ -18,8 +18,8 @@
 package org.apache.seatunnel.app.dal.dao;
 
 import org.apache.seatunnel.app.dal.entity.Script;
-import org.apache.seatunnel.app.domain.dto.script.AddEmptyScriptDto;
 import org.apache.seatunnel.app.domain.dto.script.CheckScriptDuplicateDto;
+import org.apache.seatunnel.app.domain.dto.script.CreateScriptDto;
 import org.apache.seatunnel.app.domain.dto.script.ListScriptsDto;
 import org.apache.seatunnel.app.domain.dto.script.UpdateScriptContentDto;
 import org.apache.seatunnel.server.common.PageData;
@@ -27,7 +27,7 @@ import org.apache.seatunnel.server.common.PageData;
 public interface IScriptDao {
     void checkScriptDuplicate(CheckScriptDuplicateDto dto);
 
-    int addEmptyScript(AddEmptyScriptDto dto);
+    int createScript(CreateScriptDto dto);
 
     Script getScript(Integer id);
 
@@ -36,4 +36,6 @@ public interface IScriptDao {
     void deleteScript(int id);
 
     PageData<Script> list(ListScriptsDto dto, Integer pageNo, Integer pageSize);
+
+    void updateStatus(Script script);
 }

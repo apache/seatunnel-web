@@ -17,37 +17,25 @@
 
 package org.apache.seatunnel.app.common;
 
-public enum ScriptStatusEnum {
-    UNPUBLISHED(0, "unpublished"),
-    PUBLISHED(1, "published"),
-    DELETED(2, "deleted"),
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
+
+import java.util.Objects;
+
+public enum ObjectTypeEnum {
+    SCRIPT,
+    JOB,
+    INSTANCE,
     ;
 
-    private final int code;
-    private final String  description;
-
-    ScriptStatusEnum(int code, String description) {
-        this.code = code;
-        this.description = description;
-    }
-
-    public static String parse(Byte status) {
-        if (status == null) {
-            throw new IllegalArgumentException("status is null");
-        }
-        for (ScriptStatusEnum scriptStatusEnum : ScriptStatusEnum.values()) {
-            if (scriptStatusEnum.getCode() == status) {
-                return scriptStatusEnum.getDescription();
+    public static ObjectTypeEnum parse(Integer type) {
+        if (Objects.nonNull(type)) {
+            for (ObjectTypeEnum value : ObjectTypeEnum.values()) {
+                if (value.ordinal() == type) {
+                    return value;
+                }
             }
         }
-        throw new IllegalArgumentException("status is illegal");
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getDescription() {
-        return description;
+        throw new SeatunnelException(SeatunnelErrorEnum.NO_SUCH_ELEMENT);
     }
 }
