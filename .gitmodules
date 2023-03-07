@@ -1,0 +1,3 @@
+[submodule "seatunnel-main-repository"]
+	path = seatunnel-main-repository
+	url = https://github.com/apache/incubator-seatunnel.git

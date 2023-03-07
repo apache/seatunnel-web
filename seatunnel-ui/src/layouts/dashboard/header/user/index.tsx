@@ -16,21 +16,29 @@
  */
 
 import { defineComponent, toRefs } from 'vue'
-import { NSpace, NDropdown } from 'naive-ui'
+import { NSpace, NDropdown, NIcon, NButton } from 'naive-ui'
 import { useUserDropdown } from './use-user-dropdown'
+import { useUserStore } from '@/store/user'
+import { DownOutlined, UserOutlined } from '@vicons/antd'
+import type { UserDetail } from '@/service/user/types'
 
 const User = defineComponent({
   setup() {
     const { state, handleSelect } = useUserDropdown()
+    const userDetail = useUserStore()
 
-    return { ...toRefs(state), handleSelect }
+    return {
+      ...toRefs(state),
+      handleSelect,
+      userDetail
+    }
   },
   render() {
     return (
       <NSpace
-        justify='center'
+        justify='end'
         align='center'
-        class='h-16 w-12 mr-2'
+        class='h-16 mr-12'
         style={{ cursor: 'pointer' }}
       >
         <NDropdown
@@ -38,11 +46,13 @@ const User = defineComponent({
           options={this.dropdownOptions}
           onSelect={this.handleSelect}
         >
-          <img
-            class='h-10 w-10 rounded-full'
-            src='https://avatars.githubusercontent.com/u/19239641?s=64&v=4'
-            alt=''
-          />
+          <NButton text>
+            <NSpace>
+              <NIcon component={UserOutlined} />
+              <span>{(this.userDetail.getUserInfo as UserDetail).name}</span>
+              <NIcon component={DownOutlined} />
+            </NSpace>
+          </NButton>
         </NDropdown>
       </NSpace>
     )

@@ -34,6 +34,10 @@ export function useMenu() {
     {
       label: () => h(NEllipsis, null, { default: () => t('menu.tasks') }),
       key: 'tasks'
+    },
+    {
+      label: () => h(NEllipsis, null, { default: () => t('menu.user_manage') }),
+      key: 'user-manage'
     }
   ]
 

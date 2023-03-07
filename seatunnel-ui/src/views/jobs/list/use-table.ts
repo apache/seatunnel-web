@@ -17,15 +17,20 @@
 
 import { useI18n } from 'vue-i18n'
 import { h, reactive, ref } from 'vue'
-import { NButton, NSpace, NSwitch } from 'naive-ui'
+import { NButton, NSpace } from 'naive-ui'
+import { taskJobList, taskExecute, taskRecycle } from '@/service/task'
+import { getTableColumn } from '@/common/table'
+import type { ResponseTable } from '@/service/types'
+import type { JobDetail } from '@/service/task/types'
 
 export function useTable() {
   const { t } = useI18n()
 
   const state = reactive({
     columns: [],
-    tableData: [{}],
-    page: ref(1),
+    tableData: [],
+    name: ref(null),
+    pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
     loading: ref(false)
@@ -33,36 +38,84 @@ export function useTable() {
 
   const createColumns = (state: any) => {
     state.columns = [
+      ...getTableColumn([
+        { key: 'scriptId', title: t('jobs.script_id') },
+        { key: 'jobId', title: t('jobs.job_id') }
+      ]),
       {
         title: t('jobs.data_pipe_name'),
-        key: 'data_pipe_name'
+        key: 'datapipeName'
       },
       {
         title: t('jobs.plan'),
-        key: 'plan'
+        key: 'jobPlan'
       },
       {
         title: t('jobs.create_date'),
-        key: 'create_date'
-      },
-      {
-        title: t('jobs.publish'),
-        key: 'publish',
-        render: (row: any) => h(NSwitch, { round: false })
+        key: 'createTime'
       },
       {
         title: t('jobs.operation'),
         key: 'operation',
-        render: (row: any) =>
+        render: (row: JobDetail) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, { text: true }, t('jobs.executed_immediately')),
-              h(NButton, { text: true }, t('jobs.stop_plan'))
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.jobStatus === 'OFFLINE',
+                  onClick: () => handleExecute(row.jobId)
+                },
+                { default: () => t('jobs.execute') }
+              ),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.jobStatus === 'OFFLINE',
+                  onClick: () => handleRecycle(row.jobId)
+                },
+                { default: () => t('jobs.recycle') }
+              )
             ]
           })
       }
     ]
   }
 
-  return { state, createColumns }
+  const getTableData = (params: any) => {
+    if (state.loading) return
+    state.loading = true
+    taskJobList({ ...params }).then(
+      (res: ResponseTable<Array<JobDetail> | []>) => {
+        state.tableData = res.data.data as any
+        state.totalPage = res.data.totalPage
+        state.loading = false
+      }
+    )
+  }
+
+  const handleExecute = (id: number) => {
+    taskExecute(id, {
+      objectType: 1,
+      executeType: 0
+    }).then(() => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
+  const handleRecycle = (id: number) => {
+    taskRecycle(id).then(() => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
+  return { state, createColumns, getTableData }
 }

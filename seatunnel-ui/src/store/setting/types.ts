@@ -15,37 +15,11 @@
  * limitations under the License.
  */
 
-import { reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-export function useDetailOverview() {
-  const { t } = useI18n()
-  const state = reactive({
-    loading: ref(false),
-    columns: [],
-    tableData: [{ name: '' }]
-  })
-
-  const createColumns = (state: any) => {
-    state.columns = [
-      {
-        title: t('data_pipes.name'),
-        key: 'name'
-      },
-      {
-        title: t('data_pipes.execute_time'),
-        key: 'executeTime'
-      },
-      {
-        title: t('data_pipes.end_time'),
-        key: 'endTime'
-      },
-      {
-        title: t('data_pipes.state'),
-        key: 'state'
-      }
-    ]
-  }
-
-  return { state, createColumns }
+interface SettingStore {
+  sequenceColumn: boolean
+  dataUniqueValue: boolean
+  fillet: number
+  requestTime: number
 }
+
+export { SettingStore }

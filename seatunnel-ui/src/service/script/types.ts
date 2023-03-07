@@ -24,7 +24,17 @@ interface ScriptList {
 
 interface ScriptAdd {
   name: string
-  type: string
+  type: number
+  content: string
 }
 
-export { ScriptList, ScriptAdd }
+interface ScriptDetail extends ScriptAdd {
+  id: number
+  status: string
+  creatorId: number
+  menderId: number
+  createTime: string
+  updateTime: string
+}
+
+export { ScriptList, ScriptAdd, ScriptDetail }

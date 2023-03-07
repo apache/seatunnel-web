@@ -16,12 +16,7 @@
  */
 
 import { axios } from '@/service/service'
-import type {
-  TaskList,
-  TaskJobList,
-  TaskRecycle,
-  TaskExecute
-} from '@/service/task/types'
+import type { TaskList, TaskExecute } from '@/service/task/types'
 
 export function taskInstanceList(params: TaskList): any {
   return axios({
@@ -39,9 +34,9 @@ export function taskJobList(params: TaskList): any {
   })
 }
 
-export function taskExecute(scriptId: number, data: TaskExecute): any {
+export function taskExecute(id: number, data: TaskExecute): any {
   return axios({
-    url: `/task/${scriptId}/execute`,
+    url: `/task/${id}/execute`,
     method: 'post',
     data
   })
@@ -54,7 +49,7 @@ export function taskRecycle(scriptId: number): any {
   })
 }
 
-export function taskInstanceDetail(taskInstanceId: number): any {
+export function taskInstanceLog(taskInstanceId: number): any {
   return axios({
     url: `/task/${taskInstanceId}`,
     method: 'get'

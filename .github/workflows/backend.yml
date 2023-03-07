@@ -21,9 +21,7 @@ on:
   push:
   pull_request:
     paths-ignore:
-      - 'docs/**'
       - '**/*.md'
-      - 'seatunnel-ui/**'
 
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
@@ -31,7 +29,7 @@ concurrency:
 
 jobs:
   license-header:
-    if: github.repository == 'apache/incubator-seatunnel'
+    if: github.repository == 'apache/incubator-seatunnel-web'
     name: License header
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -43,7 +41,7 @@ jobs:
         uses: apache/skywalking-eyes@985866ce7e324454f61e22eb2db2e998db09d6f3
 
   code-style:
-    if: github.repository == 'apache/incubator-seatunnel'
+    if: github.repository == 'apache/incubator-seatunnel-web'
     name: Code style
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -55,7 +53,7 @@ jobs:
         run: ./mvnw --batch-mode --quiet --no-snapshot-updates clean checkstyle:check
 
   dead-link:
-    if: github.repository == 'apache/incubator-seatunnel'
+    if: github.repository == 'apache/incubator-seatunnel-web'
     name: Dead links
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -68,7 +66,7 @@ jobs:
           done
 
   sanity-check:
-    if: github.repository == 'apache/incubator-seatunnel'
+    if: github.repository == 'apache/incubator-seatunnel-web'
     name: Sanity check results
     needs: [ license-header, code-style, dead-link ]
     runs-on: ubuntu-latest
@@ -101,7 +99,7 @@ jobs:
           cache: 'maven'
       - name: Build distribution tar
         run: >-
-          ./mvnw -B install scalastyle:check
+          ./mvnw -B install 
           -D"maven.test.skip"=true
           -D"checkstyle.skip"=true
           -D"license.skipAddThirdParty"=true
@@ -111,7 +109,7 @@ jobs:
           -D"maven.wagon.httpconnectionManager.ttlSeconds"=120
 
   dependency-license:
-    if: github.repository == 'apache/incubator-seatunnel'
+    if: github.repository == 'apache/incubator-seatunnel-web'
     name: Dependency licenses
     needs: [ sanity-check ]
     runs-on: ubuntu-latest
@@ -130,7 +128,6 @@ jobs:
           ./mvnw -B -q install -DskipTests
           -D"maven.test.skip"=true
           -D"maven.javadoc.skip"=true
-          -D"scalastyle.skip"=true
           -D"checkstyle.skip"=true
           -D"license.skipAddThirdParty"
       - name: Check Dependencies Licenses
@@ -155,7 +152,7 @@ jobs:
           cache: 'maven'
       - name: Run Unit tests
         run: |
-          ./mvnw -B -T 1C clean verify -D"maven.test.skip"=false -D"checkstyle.skip"=true -D"scalastyle.skip"=true -D"license.skipAddThirdParty"=true --no-snapshot-updates
+          ./mvnw -B -T 1C clean verify -D"maven.test.skip"=false -D"checkstyle.skip"=true -D"license.skipAddThirdParty"=true --no-snapshot-updates
         env:
           MAVEN_OPTS: -Xmx2048m
 
@@ -178,6 +175,6 @@ jobs:
           cache: 'maven'
       - name: Run Integration tests
         run: |
-          ./mvnw -T 1C -B verify -DskipUT=true -DskipIT=false -D"checkstyle.skip"=true -D"scalastyle.skip"=true -D"license.skipAddThirdParty"=true --no-snapshot-updates
+          ./mvnw -T 1C -B verify -DskipUT=true -D"checkstyle.skip"=true -D"license.skipAddThirdParty"=true --no-snapshot-updates
         env:
           MAVEN_OPTS: -Xmx2048m

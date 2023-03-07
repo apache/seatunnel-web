@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, watch, ref } from 'vue'
 import {
   NConfigProvider,
   NMessageProvider,
@@ -27,8 +27,10 @@ import {
 } from 'naive-ui'
 import { useThemeStore } from '@/store/theme'
 import { useLocalesStore } from '@/store/locale'
+import { useSettingStore } from '@/store/setting'
 import themeList from '@/themes'
 import type { GlobalThemeOverrides } from 'naive-ui'
+import type { Ref } from 'vue'
 
 const App = defineComponent({
   setup() {
@@ -37,20 +39,29 @@ const App = defineComponent({
       themeStore.darkTheme ? darkTheme : undefined
     )
     const localesStore = useLocalesStore()
+    const themeOverrides: Ref<GlobalThemeOverrides> = ref(
+      themeList[currentTheme.value ? 'dark' : 'light']
+    )
+
+    watch(
+      () => useSettingStore().getFilletValue,
+      () => {
+        ;(themeOverrides.value.common as any).borderRadius =
+          useSettingStore().getFilletValue + 'px'
+      }
+    )
 
     return {
       currentTheme,
-      localesStore
+      localesStore,
+      themeOverrides
     }
   },
   render() {
-    const themeOverrides: GlobalThemeOverrides =
-      themeList[this.currentTheme ? 'dark' : 'light']
-
     return (
       <NConfigProvider
         theme={this.currentTheme}
-        theme-overrides={themeOverrides}
+        theme-overrides={this.themeOverrides}
         date-locale={
           String(this.localesStore.getLocales) === 'zh_CN' ? dateZhCN : dateEnUS
         }

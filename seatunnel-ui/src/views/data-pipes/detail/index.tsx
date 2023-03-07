@@ -15,32 +15,42 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
-import {
-  NSpace,
-  NCard,
-  NButton,
-  NBreadcrumb,
-  NBreadcrumbItem,
-  NTabs,
-  NTabPane
-} from 'naive-ui'
+import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { NSpace, NCard, NBreadcrumb, NBreadcrumbItem } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { scriptDetail } from '@/service/script'
 import MonacoEditor from '@/components/monaco-editor'
-import DetailOverview from './components/detail-overview'
-import type { Router } from 'vue-router'
+import type { Router, RouteLocationNormalizedLoaded } from 'vue-router'
+import type { ResponseBasic } from '@/service/types'
+import type { ScriptDetail } from '@/service/script/types'
 
 const DataPipesDetail = defineComponent({
   setup() {
     const { t } = useI18n()
     const router: Router = useRouter()
+    const route: RouteLocationNormalizedLoaded = useRoute()
+    const variables = reactive({
+      name: '',
+      type: 0,
+      content: ''
+    })
 
     const handleClickDataPipes = () => {
       router.push({ path: '/data-pipes/list' })
     }
 
-    return { t, handleClickDataPipes }
+    onMounted(() => {
+      scriptDetail(Number(route.params.dataPipeId)).then(
+        (res: ResponseBasic<ScriptDetail>) => {
+          variables.name = res.data.name
+          variables.type = res.data.type
+          variables.content = res.data.content
+        }
+      )
+    })
+
+    return { t, ...toRefs(variables), handleClickDataPipes }
   },
   render() {
     return (
@@ -53,42 +63,18 @@ const DataPipesDetail = defineComponent({
                   <NBreadcrumbItem onClick={this.handleClickDataPipes}>
                     {this.t('data_pipes.data_pipes')}
                   </NBreadcrumbItem>
-                  <NBreadcrumbItem>user-order-tables-10</NBreadcrumbItem>
+                  <NBreadcrumbItem>{this.name}</NBreadcrumbItem>
                 </NBreadcrumb>
-                <div
-                  class={['w-3', 'h-3', 'rounded-full', 'bg-green-400']}
-                ></div>
-                <span
-                  style={{
-                    fontSize: 'var(--n-font-size)',
-                    color: 'var(--n-item-text-color-active)'
-                  }}
-                >
-                  {this.t('data_pipes.stop')}
-                </span>
-              </NSpace>
-            ),
-            'header-extra': () => (
-              <NSpace>
-                <NButton secondary>{this.t('data_pipes.execute')}</NButton>
-                <NButton secondary>{this.t('data_pipes.kill')}</NButton>
-                <NButton secondary>{this.t('data_pipes.stop')}</NButton>
               </NSpace>
             )
           }}
         </NCard>
-        <NTabs type='segment' class='mt-9'>
-          <NTabPane name='overview' tab={this.t('data_pipes.overview')}>
-            <NCard>
-              <DetailOverview />
-            </NCard>
-          </NTabPane>
-          <NTabPane name='script' tab={this.t('data_pipes.script')}>
-            <NCard>
-              <MonacoEditor />
-            </NCard>
-          </NTabPane>
-        </NTabs>
+        <NCard>
+          <MonacoEditor
+            v-model={[this.content, 'value']}
+            options={{ readOnly: true }}
+          />
+        </NCard>
       </NSpace>
     )
   }

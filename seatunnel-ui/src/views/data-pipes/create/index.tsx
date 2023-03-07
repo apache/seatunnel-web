@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import {
@@ -26,52 +26,38 @@ import {
   NIcon,
   NInput,
   NSpace,
-  NTooltip,
-  NDropdown
+  NTooltip
 } from 'naive-ui'
 import { BulbOutlined } from '@vicons/antd'
+import { scriptAdd } from '@/service/script'
 import MonacoEditor from '@/components/monaco-editor'
-import Log from '@/components/log'
-import ConfigurationModal from './components/configuration-modal'
 import type { Router } from 'vue-router'
-import type { Ref } from 'vue'
 
 const DataPipesCreate = defineComponent({
   setup() {
     const { t } = useI18n()
     const router: Router = useRouter()
-    const showConfigurationModal: Ref<boolean> = ref(false)
-    const configurationType: Ref<
-      'engine-parameter' | 'self-defined-parameter'
-    > = ref('engine-parameter')
+    const variables = reactive({
+      name: '',
+      type: 0,
+      content: ''
+    })
 
     const handleClickDataPipes = () => {
       router.push({ path: '/data-pipes/list' })
     }
 
-    const handleSelectConfiguration = (
-      key: 'engine-parameter' | 'self-defined-parameter'
-    ) => {
-      configurationType.value = key
-      showConfigurationModal.value = true
-    }
-
-    const handleCancelConfigurationModal = () => {
-      showConfigurationModal.value = false
-    }
-
-    const handleConfirmConfigurationModal = () => {
-      showConfigurationModal.value = false
+    const handleAdd = () => {
+      scriptAdd(variables).then(() => {
+        handleClickDataPipes()
+      })
     }
 
     return {
       t,
-      showConfigurationModal,
-      configurationType,
+      ...toRefs(variables),
       handleClickDataPipes,
-      handleSelectConfiguration,
-      handleCancelConfigurationModal,
-      handleConfirmConfigurationModal
+      handleAdd
     }
   },
   render() {
@@ -93,8 +79,12 @@ const DataPipesCreate = defineComponent({
             ),
             'header-extra': () => (
               <NSpace>
-                <NButton secondary>{this.t('data_pipes.cancel')}</NButton>
-                <NButton secondary>{this.t('data_pipes.save')}</NButton>
+                <NButton secondary onClick={this.handleClickDataPipes}>
+                  {this.t('data_pipes.cancel')}
+                </NButton>
+                <NButton secondary type='primary' onClick={this.handleAdd}>
+                  {this.t('data_pipes.save')}
+                </NButton>
               </NSpace>
             )
           }}
@@ -108,6 +98,7 @@ const DataPipesCreate = defineComponent({
                 maxlength='100'
                 showCount
                 style={{ width: '600px' }}
+                v-model={[this.name, 'value']}
               />
               <NTooltip placement='right' trigger='hover'>
                 {{
@@ -123,42 +114,8 @@ const DataPipesCreate = defineComponent({
           </NSpace>
         </NCard>
         <NCard>
-          <NSpace vertical>
-            <NSpace justify='end'>
-              <NButton secondary>{this.t('data_pipes.execute')}</NButton>
-              <NButton secondary>{this.t('data_pipes.kill')}</NButton>
-              <NButton secondary>{this.t('data_pipes.stop')}</NButton>
-              <NDropdown
-                trigger='click'
-                options={[
-                  {
-                    label: this.t('data_pipes.engine_parameter'),
-                    key: 'engine-parameter'
-                  },
-                  {
-                    label: this.t('data_pipes.self_defined_parameter'),
-                    key: 'self-defined-parameter'
-                  }
-                ]}
-                onSelect={this.handleSelectConfiguration}
-              >
-                <NButton secondary>
-                  {this.t('data_pipes.configuration')}
-                </NButton>
-              </NDropdown>
-            </NSpace>
-            <MonacoEditor />
-          </NSpace>
+          <MonacoEditor v-model={[this.content, 'value']} />
         </NCard>
-        <NCard>
-          <Log />
-        </NCard>
-        <ConfigurationModal
-          type={this.configurationType}
-          showModal={this.showConfigurationModal}
-          onCancelModal={this.handleCancelConfigurationModal}
-          onConfirmModal={this.handleConfirmConfigurationModal}
-        />
       </NSpace>
     )
   }

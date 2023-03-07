@@ -16,22 +16,29 @@
  */
 
 export default {
+  instance_id: 'Instance Id',
+  job_id: 'Job Id',
   tasks: 'Tasks',
   search: 'Search',
-  tasks_name: 'Tasks Name',
   success: 'Success',
   fail: 'Fail',
+  stop: 'Stop',
   running: 'Running',
+  unknown: 'Unknown',
+  unpublished: 'Unpublished',
+  published: 'Published',
   task_name: 'Task Name',
   state: 'State',
   run_frequency: 'Run Frequency',
   once: 'Once',
   crontab: 'Crontab',
-  next_run: 'Next Run',
-  last_run: 'Last Run',
+  start_time: 'Start Time',
+  end_time: 'End Time',
   last_total_bytes: 'Last Total Bytes',
   last_total_records: 'Last Total Records',
   rerun: 'Rerun',
   kill: 'Kill',
-  view_log: 'View Log'
+  operation: 'Operation',
+  view_log: 'View Log',
+  log: 'Log'
 }

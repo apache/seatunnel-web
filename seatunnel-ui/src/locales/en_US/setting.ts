@@ -15,38 +15,20 @@
  * limitations under the License.
  */
 
-import { useI18n } from 'vue-i18n'
-import { reactive, h } from 'vue'
-import { useRouter } from 'vue-router'
-import type { Router } from 'vue-router'
-
-export function useSettingDropdown() {
-  const { t } = useI18n()
-  const router: Router = useRouter()
-
-  const dropdownOptions = [
-    {
-      key: 'header',
-      type: 'render',
-      render: () =>
-        h('h3', { class: ['py-1.5', 'px-3', 'font-medium'] }, t('menu.manage'))
-    },
-    {
-      key: 'header-divider',
-      type: 'divider'
-    },
-    { key: 'user-manage', label: t('menu.user_manage') }
-  ]
-
-  const state = reactive({
-    dropdownOptions
-  })
-
-  const handleSelect = (key: string) => {
-    if (key === 'user-manage') {
-      router.push({ path: '/user-manage' })
-    }
-  }
-
-  return { state, handleSelect }
+export default {
+  table_setting: 'Table Setting',
+  sequence_column: 'Sequence Column',
+  data_unique_value: 'Data Unique Value',
+  language_setting: 'Language Setting',
+  request_setting: 'Request Setting',
+  request_time: 'Request Time',
+  language: 'Language',
+  theme_setting: 'Theme Setting',
+  theme: 'Theme',
+  english: 'English',
+  light: 'Light',
+  model: 'Model',
+  hue: 'Hue',
+  purple: 'Purple',
+  fillet: 'Fillet'
 }

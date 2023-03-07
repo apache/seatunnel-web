@@ -17,13 +17,14 @@
 
 import { defineComponent, toRefs } from 'vue'
 import { NMenu, NSpace } from 'naive-ui'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useMenu } from './use-menu'
 
 const Menu = defineComponent({
   setup() {
     const { state } = useMenu()
     const router = useRouter()
+    const route = useRoute()
 
     const handleMenuClick = (key: string) => {
       router.push({ path: `/${key}` })
@@ -31,13 +32,15 @@ const Menu = defineComponent({
 
     return {
       ...toRefs(state),
-      handleMenuClick
+      handleMenuClick,
+      route
     }
   },
   render() {
     return (
       <NSpace align='center' class='h-16'>
         <NMenu
+          value={this.route.path.split('/')[1]}
           mode='horizontal'
           options={this.menuOptions}
           onUpdateValue={this.handleMenuClick}
