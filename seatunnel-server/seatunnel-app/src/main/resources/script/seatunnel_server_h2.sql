@@ -171,3 +171,21 @@ CREATE TABLE `user_login_log` (
 -- ----------------------------
 -- Records of user_login_log
 -- ----------------------------
+
+-- ----------------------------
+-- add user data
+-- ----------------------------
+
+INSERT INTO `user`
+( username, password, status, `type`)
+VALUES('seatunnel', 'f5e265aa1d76ce42b2a9d26d903a2e43', 0, 1);
+
+-- ----------------------------
+-- add role data
+-- ----------------------------
+INSERT INTO `role`
+(`type`, role_name, description)
+VALUES( 0, 'NORMAL_ROLE', 'NORMAL_ROLE');
+INSERT INTO `role`
+(`type`, role_name, description)
+VALUES( 1, 'ADMIN_ROLE', 'ADMIN_ROLE');
