@@ -100,6 +100,8 @@
         <maven-scm-provider-jgit.version>1.9.5</maven-scm-provider-jgit.version>
 
         <skipUT>false</skipUT>
+        <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -184,11 +186,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
