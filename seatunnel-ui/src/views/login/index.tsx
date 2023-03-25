@@ -16,7 +16,16 @@
  */
 
 import { defineComponent, toRefs, withKeys, getCurrentInstance } from 'vue'
-import { NSpace, NForm, NFormItem, NInput, NButton, useMessage } from 'naive-ui'
+import {
+  NSpace,
+  NLayout,
+  NLayoutContent,
+  NForm,
+  NFormItem,
+  NInput,
+  NButton,
+  useMessage
+} from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useForm } from './use-form'
 
@@ -36,52 +45,60 @@ const Login = defineComponent({
   },
   render() {
     return (
-      <NSpace
-        justify='center'
-        align='center'
-        class='w-full h-screen bg-blue-400'
-      >
-        <div class='w-96 bg-white px-10 py-8'>
-          <h2 class='text-2xl mb-6'>{this.t('login.login_to_sea_tunnel')}</h2>
-          <NForm rules={this.rules} ref='loginFormRef'>
-            <NFormItem
-              label={this.t('login.username')}
-              label-style={{ color: 'black' }}
-              path='userName'
-            >
-              <NInput
-                allowInput={this.trim}
-                type='text'
-                v-model={[this.loginForm.username, 'value']}
-                placeholder={this.t('login.username_tips')}
-                autofocus
-                onKeydown={withKeys(this.handleLogin, ['enter'])}
-              />
-            </NFormItem>
-            <NFormItem
-              label={this.t('login.password')}
-              label-style={{ color: 'black' }}
-              path='userPassword'
-            >
-              <NInput
-                allowInput={this.trim}
-                type='password'
-                v-model={[this.loginForm.password, 'value']}
-                placeholder={this.t('login.password_tips')}
-                onKeydown={withKeys(this.handleLogin, ['enter'])}
-              />
-            </NFormItem>
-          </NForm>
-          <NButton
-            type='info'
-            disabled={!this.loginForm.username || !this.loginForm.password}
-            style={{ width: '100%' }}
-            onClick={this.handleLogin}
+      <NLayout>
+        <NLayoutContent>
+          <NSpace
+            justify='center'
+            align='center'
+            class='w-full h-screen bg-gray-100'
           >
-            {this.t('login.login')}
-          </NButton>
-        </div>
-      </NSpace>
+            <div class='w-96 bg-white px-16 py-20 border border-gray-100 rounded-2xl'>
+              <h2 class='text-2xl mb-16 font-bold'>
+                {this.t('login.login_to_sea_tunnel')}
+              </h2>
+              <NForm rules={this.rules} ref='loginFormRef' class='mb-4'>
+                <NFormItem
+                  label={this.t('login.username')}
+                  label-style={{ color: 'black' }}
+                  path='userName'
+                >
+                  <NInput
+                    clearable
+                    allowInput={this.trim}
+                    type='text'
+                    v-model={[this.loginForm.username, 'value']}
+                    placeholder={this.t('login.username_tips')}
+                    autofocus
+                    onKeydown={withKeys(this.handleLogin, ['enter'])}
+                  />
+                </NFormItem>
+                <NFormItem
+                  label={this.t('login.password')}
+                  label-style={{ color: 'black' }}
+                  path='userPassword'
+                >
+                  <NInput
+                    clearable
+                    allowInput={this.trim}
+                    type='password'
+                    v-model={[this.loginForm.password, 'value']}
+                    placeholder={this.t('login.password_tips')}
+                    onKeydown={withKeys(this.handleLogin, ['enter'])}
+                  />
+                </NFormItem>
+              </NForm>
+              <NButton
+                type='info'
+                disabled={!this.loginForm.username || !this.loginForm.password}
+                style={{ width: '100%' }}
+                onClick={this.handleLogin}
+              >
+                {this.t('login.login')}
+              </NButton>
+            </div>
+          </NSpace>
+        </NLayoutContent>
+      </NLayout>
     )
   }
 })

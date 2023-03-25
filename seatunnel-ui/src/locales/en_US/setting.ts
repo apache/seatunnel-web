@@ -15,37 +15,20 @@
  * limitations under the License.
  */
 
-import { reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-export function useDetailOverview() {
-  const { t } = useI18n()
-  const state = reactive({
-    loading: ref(false),
-    columns: [],
-    tableData: [{ name: '' }]
-  })
-
-  const createColumns = (state: any) => {
-    state.columns = [
-      {
-        title: t('data_pipes.name'),
-        key: 'name'
-      },
-      {
-        title: t('data_pipes.execute_time'),
-        key: 'executeTime'
-      },
-      {
-        title: t('data_pipes.end_time'),
-        key: 'endTime'
-      },
-      {
-        title: t('data_pipes.state'),
-        key: 'state'
-      }
-    ]
-  }
-
-  return { state, createColumns }
+export default {
+  table_setting: 'Table Setting',
+  sequence_column: 'Sequence Column',
+  data_unique_value: 'Data Unique Value',
+  language_setting: 'Language Setting',
+  request_setting: 'Request Setting',
+  request_time: 'Request Time',
+  language: 'Language',
+  theme_setting: 'Theme Setting',
+  theme: 'Theme',
+  english: 'English',
+  light: 'Light',
+  model: 'Model',
+  hue: 'Hue',
+  purple: 'Purple',
+  fillet: 'Fillet'
 }

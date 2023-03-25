@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import {
   NBreadcrumb,
   NBreadcrumbItem,
@@ -27,21 +27,48 @@ import {
   NTooltip
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { BulbOutlined } from '@vicons/antd'
+import { scriptDetail, scriptUpdate } from '@/service/script'
 import MonacoEditor from '@/components/monaco-editor'
-import type { Router } from 'vue-router'
+import type { Router, RouteLocationNormalizedLoaded } from 'vue-router'
+import type { ResponseBasic } from '@/service/types'
+import type { ScriptDetail } from '@/service/script/types'
 
 const DataPipesEdit = defineComponent({
   setup() {
     const { t } = useI18n()
     const router: Router = useRouter()
+    const route: RouteLocationNormalizedLoaded = useRoute()
+    const variables = reactive({
+      name: '',
+      type: 0,
+      content: ''
+    })
 
     const handleClickDataPipes = () => {
       router.push({ path: '/data-pipes/list' })
     }
 
-    return { t, handleClickDataPipes }
+    const handleAdd = () => {
+      scriptUpdate(Number(route.params.dataPipeId), variables.content).then(
+        () => {
+          handleClickDataPipes()
+        }
+      )
+    }
+
+    onMounted(() => {
+      scriptDetail(Number(route.params.dataPipeId)).then(
+        (res: ResponseBasic<ScriptDetail>) => {
+          variables.name = res.data.name
+          variables.type = res.data.type
+          variables.content = res.data.content
+        }
+      )
+    })
+
+    return { t, ...toRefs(variables), handleClickDataPipes, handleAdd }
   },
   render() {
     return (
@@ -54,14 +81,18 @@ const DataPipesEdit = defineComponent({
                   <NBreadcrumbItem onClick={this.handleClickDataPipes}>
                     {this.t('data_pipes.data_pipes')}
                   </NBreadcrumbItem>
-                  <NBreadcrumbItem>{this.t('data_pipes.edit')}</NBreadcrumbItem>
+                  <NBreadcrumbItem>{this.name}</NBreadcrumbItem>
                 </NBreadcrumb>
               </NSpace>
             ),
             'header-extra': () => (
               <NSpace>
-                <NButton secondary>{this.t('data_pipes.cancel')}</NButton>
-                <NButton secondary>{this.t('data_pipes.save')}</NButton>
+                <NButton secondary onClick={this.handleClickDataPipes}>
+                  {this.t('data_pipes.cancel')}
+                </NButton>
+                <NButton secondary type='primary' onClick={this.handleAdd}>
+                  {this.t('data_pipes.save')}
+                </NButton>
               </NSpace>
             )
           }}
@@ -71,10 +102,11 @@ const DataPipesEdit = defineComponent({
             <span>{this.t('data_pipes.name')}</span>
             <NSpace align='center'>
               <NInput
-                clearable
+                disabled
                 maxlength='100'
                 showCount
                 style={{ width: '600px' }}
+                v-model={[this.name, 'value']}
               />
               <NTooltip placement='right' trigger='hover'>
                 {{
@@ -90,7 +122,7 @@ const DataPipesEdit = defineComponent({
           </NSpace>
         </NCard>
         <NCard>
-          <MonacoEditor />
+          <MonacoEditor v-model={[this.content, 'value']} />
         </NCard>
       </NSpace>
     )

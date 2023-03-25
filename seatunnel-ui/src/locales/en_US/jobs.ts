@@ -16,6 +16,8 @@
  */
 
 export default {
+  script_id: 'Script Id',
+  job_id: 'Job Id',
   jobs: 'Jobs',
   search: 'Search',
   data_pipe_name: 'Data Pipe Name',
@@ -23,6 +25,6 @@ export default {
   create_date: 'Create Date',
   publish: 'Publish',
   operation: 'Operation',
-  executed_immediately: 'Executed Immediately',
-  stop_plan: 'Stop Plan'
+  execute: 'Execute',
+  recycle: 'Recycle'
 }

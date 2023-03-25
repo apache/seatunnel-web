@@ -16,10 +16,10 @@
  */
 
 import { reactive, ref, h } from 'vue'
-import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NButton } from 'naive-ui'
 import { userList, userDelete, userEnable, userDisable } from '@/service/user'
+import { getTableColumn } from '@/common/table'
 import type { ResponseTable } from '@/service/types'
 import type { UserDetail } from '@/service/user/types'
 
@@ -27,7 +27,7 @@ export function useTable() {
   const { t } = useI18n()
   const state = reactive({
     columns: [],
-    tableData: [{ username: '' }],
+    tableData: [],
     pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
@@ -40,6 +40,7 @@ export function useTable() {
 
   const createColumns = (state: any) => {
     state.columns = [
+      ...getTableColumn([{ key: 'id', title: t('user_manage.id') }]),
       {
         title: t('user_manage.username'),
         key: 'name'
@@ -61,19 +62,22 @@ export function useTable() {
               h(
                 NButton,
                 { text: true, onClick: () => handleStatus(row) },
-                row.status === 1
-                  ? t('user_manage.enable')
-                  : t('user_manage.disable')
+                {
+                  default: () =>
+                    row.status === 1
+                      ? t('user_manage.enable')
+                      : t('user_manage.disable')
+                }
               ),
               h(
                 NButton,
                 { text: true, onClick: () => handleEdit(row) },
-                t('user_manage.edit')
+                { default: () => t('user_manage.edit') }
               ),
               h(
                 NButton,
                 { text: true, onClick: () => handleDelete(row) },
-                t('user_manage.delete')
+                { default: () => t('user_manage.delete') }
               )
             ]
           })
@@ -119,15 +123,12 @@ export function useTable() {
   const getTableData = (params: any) => {
     if (state.loading) return
     state.loading = true
-    useAsyncState(
-      userList({ ...params }).then(
-        (res: ResponseTable<Array<UserDetail> | []>) => {
-          state.tableData = res.data.data
-          state.totalPage = res.data.totalPage
-          state.loading = false
-        }
-      ),
-      {}
+    userList({ ...params }).then(
+      (res: ResponseTable<Array<UserDetail> | []>) => {
+        state.tableData = res.data.data as any
+        state.totalPage = res.data.totalPage
+        state.loading = false
+      }
     )
   }
 

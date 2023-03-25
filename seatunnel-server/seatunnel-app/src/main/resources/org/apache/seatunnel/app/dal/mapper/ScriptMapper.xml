@@ -41,10 +41,11 @@
     </sql>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.apache.seatunnel.app.dal.entity.Script"
             useGeneratedKeys="true">
-        insert into `script` (name, type, status, creator_id, mender_id)
+        insert into `script` (name, type, status, creator_id, mender_id, content)
         VALUES (#{name,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
                 #{creatorId,jdbcType=INTEGER},
-                #{menderId,jdbcType=INTEGER})
+                #{menderId,jdbcType=INTEGER},
+                #{content,jdbcType=VARCHAR})
     </insert>
     <update id="updateContentByPrimaryKey">
         update `script`

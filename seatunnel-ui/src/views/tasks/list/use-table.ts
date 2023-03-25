@@ -17,100 +17,164 @@
 
 import { useI18n } from 'vue-i18n'
 import { h, reactive, ref } from 'vue'
-import { NButton, NSpace, NTag, NIcon } from 'naive-ui'
-import { UploadOutlined, DownloadOutlined } from '@vicons/antd'
+import { NButton, NSpace, NTag } from 'naive-ui'
+import { taskInstanceList, taskInstanceKill, taskExecute } from '@/service/task'
+import { getTableColumn } from '@/common/table'
+import type { ResponseTable } from '@/service/types'
+import type { JobDetail } from '@/service/task/types'
 
 export function useTable() {
   const { t } = useI18n()
 
   const state = reactive({
     columns: [],
-    tableData: [{ state: 'success' }, { state: 'fail' }, { state: 'running' }],
-    page: ref(1),
+    tableData: [],
+    pageNo: ref(1),
     pageSize: ref(10),
     totalPage: ref(1),
-    loading: ref(false)
+    loading: ref(false),
+    name: ref(''),
+    showLogModal: ref(false),
+    row: ref({})
   })
 
   const createColumns = (state: any) => {
     state.columns = [
+      ...getTableColumn([
+        { key: 'instanceId', title: t('tasks.instance_id') },
+        { key: 'jobId', title: t('tasks.job_id') }
+      ]),
       {
         title: t('tasks.task_name'),
-        key: 'task_name'
+        key: 'instanceName'
       },
       {
         title: t('tasks.state'),
-        key: 'state',
-        render: (row: any) => {
-          if (row.state === 'success') {
-            return h(NTag, { type: 'success' }, t('tasks.success'))
-          } else if (row.state === 'fail') {
-            return h(NTag, { type: 'error' }, t('tasks.fail'))
-          } else if (row.state === 'running') {
-            return h(NTag, { type: 'info' }, t('tasks.running'))
+        key: 'status',
+        render: (row: JobDetail) => {
+          if (row.status === 'SUCCESS') {
+            return h(
+              NTag,
+              { type: 'success' },
+              { default: () => t('tasks.success') }
+            )
+          } else if (row.status === 'FAILED') {
+            return h(
+              NTag,
+              { type: 'error' },
+              { default: () => t('tasks.fail') }
+            )
+          } else if (row.status === 'STOPPED') {
+            return h(
+              NTag,
+              { type: 'warning' },
+              { default: () => t('tasks.stop') }
+            )
+          } else if (row.status === 'RUNNING') {
+            return h(
+              NTag,
+              { type: 'info' },
+              { default: () => t('tasks.running') }
+            )
+          } else {
+            return h(
+              NTag,
+              { type: 'default' },
+              { default: () => t('tasks.unknown') }
+            )
           }
         }
       },
       {
         title: t('tasks.run_frequency'),
-        key: 'run_frequency'
+        key: 'runFrequency'
       },
       {
-        title: t('tasks.next_run'),
-        key: 'next_run'
+        title: t('tasks.start_time'),
+        key: 'startTime'
       },
       {
-        title: t('tasks.last_run'),
-        key: 'last_run'
-      },
-      {
-        title: t('tasks.last_total_bytes'),
-        key: 'last_total_bytes',
-        render: (row: any) =>
-          h(NSpace, {}, [
-            h(
-              NTag,
-              { type: 'success' },
-              { icon: h(NIcon, {}, h(UploadOutlined)), default: 12 + ' (KB)' }
-            ),
-            h(
-              NTag,
-              { type: 'error' },
-              { icon: h(NIcon, {}, h(DownloadOutlined)), default: 16 + ' (KB)' }
-            )
-          ])
-      },
-      {
-        title: t('tasks.last_total_records'),
-        key: 'last_total_records',
-        render: (row: any) =>
-          h(NSpace, {}, [
-            h(
-              NTag,
-              { type: 'success' },
-              { icon: h(NIcon, {}, h(UploadOutlined)), default: 66 }
-            ),
-            h(
-              NTag,
-              { type: 'error' },
-              { icon: h(NIcon, {}, h(DownloadOutlined)), default: 77 }
-            )
-          ])
+        title: t('tasks.end_time'),
+        key: 'endTime'
       },
       {
         title: t('tasks.operation'),
         key: 'operation',
-        render: (row: any) =>
+        render: (row: JobDetail) =>
           h(NSpace, null, {
             default: () => [
-              h(NButton, { text: true }, t('tasks.rerun')),
-              h(NButton, { text: true }, t('tasks.kill')),
-              h(NButton, { text: true }, t('tasks.view_log'))
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status === 'RUNNING',
+                  onClick: () => handleRerun(row)
+                },
+                { default: () => t('tasks.rerun') }
+              ),
+              h(
+                NButton,
+                {
+                  text: true,
+                  disabled: row.status !== 'RUNNING',
+                  onClick: () => handleKill(row)
+                },
+                { default: () => t('tasks.kill') }
+              ),
+              h(
+                NButton,
+                { text: true, onClick: () => handleViewLog(row) },
+                { default: () => t('tasks.view_log') }
+              )
             ]
           })
       }
     ]
   }
 
-  return { state, createColumns }
+  const getTableData = (params: any) => {
+    if (state.loading) return
+    state.loading = true
+    taskInstanceList({
+      pageNo: params.pageNo,
+      pageSize: params.pageSize,
+      name: params.name
+    }).then((res: ResponseTable<Array<JobDetail> | []>) => {
+      state.tableData = res.data.data as any
+      state.totalPage = res.data.totalPage
+      state.loading = false
+    })
+  }
+
+  const handleKill = (row: JobDetail) => {
+    taskInstanceKill(row.instanceId as number).then(() => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
+  const handleViewLog = (row: JobDetail) => {
+    state.showLogModal = true
+    state.row = row
+  }
+
+  const handleRerun = (row: JobDetail) => {
+    taskExecute(row.instanceId as number, {
+      objectType: 2,
+      executeType: 3
+    }).then(() => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
+    })
+  }
+
+  return {
+    state,
+    createColumns,
+    getTableData
+  }
 }

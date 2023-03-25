@@ -22,24 +22,52 @@ import {
   NDataTable,
   NInput,
   NPagination,
-  NSpace,
-  NSelect
+  NSpace
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useTable } from './use-table'
+import LogModal from '@/views/tasks/list/components/log-modal'
 
 const TasksList = defineComponent({
   setup() {
     const { t } = useI18n()
-    const { state, createColumns } = useTable()
+    const { state, createColumns, getTableData } = useTable()
 
-    const handleSearch = () => {}
+    const requestData = () => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo,
+        name: state.name
+      })
+    }
+
+    const handleSearch = () => {
+      state.pageNo = 1
+      requestData()
+    }
+
+    const handlePageSize = () => {
+      state.pageNo = 1
+      requestData()
+    }
+
+    const handleConfirmLogModal = () => {
+      state.showLogModal = false
+    }
 
     onMounted(() => {
       createColumns(state)
+      requestData()
     })
 
-    return { t, handleSearch, ...toRefs(state) }
+    return {
+      t,
+      handleSearch,
+      handlePageSize,
+      requestData,
+      handleConfirmLogModal,
+      ...toRefs(state)
+    }
   },
   render() {
     return (
@@ -49,19 +77,12 @@ const TasksList = defineComponent({
             'header-extra': () => (
               <NSpace>
                 <NInput
-                  placeholder={this.t('tasks.tasks_name')}
+                  clearable
+                  v-model={[this.name, 'value']}
+                  placeholder={this.t('tasks.task_name')}
                   style={{ width: '200px' }}
                 />
-                <NSelect
-                  placeholder={this.t('tasks.state')}
-                  style={{ width: '200px' }}
-                  options={[
-                    { label: this.t('tasks.success'), value: 'success' },
-                    { label: this.t('tasks.fail'), value: 'fail' },
-                    { label: this.t('tasks.running'), value: 'running' }
-                  ]}
-                />
-                <NButton onClick={this.handleSearch}>
+                <NButton onClick={this.handleSearch} type='primary'>
                   {this.t('tasks.search')}
                 </NButton>
               </NSpace>
@@ -77,16 +98,25 @@ const TasksList = defineComponent({
             />
             <NSpace justify='center'>
               <NPagination
-                v-model:page={this.page}
+                v-model:page={this.pageNo}
                 v-model:page-size={this.pageSize}
                 page-count={this.totalPage}
                 show-size-picker
                 page-sizes={[10, 30, 50]}
                 show-quick-jumper
+                onUpdatePage={this.requestData}
+                onUpdatePageSize={this.handlePageSize}
               />
             </NSpace>
           </NSpace>
         </NCard>
+        {this.showLogModal && (
+          <LogModal
+            showModal={this.showLogModal}
+            row={this.row}
+            onConfirmModal={this.handleConfirmLogModal}
+          />
+        )}
       </NSpace>
     )
   }

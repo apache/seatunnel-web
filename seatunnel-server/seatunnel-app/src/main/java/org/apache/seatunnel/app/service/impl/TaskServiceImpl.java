@@ -29,8 +29,6 @@ import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.NEV
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_INTERVAL_DEFAULT;
 import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
 import static com.cronutils.model.CronType.QUARTZ;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 import org.apache.seatunnel.app.common.ObjectTypeEnum;
@@ -85,6 +83,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -120,7 +119,7 @@ public class TaskServiceImpl implements ITaskService {
     public void initFuncMap(){
         executeFuncMap.put(SCRIPT, this::getExecuteDtoByScriptId);
         executeFuncMap.put(JOB, this::getExecuteDtoByJobId);
-        executeFuncMap.put(INSTANCE, null);
+        executeFuncMap.put(INSTANCE, this::getExecuteDtoByInstanceId);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class TaskServiceImpl implements ITaskService {
 
         // check scheduler param
         SchedulerConfig config = schedulerConfigDaoImpl.getSchedulerConfig(scriptId);
-        if (isNull(config)) {
+        if (Objects.isNull(config)) {
             throw new SeatunnelException(SCHEDULER_CONFIG_NOT_EXIST);
         }
 
@@ -158,7 +157,7 @@ public class TaskServiceImpl implements ITaskService {
                 .build();
 
         ScriptJobApply apply = scriptJobApplyDaoImpl.getByScriptId(script.getId());
-        if (nonNull(apply)) {
+        if (Objects.nonNull(apply)) {
             jobDto.setJobId(apply.getJobId());
         }
 
@@ -176,7 +175,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public void recycleScriptFromScheduler(RecycleScriptReq req) {
-        ScriptJobApply apply = requireNonNull(scriptJobApplyDaoImpl.getByJobId(req.getJobId()), NO_SUCH_JOB::getTemplate);
+        final ScriptJobApply apply = requireNonNull(scriptJobApplyDaoImpl.getByJobId(req.getJobId()), NO_SUCH_JOB::getTemplate);
 
         final Script script = requireNonNull(scriptDaoImpl.getScript(apply.getScriptId()), NO_SUCH_JOB::getTemplate);
 
@@ -242,7 +241,7 @@ public class TaskServiceImpl implements ITaskService {
                 final JobDefine jobDefine = mapping.get(d.getJobId());
                 CronParser parser = new CronParser(CRON_DEFINITION);
 
-                if (nonNull(jobDefine)) {
+                if (Objects.nonNull(jobDefine)) {
                     ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
                     Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
 
@@ -278,11 +277,22 @@ public class TaskServiceImpl implements ITaskService {
         return this.translate(iJobService.execute(dto));
     }
 
+    private ExecuteDto getExecuteDtoByInstanceId(ExecuteReq req) {
+        // objectId of instance is jobId
+        return ExecuteDto.builder()
+                .jobDto(JobDto.builder()
+                        .jobId(req.getObjectId())
+                        .build())
+                .executeTypeEnum(ExecuteTypeEnum.RERUN)
+                .build();
+    }
+
     private ExecuteDto getExecuteDtoByJobId(ExecuteReq req) {
         return ExecuteDto.builder()
                 .jobDto(JobDto.builder()
                         .jobId(req.getObjectId())
                         .build())
+                .executeTypeEnum(ExecuteTypeEnum.parse(req.getExecuteType()))
                 .build();
     }
 
@@ -345,7 +355,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     private InstanceSimpleInfoRes translate(InstanceDto dto) {
-        if (isNull(dto)) {
+        if (Objects.isNull(dto)) {
             return null;
         }
         return InstanceSimpleInfoRes.builder()
@@ -364,7 +374,7 @@ public class TaskServiceImpl implements ITaskService {
 
     private Script checkAndGetScript(int scriptId) {
         final Script script = scriptDaoImpl.getScript(scriptId);
-        if (isNull(script)) {
+        if (Objects.isNull(script)) {
             throw new SeatunnelException(NO_SUCH_SCRIPT);
         }
         return script;
@@ -381,7 +391,7 @@ public class TaskServiceImpl implements ITaskService {
                     .build();
             scriptJobApplyDaoImpl.insertOrUpdate(dto);
         }).whenComplete((_return, e) -> {
-            if (nonNull(e)) {
+            if (Objects.nonNull(e)) {
                 log.error("Store script and job mapping failed, please maintain this mapping manually. \n" +
                         "scriptId [{}], schedulerConfigId [{}], jobId [{}], userId [{}]", scriptId, schedulerConfigId, jobId, userId, e);
             }

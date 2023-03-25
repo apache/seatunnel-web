@@ -15,24 +15,32 @@
  * limitations under the License.
  */
 
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+  InternalAxiosRequestConfig
+} from 'axios'
 import utils from '@/utils'
 import { useUserStore } from '@/store/user'
+import { useSettingStore } from '@/store/setting'
 import type { UserDetail } from '@/service/user/types'
 
 const userStore = useUserStore()
+const settingStore = useSettingStore()
 
 const handleError = (res: AxiosResponse<any, any>) => {
   if (import.meta.env.MODE === 'development') {
     utils.log.capsule('SeaTunnel', 'UI')
     utils.log.error(res)
   }
-  console.log(res)
   window.$message.error(res.data.msg)
 }
 
 const baseRequestConfig: AxiosRequestConfig = {
-  timeout: 6000,
+  timeout: settingStore.getRequestTimeValue
+    ? settingStore.getRequestTimeValue
+    : 6000,
   baseURL: '/api/v1'
 }
 
@@ -42,7 +50,7 @@ const err = (err: AxiosError): Promise<AxiosError> => {
   return Promise.reject(err)
 }
 
-service.interceptors.request.use((config: AxiosRequestConfig<any>) => {
+service.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (Object.keys(userStore.getUserInfo).length > 0) {
     config.headers &&
       (config.headers.token = (userStore.getUserInfo as UserDetail)

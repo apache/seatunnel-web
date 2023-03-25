@@ -15,17 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.dto.script;
+package org.apache.seatunnel.app.domain.request.script;
 
-import lombok.Builder;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@Builder
+import javax.validation.constraints.NotNull;
+
 @Data
-public class AddEmptyScriptDto {
+@ApiModel(value = "addEmptyScriptReq", description = "add a new empty script")
+public class CreateScriptReq {
+    @ApiModelProperty(value = "script name", required = true, dataType = "String")
     private String name;
-    private byte type;
-    private int creatorId;
-    private int menderId;
-    private byte status;
+    @ApiModelProperty(value = "script type", required = true, dataType = "Byte")
+    @NotNull
+    private Byte type;
+    @ApiModelProperty(value = "script creator id", required = true, dataType = "Integer", hidden = true)
+    @NotNull
+    private Integer creatorId;
+    @ApiModelProperty(value = "script content", required = true, dataType = "String")
+    private String content;
 }

@@ -28,13 +28,22 @@ const DataPipesList = defineComponent({
   setup() {
     const { t } = useI18n()
     const router: Router = useRouter()
-    const { state, createColumns } = useTable()
+    const {
+      state,
+      createColumns,
+      getTableData,
+      handleConfirmDeleteModal,
+      handleConfirmPublishModal
+    } = useTable()
 
-    const handleCancelDeleteModal = () => {
-      state.showDeleteModal = false
+    const requestData = () => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo
+      })
     }
 
-    const handleConfirmDeleteModal = () => {
+    const handleCancelDeleteModal = () => {
       state.showDeleteModal = false
     }
 
@@ -42,16 +51,18 @@ const DataPipesList = defineComponent({
       state.showPublishModal = false
     }
 
-    const handleConfirmPublishModal = () => {
-      state.showPublishModal = false
-    }
-
     const handleCreate = () => {
       router.push({ path: '/data-pipes/create' })
     }
 
+    const handlePageSize = () => {
+      state.pageNo = 1
+      requestData()
+    }
+
     onMounted(() => {
       createColumns(state)
+      requestData()
     })
 
     return {
@@ -61,7 +72,9 @@ const DataPipesList = defineComponent({
       handleConfirmDeleteModal,
       handleCancelPublishModal,
       handleConfirmPublishModal,
-      handleCreate
+      handleCreate,
+      requestData,
+      handlePageSize
     }
   },
   render() {
@@ -70,7 +83,7 @@ const DataPipesList = defineComponent({
         <NCard title={this.t('data_pipes.data_pipes')}>
           {{
             'header-extra': () => (
-              <NButton onClick={this.handleCreate}>
+              <NButton onClick={this.handleCreate} type='primary'>
                 {this.t('data_pipes.create')}
               </NButton>
             )
@@ -85,12 +98,14 @@ const DataPipesList = defineComponent({
             />
             <NSpace justify='center'>
               <NPagination
-                v-model:page={this.page}
+                v-model:page={this.pageNo}
                 v-model:page-size={this.pageSize}
                 page-count={this.totalPage}
                 show-size-picker
                 page-sizes={[10, 30, 50]}
                 show-quick-jumper
+                onUpdatePage={this.requestData}
+                onUpdatePageSize={this.handlePageSize}
               />
             </NSpace>
           </NSpace>

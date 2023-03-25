@@ -15,37 +15,30 @@
  * limitations under the License.
  */
 
-import { defineComponent, toRefs } from 'vue'
-import { NIcon, NSpace, NDropdown } from 'naive-ui'
-import { SettingOutlined } from '@vicons/antd'
-import { useSettingDropdown } from './use-setting-dropdown'
+import { useSettingStore } from '@/store/setting'
 
-const Setting = defineComponent({
-  setup() {
-    const { state, handleSelect } = useSettingDropdown()
+const getTableColumn = (data: Array<{ key: string; title: string }>) => {
+  const tableColumn = []
+  const settingStore = useSettingStore()
 
-    return { ...toRefs(state), handleSelect }
-  },
-  render() {
-    return (
-      <NSpace
-        align='center'
-        justify='center'
-        class='h-16 w-12'
-        style={{ cursor: 'pointer' }}
-      >
-        <NDropdown
-          trigger='click'
-          options={this.dropdownOptions}
-          onSelect={this.handleSelect}
-        >
-          <NIcon size='20'>
-            <SettingOutlined />
-          </NIcon>
-        </NDropdown>
-      </NSpace>
+  settingStore.getSequenceColumn &&
+    tableColumn.push({
+      title: '#',
+      key: 'index',
+      render: (row: any, index: number) => index + 1
+    })
+
+  settingStore.getDataUniqueValue &&
+    tableColumn.push(
+      ...data.map((i) => {
+        return {
+          title: i.title,
+          key: i.key
+        }
+      })
     )
-  }
-})
 
-export default Setting
+  return tableColumn
+}
+
+export { getTableColumn }

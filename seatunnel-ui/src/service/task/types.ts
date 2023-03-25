@@ -33,9 +33,22 @@ interface TaskRecycle {
 }
 
 interface TaskExecute {
-  content: string
+  objectType: number
   executeType: number
-  params: object
 }
 
-export { TaskList, TaskJobList, TaskRecycle, TaskExecute }
+interface JobDetail {
+  createTime: string
+  creatorName: string
+  datapipeName: string
+  jobId: number
+  jobPlan: string
+  jobStatus: string
+  menderName: string
+  publish: boolean
+  updateTime: string
+  status?: string
+  instanceId?: number
+}
+
+export { TaskList, TaskJobList, TaskRecycle, TaskExecute, JobDetail }

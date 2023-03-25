@@ -30,15 +30,32 @@ import { useTable } from './use-table'
 const JobsList = defineComponent({
   setup() {
     const { t } = useI18n()
-    const { state, createColumns } = useTable()
+    const { state, createColumns, getTableData } = useTable()
 
-    const handleSearch = () => {}
+    const handleSearch = () => {
+      state.pageNo = 1
+      requestData()
+    }
+
+    const handlePageSize = () => {
+      state.pageNo = 1
+      requestData()
+    }
+
+    const requestData = () => {
+      getTableData({
+        pageSize: state.pageSize,
+        pageNo: state.pageNo,
+        name: state.name
+      })
+    }
 
     onMounted(() => {
       createColumns(state)
+      requestData()
     })
 
-    return { t, handleSearch, ...toRefs(state) }
+    return { t, handleSearch, ...toRefs(state), requestData, handlePageSize }
   },
   render() {
     return (
@@ -48,10 +65,11 @@ const JobsList = defineComponent({
             'header-extra': () => (
               <NSpace>
                 <NInput
+                  v-model={[this.name, 'value']}
                   placeholder={this.t('jobs.data_pipe_name')}
                   style={{ width: '200px' }}
                 />
-                <NButton onClick={this.handleSearch}>
+                <NButton onClick={this.handleSearch} type='primary'>
                   {this.t('jobs.search')}
                 </NButton>
               </NSpace>
@@ -67,12 +85,14 @@ const JobsList = defineComponent({
             />
             <NSpace justify='center'>
               <NPagination
-                v-model:page={this.page}
+                v-model:page={this.pageNo}
                 v-model:page-size={this.pageSize}
                 page-count={this.totalPage}
                 show-size-picker
                 page-sizes={[10, 30, 50]}
                 show-quick-jumper
+                onUpdatePage={this.requestData}
+                onUpdatePageSize={this.handlePageSize}
               />
             </NSpace>
           </NSpace>
