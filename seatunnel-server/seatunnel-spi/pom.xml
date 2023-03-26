@@ -25,6 +25,10 @@
 
     <artifactId>seatunnel-spi</artifactId>
 
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
