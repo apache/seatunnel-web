@@ -79,7 +79,7 @@ jobs:
           [[ ${{ needs.dead-link.result }} == 'success' ]] || exit 1;
 
   build:
-    if: github.repository == 'apache/incubator-seatunnel'
+    if: github.repository == 'apache/incubator-seatunnel-web'
     name: Build
     needs: [ sanity-check ]
     strategy:
