@@ -23,30 +23,42 @@ WORKDIR=$(
   pwd
 )
 
-DOCKER_VERSION=1.0.0-snapshot
+PROJECT_VERSION=$(/bin/sh ${WORKDIR}/mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | tail -1)
+IMAGE_VERSION=${IMAGE_VERSION:-"${PROJECT_VERSION}"}
 
 # build code
-code() {
+build_dist() {
+  echo "Build dist version ${PROJECT_VERSION}"
   /bin/sh $WORKDIR/mvnw clean package -DskipTests
   # mv release zip
   mv $WORKDIR/seatunnel-server/seatunnel-app/target/seatunnel-web.zip $WORKDIR/
 }
 
 # build image
-image() {
-  docker buildx build --load --no-cache -t apache/seatunnel-web:$DOCKER_VERSION -t apache/seatunnel-web:latest -f $WORKDIR/docker/backend.dockerfile .
+build_image() {
+  echo "Building image version ${IMAGE_VERSION}"
+  echo docker buildx build --load --no-cache -t apache/seatunnel-web:${IMAGE_VERSION} -t apache/seatunnel-web:latest -f $WORKDIR/docker/backend.dockerfile .
+}
+
+print_help() {
+  echo "Usage: build.sh {dist|image}"
+  echo "Use this script to build an archived binary or a docker image"
+  echo ""
+  echo "Arguments:"
+  echo "          dist    Build an archived distribution and place the binary file in project home directory"
+  echo "          image   Build a docker image."
 }
 
 # main
 case "$1" in
-"code")
-  code
+"dist")
+  build_dist
   ;;
 "image")
-  image
+  build_image
   ;;
 *)
-  echo "Usage: seatunnel-daemon.sh {start|stop|status}"
+  print_help
   exit 1
   ;;
 esac
