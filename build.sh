@@ -47,6 +47,9 @@ print_help() {
   echo "Arguments:"
   echo "          dist    Build an archived distribution and place the binary file in project home directory"
   echo "          image   Build a docker image."
+  echo ""
+  echo "Options:"
+  echo "          -h --help    Print help message."
 }
 
 # main
@@ -57,9 +60,22 @@ case "$1" in
 "image")
   build_image
   ;;
-*)
+"-h" | "--help")
   print_help
-  exit 1
+  exit 0
+  ;;
+*)
+  if [[ -z "$1" ]]; then
+    print_help
+    exit 0
+  else
+    echo "Invalid argument: $1"
+    echo ""
+    echo "See the following help messages:"
+    echo ""
+    print_help
+    exit 1
+  fi
   ;;
 esac
 set +
