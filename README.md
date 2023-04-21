@@ -44,6 +44,7 @@ ds:
     dir: /dj
   project:
     # The default project name of dolphinscheduler
+    # You may need to create the project first in dolphinscheduler
     default: test_dj
   tenant:
     # Which tenant been used to submit script  
@@ -84,8 +85,8 @@ And the log will tell u anything you need to know.
 ```shell
 # start backend
 
-# for build code
-sh build.sh code
+# for build distribution
+sh build.sh dist
 
 # for build image
 sh build.sh image
