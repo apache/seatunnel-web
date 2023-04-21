@@ -45,7 +45,7 @@
         <fileSet>
             <directory>${basedir}/../../seatunnel-ui/dist</directory>
             <includes>
-                <include>*</include>
+                <include>**/**</include>
             </includes>
             <outputDirectory>dist</outputDirectory>
         </fileSet>
