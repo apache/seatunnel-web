@@ -28,7 +28,7 @@ const components: { [key: string]: Component } = utils.mapping(modules)
 
 const basePage: RouteRecordRaw[] = [{
     path: '/',
-    redirect: { name: 'data-pipes' }
+    redirect: { name: 'login' }
   },
   dataPipes, jobs, tasks, userManage]
 
