@@ -29,7 +29,7 @@ If you already have Apache DolphinScheduler environment, you can skip this step 
 
 Because running SeaTunnel Web must rely on the DolphinScheduler, if you do not have a DS environment, you need to first install and deploy a DolphinScheduler (hereinafter referred to as DS). Taking DS version 3.1.5 as an example.
 
-Reference https://dolphinscheduler.apache.org/zh-cn/docs/3.1.5/guide/installation/standalone to install a standalone DS.
+Reference `https://dolphinscheduler.apache.org/zh-cn/docs/3.1.5/guide/installation/standalone` to install a standalone DS.
 
 #### Create Tenant and User for SeaTunnel Web
 
