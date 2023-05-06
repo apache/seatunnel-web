@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-export HOSTNAME=""
-export PORT=""
-export USERNAME=""
-export PASSWORD=""
+export HOSTNAME="127.0.0.1"
+export PORT="3306"
+export USERNAME="root"
+export PASSWORD="123456"
