@@ -20,7 +20,7 @@ export default {
   user_manage: 'User Manage',
   create: 'Create',
   username: 'Username',
-  status: 'Status',
+  state: 'State',
   create_time: 'Create Time',
   update_time: 'Update Time',
   operation: 'Operation',
@@ -35,5 +35,5 @@ export default {
   username_tips: 'Required fields, number, letter case, 50 characters',
   password_tips: 'Required fields, number, letter case, 6 characters',
   user_delete_tips:
-    'Whether to delete the user? It cannot be restored after being deleted.'
+    'Whether to delete the user? It cannot be restored after being deleted'
 }

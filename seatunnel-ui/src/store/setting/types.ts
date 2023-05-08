@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
+type Locales = 'zh_CN' | 'en_US'
+
 interface SettingStore {
   sequenceColumn: boolean
   dataUniqueValue: boolean
   fillet: number
   requestTime: number
+  locales: Locales
 }
 
-export { SettingStore }
+export { SettingStore, Locales }
