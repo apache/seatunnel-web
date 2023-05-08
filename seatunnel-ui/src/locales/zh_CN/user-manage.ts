@@ -15,24 +15,25 @@
  * limitations under the License.
  */
 
-import login from '@/locales/zh_CN/login'
-import menu from '@/locales/zh_CN/menu'
-import modal from '@/locales/zh_CN/modal'
-import user_manage from '@/locales/zh_CN/user-manage'
-import data_pipes from '@/locales/zh_CN/data-pipes'
-import log from '@/locales/zh_CN/log'
-import jobs from '@/locales/zh_CN/jobs'
-import tasks from '@/locales/zh_CN/tasks'
-import setting from '@/locales/zh_CN/setting'
-
 export default {
-  login,
-  menu,
-  modal,
-  user_manage,
-  data_pipes,
-  log,
-  jobs,
-  tasks,
-  setting
+  id: 'Id',
+  user_manage: '用户管理',
+  create: '创建',
+  username: '用户名',
+  state: '状态',
+  create_time: '创建时间',
+  update_time: '更新时间',
+  operation: '操作',
+  enable: '启用',
+  disable: '禁用',
+  edit: '编辑',
+  delete: '删除',
+  active: '激活',
+  inactive: '未激活',
+  password: '密码',
+  model_validate_tips: '必填字段',
+  username_tips: '必填字段，数字，字母大小写，50 个字符',
+  password_tips: '必填字段，数字，字母大小写，6 个字符',
+  user_delete_tips:
+    '是否删除用户？ 删除后无法恢复'
 }

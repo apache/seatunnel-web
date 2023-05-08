@@ -15,10 +15,30 @@
  * limitations under the License.
  */
 
-type Locales = 'zh_CN' | 'en_US'
-
-interface LocalesStore {
-  locales: Locales
+export default {
+  instance_id: '实例 Id',
+  job_id: '工作 Id',
+  tasks: '任务',
+  search: '搜索',
+  success: '成功',
+  fail: '失败',
+  stop: '停止',
+  running: '运行中',
+  unknown: '未知',
+  unpublished: '未发布',
+  published: '发布',
+  task_name: '任务名称',
+  state: '状态',
+  run_frequency: '运行频率',
+  once: '一次',
+  crontab: '定时',
+  start_time: '开始时间',
+  end_time: '结束时间',
+  last_total_bytes: '最后总字节数',
+  last_total_records: '最后总记录',
+  rerun: '重新运行',
+  kill: '终止',
+  operation: '操作',
+  view_log: '查看日志',
+  log: '日志'
 }
-
-export { LocalesStore, Locales }
