@@ -24,10 +24,6 @@ export default {
   create_time: 'Create Time',
   update_time: 'Update Time',
   operation: 'Operation',
-  succeed: 'Succeed',
-  running: 'Running',
-  failed: 'Failed',
-  killed: 'Killed',
   un_start: 'Un Start',
   execute: 'Execute',
   edit: 'Edit',
@@ -43,7 +39,7 @@ export default {
   value: 'Value',
   name_tips: 'Required fields,number, letter case, 100 characters',
   data_pipes_delete_tips:
-    'Whether to delete the data Pipe，It cannot be restored after being deleted.',
-  data_pipes_publish_tips: 'Whether to Publish the data pipe.',
+    'Whether to delete the data Pipe，It cannot be restored after being deleted',
+  data_pipes_publish_tips: 'Whether to Publish the data pipe',
   model_validate_tips: 'Required Fields'
 }

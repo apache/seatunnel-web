@@ -15,24 +15,12 @@
  * limitations under the License.
  */
 
-import login from '@/locales/zh_CN/login'
-import menu from '@/locales/zh_CN/menu'
-import modal from '@/locales/zh_CN/modal'
-import user_manage from '@/locales/zh_CN/user-manage'
-import data_pipes from '@/locales/zh_CN/data-pipes'
-import log from '@/locales/zh_CN/log'
-import jobs from '@/locales/zh_CN/jobs'
-import tasks from '@/locales/zh_CN/tasks'
-import setting from '@/locales/zh_CN/setting'
-
 export default {
-  login,
-  menu,
-  modal,
-  user_manage,
-  data_pipes,
-  log,
-  jobs,
-  tasks,
-  setting
+  data_pipes: '数据管道',
+  jobs: '工作',
+  user_manage: '用户管理',
+  help: '帮助',
+  setting: '设置',
+  logout: '登出',
+  tasks: '任务'
 }

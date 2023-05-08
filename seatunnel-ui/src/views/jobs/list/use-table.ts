@@ -51,7 +51,7 @@ export function useTable() {
         key: 'jobPlan'
       },
       {
-        title: t('jobs.create_date'),
+        title: t('jobs.create_time'),
         key: 'createTime'
       },
       {
