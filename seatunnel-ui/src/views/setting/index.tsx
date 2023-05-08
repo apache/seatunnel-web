@@ -22,21 +22,16 @@ import { useSettingStore } from '@/store/setting'
 
 const Setting = defineComponent({
   name: 'Setting',
-  setup() {
-    const { t } = useI18n()
-
-    return {
-      t
-    }
-  },
   render() {
+    const { t, locale } = useI18n()
+
     return (
       <NSpace vertical>
-        <NCard title={this.t('setting.table_setting')}>
+        <NCard title={t('setting.table_setting')}>
           <NList>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.sequence_column')}</span>
+                <span>{t('setting.sequence_column')}</span>
                 <NSwitch
                   value={useSettingStore().getSequenceColumn}
                   onUpdateValue={(v) => {
@@ -47,7 +42,7 @@ const Setting = defineComponent({
             </NListItem>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.data_unique_value')}</span>
+                <span>{t('setting.data_unique_value')}</span>
                 <NSwitch
                   value={useSettingStore().getDataUniqueValue}
                   onUpdateValue={(v) => {
@@ -58,28 +53,33 @@ const Setting = defineComponent({
             </NListItem>
           </NList>
         </NCard>
-        <NCard title={this.t('setting.language_setting')}>
+        <NCard title={t('setting.language_setting')}>
           <NList>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.language')}</span>
+                <span>{t('setting.language')}</span>
                 <div class='w-56'>
                   <NSelect
-                    value={'english'}
+                    value={useSettingStore().getLocales}
                     options={[
-                      { value: 'english', label: this.t('setting.english') }
+                      { value: 'en_US', label: t('setting.english') },
+                      { value: 'zh_CN', label: t('setting.chinese') }
                     ]}
+                    onUpdateValue={(l) => {
+                      locale.value = l
+                      useSettingStore().setLocales(l)
+                    }}
                   />
                 </div>
               </NSpace>
             </NListItem>
           </NList>
         </NCard>
-        <NCard title={this.t('setting.request_setting')}>
+        <NCard title={t('setting.request_setting')}>
           <NList>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.request_time')}</span>
+                <span>{t('setting.request_time')}</span>
                 <div class='w-56'>
                   <NSelect
                     value={useSettingStore().getRequestTimeValue}
@@ -99,16 +99,16 @@ const Setting = defineComponent({
             </NListItem>
           </NList>
         </NCard>
-        <NCard title={this.t('setting.theme_setting')}>
+        <NCard title={t('setting.theme_setting')}>
           <NList>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.model')}</span>
+                <span>{t('setting.model')}</span>
                 <div class='w-56'>
                   <NSelect
                     value={'light'}
                     options={[
-                      { value: 'light', label: this.t('setting.light') }
+                      { value: 'light', label: t('setting.light') }
                     ]}
                   />
                 </div>
@@ -116,12 +116,12 @@ const Setting = defineComponent({
             </NListItem>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.hue')}</span>
+                <span>{t('setting.hue')}</span>
                 <div class='w-56'>
                   <NSelect
                     value={'purple'}
                     options={[
-                      { value: 'purple', label: this.t('setting.purple') }
+                      { value: 'purple', label: t('setting.purple') }
                     ]}
                   />
                 </div>
@@ -129,7 +129,7 @@ const Setting = defineComponent({
             </NListItem>
             <NListItem>
               <NSpace justify='space-between' align='center'>
-                <span>{this.t('setting.fillet')}</span>
+                <span>{t('setting.fillet')}</span>
                 <div class='w-56'>
                   <NSelect
                     value={useSettingStore().getFilletValue}

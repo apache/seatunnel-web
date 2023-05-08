@@ -15,24 +15,11 @@
  * limitations under the License.
  */
 
-import login from '@/locales/zh_CN/login'
-import menu from '@/locales/zh_CN/menu'
-import modal from '@/locales/zh_CN/modal'
-import user_manage from '@/locales/zh_CN/user-manage'
-import data_pipes from '@/locales/zh_CN/data-pipes'
-import log from '@/locales/zh_CN/log'
-import jobs from '@/locales/zh_CN/jobs'
-import tasks from '@/locales/zh_CN/tasks'
-import setting from '@/locales/zh_CN/setting'
-
 export default {
-  login,
-  menu,
-  modal,
-  user_manage,
-  data_pipes,
-  log,
-  jobs,
-  tasks,
-  setting
+  login_to_sea_tunnel: '登录 SeaTunnel',
+  login: '登录',
+  username: '用户名',
+  password: '密码',
+  username_tips: '请输入用户名',
+  password_tips: '请输入密码'
 }

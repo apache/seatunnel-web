@@ -26,8 +26,8 @@ import {
   enUS
 } from 'naive-ui'
 import { useThemeStore } from '@/store/theme'
-import { useLocalesStore } from '@/store/locale'
 import { useSettingStore } from '@/store/setting'
+import { useI18n } from 'vue-i18n'
 import themeList from '@/themes'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import type { Ref } from 'vue'
@@ -35,25 +35,30 @@ import type { Ref } from 'vue'
 const App = defineComponent({
   setup() {
     const themeStore = useThemeStore()
+    const settingStore = useSettingStore()
     const currentTheme = computed(() =>
       themeStore.darkTheme ? darkTheme : undefined
     )
-    const localesStore = useLocalesStore()
     const themeOverrides: Ref<GlobalThemeOverrides> = ref(
       themeList[currentTheme.value ? 'dark' : 'light']
     )
 
+    if (settingStore.getLocales) {
+      const { locale } = useI18n()
+      locale.value = settingStore.getLocales
+    }
+
     watch(
-      () => useSettingStore().getFilletValue,
+      () => settingStore.getFilletValue,
       () => {
         ;(themeOverrides.value.common as any).borderRadius =
-          useSettingStore().getFilletValue + 'px'
+          settingStore.getFilletValue + 'px'
       }
     )
 
     return {
+      settingStore,
       currentTheme,
-      localesStore,
       themeOverrides
     }
   },
@@ -63,9 +68,9 @@ const App = defineComponent({
         theme={this.currentTheme}
         theme-overrides={this.themeOverrides}
         date-locale={
-          String(this.localesStore.getLocales) === 'zh_CN' ? dateZhCN : dateEnUS
+          this.settingStore.getLocales === 'zh_CN' ? dateZhCN : dateEnUS
         }
-        locale={String(this.localesStore.getLocales) === 'zh_CN' ? zhCN : enUS}
+        locale={this.settingStore.getLocales === 'zh_CN' ? zhCN : enUS}
       >
         <NMessageProvider>
           <router-view />
