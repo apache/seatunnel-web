@@ -22,6 +22,7 @@ import axios, {
   InternalAxiosRequestConfig
 } from 'axios'
 import utils from '@/utils'
+import router from '@/router'
 import { useUserStore } from '@/store/user'
 import { useSettingStore } from '@/store/setting'
 import type { UserDetail } from '@/service/user/types'
@@ -47,6 +48,11 @@ const baseRequestConfig: AxiosRequestConfig = {
 const service = axios.create(baseRequestConfig)
 
 const err = (err: AxiosError): Promise<AxiosError> => {
+  const userStore = useUserStore()
+  if (err.response?.status === 401) {
+    userStore.setUserInfo({})
+    router.push({ path: '/login' })
+  }
   return Promise.reject(err)
 }
 
