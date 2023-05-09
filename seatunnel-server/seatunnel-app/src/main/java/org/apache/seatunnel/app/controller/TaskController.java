@@ -44,7 +44,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
-@RequestMapping("/api/v1/task")
+@RequestMapping("/seatunnel/api/v1/task")
 @RestController
 public class TaskController {
 

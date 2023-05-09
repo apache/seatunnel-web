@@ -50,7 +50,7 @@ import javax.validation.constraints.NotNull;
 
 import java.util.List;
 
-@RequestMapping("/api/v1/script")
+@RequestMapping("/seatunnel/api/v1/script")
 @RestController
 public class ScriptController {
     @Resource
