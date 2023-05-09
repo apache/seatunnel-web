@@ -31,6 +31,7 @@ import { useI18n } from 'vue-i18n'
 import themeList from '@/themes'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import type { Ref } from 'vue'
+import type { CustomThemeCommonVars, ThemeCommonVars } from 'naive-ui/es/config-provider/src/interface'
 
 const App = defineComponent({
   setup() {
@@ -42,6 +43,12 @@ const App = defineComponent({
     const themeOverrides: Ref<GlobalThemeOverrides> = ref(
       themeList[currentTheme.value ? 'dark' : 'light']
     )
+    const setBorderRadius = (v: number) => {
+      (themeOverrides.value.common as Partial<ThemeCommonVars & CustomThemeCommonVars>).borderRadius =
+        v + 'px'
+    }
+
+    settingStore.getFilletValue && setBorderRadius(settingStore.getFilletValue)
 
     if (settingStore.getLocales) {
       const { locale } = useI18n()
@@ -51,8 +58,7 @@ const App = defineComponent({
     watch(
       () => settingStore.getFilletValue,
       () => {
-        ;(themeOverrides.value.common as any).borderRadius =
-          settingStore.getFilletValue + 'px'
+        setBorderRadius(settingStore.getFilletValue)
       }
     )
 
