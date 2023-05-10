@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
-@RequestMapping("/api/v1/user")
+@RequestMapping("/seatunnel/api/v1/user")
 @RestController
 public class UserController {
 

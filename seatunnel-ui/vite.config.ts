@@ -22,6 +22,7 @@ import viteCompression from 'vite-plugin-compression'
 import path from 'path'
 
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/ui/' : '/',
   plugins: [
     vue(),
     vueJsx(),
@@ -42,7 +43,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api/v1': {
+      '/seatunnel/api/v1': {
         target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
         changeOrigin: true
       }

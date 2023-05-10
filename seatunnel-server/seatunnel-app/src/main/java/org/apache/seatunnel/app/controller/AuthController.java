@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/seatunnel/api/v1/auth")
 @RestController
 public class AuthController {
 

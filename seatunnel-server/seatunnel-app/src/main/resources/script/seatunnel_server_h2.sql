@@ -171,3 +171,5 @@ CREATE TABLE `user_login_log` (
 -- ----------------------------
 -- Records of user_login_log
 -- ----------------------------
+
+INSERT INTO `seatunnel`.`user`(`username`,`password`,`status`,`type`) values ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);

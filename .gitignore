@@ -48,3 +48,7 @@ test.conf
 spark-warehouse
 *.flattened-pom.xml
 /seatunnel-ui/package-lock.json
+/seatunnel-ui/node
+/seatunnel-ui/node/*
+/seatunnel-ui/node_modules
+/seatunnel-ui/node_modules/*

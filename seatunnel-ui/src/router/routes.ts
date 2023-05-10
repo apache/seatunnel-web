@@ -26,7 +26,11 @@ import type { Component } from 'vue'
 const modules = import.meta.glob('/src/views/**/**.tsx')
 const components: { [key: string]: Component } = utils.mapping(modules)
 
-const basePage: RouteRecordRaw[] = [dataPipes, jobs, tasks, userManage]
+const basePage: RouteRecordRaw[] = [{
+    path: '/',
+    redirect: { name: 'data-pipes' }
+  },
+  dataPipes, jobs, tasks, userManage]
 
 const loginPage: RouteRecordRaw[] = [
   {

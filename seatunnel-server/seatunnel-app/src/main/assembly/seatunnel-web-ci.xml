@@ -22,6 +22,7 @@
     <formats>
         <format>dir</format>
         <format>zip</format>
+        <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
@@ -59,6 +60,19 @@
     <dependencySets>
         <dependencySet>
             <outputDirectory>libs</outputDirectory>
+        </dependencySet>
+        <!-- =================== JDBC Connector Drivers ===================  -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <unpack>false</unpack>
+            <includes>
+                <include>mysql:mysql-connector-java:jar</include>
+                <include>org.postgresql:postgresql:jar</include>
+            </includes>
+            <outputFileNameMapping>${artifact.file.name}</outputFileNameMapping>
+            <outputDirectory>libs</outputDirectory>
+            <scope>provided</scope>
         </dependencySet>
     </dependencySets>
 </assembly>
