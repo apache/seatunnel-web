@@ -42,7 +42,7 @@ const baseRequestConfig: AxiosRequestConfig = {
   timeout: settingStore.getRequestTimeValue
     ? settingStore.getRequestTimeValue
     : 6000,
-  baseURL: '/api/v1'
+  baseURL: '/seatunnel/api/v1'
 }
 
 const service = axios.create(baseRequestConfig)
