@@ -40,7 +40,7 @@ ds:
     default: gaojun
   api:
     token: 296fecc6e5f78e6a5aa39106707476fe
-    prefix: http://127.0.0.1:12345/dolphinscheduler
+    prefix: http://localhost:12345/dolphinscheduler
 
 jwt:
   expireTime: 86400
