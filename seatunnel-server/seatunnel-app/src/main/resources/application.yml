@@ -39,7 +39,7 @@ ds:
   tenant:
     default: gaojun
   api:
-    token: 296fecc6e5f78e6a5aa39106707476fe
+    token: fcec21193f5e00189aad3fef7bc50c6e
     prefix: http://localhost:12345/dolphinscheduler
 
 jwt:
