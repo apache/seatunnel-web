@@ -106,7 +106,7 @@ cd incubator-seatunnel-web
 sh build.sh code
 ```
 
-Then you can find the installer package in dir `incubator-seatunnel-web/seatunnel-server/seatunnel-app/target/apache-seatunnel-web-incubating-${project.version}.tar.gz`.
+Then you can find the installer package in dir `incubator-seatunnel-web/seatunnel-web-dist/target/apache-seatunnel-web-incubating-${project.version}.tar.gz`.
 
 #### 3.2 Install
 
