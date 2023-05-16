@@ -20,11 +20,12 @@ package org.apache.seatunnel.datasource.plugin.kafka;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-import com.google.common.collect.ImmutableMap;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,37 +37,37 @@ import java.util.Map;
 public class KafkaDataSourceChannelTest {
 
     private static final KafkaDataSourceChannel KAFKA_DATA_SOURCE_CHANNEL =
-        new KafkaDataSourceChannel();
+            new KafkaDataSourceChannel();
 
     private static final String KAFKA_PLUGIN_NAME = "kafka";
     private static final String BOOTSTRAP_SERVER = "localhost:9092";
 
     private static final Map<String, String> REQUEST_PARAMS =
-        new ImmutableMap.Builder<String, String>()
-            .put(KafkaOptionRule.BOOTSTRAP_SERVERS.key(), BOOTSTRAP_SERVER)
-            .build();
+            new ImmutableMap.Builder<String, String>()
+                    .put(KafkaOptionRule.BOOTSTRAP_SERVERS.key(), BOOTSTRAP_SERVER)
+                    .build();
 
     @Test
     public void getDataSourceOptions() {
         OptionRule dataSourceMetadataFieldsByDataSourceName =
-            KAFKA_DATA_SOURCE_CHANNEL.getDataSourceOptions(KAFKA_PLUGIN_NAME);
+                KAFKA_DATA_SOURCE_CHANNEL.getDataSourceOptions(KAFKA_PLUGIN_NAME);
         Assertions.assertEquals(
-            1, dataSourceMetadataFieldsByDataSourceName.getRequiredOptions().size());
+                1, dataSourceMetadataFieldsByDataSourceName.getRequiredOptions().size());
     }
 
     @Test
     public void getDatasourceMetadataFieldsByDataSourceName() {
         OptionRule datasourceMetadataFieldsByDataSourceName =
-            KAFKA_DATA_SOURCE_CHANNEL.getDatasourceMetadataFieldsByDataSourceName(
-                KAFKA_PLUGIN_NAME);
+                KAFKA_DATA_SOURCE_CHANNEL.getDatasourceMetadataFieldsByDataSourceName(
+                        KAFKA_PLUGIN_NAME);
         Assertions.assertEquals(
-            2, datasourceMetadataFieldsByDataSourceName.getOptionalOptions().size());
+                2, datasourceMetadataFieldsByDataSourceName.getOptionalOptions().size());
     }
 
     @Test
     public void getTables() {
         List<String> tables =
-            KAFKA_DATA_SOURCE_CHANNEL.getTables(KAFKA_PLUGIN_NAME, REQUEST_PARAMS, null);
+                KAFKA_DATA_SOURCE_CHANNEL.getTables(KAFKA_PLUGIN_NAME, REQUEST_PARAMS, null);
         log.info("{}", tables);
         Assertions.assertNotNull(tables);
     }
@@ -74,7 +75,7 @@ public class KafkaDataSourceChannelTest {
     @Test
     public void getDatabases() {
         List<String> databases =
-            KAFKA_DATA_SOURCE_CHANNEL.getDatabases(KAFKA_PLUGIN_NAME, REQUEST_PARAMS);
+                KAFKA_DATA_SOURCE_CHANNEL.getDatabases(KAFKA_PLUGIN_NAME, REQUEST_PARAMS);
         log.info("{}", databases);
         Assertions.assertNotNull(databases);
     }
@@ -82,15 +83,15 @@ public class KafkaDataSourceChannelTest {
     @Test
     public void checkDataSourceConnectivity() {
         boolean dataSourceConnectivity =
-            KAFKA_DATA_SOURCE_CHANNEL.checkDataSourceConnectivity(
-                KAFKA_PLUGIN_NAME, REQUEST_PARAMS);
+                KAFKA_DATA_SOURCE_CHANNEL.checkDataSourceConnectivity(
+                        KAFKA_PLUGIN_NAME, REQUEST_PARAMS);
         Assertions.assertTrue(dataSourceConnectivity);
     }
 
     @Test
     public void getTableFields() {
         List<TableField> tableFields =
-            KAFKA_DATA_SOURCE_CHANNEL.getTableFields(KAFKA_PLUGIN_NAME, REQUEST_PARAMS, "", "");
+                KAFKA_DATA_SOURCE_CHANNEL.getTableFields(KAFKA_PLUGIN_NAME, REQUEST_PARAMS, "", "");
         log.info("{}", tableFields);
         Assertions.assertTrue(tableFields.isEmpty());
     }
@@ -98,8 +99,8 @@ public class KafkaDataSourceChannelTest {
     @Test
     public void testGetTableFields() {
         Map<String, List<TableField>> tableFields =
-            KAFKA_DATA_SOURCE_CHANNEL.getTableFields(
-                KAFKA_PLUGIN_NAME, REQUEST_PARAMS, "", Collections.emptyList());
+                KAFKA_DATA_SOURCE_CHANNEL.getTableFields(
+                        KAFKA_PLUGIN_NAME, REQUEST_PARAMS, "", Collections.emptyList());
         log.info("{}", tableFields);
         Assertions.assertTrue(tableFields.isEmpty());
     }

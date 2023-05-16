@@ -31,23 +31,32 @@ import java.util.Date;
 public class JobSimpleInfoRes {
     @ApiModelProperty(value = "job id", dataType = "Long")
     private Long jobId;
+
     @ApiModelProperty(value = "script id", dataType = "Long")
     private Integer scriptId;
+
     @ApiModelProperty(value = "job name", dataType = "String")
     @JsonProperty("datapipeName")
     private String jobName;
+
     @ApiModelProperty(value = "job status", dataType = "String")
     private String jobStatus;
+
     @ApiModelProperty(value = "job plan", dataType = "String")
     private String jobPlan;
+
     @ApiModelProperty(value = "job is publish", dataType = "Boolean")
     private Boolean publish;
+
     @ApiModelProperty(value = "job creator", dataType = "String")
     private String creatorName;
+
     @ApiModelProperty(value = "job mender", dataType = "String")
     private String menderName;
+
     @ApiModelProperty(value = "job create time", dataType = "String")
     private Date createTime;
+
     @ApiModelProperty(value = "job update time", dataType = "String")
     private Date updateTime;
 }

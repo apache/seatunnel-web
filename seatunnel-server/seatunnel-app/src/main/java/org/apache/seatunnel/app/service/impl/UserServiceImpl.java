@@ -17,8 +17,6 @@
 
 package org.apache.seatunnel.app.service.impl;
 
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED;
-
 import org.apache.seatunnel.app.common.UserTokenStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
@@ -49,16 +47,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED;
+
 @Component
 public class UserServiceImpl implements IUserService {
-    @Resource
-    private IUserDao userDaoImpl;
+    @Resource private IUserDao userDaoImpl;
 
-    @Resource
-    private IRoleService roleServiceImpl;
+    @Resource private IRoleService roleServiceImpl;
 
-    @Resource
-    private JwtUtils jwtUtils;
+    @Resource private JwtUtils jwtUtils;
 
     @Value("${user.default.passwordSalt:seatunnel}")
     private String defaultSalt;
@@ -70,14 +67,15 @@ public class UserServiceImpl implements IUserService {
         userDaoImpl.checkUserExists(addReq.getUsername());
 
         // 2. add a new user.
-        final UpdateUserDto dto = UpdateUserDto.builder()
-                .id(null)
-                .username(addReq.getUsername())
-                // encryption user's password
-                .password(PasswordUtils.encryptWithSalt(defaultSalt, addReq.getPassword()))
-                .status(addReq.getStatus())
-                .type(addReq.getType())
-                .build();
+        final UpdateUserDto dto =
+                UpdateUserDto.builder()
+                        .id(null)
+                        .username(addReq.getUsername())
+                        // encryption user's password
+                        .password(PasswordUtils.encryptWithSalt(defaultSalt, addReq.getPassword()))
+                        .status(addReq.getStatus())
+                        .type(addReq.getType())
+                        .build();
 
         final int userId = userDaoImpl.add(dto);
         final AddUserRes res = new AddUserRes();
@@ -90,14 +88,16 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void update(UpdateUserReq updateReq) {
-        final UpdateUserDto dto = UpdateUserDto.builder()
-                .id(updateReq.getUserId())
-                .username(updateReq.getUsername())
-                // encryption user's password
-                .password(PasswordUtils.encryptWithSalt(defaultSalt, updateReq.getPassword()))
-                .status(updateReq.getStatus())
-                .type(updateReq.getType())
-                .build();
+        final UpdateUserDto dto =
+                UpdateUserDto.builder()
+                        .id(updateReq.getUserId())
+                        .username(updateReq.getUsername())
+                        // encryption user's password
+                        .password(
+                                PasswordUtils.encryptWithSalt(defaultSalt, updateReq.getPassword()))
+                        .status(updateReq.getStatus())
+                        .type(updateReq.getType())
+                        .build();
 
         userDaoImpl.update(dto);
     }
@@ -112,13 +112,13 @@ public class UserServiceImpl implements IUserService {
     @Override
     public PageInfo<UserSimpleInfoRes> list(UserListReq userListReq) {
 
-        final ListUserDto dto = ListUserDto.builder()
-                .name(userListReq.getName())
-                .build();
+        final ListUserDto dto = ListUserDto.builder().name(userListReq.getName()).build();
 
-        final PageData<User> userPageData = userDaoImpl.list(dto, userListReq.getRealPageNo(), userListReq.getPageSize());
+        final PageData<User> userPageData =
+                userDaoImpl.list(dto, userListReq.getRealPageNo(), userListReq.getPageSize());
 
-        final List<UserSimpleInfoRes> data = userPageData.getData().stream().map(this::translate).collect(Collectors.toList());
+        final List<UserSimpleInfoRes> data =
+                userPageData.getData().stream().map(this::translate).collect(Collectors.toList());
         final PageInfo<UserSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setPageNo(userListReq.getPageNo());
         pageInfo.setPageSize(userListReq.getPageSize());
@@ -153,11 +153,12 @@ public class UserServiceImpl implements IUserService {
         final String token = jwtUtils.genToken(translate.toMap());
         translate.setToken(token);
 
-        final UserLoginLogDto logDto = UserLoginLogDto.builder()
-                .token(token)
-                .tokenStatus(UserTokenStatusEnum.ENABLE.enable())
-                .userId(user.getId())
-                .build();
+        final UserLoginLogDto logDto =
+                UserLoginLogDto.builder()
+                        .token(token)
+                        .tokenStatus(UserTokenStatusEnum.ENABLE.enable())
+                        .userId(user.getId())
+                        .build();
         userDaoImpl.insertLoginLog(logDto);
 
         return translate;

@@ -22,11 +22,12 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -45,7 +46,7 @@ import java.util.Set;
 public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     public static final Set<String> MYSQL_SYSTEM_DATABASES =
-        Sets.newHashSet("master", "tempdb", "model", "msdb");
+            Sets.newHashSet("master", "tempdb", "model", "msdb");
 
     @Override
     public boolean canAbleGetSchema() {
@@ -64,7 +65,7 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        String pluginName, Map<String, String> requestParams, String database) {
+            String pluginName, Map<String, String> requestParams, String database) {
         return this.getTableNames(requestParams, database);
     }
 
@@ -79,10 +80,10 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     @Override
     public boolean checkDataSourceConnectivity(
-        String pluginName, Map<String, String> requestParams) {
+            String pluginName, Map<String, String> requestParams) {
         try (Connection connection = init(requestParams);
-             PreparedStatement statement = connection.prepareStatement("SELECT 1");
-             ResultSet rs = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement("SELECT 1");
+                ResultSet rs = statement.executeQuery()) {
             return rs.next();
         } catch (SQLException e) {
             throw new DataSourcePluginException("connect datasource failed", e);
@@ -91,17 +92,17 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<TableField> getTableFields(
-        String pluginName, Map<String, String> requestParams, String database, String table) {
+            String pluginName, Map<String, String> requestParams, String database, String table) {
         Pair<String, String> pair = parseSchemaAndTable(table);
         return getTableFields(requestParams, database, pair.getLeft(), pair.getRight());
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        String pluginName,
-        Map<String, String> requestParams,
-        String database,
-        List<String> tables) {
+            String pluginName,
+            Map<String, String> requestParams,
+            String database,
+            List<String> tables) {
         Map<String, List<TableField>> tableFields = new HashMap<>(tables.size());
         for (String table : tables) {
             tableFields.put(table, getTableFields(pluginName, requestParams, database, table));
@@ -115,7 +116,7 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
         }
         String url = requestParams.get(SqlServerCDCOptionRule.BASE_URL.key());
         if (null != requestParams.get(SqlServerCDCOptionRule.PASSWORD.key())
-            && null != requestParams.get(SqlServerCDCOptionRule.USERNAME.key())) {
+                && null != requestParams.get(SqlServerCDCOptionRule.USERNAME.key())) {
             String username = requestParams.get(SqlServerCDCOptionRule.USERNAME.key());
             String password = requestParams.get(SqlServerCDCOptionRule.PASSWORD.key());
             return DriverManager.getConnection(url, username, password);
@@ -126,10 +127,10 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
     private List<String> getDataBaseNames(Map<String, String> requestParams) throws SQLException {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
-             PreparedStatement statement =
-                 connection.prepareStatement(
-                     "SELECT NAME FROM SYS.DATABASES WHERE IS_CDC_ENABLED = 1;");
-             ResultSet re = statement.executeQuery()) {
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                "SELECT NAME FROM SYS.DATABASES WHERE IS_CDC_ENABLED = 1;");
+                ResultSet re = statement.executeQuery()) {
             // filter system databases
             while (re.next()) {
                 String dbName = re.getString("NAME");
@@ -144,18 +145,18 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     private List<String> getTableNames(Map<String, String> requestParams, String dbName) {
         final String sql =
-            String.format(
-                "SELECT SCHEMAS.NAME AS SCHEMA_NAME, TABLES.NAME AS TABLE_NAME"
-                    + "    FROM %s.SYS.SCHEMAS AS SCHEMAS"
-                    + "        JOIN %s.SYS.TABLES AS TABLES"
-                    + "            ON SCHEMAS.SCHEMA_ID = TABLES.SCHEMA_ID"
-                    + "                   AND TABLES.IS_TRACKED_BY_CDC = 1",
-                dbName, dbName);
+                String.format(
+                        "SELECT SCHEMAS.NAME AS SCHEMA_NAME, TABLES.NAME AS TABLE_NAME"
+                                + "    FROM %s.SYS.SCHEMAS AS SCHEMAS"
+                                + "        JOIN %s.SYS.TABLES AS TABLES"
+                                + "            ON SCHEMAS.SCHEMA_ID = TABLES.SCHEMA_ID"
+                                + "                   AND TABLES.IS_TRACKED_BY_CDC = 1",
+                        dbName, dbName);
 
         List<String> tableNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 String schemaName = resultSet.getString("SCHEMA_NAME");
                 String tableName = resultSet.getString("TABLE_NAME");
@@ -168,9 +169,9 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
     }
 
     private List<TableField> getTableFields(
-        Map<String, String> requestParams, String dbName, String schemaName, String tableName) {
+            Map<String, String> requestParams, String dbName, String schemaName, String tableName) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = init(requestParams);) {
+        try (Connection connection = init(requestParams); ) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, schemaName, tableName);
             ResultSet resultSet = metaData.getColumns(dbName, schemaName, tableName, null);
@@ -196,8 +197,8 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
     }
 
     private String getPrimaryKey(
-        DatabaseMetaData metaData, String dbName, String schemaName, String tableName)
-        throws SQLException {
+            DatabaseMetaData metaData, String dbName, String schemaName, String tableName)
+            throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, schemaName, tableName);
         while (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
@@ -207,8 +208,8 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     private boolean isNotSystemDatabase(String dbName) {
         return MYSQL_SYSTEM_DATABASES.stream()
-            .noneMatch(
-                systemDatabase -> StringUtils.equalsAnyIgnoreCase(systemDatabase, dbName));
+                .noneMatch(
+                        systemDatabase -> StringUtils.equalsAnyIgnoreCase(systemDatabase, dbName));
     }
 
     private boolean convertToBoolean(Object value) {

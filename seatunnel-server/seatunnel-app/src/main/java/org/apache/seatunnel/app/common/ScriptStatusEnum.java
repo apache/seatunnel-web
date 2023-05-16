@@ -24,7 +24,7 @@ public enum ScriptStatusEnum {
     ;
 
     private final int code;
-    private final String  description;
+    private final String description;
 
     ScriptStatusEnum(int code, String description) {
         this.code = code;

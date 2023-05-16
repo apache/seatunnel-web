@@ -17,15 +17,14 @@
 
 package org.apache.seatunnel.datasource.plugin.elasticsearch.client;
 
-import org.apache.seatunnel.common.utils.JsonUtils;
-import org.apache.seatunnel.datasource.plugin.elasticsearch.ElasticSearchOptionRule;
-
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.seatunnel.common.utils.JsonUtils;
+import org.apache.seatunnel.datasource.plugin.elasticsearch.ElasticSearchOptionRule;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -36,10 +35,13 @@ import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
+
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
+
+import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.SSLContext;
 
@@ -69,18 +71,18 @@ public class EsRestClient implements AutoCloseable {
     public static EsRestClient createInstance(Config pluginConfig) {
         try {
             List<String> hosts =
-                OBJECT_MAPPER.readValue(
-                    pluginConfig.getString(ElasticSearchOptionRule.HOSTS.key()),
-                    List.class);
+                    OBJECT_MAPPER.readValue(
+                            pluginConfig.getString(ElasticSearchOptionRule.HOSTS.key()),
+                            List.class);
             Optional<String> username = Optional.empty();
             Optional<String> password = Optional.empty();
             if (pluginConfig.hasPath(ElasticSearchOptionRule.USERNAME.key())) {
                 username =
-                    Optional.of(pluginConfig.getString(ElasticSearchOptionRule.USERNAME.key()));
+                        Optional.of(pluginConfig.getString(ElasticSearchOptionRule.USERNAME.key()));
                 if (pluginConfig.hasPath(ElasticSearchOptionRule.PASSWORD.key())) {
                     password =
-                        Optional.of(
-                            pluginConfig.getString(ElasticSearchOptionRule.PASSWORD.key()));
+                            Optional.of(
+                                    pluginConfig.getString(ElasticSearchOptionRule.PASSWORD.key()));
                 }
             }
             Optional<String> keystorePath = Optional.empty();
@@ -88,141 +90,141 @@ public class EsRestClient implements AutoCloseable {
             Optional<String> truststorePath = Optional.empty();
             Optional<String> truststorePassword = Optional.empty();
             boolean tlsVerifyCertificate =
-                ElasticSearchOptionRule.TLS_VERIFY_CERTIFICATE.defaultValue();
+                    ElasticSearchOptionRule.TLS_VERIFY_CERTIFICATE.defaultValue();
             if (pluginConfig.hasPath(ElasticSearchOptionRule.TLS_VERIFY_CERTIFICATE.key())) {
                 tlsVerifyCertificate =
-                    pluginConfig.getBoolean(
-                        ElasticSearchOptionRule.TLS_VERIFY_CERTIFICATE.key());
+                        pluginConfig.getBoolean(
+                                ElasticSearchOptionRule.TLS_VERIFY_CERTIFICATE.key());
             }
             if (tlsVerifyCertificate) {
                 if (pluginConfig.hasPath(ElasticSearchOptionRule.TLS_KEY_STORE_PATH.key())) {
                     keystorePath =
-                        Optional.of(
-                            pluginConfig.getString(
-                                ElasticSearchOptionRule.TLS_KEY_STORE_PATH.key()));
+                            Optional.of(
+                                    pluginConfig.getString(
+                                            ElasticSearchOptionRule.TLS_KEY_STORE_PATH.key()));
                 }
                 if (pluginConfig.hasPath(ElasticSearchOptionRule.TLS_KEY_STORE_PASSWORD.key())) {
                     keystorePassword =
-                        Optional.of(
-                            pluginConfig.getString(
-                                ElasticSearchOptionRule.TLS_KEY_STORE_PASSWORD.key()));
+                            Optional.of(
+                                    pluginConfig.getString(
+                                            ElasticSearchOptionRule.TLS_KEY_STORE_PASSWORD.key()));
                 }
                 if (pluginConfig.hasPath(ElasticSearchOptionRule.TLS_TRUST_STORE_PATH.key())) {
                     truststorePath =
-                        Optional.of(
-                            pluginConfig.getString(
-                                ElasticSearchOptionRule.TLS_TRUST_STORE_PATH.key()));
+                            Optional.of(
+                                    pluginConfig.getString(
+                                            ElasticSearchOptionRule.TLS_TRUST_STORE_PATH.key()));
                 }
                 if (pluginConfig.hasPath(ElasticSearchOptionRule.TLS_TRUST_STORE_PASSWORD.key())) {
                     truststorePassword =
-                        Optional.of(
-                            pluginConfig.getString(
-                                ElasticSearchOptionRule.TLS_TRUST_STORE_PASSWORD
-                                    .key()));
+                            Optional.of(
+                                    pluginConfig.getString(
+                                            ElasticSearchOptionRule.TLS_TRUST_STORE_PASSWORD
+                                                    .key()));
                 }
             }
             boolean tlsVerifyHostnames = ElasticSearchOptionRule.TLS_VERIFY_HOSTNAME.defaultValue();
             if (pluginConfig.hasPath(ElasticSearchOptionRule.TLS_VERIFY_HOSTNAME.key())) {
                 tlsVerifyHostnames =
-                    pluginConfig.getBoolean(ElasticSearchOptionRule.TLS_VERIFY_HOSTNAME.key());
+                        pluginConfig.getBoolean(ElasticSearchOptionRule.TLS_VERIFY_HOSTNAME.key());
             }
             return createInstance(
-                hosts,
-                username,
-                password,
-                tlsVerifyCertificate,
-                tlsVerifyHostnames,
-                keystorePath,
-                keystorePassword,
-                truststorePath,
-                truststorePassword);
+                    hosts,
+                    username,
+                    password,
+                    tlsVerifyCertificate,
+                    tlsVerifyHostnames,
+                    keystorePath,
+                    keystorePassword,
+                    truststorePath,
+                    truststorePassword);
         } catch (Exception e) {
             throw new RuntimeException("Create EsRestClient failed", e);
         }
     }
 
     public static EsRestClient createInstance(
-        List<String> hosts,
-        Optional<String> username,
-        Optional<String> password,
-        boolean tlsVerifyCertificate,
-        boolean tlsVerifyHostnames,
-        Optional<String> keystorePath,
-        Optional<String> keystorePassword,
-        Optional<String> truststorePath,
-        Optional<String> truststorePassword) {
+            List<String> hosts,
+            Optional<String> username,
+            Optional<String> password,
+            boolean tlsVerifyCertificate,
+            boolean tlsVerifyHostnames,
+            Optional<String> keystorePath,
+            Optional<String> keystorePassword,
+            Optional<String> truststorePath,
+            Optional<String> truststorePassword) {
         RestClientBuilder restClientBuilder =
-            getRestClientBuilder(
-                hosts,
-                username,
-                password,
-                tlsVerifyCertificate,
-                tlsVerifyHostnames,
-                keystorePath,
-                keystorePassword,
-                truststorePath,
-                truststorePassword);
+                getRestClientBuilder(
+                        hosts,
+                        username,
+                        password,
+                        tlsVerifyCertificate,
+                        tlsVerifyHostnames,
+                        keystorePath,
+                        keystorePassword,
+                        truststorePath,
+                        truststorePassword);
         return new EsRestClient(restClientBuilder.build());
     }
 
     private static RestClientBuilder getRestClientBuilder(
-        List<String> hosts,
-        Optional<String> username,
-        Optional<String> password,
-        boolean tlsVerifyCertificate,
-        boolean tlsVerifyHostnames,
-        Optional<String> keystorePath,
-        Optional<String> keystorePassword,
-        Optional<String> truststorePath,
-        Optional<String> truststorePassword) {
+            List<String> hosts,
+            Optional<String> username,
+            Optional<String> password,
+            boolean tlsVerifyCertificate,
+            boolean tlsVerifyHostnames,
+            Optional<String> keystorePath,
+            Optional<String> keystorePassword,
+            Optional<String> truststorePath,
+            Optional<String> truststorePassword) {
         HttpHost[] httpHosts = new HttpHost[hosts.size()];
         for (int i = 0; i < hosts.size(); i++) {
             httpHosts[i] = HttpHost.create(hosts.get(i));
         }
 
         RestClientBuilder restClientBuilder =
-            RestClient.builder(httpHosts)
-                .setRequestConfigCallback(
-                    requestConfigBuilder ->
-                        requestConfigBuilder
-                            .setConnectionRequestTimeout(
-                                CONNECTION_REQUEST_TIMEOUT)
-                            .setSocketTimeout(SOCKET_TIMEOUT));
+                RestClient.builder(httpHosts)
+                        .setRequestConfigCallback(
+                                requestConfigBuilder ->
+                                        requestConfigBuilder
+                                                .setConnectionRequestTimeout(
+                                                        CONNECTION_REQUEST_TIMEOUT)
+                                                .setSocketTimeout(SOCKET_TIMEOUT));
 
         restClientBuilder.setHttpClientConfigCallback(
-            httpClientBuilder -> {
-                if (username.isPresent()) {
-                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                    credentialsProvider.setCredentials(
-                        AuthScope.ANY,
-                        new UsernamePasswordCredentials(username.get(), password.get()));
-                    httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                }
+                httpClientBuilder -> {
+                    if (username.isPresent()) {
+                        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                        credentialsProvider.setCredentials(
+                                AuthScope.ANY,
+                                new UsernamePasswordCredentials(username.get(), password.get()));
+                        httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                    }
 
-                try {
-                    if (tlsVerifyCertificate) {
-                        Optional<SSLContext> sslContext =
-                            SSLUtils.buildSSLContext(
-                                keystorePath,
-                                keystorePassword,
-                                truststorePath,
-                                truststorePassword);
-                        sslContext.ifPresent(e -> httpClientBuilder.setSSLContext(e));
-                    } else {
-                        SSLContext sslContext =
-                            SSLContexts.custom()
-                                .loadTrustMaterial(new TrustAllStrategy())
-                                .build();
-                        httpClientBuilder.setSSLContext(sslContext);
+                    try {
+                        if (tlsVerifyCertificate) {
+                            Optional<SSLContext> sslContext =
+                                    SSLUtils.buildSSLContext(
+                                            keystorePath,
+                                            keystorePassword,
+                                            truststorePath,
+                                            truststorePassword);
+                            sslContext.ifPresent(e -> httpClientBuilder.setSSLContext(e));
+                        } else {
+                            SSLContext sslContext =
+                                    SSLContexts.custom()
+                                            .loadTrustMaterial(new TrustAllStrategy())
+                                            .build();
+                            httpClientBuilder.setSSLContext(sslContext);
+                        }
+                        if (!tlsVerifyHostnames) {
+                            httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                    if (!tlsVerifyHostnames) {
-                        httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                return httpClientBuilder;
-            });
+                    return httpClientBuilder;
+                });
         return restClientBuilder;
     }
 
@@ -235,12 +237,12 @@ public class EsRestClient implements AutoCloseable {
             JsonNode jsonNode = objectMapper.readTree(result);
             JsonNode versionNode = jsonNode.get("version");
             return ElasticsearchClusterInfo.builder()
-                .clusterVersion(versionNode.get("number").asText())
-                .distribution(
-                    Optional.ofNullable(versionNode.get("distribution"))
-                        .map(JsonNode::asText)
-                        .orElse(null))
-                .build();
+                    .clusterVersion(versionNode.get("number").asText())
+                    .distribution(
+                            Optional.ofNullable(versionNode.get("distribution"))
+                                    .map(JsonNode::asText)
+                                    .orElse(null))
+                    .build();
         } catch (IOException e) {
             throw new ResponseException("fail to get elasticsearch version.", e);
         }
@@ -265,13 +267,13 @@ public class EsRestClient implements AutoCloseable {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 String entity = EntityUtils.toString(response.getEntity());
                 return JsonUtils.toList(entity, Map.class).stream()
-                    .map(map -> map.get("index").toString())
-                    .collect(Collectors.toList());
+                        .map(map -> map.get("index").toString())
+                        .collect(Collectors.toList());
             } else {
                 throw new ResponseException(
-                    String.format(
-                        "GET %s response status code=%d",
-                        endpoint, response.getStatusLine().getStatusCode()));
+                        String.format(
+                                "GET %s response status code=%d",
+                                endpoint, response.getStatusLine().getStatusCode()));
             }
         } catch (IOException ex) {
             throw new ResponseException(ex);
@@ -289,9 +291,9 @@ public class EsRestClient implements AutoCloseable {
             // todo: if the index doesn't exist, the response status code is 200?
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 throw new ResponseException(
-                    String.format(
-                        "DELETE %s response status code=%d",
-                        endpoint, response.getStatusLine().getStatusCode()));
+                        String.format(
+                                "DELETE %s response status code=%d",
+                                endpoint, response.getStatusLine().getStatusCode()));
             }
         } catch (IOException ex) {
             throw new ResponseException(ex);
@@ -315,9 +317,9 @@ public class EsRestClient implements AutoCloseable {
             }
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 throw new ResponseException(
-                    String.format(
-                        "GET %s response status code=%d",
-                        endpoint, response.getStatusLine().getStatusCode()));
+                        String.format(
+                                "GET %s response status code=%d",
+                                endpoint, response.getStatusLine().getStatusCode()));
             }
             String entity = EntityUtils.toString(response.getEntity());
             log.info(String.format("GET %s response=%s", endpoint, entity));
@@ -359,9 +361,9 @@ public class EsRestClient implements AutoCloseable {
                     mapping.put(field, type);
                 } else {
                     log.warn(
-                        String.format(
-                            "fail to get elasticsearch field %s mapping type,so give a default type text",
-                            field));
+                            String.format(
+                                    "fail to get elasticsearch field %s mapping type,so give a default type text",
+                                    field));
                     mapping.put(field, "text");
                 }
             }

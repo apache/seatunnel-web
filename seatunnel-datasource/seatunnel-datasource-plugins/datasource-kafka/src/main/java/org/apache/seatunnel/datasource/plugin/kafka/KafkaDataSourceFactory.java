@@ -42,13 +42,13 @@ public class KafkaDataSourceFactory implements DataSourceFactory {
     @Override
     public Set<DataSourcePluginInfo> supportedDataSources() {
         return Sets.newHashSet(
-            DataSourcePluginInfo.builder()
-                .name(KAFKA_PLUGIN_NAME)
-                .icon(KAFKA_PLUGIN_ICON)
-                .version(KAFKA_PLUGIN_VERSION)
-                .supportVirtualTables(true)
-                .type(DatasourcePluginTypeEnum.NO_STRUCTURED.getCode())
-                .build());
+                DataSourcePluginInfo.builder()
+                        .name(KAFKA_PLUGIN_NAME)
+                        .icon(KAFKA_PLUGIN_ICON)
+                        .version(KAFKA_PLUGIN_VERSION)
+                        .supportVirtualTables(true)
+                        .type(DatasourcePluginTypeEnum.NO_STRUCTURED.getCode())
+                        .build());
     }
 
     @Override

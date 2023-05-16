@@ -26,8 +26,10 @@ import lombok.Data;
 public class ScriptParamRes {
     @ApiModelProperty(value = "script param id", dataType = "String")
     private int id;
+
     @ApiModelProperty(value = "script param key", dataType = "String")
     private String key;
+
     @ApiModelProperty(value = "script param value", dataType = "String")
     private String value;
 }

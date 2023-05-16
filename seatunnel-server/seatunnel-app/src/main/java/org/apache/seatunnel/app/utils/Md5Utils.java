@@ -22,8 +22,7 @@ import org.springframework.util.DigestUtils;
 import java.nio.charset.StandardCharsets;
 
 public class Md5Utils {
-    private Md5Utils() {
-    }
+    private Md5Utils() {}
 
     public static String toMd5(String origin) {
         return DigestUtils.md5DigestAsHex(origin.getBytes(StandardCharsets.UTF_8));

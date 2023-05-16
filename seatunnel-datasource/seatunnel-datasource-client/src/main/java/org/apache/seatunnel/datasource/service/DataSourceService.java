@@ -67,18 +67,18 @@ public interface DataSourceService {
     /**
      * get data source table names by database name
      *
-     * @param pluginName    plugin name
-     * @param databaseName  database name
+     * @param pluginName plugin name
+     * @param databaseName database name
      * @param requestParams connection params
      * @return table names
      */
     List<String> getTables(
-        String pluginName, String databaseName, Map<String, String> requestParams);
+            String pluginName, String databaseName, Map<String, String> requestParams);
 
     /**
      * get data source database names
      *
-     * @param pluginName    plugin name
+     * @param pluginName plugin name
      * @param requestParams connection params
      * @return database names
      */
@@ -87,30 +87,30 @@ public interface DataSourceService {
     /**
      * get data source table fields
      *
-     * @param pluginName    plugin name
+     * @param pluginName plugin name
      * @param requestParams connection params
-     * @param databaseName  database name
-     * @param tableName     table name
+     * @param databaseName database name
+     * @param tableName table name
      * @return table fields
      */
     List<TableField> getTableFields(
-        String pluginName,
-        Map<String, String> requestParams,
-        String databaseName,
-        String tableName);
+            String pluginName,
+            Map<String, String> requestParams,
+            String databaseName,
+            String tableName);
 
     /**
      * get data source table fields
      *
-     * @param pluginName    plugin name
+     * @param pluginName plugin name
      * @param requestParams connection params
-     * @param databaseName  database name
-     * @param tableNames    table names
+     * @param databaseName database name
+     * @param tableNames table names
      * @return table fields
      */
     Map<String, List<TableField>> getTableFields(
-        String pluginName,
-        Map<String, String> requestParams,
-        String databaseName,
-        List<String> tableNames);
+            String pluginName,
+            Map<String, String> requestParams,
+            String databaseName,
+            List<String> tableNames);
 }

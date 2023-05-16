@@ -17,14 +17,16 @@
 
 package org.apache.seatunnel.app.security;
 
+import org.apache.commons.lang3.time.DateUtils;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -35,10 +37,13 @@ import java.util.UUID;
 public class JwtUtils implements InitializingBean {
     @Value("${jwt.expireTime}")
     private int expireTime;
+
     @Value("${jwt.secretKey}")
     private String secretKey;
+
     @Value("${jwt.algorithm}")
     private String algorithmString;
+
     private SignatureAlgorithm algorithm = null;
 
     @Override
@@ -60,7 +65,10 @@ public class JwtUtils implements InitializingBean {
     }
 
     public Map<String, Object> parseToken(String token) {
-        final Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token);
+        final Jws<Claims> claims =
+                Jwts.parser()
+                        .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
+                        .parseClaimsJws(token);
         return claims.getBody();
     }
 }

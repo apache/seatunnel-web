@@ -17,17 +17,16 @@
 
 package org.apache.seatunnel.datasource.plugin.clickhouse.jdbc;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -38,6 +37,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Slf4j
 public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
@@ -54,13 +55,13 @@ public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams);) {
+        try (Connection connection = getConnection(requestParams); ) {
             ResultSet resultSet =
-                connection
-                    .getMetaData()
-                    .getTables(database, null, null, new String[]{"TABLE"});
+                    connection
+                            .getMetaData()
+                            .getTables(database, null, null, new String[] {"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -75,17 +76,17 @@ public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getDatabases(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = getConnection(requestParams);
-             Statement statement = connection.createStatement();
-             ResultSet re = statement.executeQuery("SHOW DATABASES;")) {
+                Statement statement = connection.createStatement();
+                ResultSet re = statement.executeQuery("SHOW DATABASES;")) {
             // filter system databases
             while (re.next()) {
                 String dbName = re.getString("name");
                 if (StringUtils.isNotBlank(dbName)
-                    && !ClickhouseDataSourceConfig.CLICKHOUSE_SYSTEM_DATABASES.contains(
-                    dbName)) {
+                        && !ClickhouseDataSourceConfig.CLICKHOUSE_SYSTEM_DATABASES.contains(
+                                dbName)) {
                     dbNames.add(dbName);
                 }
             }
@@ -97,7 +98,7 @@ public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public boolean checkDataSourceConnectivity(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         try (Connection ignored = getConnection(requestParams)) {
             return true;
         } catch (Exception e) {
@@ -107,10 +108,10 @@ public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<TableField> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull String table) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull String table) {
         List<TableField> tableFields = new ArrayList<>();
         try (Connection connection = getConnection(requestParams, database)) {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -139,15 +140,15 @@ public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull List<String> tables) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull List<String> tables) {
         return null;
     }
 
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
-        throws SQLException {
+            throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
         while (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
@@ -156,17 +157,17 @@ public class ClickhouseJdbcDataSourceChannel implements DataSourceChannel {
     }
 
     private Connection getConnection(Map<String, String> requestParams)
-        throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException {
         return getConnection(requestParams, null);
     }
 
     private Connection getConnection(Map<String, String> requestParams, String databaseName)
-        throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException {
         checkNotNull(requestParams.get(ClickhouseOptionRule.DRIVER.key()));
         checkNotNull(requestParams.get(ClickhouseOptionRule.URL.key()), "Jdbc url cannot be null");
         String url =
-            JdbcUtils.replaceDatabase(
-                requestParams.get(ClickhouseOptionRule.URL.key()), databaseName);
+                JdbcUtils.replaceDatabase(
+                        requestParams.get(ClickhouseOptionRule.URL.key()), databaseName);
         if (requestParams.containsKey(ClickhouseOptionRule.USER.key())) {
             String username = requestParams.get(ClickhouseOptionRule.USER.key());
             String password = requestParams.get(ClickhouseOptionRule.PASSWORD.key());

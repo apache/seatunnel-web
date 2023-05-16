@@ -17,6 +17,9 @@
 
 package org.apache.seatunnel.app.thridparty.datasource.impl;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -27,15 +30,12 @@ import org.apache.seatunnel.app.thridparty.datasource.AbstractDataSourceConfigSw
 import org.apache.seatunnel.app.thridparty.datasource.SchemaGenerator;
 import org.apache.seatunnel.common.constants.PluginType;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
-
 import java.util.List;
 
 public class KafkaDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
     private static final KafkaDataSourceConfigSwitcher INSTANCE =
-        new KafkaDataSourceConfigSwitcher();
+            new KafkaDataSourceConfigSwitcher();
 
     private static final String SCHEMA = "schema";
     private static final String TOPIC = "topic";
@@ -46,13 +46,13 @@ public class KafkaDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitc
 
     @Override
     public FormStructure filterOptionRule(
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        OptionRule connectorOptionRule,
-        List<String> excludedKeys) {
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            OptionRule connectorOptionRule,
+            List<String> excludedKeys) {
         if (pluginType == PluginType.SOURCE) {
             excludedKeys.add(SCHEMA);
             excludedKeys.add(TOPIC);
@@ -61,67 +61,66 @@ public class KafkaDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitc
             excludedKeys.add(FORMAT);
         }
         return super.filterOptionRule(
-            connectorName,
-            dataSourceOptionRule,
-            virtualTableOptionRule,
-            businessMode,
-            pluginType,
-            connectorOptionRule,
-            excludedKeys);
+                connectorName,
+                dataSourceOptionRule,
+                virtualTableOptionRule,
+                businessMode,
+                pluginType,
+                connectorOptionRule,
+                excludedKeys);
     }
 
     @Override
     public Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
         if (pluginType == PluginType.SOURCE) {
             // Use field to generate the schema
             connectorConfig =
-                connectorConfig.withValue(
-                    TOPIC,
-                    ConfigValueFactory.fromAnyRef(
-                        virtualTableDetail.getDatasourceProperties().get(TOPIC)));
+                    connectorConfig.withValue(
+                            TOPIC,
+                            ConfigValueFactory.fromAnyRef(
+                                    virtualTableDetail.getDatasourceProperties().get(TOPIC)));
             connectorConfig =
-                connectorConfig.withValue(
-                    SCHEMA,
-                    SchemaGenerator.generateSchemaBySelectTableFields(
-                            virtualTableDetail, selectTableFields)
-                        .root());
+                    connectorConfig.withValue(
+                            SCHEMA,
+                            SchemaGenerator.generateSchemaBySelectTableFields(
+                                            virtualTableDetail, selectTableFields)
+                                    .root());
         } else if (pluginType == PluginType.SINK) {
             if (businessMode.equals(BusinessMode.DATA_INTEGRATION)) {
                 // Set the table name to topic
                 connectorConfig =
-                    connectorConfig.withValue(
-                        TOPIC,
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail.getDatasourceProperties().get(TOPIC)));
+                        connectorConfig.withValue(
+                                TOPIC,
+                                ConfigValueFactory.fromAnyRef(
+                                        virtualTableDetail.getDatasourceProperties().get(TOPIC)));
             }
             if (businessMode.equals(BusinessMode.DATA_REPLICA)) {
                 connectorConfig =
-                    connectorConfig.withValue(
-                        FORMAT, ConfigValueFactory.fromAnyRef(DEBEZIUM_FORMAT));
+                        connectorConfig.withValue(
+                                FORMAT, ConfigValueFactory.fromAnyRef(DEBEZIUM_FORMAT));
             }
         } else {
             throw new UnsupportedOperationException("Unsupported plugin type: " + pluginType);
         }
 
         return super.mergeDatasourceConfig(
-            dataSourceInstanceConfig,
-            virtualTableDetail,
-            dataSourceOption,
-            selectTableFields,
-            businessMode,
-            pluginType,
-            connectorConfig);
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 
-    private KafkaDataSourceConfigSwitcher() {
-    }
+    private KafkaDataSourceConfigSwitcher() {}
 
     public static KafkaDataSourceConfigSwitcher getInstance() {
         return INSTANCE;

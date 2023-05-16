@@ -39,10 +39,17 @@ public class TestSqlServerCDCDataSourceChannel {
         requestParams.put("username", "sa");
         requestParams.put("password", "MyPass@word");
 
-        for (String database : channel.getDatabases(SqlServerCDCDataSourceConfig.PLUGIN_NAME, requestParams)) {
-            final List<String> tables = channel.getTables(SqlServerCDCDataSourceConfig.PLUGIN_NAME, requestParams, database);
+        for (String database :
+                channel.getDatabases(SqlServerCDCDataSourceConfig.PLUGIN_NAME, requestParams)) {
+            final List<String> tables =
+                    channel.getTables(
+                            SqlServerCDCDataSourceConfig.PLUGIN_NAME, requestParams, database);
             final Map<String, List<TableField>> tableFields =
-                channel.getTableFields(SqlServerCDCDataSourceConfig.PLUGIN_NAME, requestParams, database, tables);
+                    channel.getTableFields(
+                            SqlServerCDCDataSourceConfig.PLUGIN_NAME,
+                            requestParams,
+                            database,
+                            tables);
         }
     }
 }

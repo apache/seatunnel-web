@@ -22,5 +22,4 @@ import lombok.Data;
 
 @ApiModel(value = "scriptSimpleInfoRes", description = "script simple information")
 @Data
-public class ScriptSimpleInfoRes extends BaseScriptInfoRes {
-}
+public class ScriptSimpleInfoRes extends BaseScriptInfoRes {}

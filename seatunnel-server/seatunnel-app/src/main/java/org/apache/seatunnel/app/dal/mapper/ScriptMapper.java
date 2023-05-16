@@ -28,13 +28,21 @@ public interface ScriptMapper {
 
     void insert(Script script);
 
-    void updateContentByPrimaryKey(@Param("id") int id, @Param("content") String content, @Param("contentMd5") String contentMd5, @Param("menderId") int menderId);
+    void updateContentByPrimaryKey(
+            @Param("id") int id,
+            @Param("content") String content,
+            @Param("contentMd5") String contentMd5,
+            @Param("menderId") int menderId);
 
     void updateStatus(@Param("id") int id, @Param("code") byte code);
 
-    List<Script> selectBySelectiveAndPage(@Param("script") Script script, @Param("start") int start, @Param("offset") int offset);
+    List<Script> selectBySelectiveAndPage(
+            @Param("script") Script script, @Param("start") int start, @Param("offset") int offset);
 
-    Script selectByNameAndCreatorAndStatusNotEq(@Param("name") String name, @Param("creatorId") int creatorId, @Param("status") byte status);
+    Script selectByNameAndCreatorAndStatusNotEq(
+            @Param("name") String name,
+            @Param("creatorId") int creatorId,
+            @Param("status") byte status);
 
     int countBySelectiveAndPage(@Param("script") Script script);
 }

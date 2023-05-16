@@ -17,9 +17,6 @@
 
 package org.apache.seatunnel.app.dal.dao.impl;
 
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.SCRIPT_ALREADY_EXIST;
-import static com.google.common.base.Preconditions.checkState;
-
 import org.apache.seatunnel.app.common.ScriptStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IScriptDao;
 import org.apache.seatunnel.app.dal.entity.Script;
@@ -37,16 +34,24 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.SCRIPT_ALREADY_EXIST;
+
 @Repository
 public class ScriptDaoImpl implements IScriptDao {
 
-    @Resource
-    private ScriptMapper scriptMapper;
+    @Resource private ScriptMapper scriptMapper;
 
     @Override
     public void checkScriptDuplicate(CheckScriptDuplicateDto dto) {
-        final Script script = scriptMapper.selectByNameAndCreatorAndStatusNotEq(dto.getName(), dto.getCreatorId(), (byte) ScriptStatusEnum.DELETED.getCode());
-        checkState(Objects.isNull(script), String.format(SCRIPT_ALREADY_EXIST.getTemplate(), dto.getName()));
+        final Script script =
+                scriptMapper.selectByNameAndCreatorAndStatusNotEq(
+                        dto.getName(),
+                        dto.getCreatorId(),
+                        (byte) ScriptStatusEnum.DELETED.getCode());
+        checkState(
+                Objects.isNull(script),
+                String.format(SCRIPT_ALREADY_EXIST.getTemplate(), dto.getName()));
     }
 
     @Override
@@ -69,7 +74,8 @@ public class ScriptDaoImpl implements IScriptDao {
 
     @Override
     public void updateScriptContent(UpdateScriptContentDto dto) {
-        scriptMapper.updateContentByPrimaryKey(dto.getId(), dto.getContent(), dto.getContentMd5(), dto.getMenderId());
+        scriptMapper.updateContentByPrimaryKey(
+                dto.getId(), dto.getContent(), dto.getContentMd5(), dto.getMenderId());
     }
 
     @Override
@@ -82,7 +88,8 @@ public class ScriptDaoImpl implements IScriptDao {
         final Script script = new Script();
         script.setName(dto.getName());
 
-        final List<Script> scripts = scriptMapper.selectBySelectiveAndPage(script, pageNo * pageSize, pageSize);
+        final List<Script> scripts =
+                scriptMapper.selectBySelectiveAndPage(script, pageNo * pageSize, pageSize);
         int count = scriptMapper.countBySelectiveAndPage(script);
 
         return new PageData<Script>(count, scripts);

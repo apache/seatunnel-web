@@ -22,12 +22,11 @@ import org.apache.seatunnel.app.thridparty.datasource.AbstractDataSourceConfigSw
 public class SqlServerDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
     private static final SqlServerDataSourceConfigSwitcher INSTANCE =
-        new SqlServerDataSourceConfigSwitcher();
+            new SqlServerDataSourceConfigSwitcher();
 
     public static final SqlServerDataSourceConfigSwitcher getInstance() {
         return INSTANCE;
     }
 
-    private SqlServerDataSourceConfigSwitcher() {
-    }
+    private SqlServerDataSourceConfigSwitcher() {}
 }

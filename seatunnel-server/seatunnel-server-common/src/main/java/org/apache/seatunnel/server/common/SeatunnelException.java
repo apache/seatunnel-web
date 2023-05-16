@@ -17,7 +17,7 @@
 
 package org.apache.seatunnel.server.common;
 
-public class SeatunnelException extends RuntimeException{
+public class SeatunnelException extends RuntimeException {
     private SeatunnelErrorEnum errorEnum;
 
     public SeatunnelException(SeatunnelErrorEnum e) {
@@ -32,12 +32,10 @@ public class SeatunnelException extends RuntimeException{
 
     public static SeatunnelException newInstance(SeatunnelErrorEnum e, Object... msg) {
         return new SeatunnelException(e, msg);
-
     }
 
     public static SeatunnelException newInstance(SeatunnelErrorEnum e) {
         return new SeatunnelException(e);
-
     }
 
     public SeatunnelErrorEnum getErrorEnum() {

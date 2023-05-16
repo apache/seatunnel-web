@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.app.thridparty.datasource.impl;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -26,56 +28,53 @@ import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thridparty.datasource.AbstractDataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-
 import java.util.List;
 
 public class S3RedshiftDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    private S3RedshiftDataSourceConfigSwitcher() {
-    }
+    private S3RedshiftDataSourceConfigSwitcher() {}
 
     private static final S3RedshiftDataSourceConfigSwitcher INSTANCE =
-        new S3RedshiftDataSourceConfigSwitcher();
+            new S3RedshiftDataSourceConfigSwitcher();
 
     @Override
     public FormStructure filterOptionRule(
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        OptionRule connectorOptionRule,
-        List<String> excludedKeys) {
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            OptionRule connectorOptionRule,
+            List<String> excludedKeys) {
         excludedKeys.add("access_key");
         excludedKeys.add("secret_key");
         return super.filterOptionRule(
-            connectorName,
-            dataSourceOptionRule,
-            virtualTableOptionRule,
-            businessMode,
-            pluginType,
-            connectorOptionRule,
-            excludedKeys);
+                connectorName,
+                dataSourceOptionRule,
+                virtualTableOptionRule,
+                businessMode,
+                pluginType,
+                connectorOptionRule,
+                excludedKeys);
     }
 
     @Override
     public Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
         return super.mergeDatasourceConfig(
-            dataSourceInstanceConfig,
-            virtualTableDetail,
-            dataSourceOption,
-            selectTableFields,
-            businessMode,
-            pluginType,
-            connectorConfig);
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 
     public static S3RedshiftDataSourceConfigSwitcher getInstance() {

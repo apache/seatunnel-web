@@ -22,10 +22,11 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -56,13 +57,13 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         return getTables(pluginName, requestParams, database);
     }
 
     @Override
     public List<String> getDatabases(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         try {
             return getDataBaseNames(pluginName, requestParams);
         } catch (SQLException e) {
@@ -73,25 +74,25 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public boolean checkDataSourceConnectivity(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         return checkJdbcConnectivity(requestParams);
     }
 
     @Override
     public List<TableField> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull String table) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull String table) {
         return getTableFields(requestParams, database, table);
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull List<String> tables) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull List<String> tables) {
         Map<String, List<TableField>> tableFields = new HashMap<>(tables.size());
         for (String table : tables) {
             tableFields.put(table, getTableFields(requestParams, database, table));
@@ -104,24 +105,24 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
             return true;
         } catch (Exception e) {
             throw new DataSourcePluginException(
-                "check jdbc connectivity failed, " + e.getMessage(), e);
+                    "check jdbc connectivity failed, " + e.getMessage(), e);
         }
     }
 
     protected Connection init(Map<String, String> requestParams) throws SQLException {
         if (MapUtils.isEmpty(requestParams)) {
             throw new DataSourcePluginException(
-                "Hive jdbc request params is null, please check your config");
+                    "Hive jdbc request params is null, please check your config");
         }
         String url = requestParams.get(HiveJdbcOptionRule.URL.key());
         return DriverManager.getConnection(url);
     }
 
     protected List<String> getDataBaseNames(String pluginName, Map<String, String> requestParams)
-        throws SQLException {
+            throws SQLException {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
-             Statement statement = connection.createStatement();) {
+                Statement statement = connection.createStatement(); ) {
             ResultSet re = statement.executeQuery("SHOW DATABASES;");
             // filter system databases
             while (re.next()) {
@@ -136,9 +137,9 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
 
     protected List<String> getTableNames(Map<String, String> requestParams, String dbName) {
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = init(requestParams);) {
+        try (Connection connection = init(requestParams); ) {
             ResultSet resultSet =
-                connection.getMetaData().getTables(dbName, null, null, new String[]{"TABLE"});
+                    connection.getMetaData().getTables(dbName, null, null, new String[] {"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -152,9 +153,9 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
     }
 
     protected List<TableField> getTableFields(
-        Map<String, String> requestParams, String dbName, String tableName) {
+            Map<String, String> requestParams, String dbName, String tableName) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = init(requestParams);) {
+        try (Connection connection = init(requestParams); ) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, tableName);
             ResultSet resultSet = metaData.getColumns(dbName, null, tableName, null);
@@ -180,7 +181,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
     }
 
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
-        throws SQLException {
+            throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
         while (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");

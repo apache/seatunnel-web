@@ -28,8 +28,9 @@ import org.apache.seatunnel.spi.scheduler.dto.InstanceDto;
 import org.apache.seatunnel.spi.scheduler.dto.InstanceListDto;
 import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 
@@ -40,8 +41,7 @@ import java.util.stream.Collectors;
 @Component
 public class InstanceServiceImpl implements IInstanceService {
 
-    @Resource
-    private IDolphinschedulerService iDolphinschedulerService;
+    @Resource private IDolphinschedulerService iDolphinschedulerService;
 
     @Override
     public PageData<InstanceDto> list(InstanceListDto dto) {
@@ -52,20 +52,31 @@ public class InstanceServiceImpl implements IInstanceService {
         listDto.setPageSize(dto.getPageSize());
 
         // use list process instance instead of list task instance.
-        final PageData<ProcessInstanceDto> instancePageData = iDolphinschedulerService.listProcessInstance(listDto);
+        final PageData<ProcessInstanceDto> instancePageData =
+                iDolphinschedulerService.listProcessInstance(listDto);
 
-        final List<InstanceDto> data = instancePageData.getData().stream().map(t -> InstanceDto.builder()
-                .instanceId(t.getId())
-                .jobId(t.getProcessDefinitionCode())
-                .instanceName(t.getName())
-                .status(StatusUtils.getDolphinSchedulerStatus(t.getState()).name())
-                .startTime(t.getStartTime())
-                .endTime(t.getEndTime())
-                .submitTime(t.getScheduleTime())
-                .executionDuration(t.getDuration())
-                .retryTimes(t.getRunTimes())
-                .runFrequency(RunFrequencyEnum.parse(t.getCommandType()).name())
-                .build()).collect(Collectors.toList());
+        final List<InstanceDto> data =
+                instancePageData.getData().stream()
+                        .map(
+                                t ->
+                                        InstanceDto.builder()
+                                                .instanceId(t.getId())
+                                                .jobId(t.getProcessDefinitionCode())
+                                                .instanceName(t.getName())
+                                                .status(
+                                                        StatusUtils.getDolphinSchedulerStatus(
+                                                                        t.getState())
+                                                                .name())
+                                                .startTime(t.getStartTime())
+                                                .endTime(t.getEndTime())
+                                                .submitTime(t.getScheduleTime())
+                                                .executionDuration(t.getDuration())
+                                                .retryTimes(t.getRunTimes())
+                                                .runFrequency(
+                                                        RunFrequencyEnum.parse(t.getCommandType())
+                                                                .name())
+                                                .build())
+                        .collect(Collectors.toList());
         return new PageData<>(instancePageData.getTotalCount(), data);
     }
 

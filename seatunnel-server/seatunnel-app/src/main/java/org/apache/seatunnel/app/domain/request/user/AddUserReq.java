@@ -20,5 +20,4 @@ package org.apache.seatunnel.app.domain.request.user;
 import io.swagger.annotations.ApiModel;
 
 @ApiModel(value = "addUserReq", description = "add a new user request")
-public class AddUserReq extends BaseUserReq{
-}
+public class AddUserReq extends BaseUserReq {}

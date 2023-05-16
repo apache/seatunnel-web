@@ -17,17 +17,18 @@
 
 package org.apache.seatunnel.datasource.plugin.starrocks;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.table.catalog.TablePath;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -59,21 +60,21 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         StarRocksCatalog catalog = getCatalog(requestParams);
         return catalog.listTables(database);
     }
 
     @Override
     public List<String> getDatabases(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         StarRocksCatalog catalog = getCatalog(requestParams);
         return catalog.listDatabases();
     }
 
     @Override
     public boolean checkDataSourceConnectivity(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         try {
             StarRocksCatalog catalog = getCatalog(requestParams);
             String nodeUrls = requestParams.get(StarRocksOptionRule.NODE_URLS.key());
@@ -85,7 +86,7 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
             return true;
         } catch (Exception e) {
             throw new DataSourcePluginException(
-                "check StarRocks connectivity failed, " + e.getMessage(), e);
+                    "check StarRocks connectivity failed, " + e.getMessage(), e);
         }
     }
 
@@ -96,7 +97,7 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
         try {
             String[] hostAndPort = nodeUrl.split(":");
             socket.connect(
-                new InetSocketAddress(hostAndPort[0], Integer.parseInt(hostAndPort[1])), 1000);
+                    new InetSocketAddress(hostAndPort[0], Integer.parseInt(hostAndPort[1])), 1000);
             isConnected = socket.isConnected();
         } catch (IOException e) {
             LOGGER.error("telnet error", e);
@@ -113,24 +114,24 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<TableField> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull String table) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull String table) {
         StarRocksCatalog catalog = getCatalog(requestParams);
         return catalog.getTable(TablePath.of(database, table));
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull List<String> tables) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull List<String> tables) {
         StarRocksCatalog catalog = getCatalog(requestParams);
         Map<String, List<TableField>> tableFields = new HashMap<>();
         tables.forEach(
-            table -> tableFields.put(table, catalog.getTable(TablePath.of(database, table))));
+                table -> tableFields.put(table, catalog.getTable(TablePath.of(database, table))));
         return tableFields;
     }
 

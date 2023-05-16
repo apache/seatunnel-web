@@ -29,21 +29,37 @@ import java.util.Map;
 public class ExecuteReq {
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer", hidden = true)
     private Long objectId;
+
     @ApiModelProperty(value = "object type", required = true, dataType = "Integer")
     private Integer objectType;
+
     @ApiModelProperty(value = "execute content", required = true, dataType = "String")
     private String content;
+
     @ApiModelProperty(value = "operator id", required = true, dataType = "Integer", hidden = true)
     private Integer operatorId;
+
     @ApiModelProperty(value = "script params", required = true, dataType = "Map")
     @NotEmpty
     private Map<String, Object> params;
-    @ApiModelProperty(value = "execute type", required = true, dataType = "Integer", allowableValues = "0, 1, 2, 3")
+
+    @ApiModelProperty(
+            value = "execute type",
+            required = true,
+            dataType = "Integer",
+            allowableValues = "0, 1, 2, 3")
     private Integer executeType;
+
     @ApiModelProperty(value = "start time", required = false, dataType = "Date", hidden = true)
     private Date startTime = new Date();
+
     @ApiModelProperty(value = "end time", required = false, dataType = "Date", hidden = true)
     private Date endTime = new Date();
-    @ApiModelProperty(value = "parallelism number", required = false, dataType = "Integer", hidden = true)
+
+    @ApiModelProperty(
+            value = "parallelism number",
+            required = false,
+            dataType = "Integer",
+            hidden = true)
     private Integer parallelismNum = 1;
 }

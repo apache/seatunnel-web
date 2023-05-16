@@ -30,24 +30,24 @@ public class OracleDataSourceConfig {
     public static final String PLUGIN_NAME = "JDBC-Oracle";
 
     public static final DataSourcePluginInfo ORACLE_DATASOURCE_PLUGIN_INFO =
-        DataSourcePluginInfo.builder()
-            .name(PLUGIN_NAME)
-            .icon(PLUGIN_NAME)
-            .version("1.0.0")
-            .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-            .build();
+            DataSourcePluginInfo.builder()
+                    .name(PLUGIN_NAME)
+                    .icon(PLUGIN_NAME)
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .build();
 
     public static final Set<String> ORACLE_SYSTEM_DATABASES =
-        Sets.newHashSet("SYS", "SYSTEM", "SYSDBA", "SYSOPER", "HR", "SCOTT");
+            Sets.newHashSet("SYS", "SYSTEM", "SYSDBA", "SYSOPER", "HR", "SCOTT");
 
     public static final OptionRule OPTION_RULE =
-        OptionRule.builder()
-            .required(OracleOptionRule.URL, OracleOptionRule.DRIVER)
-            .optional(OracleOptionRule.USER, OracleOptionRule.PASSWORD)
-            .build();
+            OptionRule.builder()
+                    .required(OracleOptionRule.URL, OracleOptionRule.DRIVER)
+                    .optional(OracleOptionRule.USER, OracleOptionRule.PASSWORD)
+                    .build();
 
     public static final OptionRule METADATA_RULE =
-        OptionRule.builder()
-            .required(OracleOptionRule.DATABASE, OracleOptionRule.TABLE)
-            .build();
+            OptionRule.builder()
+                    .required(OracleOptionRule.DATABASE, OracleOptionRule.TABLE)
+                    .build();
 }
