@@ -17,6 +17,9 @@
 
 package org.apache.seatunnel.app.thridparty.datasource.impl;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -27,9 +30,6 @@ import org.apache.seatunnel.app.thridparty.datasource.AbstractDataSourceConfigSw
 import org.apache.seatunnel.app.utils.JdbcUtils;
 import org.apache.seatunnel.common.constants.PluginType;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -38,7 +38,7 @@ import java.util.Map;
 
 public class ClickhouseDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
     private static final ClickhouseDataSourceConfigSwitcher INSTANCE =
-        new ClickhouseDataSourceConfigSwitcher();
+            new ClickhouseDataSourceConfigSwitcher();
 
     private static final String HOST = "host";
     private static final String URL = "url";
@@ -47,51 +47,51 @@ public class ClickhouseDataSourceConfigSwitcher extends AbstractDataSourceConfig
     private static final String TABLE = "table";
 
     private static final Map<PluginType, List<String>> FILTER_FIELD_MAP =
-        new ImmutableMap.Builder<PluginType, List<String>>()
-            .put(PluginType.SOURCE, Lists.newArrayList(SQL, HOST))
-            .put(PluginType.SINK, Lists.newArrayList(HOST, DATABASE, TABLE))
-            .build();
+            new ImmutableMap.Builder<PluginType, List<String>>()
+                    .put(PluginType.SOURCE, Lists.newArrayList(SQL, HOST))
+                    .put(PluginType.SINK, Lists.newArrayList(HOST, DATABASE, TABLE))
+                    .build();
 
     @Override
     public FormStructure filterOptionRule(
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        OptionRule connectorOptionRule,
-        List<String> excludedKeys) {
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            OptionRule connectorOptionRule,
+            List<String> excludedKeys) {
         return super.filterOptionRule(
-            connectorName,
-            dataSourceOptionRule,
-            virtualTableOptionRule,
-            businessMode,
-            pluginType,
-            connectorOptionRule,
-            FILTER_FIELD_MAP.get(pluginType));
+                connectorName,
+                dataSourceOptionRule,
+                virtualTableOptionRule,
+                businessMode,
+                pluginType,
+                connectorOptionRule,
+                FILTER_FIELD_MAP.get(pluginType));
     }
 
     @Override
     public Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
         switch (businessMode) {
             case DATA_REPLICA:
                 // We only support sink in data replica mode
                 if (pluginType.equals(PluginType.SINK)) {
                     connectorConfig =
-                        connectorConfig.withValue(
-                            DATABASE,
-                            ConfigValueFactory.fromAnyRef(
-                                dataSourceOption.getDatabases().get(0)));
+                            connectorConfig.withValue(
+                                    DATABASE,
+                                    ConfigValueFactory.fromAnyRef(
+                                            dataSourceOption.getDatabases().get(0)));
                 } else {
                     throw new UnsupportedOperationException(
-                        "Clickhouse DATA_REPLICA Unsupported plugin type: " + pluginType);
+                            "Clickhouse DATA_REPLICA Unsupported plugin type: " + pluginType);
                 }
                 break;
             case DATA_INTEGRATION:
@@ -99,54 +99,53 @@ public class ClickhouseDataSourceConfigSwitcher extends AbstractDataSourceConfig
                 if (pluginType.equals(PluginType.SOURCE)) {
                     List<String> tableFields = selectTableFields.getTableFields();
                     String sql =
-                        String.format(
-                            "SELECT %s FROM %s",
-                            String.join(",", tableFields),
                             String.format(
-                                "`%s`.`%s`",
-                                dataSourceOption.getDatabases().get(0),
-                                dataSourceOption.getTables().get(0)));
+                                    "SELECT %s FROM %s",
+                                    String.join(",", tableFields),
+                                    String.format(
+                                            "`%s`.`%s`",
+                                            dataSourceOption.getDatabases().get(0),
+                                            dataSourceOption.getTables().get(0)));
                     connectorConfig =
-                        connectorConfig.withValue(SQL, ConfigValueFactory.fromAnyRef(sql));
+                            connectorConfig.withValue(SQL, ConfigValueFactory.fromAnyRef(sql));
                 } else if (pluginType.equals(PluginType.SINK)) {
                     connectorConfig =
-                        connectorConfig.withValue(
-                            DATABASE,
-                            ConfigValueFactory.fromAnyRef(
-                                dataSourceOption.getDatabases().get(0)));
+                            connectorConfig.withValue(
+                                    DATABASE,
+                                    ConfigValueFactory.fromAnyRef(
+                                            dataSourceOption.getDatabases().get(0)));
                     connectorConfig =
-                        connectorConfig.withValue(
-                            TABLE,
-                            ConfigValueFactory.fromAnyRef(
-                                dataSourceOption.getTables().get(0)));
+                            connectorConfig.withValue(
+                                    TABLE,
+                                    ConfigValueFactory.fromAnyRef(
+                                            dataSourceOption.getTables().get(0)));
                 } else {
                     throw new UnsupportedOperationException(
-                        "Unsupported plugin type: " + pluginType);
+                            "Unsupported plugin type: " + pluginType);
                 }
                 break;
             default:
                 break;
         }
         connectorConfig =
-            connectorConfig.withValue(
-                HOST,
-                ConfigValueFactory.fromAnyRef(
-                    JdbcUtils.getAddressFromUrl(
-                        dataSourceInstanceConfig.getString(URL))));
+                connectorConfig.withValue(
+                        HOST,
+                        ConfigValueFactory.fromAnyRef(
+                                JdbcUtils.getAddressFromUrl(
+                                        dataSourceInstanceConfig.getString(URL))));
         return super.mergeDatasourceConfig(
-            dataSourceInstanceConfig,
-            virtualTableDetail,
-            dataSourceOption,
-            selectTableFields,
-            businessMode,
-            pluginType,
-            connectorConfig);
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 
     public static ClickhouseDataSourceConfigSwitcher getInstance() {
         return INSTANCE;
     }
 
-    private ClickhouseDataSourceConfigSwitcher() {
-    }
+    private ClickhouseDataSourceConfigSwitcher() {}
 }

@@ -23,12 +23,13 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 
-import com.google.common.collect.Sets;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+
+import com.google.common.collect.Sets;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -59,13 +60,13 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         return getTableNames(requestParams, database);
     }
 
     @Override
     public List<String> getDatabases(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         try {
             return getDataBaseNames(pluginName, requestParams);
         } catch (SQLException e) {
@@ -75,7 +76,7 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
 
     @Override
     public boolean checkDataSourceConnectivity(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         checkHdfsS3Connection(requestParams);
         checkJdbcConnection(requestParams);
         return true;
@@ -83,19 +84,19 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<TableField> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull String table) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull String table) {
         return getTableFields(requestParams, database, table);
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull List<String> tables) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull List<String> tables) {
         // not need this method
         return null;
     }
@@ -113,14 +114,14 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
                 return;
             } catch (SQLException e) {
                 throw new DataSourcePluginException(
-                    "Check Redshift jdbc connection failed,please check your config", e);
+                        "Check Redshift jdbc connection failed,please check your config", e);
             }
         }
         try (Connection ignored = DriverManager.getConnection(jdbcUrl, username, password)) {
             log.info("Redshift jdbc connection is valid");
         } catch (SQLException e) {
             throw new DataSourcePluginException(
-                "Check Redshift jdbc connection failed,please check your config", e);
+                    "Check Redshift jdbc connection failed,please check your config", e);
         }
     }
 
@@ -130,20 +131,20 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
             fs.getFileStatus(new org.apache.hadoop.fs.Path("/"));
         } catch (IOException e) {
             throw new DataSourcePluginException(
-                "S3 configuration is invalid, please check your config", e);
+                    "S3 configuration is invalid, please check your config", e);
         }
     }
 
     protected Connection init(Map<String, String> requestParams, String databaseName)
-        throws SQLException {
+            throws SQLException {
         if (null == requestParams.get(S3RedshiftOptionRule.JDBC_URL.key())) {
             throw new DataSourcePluginException("Jdbc url is null");
         }
         String url =
-            JdbcUtils.replaceDatabase(
-                requestParams.get(S3RedshiftOptionRule.JDBC_URL.key()), databaseName);
+                JdbcUtils.replaceDatabase(
+                        requestParams.get(S3RedshiftOptionRule.JDBC_URL.key()), databaseName);
         if (null != requestParams.get(S3RedshiftOptionRule.JDBC_PASSWORD.key())
-            && null != requestParams.get(S3RedshiftOptionRule.JDBC_USER.key())) {
+                && null != requestParams.get(S3RedshiftOptionRule.JDBC_USER.key())) {
             String username = requestParams.get(S3RedshiftOptionRule.JDBC_USER.key());
             String password = requestParams.get(S3RedshiftOptionRule.JDBC_PASSWORD.key());
             return DriverManager.getConnection(url, username, password);
@@ -152,12 +153,12 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
     }
 
     protected List<String> getDataBaseNames(String pluginName, Map<String, String> requestParams)
-        throws SQLException {
+            throws SQLException {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = init(requestParams, null);
-             PreparedStatement statement =
-                 connection.prepareStatement("select datname from pg_database;");
-             ResultSet re = statement.executeQuery()) {
+                PreparedStatement statement =
+                        connection.prepareStatement("select datname from pg_database;");
+                ResultSet re = statement.executeQuery()) {
             while (re.next()) {
                 String dbName = re.getString("datname");
                 if (StringUtils.isNotBlank(dbName) && isNotSystemDatabase(dbName)) {
@@ -172,9 +173,9 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
 
     protected List<String> getTableNames(Map<String, String> requestParams, String dbName) {
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = init(requestParams, dbName);) {
+        try (Connection connection = init(requestParams, dbName); ) {
             ResultSet resultSet =
-                connection.getMetaData().getTables(dbName, null, null, new String[]{"TABLE"});
+                    connection.getMetaData().getTables(dbName, null, null, new String[] {"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -188,15 +189,15 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
     }
 
     protected List<TableField> getTableFields(
-        Map<String, String> requestParams, String dbName, String tableName) {
+            Map<String, String> requestParams, String dbName, String tableName) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = init(requestParams, dbName);) {
+        try (Connection connection = init(requestParams, dbName); ) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, tableName);
             String[] split = tableName.split("\\.");
             if (split.length != 2) {
                 throw new DataSourcePluginException(
-                    "Postgresql tableName should composed by schemaName.tableName");
+                        "Postgresql tableName should composed by schemaName.tableName");
             }
             ResultSet resultSet = metaData.getColumns(dbName, split[0], split[1], null);
             while (resultSet.next()) {
@@ -221,7 +222,7 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
     }
 
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
-        throws SQLException {
+            throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
         while (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
@@ -255,14 +256,14 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
     }
 
     public static final Set<String> POSTGRESQL_SYSTEM_DATABASES =
-        Sets.newHashSet(
-            "information_schema",
-            "pg_catalog",
-            "root",
-            "pg_toast",
-            "pg_temp_1",
-            "pg_toast_temp_1",
-            "postgres",
-            "template0",
-            "template1");
+            Sets.newHashSet(
+                    "information_schema",
+                    "pg_catalog",
+                    "root",
+                    "pg_toast",
+                    "pg_temp_1",
+                    "pg_toast_temp_1",
+                    "postgres",
+                    "template0",
+                    "template1");
 }

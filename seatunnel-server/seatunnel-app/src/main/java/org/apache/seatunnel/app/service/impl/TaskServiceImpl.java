@@ -17,20 +17,6 @@
 
 package org.apache.seatunnel.app.service.impl;
 
-import static org.apache.seatunnel.app.common.ObjectTypeEnum.INSTANCE;
-import static org.apache.seatunnel.app.common.ObjectTypeEnum.JOB;
-import static org.apache.seatunnel.app.common.ObjectTypeEnum.SCRIPT;
-import static org.apache.seatunnel.server.common.Constants.UNDERLINE;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_JOB;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_SCRIPT;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.SCHEDULER_CONFIG_NOT_EXIST;
-import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.NEVER_TRIGGER_EXPRESSION;
-import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_INTERVAL_DEFAULT;
-import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
-import static com.cronutils.model.CronType.QUARTZ;
-import static java.util.Objects.requireNonNull;
-
 import org.apache.seatunnel.app.common.ObjectTypeEnum;
 import org.apache.seatunnel.app.common.ScriptStatusEnum;
 import org.apache.seatunnel.app.dal.dao.ISchedulerConfigDao;
@@ -67,14 +53,15 @@ import org.apache.seatunnel.spi.scheduler.dto.JobSimpleInfoDto;
 import org.apache.seatunnel.spi.scheduler.dto.SchedulerConfigDto;
 import org.apache.seatunnel.spi.scheduler.enums.ExecuteTypeEnum;
 
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -89,34 +76,44 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cronutils.model.CronType.QUARTZ;
+import static java.util.Objects.requireNonNull;
+import static org.apache.seatunnel.app.common.ObjectTypeEnum.INSTANCE;
+import static org.apache.seatunnel.app.common.ObjectTypeEnum.JOB;
+import static org.apache.seatunnel.app.common.ObjectTypeEnum.SCRIPT;
+import static org.apache.seatunnel.server.common.Constants.UNDERLINE;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_JOB;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_SCRIPT;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.SCHEDULER_CONFIG_NOT_EXIST;
+import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.NEVER_TRIGGER_EXPRESSION;
+import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_INTERVAL_DEFAULT;
+import static org.apache.seatunnel.spi.scheduler.constants.SchedulerConstant.RETRY_TIMES_DEFAULT;
+
 @Component
 @Slf4j
 public class TaskServiceImpl implements ITaskService {
 
-    @Resource
-    private IJobService iJobService;
+    @Resource private IJobService iJobService;
 
-    @Resource
-    private IInstanceService iInstanceService;
+    @Resource private IInstanceService iInstanceService;
 
-    @Resource
-    private IScriptDao scriptDaoImpl;
+    @Resource private IScriptDao scriptDaoImpl;
 
-    @Resource
-    private IScriptParamDao scriptParamDaoImpl;
+    @Resource private IScriptParamDao scriptParamDaoImpl;
 
-    @Resource
-    private ISchedulerConfigDao schedulerConfigDaoImpl;
+    @Resource private ISchedulerConfigDao schedulerConfigDaoImpl;
 
-    @Resource
-    private IScriptJobApplyDao scriptJobApplyDaoImpl;
+    @Resource private IScriptJobApplyDao scriptJobApplyDaoImpl;
 
-    private Map<ObjectTypeEnum, Function<ExecuteReq, ExecuteDto>> executeFuncMap = Maps.newHashMapWithExpectedSize(ObjectTypeEnum.values().length);
+    private Map<ObjectTypeEnum, Function<ExecuteReq, ExecuteDto>> executeFuncMap =
+            Maps.newHashMapWithExpectedSize(ObjectTypeEnum.values().length);
 
-    private static final CronDefinition CRON_DEFINITION = CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
+    private static final CronDefinition CRON_DEFINITION =
+            CronDefinitionBuilder.instanceDefinitionFor(QUARTZ);
 
     @PostConstruct
-    public void initFuncMap(){
+    public void initFuncMap() {
         executeFuncMap.put(SCRIPT, this::getExecuteDtoByScriptId);
         executeFuncMap.put(JOB, this::getExecuteDtoByJobId);
         executeFuncMap.put(INSTANCE, this::getExecuteDtoByInstanceId);
@@ -137,24 +134,26 @@ public class TaskServiceImpl implements ITaskService {
         final List<ScriptParam> scriptParams = scriptParamDaoImpl.getParamsByScriptId(scriptId);
         Map<String, Object> params = getScriptParamMap(scriptParams);
 
-        final SchedulerConfigDto schedulerConfigDto = SchedulerConfigDto.builder()
-                .retryInterval(config.getRetryInterval())
-                .retryTimes(config.getRetryTimes())
-                .startTime(config.getActiveStartTime())
-                .endTime(config.getActiveEndTime())
-                .triggerExpression(config.getTriggerExpression())
-                .build();
+        final SchedulerConfigDto schedulerConfigDto =
+                SchedulerConfigDto.builder()
+                        .retryInterval(config.getRetryInterval())
+                        .retryTimes(config.getRetryTimes())
+                        .startTime(config.getActiveStartTime())
+                        .endTime(config.getActiveEndTime())
+                        .triggerExpression(config.getTriggerExpression())
+                        .build();
 
-        final JobDto jobDto = JobDto.builder()
-                .jobName(script.getName())
-                .jobContent(script.getContent())
-                .params(params)
-                .operatorId(userId)
-                .schedulerConfigDto(schedulerConfigDto)
-                //todo fix to real execute script
-                .executorScript(script.getContent())
-                .jobId(null)
-                .build();
+        final JobDto jobDto =
+                JobDto.builder()
+                        .jobName(script.getName())
+                        .jobContent(script.getContent())
+                        .params(params)
+                        .operatorId(userId)
+                        .schedulerConfigDto(schedulerConfigDto)
+                        // todo fix to real execute script
+                        .executorScript(script.getContent())
+                        .jobId(null)
+                        .build();
 
         ScriptJobApply apply = scriptJobApplyDaoImpl.getByScriptId(script.getId());
         if (Objects.nonNull(apply)) {
@@ -175,43 +174,61 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public void recycleScriptFromScheduler(RecycleScriptReq req) {
-        final ScriptJobApply apply = requireNonNull(scriptJobApplyDaoImpl.getByJobId(req.getJobId()), NO_SUCH_JOB::getTemplate);
+        final ScriptJobApply apply =
+                requireNonNull(
+                        scriptJobApplyDaoImpl.getByJobId(req.getJobId()), NO_SUCH_JOB::getTemplate);
 
-        final Script script = requireNonNull(scriptDaoImpl.getScript(apply.getScriptId()), NO_SUCH_JOB::getTemplate);
+        final Script script =
+                requireNonNull(
+                        scriptDaoImpl.getScript(apply.getScriptId()), NO_SUCH_JOB::getTemplate);
 
-        final JobDto jobDto = JobDto.builder()
-                .jobId(apply.getJobId())
-                .jobName(script.getName())
-                .operatorId(req.getOperatorId())
-                .build();
+        final JobDto jobDto =
+                JobDto.builder()
+                        .jobId(apply.getJobId())
+                        .jobName(script.getName())
+                        .operatorId(req.getOperatorId())
+                        .build();
 
         iJobService.offlineJob(jobDto);
 
-        syncScriptJobMapping(script.getId(), req.getOperatorId(), apply.getSchedulerConfigId(), apply.getJobId());
+        syncScriptJobMapping(
+                script.getId(),
+                req.getOperatorId(),
+                apply.getSchedulerConfigId(),
+                apply.getJobId());
     }
 
     @Override
     public PageInfo<JobSimpleInfoRes> listJob(JobListReq req) {
         // Search from scheduler.
-        final JobListDto dto = JobListDto.builder()
-                .name(req.getName())
-                .pageNo(req.getPageNo())
-                .pageSize(req.getPageSize())
-                .build();
+        final JobListDto dto =
+                JobListDto.builder()
+                        .name(req.getName())
+                        .pageNo(req.getPageNo())
+                        .pageSize(req.getPageSize())
+                        .build();
         final PageData<JobSimpleInfoDto> jobPageData = iJobService.list(dto);
-        final List<JobSimpleInfoRes> data = jobPageData.getData().stream().map(this::translate).collect(Collectors.toList());
+        final List<JobSimpleInfoRes> data =
+                jobPageData.getData().stream().map(this::translate).collect(Collectors.toList());
 
         final PageInfo<JobSimpleInfoRes> pageInfo = new PageInfo<>();
 
         if (!CollectionUtils.isEmpty(data)) {
-            final List<JobDefine> jobDefines = scriptJobApplyDaoImpl.selectJobDefineByJobIds(data.stream().map(JobSimpleInfoRes::getJobId).collect(Collectors.toList()));
-            final Map<Long, JobDefine> mapping = jobDefines.stream().collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
+            final List<JobDefine> jobDefines =
+                    scriptJobApplyDaoImpl.selectJobDefineByJobIds(
+                            data.stream()
+                                    .map(JobSimpleInfoRes::getJobId)
+                                    .collect(Collectors.toList()));
+            final Map<Long, JobDefine> mapping =
+                    jobDefines.stream()
+                            .collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
 
-            data.forEach(d -> {
-                final JobDefine jf = mapping.getOrDefault(d.getJobId(), new JobDefine());
-                d.setJobPlan(jf.getTriggerExpression());
-                d.setScriptId(jf.getScriptId());
-            });
+            data.forEach(
+                    d -> {
+                        final JobDefine jf = mapping.getOrDefault(d.getJobId(), new JobDefine());
+                        d.setJobPlan(jf.getTriggerExpression());
+                        d.setScriptId(jf.getScriptId());
+                    });
 
             pageInfo.setData(data);
             pageInfo.setPageNo(req.getPageNo());
@@ -225,32 +242,46 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public PageInfo<InstanceSimpleInfoRes> listInstance(InstanceListReq req) {
         // Search from scheduler.
-        final InstanceListDto dto = InstanceListDto.builder()
-                .name(req.getName())
-                .pageNo(req.getPageNo())
-                .pageSize(req.getPageSize())
-                .build();
+        final InstanceListDto dto =
+                InstanceListDto.builder()
+                        .name(req.getName())
+                        .pageNo(req.getPageNo())
+                        .pageSize(req.getPageSize())
+                        .build();
         final PageData<InstanceDto> instancePageData = iInstanceService.list(dto);
-        final List<InstanceSimpleInfoRes> data = instancePageData.getData().stream().map(this::translate).collect(Collectors.toList());
+        final List<InstanceSimpleInfoRes> data =
+                instancePageData.getData().stream()
+                        .map(this::translate)
+                        .collect(Collectors.toList());
 
         if (!CollectionUtils.isEmpty(data)) {
-            final List<JobDefine> jobDefines = scriptJobApplyDaoImpl.selectJobDefineByJobIds(data.stream().map(InstanceSimpleInfoRes::getJobId).collect(Collectors.toList()));
-            final Map<Long, JobDefine> mapping = jobDefines.stream().collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
+            final List<JobDefine> jobDefines =
+                    scriptJobApplyDaoImpl.selectJobDefineByJobIds(
+                            data.stream()
+                                    .map(InstanceSimpleInfoRes::getJobId)
+                                    .collect(Collectors.toList()));
+            final Map<Long, JobDefine> mapping =
+                    jobDefines.stream()
+                            .collect(Collectors.toMap(JobDefine::getJobId, Function.identity()));
 
-            data.forEach(d -> {
-                final JobDefine jobDefine = mapping.get(d.getJobId());
-                CronParser parser = new CronParser(CRON_DEFINITION);
+            data.forEach(
+                    d -> {
+                        final JobDefine jobDefine = mapping.get(d.getJobId());
+                        CronParser parser = new CronParser(CRON_DEFINITION);
 
-                if (Objects.nonNull(jobDefine)) {
-                    ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(jobDefine.getTriggerExpression()));
-                    Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(ZonedDateTime.now());
+                        if (Objects.nonNull(jobDefine)) {
+                            ExecutionTime executionTime =
+                                    ExecutionTime.forCron(
+                                            parser.parse(jobDefine.getTriggerExpression()));
+                            Optional<ZonedDateTime> nextExecution =
+                                    executionTime.nextExecution(ZonedDateTime.now());
 
-                    if (nextExecution.isPresent()) {
-                        final ZonedDateTime next = nextExecution.get();
-                        d.setNextExecutionTime(Date.from(next.toInstant()));
-                    }
-                }
-            });
+                            if (nextExecution.isPresent()) {
+                                final ZonedDateTime next = nextExecution.get();
+                                d.setNextExecutionTime(Date.from(next.toInstant()));
+                            }
+                        }
+                    });
         }
 
         final PageInfo<InstanceSimpleInfoRes> pageInfo = new PageInfo<>();
@@ -270,7 +301,8 @@ public class TaskServiceImpl implements ITaskService {
         final ObjectTypeEnum parse = ObjectTypeEnum.parse(objectType);
 
         final Function<ExecuteReq, ExecuteDto> executeFunc =
-                Optional.ofNullable(executeFuncMap.get(parse)).orElseThrow(() -> new SeatunnelException(NO_SUCH_ELEMENT));
+                Optional.ofNullable(executeFuncMap.get(parse))
+                        .orElseThrow(() -> new SeatunnelException(NO_SUCH_ELEMENT));
 
         final ExecuteDto dto = executeFunc.apply(req);
 
@@ -280,18 +312,14 @@ public class TaskServiceImpl implements ITaskService {
     private ExecuteDto getExecuteDtoByInstanceId(ExecuteReq req) {
         // objectId of instance is jobId
         return ExecuteDto.builder()
-                .jobDto(JobDto.builder()
-                        .jobId(req.getObjectId())
-                        .build())
+                .jobDto(JobDto.builder().jobId(req.getObjectId()).build())
                 .executeTypeEnum(ExecuteTypeEnum.RERUN)
                 .build();
     }
 
     private ExecuteDto getExecuteDtoByJobId(ExecuteReq req) {
         return ExecuteDto.builder()
-                .jobDto(JobDto.builder()
-                        .jobId(req.getObjectId())
-                        .build())
+                .jobDto(JobDto.builder().jobId(req.getObjectId()).build())
                 .executeTypeEnum(ExecuteTypeEnum.parse(req.getExecuteType()))
                 .build();
     }
@@ -299,30 +327,36 @@ public class TaskServiceImpl implements ITaskService {
     private ExecuteDto getExecuteDtoByScriptId(ExecuteReq req) {
         final Script script = checkAndGetScript(Math.toIntExact(req.getObjectId()));
 
-        final SchedulerConfigDto schedulerConfigDto = SchedulerConfigDto.builder()
-                .retryInterval(RETRY_INTERVAL_DEFAULT)
-                .retryTimes(RETRY_TIMES_DEFAULT)
-                .startTime(new Date())
-                .endTime(new Date())
-                .triggerExpression(NEVER_TRIGGER_EXPRESSION)
-                .build();
+        final SchedulerConfigDto schedulerConfigDto =
+                SchedulerConfigDto.builder()
+                        .retryInterval(RETRY_INTERVAL_DEFAULT)
+                        .retryTimes(RETRY_TIMES_DEFAULT)
+                        .startTime(new Date())
+                        .endTime(new Date())
+                        .triggerExpression(NEVER_TRIGGER_EXPRESSION)
+                        .build();
 
-        final JobDto jobDto = JobDto.builder()
-                .jobName(script.getName().concat(UNDERLINE).concat(String.valueOf(System.currentTimeMillis())))
-                .jobContent(req.getContent())
-                .params(req.getParams())
-                .operatorId(req.getOperatorId())
-                .schedulerConfigDto(schedulerConfigDto)
-                //todo fix to real execute script
-                .executorScript(script.getContent())
-                .jobId(null)
-                .build();
+        final JobDto jobDto =
+                JobDto.builder()
+                        .jobName(
+                                script.getName()
+                                        .concat(UNDERLINE)
+                                        .concat(String.valueOf(System.currentTimeMillis())))
+                        .jobContent(req.getContent())
+                        .params(req.getParams())
+                        .operatorId(req.getOperatorId())
+                        .schedulerConfigDto(schedulerConfigDto)
+                        // todo fix to real execute script
+                        .executorScript(script.getContent())
+                        .jobId(null)
+                        .build();
 
-        final ExecuteDto dto = ExecuteDto.builder()
-                .jobDto(jobDto)
-                .executeTypeEnum(ExecuteTypeEnum.parse(req.getExecuteType()))
-                .complementDataDto(null)
-                .build();
+        final ExecuteDto dto =
+                ExecuteDto.builder()
+                        .jobDto(jobDto)
+                        .executeTypeEnum(ExecuteTypeEnum.parse(req.getExecuteType()))
+                        .complementDataDto(null)
+                        .build();
         return dto;
     }
 
@@ -331,9 +365,9 @@ public class TaskServiceImpl implements ITaskService {
         final InstanceLogDto dto = iInstanceService.queryInstanceLog(instanceId);
 
         return InstanceLogRes.builder()
-            .instanceId(instanceId)
-            .logContent(dto.getLogContent())
-            .build();
+                .instanceId(instanceId)
+                .logContent(dto.getLogContent())
+                .build();
     }
 
     @Override
@@ -381,28 +415,39 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     private void syncScriptJobMapping(int scriptId, int userId, int schedulerConfigId, long jobId) {
-        CompletableFuture.runAsync(() -> {
-            // store script and job mapping
-            final ScriptJobApplyDto dto = ScriptJobApplyDto.builder()
-                    .scriptId(scriptId)
-                    .schedulerConfigId(schedulerConfigId)
-                    .jobId(jobId)
-                    .userId(userId)
-                    .build();
-            scriptJobApplyDaoImpl.insertOrUpdate(dto);
-        }).whenComplete((_return, e) -> {
-            if (Objects.nonNull(e)) {
-                log.error("Store script and job mapping failed, please maintain this mapping manually. \n" +
-                        "scriptId [{}], schedulerConfigId [{}], jobId [{}], userId [{}]", scriptId, schedulerConfigId, jobId, userId, e);
-            }
-        });
+        CompletableFuture.runAsync(
+                        () -> {
+                            // store script and job mapping
+                            final ScriptJobApplyDto dto =
+                                    ScriptJobApplyDto.builder()
+                                            .scriptId(scriptId)
+                                            .schedulerConfigId(schedulerConfigId)
+                                            .jobId(jobId)
+                                            .userId(userId)
+                                            .build();
+                            scriptJobApplyDaoImpl.insertOrUpdate(dto);
+                        })
+                .whenComplete(
+                        (_return, e) -> {
+                            if (Objects.nonNull(e)) {
+                                log.error(
+                                        "Store script and job mapping failed, please maintain this mapping manually. \n"
+                                                + "scriptId [{}], schedulerConfigId [{}], jobId [{}], userId [{}]",
+                                        scriptId,
+                                        schedulerConfigId,
+                                        jobId,
+                                        userId,
+                                        e);
+                            }
+                        });
     }
 
     private Map<String, Object> getScriptParamMap(List<ScriptParam> scriptParams) {
         Map<String, Object> params = Maps.newHashMap();
 
         if (!CollectionUtils.isEmpty(params)) {
-            scriptParams.forEach(scriptParam -> params.put(scriptParam.getKey(), scriptParam.getValue()));
+            scriptParams.forEach(
+                    scriptParam -> params.put(scriptParam.getKey(), scriptParam.getValue()));
         }
         return params;
     }

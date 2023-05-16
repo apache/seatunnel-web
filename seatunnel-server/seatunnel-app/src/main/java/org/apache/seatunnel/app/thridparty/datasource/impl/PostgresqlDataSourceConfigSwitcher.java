@@ -26,18 +26,17 @@ import java.util.List;
 public class PostgresqlDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
 
     private static final PostgresqlDataSourceConfigSwitcher INSTANCE =
-        new PostgresqlDataSourceConfigSwitcher();
+            new PostgresqlDataSourceConfigSwitcher();
 
-    private PostgresqlDataSourceConfigSwitcher() {
-    }
+    private PostgresqlDataSourceConfigSwitcher() {}
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
 
         String[] split = fullTable.split("\\.");
         if (split.length != 2) {
             throw new SeaTunnelException(
-                "The tableName for postgres must be schemaName.tableName, but tableName is "
-                    + fullTable);
+                    "The tableName for postgres must be schemaName.tableName, but tableName is "
+                            + fullTable);
         }
 
         String schemaName = split[0];

@@ -17,10 +17,10 @@
 
 package org.apache.seatunnel.datasource.plugin.api;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import lombok.Builder;
 import lombok.Data;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Data
 @Builder
@@ -32,18 +32,14 @@ public class DataSourcePluginInfo {
 
     public String version;
 
-    /**
-     * @see DatasourcePluginTypeEnum
-     */
+    /** @see DatasourcePluginTypeEnum */
     private Integer type;
 
-    /**
-     * whether support virtual tables, default false
-     */
+    /** whether support virtual tables, default false */
     private Boolean supportVirtualTables;
 
     public DataSourcePluginInfo(
-        String name, String icon, String version, Integer type, Boolean supportVirtualTables) {
+            String name, String icon, String version, Integer type, Boolean supportVirtualTables) {
         this.name = checkNotNull(name, "name can not be null");
         this.icon = checkNotNull(icon, "icon can not be null");
         this.version = checkNotNull(version, "version can not be null");

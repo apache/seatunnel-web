@@ -17,15 +17,15 @@
 
 package org.apache.seatunnel.app.thridparty.datasource.impl;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
+
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.common.constants.PluginType;
-
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
 
 public class TidbDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
     public static final TidbDataSourceConfigSwitcher INSTANCE = new TidbDataSourceConfigSwitcher();
@@ -41,42 +41,41 @@ public class TidbDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitch
 
     private static final String DATABASE_NAMES = "database-names";
 
-    private TidbDataSourceConfigSwitcher() {
-    }
+    private TidbDataSourceConfigSwitcher() {}
 
     @Override
     public Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
         // Add TiDB catalog options
         Config config = ConfigFactory.empty();
         config = config.withValue(FACTORY, ConfigValueFactory.fromAnyRef("TiDB"));
         config =
-            config.withValue(
-                USERNAME,
-                ConfigValueFactory.fromAnyRef(dataSourceInstanceConfig.getString("user")));
+                config.withValue(
+                        USERNAME,
+                        ConfigValueFactory.fromAnyRef(dataSourceInstanceConfig.getString("user")));
         config =
-            config.withValue(
-                PASSWORD,
-                ConfigValueFactory.fromAnyRef(
-                    dataSourceInstanceConfig.getString(PASSWORD)));
+                config.withValue(
+                        PASSWORD,
+                        ConfigValueFactory.fromAnyRef(
+                                dataSourceInstanceConfig.getString(PASSWORD)));
         config =
-            config.withValue(
-                BASE_URL,
-                ConfigValueFactory.fromAnyRef(dataSourceInstanceConfig.getString("url")));
+                config.withValue(
+                        BASE_URL,
+                        ConfigValueFactory.fromAnyRef(dataSourceInstanceConfig.getString("url")));
         connectorConfig = connectorConfig.withValue(CATALOG, config.root());
         return super.mergeDatasourceConfig(
-            dataSourceInstanceConfig,
-            virtualTableDetail,
-            dataSourceOption,
-            selectTableFields,
-            businessMode,
-            pluginType,
-            connectorConfig);
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 }

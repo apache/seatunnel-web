@@ -29,31 +29,31 @@ public class ClickhouseDataSourceConfig {
     public static final String PLUGIN_NAME = "JDBC-ClickHouse";
 
     public static final DataSourcePluginInfo CLICKHOUSE_DATASOURCE_PLUGIN_INFO =
-        DataSourcePluginInfo.builder()
-            .name(PLUGIN_NAME)
-            .icon(PLUGIN_NAME)
-            .version("1.0.0")
-            .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-            .supportVirtualTables(false)
-            .build();
+            DataSourcePluginInfo.builder()
+                    .name(PLUGIN_NAME)
+                    .icon(PLUGIN_NAME)
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .supportVirtualTables(false)
+                    .build();
 
     public static final Set<String> CLICKHOUSE_SYSTEM_DATABASES =
-        Sets.newHashSet(
-            "system",
-            "default",
-            "information_schema",
-            "mysql",
-            "performance_schema",
-            "sys");
+            Sets.newHashSet(
+                    "system",
+                    "default",
+                    "information_schema",
+                    "mysql",
+                    "performance_schema",
+                    "sys");
 
     public static final OptionRule OPTION_RULE =
-        OptionRule.builder()
-            .required(ClickhouseOptionRule.URL, ClickhouseOptionRule.DRIVER)
-            .optional(ClickhouseOptionRule.USER, ClickhouseOptionRule.PASSWORD)
-            .build();
+            OptionRule.builder()
+                    .required(ClickhouseOptionRule.URL, ClickhouseOptionRule.DRIVER)
+                    .optional(ClickhouseOptionRule.USER, ClickhouseOptionRule.PASSWORD)
+                    .build();
 
     public static final OptionRule METADATA_RULE =
-        OptionRule.builder()
-            .required(ClickhouseOptionRule.DATABASE, ClickhouseOptionRule.TABLE)
-            .build();
+            OptionRule.builder()
+                    .required(ClickhouseOptionRule.DATABASE, ClickhouseOptionRule.TABLE)
+                    .build();
 }

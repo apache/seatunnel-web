@@ -30,13 +30,18 @@ public class SeaTunnelConnectorI18n {
 
     static {
         try {
-            CONNECTOR_I18N_CONFIG_EN = ConfigFactory.parseString(IOUtils.toString(SeaTunnelConnectorI18n.class.getResourceAsStream("/i18n_en.config"), StandardCharsets.UTF_8));
+            CONNECTOR_I18N_CONFIG_EN =
+                    ConfigFactory.parseString(
+                            IOUtils.toString(
+                                    SeaTunnelConnectorI18n.class.getResourceAsStream(
+                                            "/i18n_en.config"),
+                                    StandardCharsets.UTF_8));
             CONNECTOR_I18N_CONFIG_ZH =
-                ConfigFactory.parseString(
-                    IOUtils.toString(
-                        SeaTunnelConnectorI18n.class.getResourceAsStream(
-                            "/i18n_zh.config"),
-                        StandardCharsets.UTF_8));
+                    ConfigFactory.parseString(
+                            IOUtils.toString(
+                                    SeaTunnelConnectorI18n.class.getResourceAsStream(
+                                            "/i18n_zh.config"),
+                                    StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

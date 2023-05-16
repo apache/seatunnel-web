@@ -17,8 +17,6 @@
 
 package org.apache.seatunnel.datasource.plugin.elasticsearch.client;
 
-import static java.util.Collections.list;
-
 import io.airlift.security.pem.PemReader;
 
 import javax.net.ssl.KeyManager;
@@ -43,29 +41,31 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.list;
+
 @SuppressWarnings("MagicNumber")
 public final class SSLUtils {
 
     public static Optional<SSLContext> buildSSLContext(
-        Optional<String> keyStorePath,
-        Optional<String> keyStorePassword,
-        Optional<String> trustStorePath,
-        Optional<String> trustStorePassword)
-        throws GeneralSecurityException, IOException {
+            Optional<String> keyStorePath,
+            Optional<String> keyStorePassword,
+            Optional<String> trustStorePath,
+            Optional<String> trustStorePassword)
+            throws GeneralSecurityException, IOException {
         if (!keyStorePath.isPresent() && !trustStorePath.isPresent()) {
             return Optional.empty();
         }
         return Optional.of(
-            createSSLContext(
-                keyStorePath, keyStorePassword, trustStorePath, trustStorePassword));
+                createSSLContext(
+                        keyStorePath, keyStorePassword, trustStorePath, trustStorePassword));
     }
 
     private static SSLContext createSSLContext(
-        Optional<String> keyStorePath,
-        Optional<String> keyStorePassword,
-        Optional<String> trustStorePath,
-        Optional<String> trustStorePassword)
-        throws GeneralSecurityException, IOException {
+            Optional<String> keyStorePath,
+            Optional<String> keyStorePassword,
+            Optional<String> trustStorePath,
+            Optional<String> trustStorePassword)
+            throws GeneralSecurityException, IOException {
         // load KeyStore if configured and get KeyManagers
         KeyStore keyStore = null;
         KeyManager[] keyManagers = null;
@@ -88,7 +88,7 @@ public final class SSLUtils {
             }
             validateCertificates(keyStore);
             KeyManagerFactory keyManagerFactory =
-                KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                    KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, keyManagerPassword);
             keyManagers = keyManagerFactory.getKeyManagers();
         }
@@ -102,14 +102,14 @@ public final class SSLUtils {
 
         // create TrustManagerFactory
         TrustManagerFactory trustManagerFactory =
-            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
 
         // get X509TrustManager
         TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
         if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
             throw new RuntimeException(
-                "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+                    "Unexpected default trust managers:" + Arrays.toString(trustManagers));
         }
         // create SSLContext
         SSLContext result = SSLContext.getInstance("SSL");
@@ -118,7 +118,7 @@ public final class SSLUtils {
     }
 
     private static KeyStore loadTrustStore(File trustStorePath, Optional<String> trustStorePassword)
-        throws IOException, GeneralSecurityException {
+            throws IOException, GeneralSecurityException {
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         try {
             // attempt to read the trust store as a PEM file
@@ -155,10 +155,10 @@ public final class SSLUtils {
                 ((X509Certificate) certificate).checkValidity();
             } catch (CertificateExpiredException e) {
                 throw new CertificateExpiredException(
-                    "KeyStore certificate is expired: " + e.getMessage());
+                        "KeyStore certificate is expired: " + e.getMessage());
             } catch (CertificateNotYetValidException e) {
                 throw new CertificateNotYetValidException(
-                    "KeyStore certificate is not yet valid: " + e.getMessage());
+                        "KeyStore certificate is not yet valid: " + e.getMessage());
             }
         }
     }

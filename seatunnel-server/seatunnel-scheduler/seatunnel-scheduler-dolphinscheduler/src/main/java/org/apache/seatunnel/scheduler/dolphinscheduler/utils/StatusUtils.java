@@ -39,5 +39,4 @@ public class StatusUtils {
                 return InstanceStatusEnum.UNKNOWN;
         }
     }
-
 }

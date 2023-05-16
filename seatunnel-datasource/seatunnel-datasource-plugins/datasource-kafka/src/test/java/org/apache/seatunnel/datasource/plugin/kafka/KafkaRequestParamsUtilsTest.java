@@ -17,9 +17,10 @@
 
 package org.apache.seatunnel.datasource.plugin.kafka;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,37 +31,41 @@ class KafkaRequestParamsUtilsTest {
     @Test
     void parsePropertiesFromRequestParams() {
         Map<String, String> requestParams =
-            new ImmutableMap.Builder<String, String>()
-                .put(KafkaOptionRule.BOOTSTRAP_SERVERS.key(), "localhost:9092")
-                .put(
-                    KafkaOptionRule.KAFKA_CONFIG.key(),
-                    "{" + "security.protocol = SASL_PLAINTEXT" + "}")
-                .build();
+                new ImmutableMap.Builder<String, String>()
+                        .put(KafkaOptionRule.BOOTSTRAP_SERVERS.key(), "localhost:9092")
+                        .put(
+                                KafkaOptionRule.KAFKA_CONFIG.key(),
+                                "{" + "security.protocol = SASL_PLAINTEXT" + "}")
+                        .build();
         Properties properties =
-            KafkaRequestParamsUtils.parsePropertiesFromRequestParams(requestParams);
+                KafkaRequestParamsUtils.parsePropertiesFromRequestParams(requestParams);
         Assertions.assertEquals("SASL_PLAINTEXT", properties.getProperty("security.protocol"));
     }
 
     @Test
     void parsePropertiesFromRequestParamsBadCase() {
         Assertions.assertDoesNotThrow(
-            () ->
-                KafkaRequestParamsUtils.parsePropertiesFromRequestParams(
-                    new ImmutableMap.Builder<String, String>()
-                        .put(KafkaOptionRule.BOOTSTRAP_SERVERS.key(), "localhost:9092")
-                        .put(KafkaOptionRule.KAFKA_CONFIG.key(), "{}")
-                        .build()));
+                () ->
+                        KafkaRequestParamsUtils.parsePropertiesFromRequestParams(
+                                new ImmutableMap.Builder<String, String>()
+                                        .put(
+                                                KafkaOptionRule.BOOTSTRAP_SERVERS.key(),
+                                                "localhost:9092")
+                                        .put(KafkaOptionRule.KAFKA_CONFIG.key(), "{}")
+                                        .build()));
 
         Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> KafkaRequestParamsUtils.parsePropertiesFromRequestParams(new HashMap<>()));
+                IllegalArgumentException.class,
+                () -> KafkaRequestParamsUtils.parsePropertiesFromRequestParams(new HashMap<>()));
 
         Assertions.assertDoesNotThrow(
-            () ->
-                KafkaRequestParamsUtils.parsePropertiesFromRequestParams(
-                    new ImmutableMap.Builder<String, String>()
-                        .put(KafkaOptionRule.BOOTSTRAP_SERVERS.key(), "localhost:9092")
-                        .put(KafkaOptionRule.KAFKA_CONFIG.key(), "")
-                        .build()));
+                () ->
+                        KafkaRequestParamsUtils.parsePropertiesFromRequestParams(
+                                new ImmutableMap.Builder<String, String>()
+                                        .put(
+                                                KafkaOptionRule.BOOTSTRAP_SERVERS.key(),
+                                                "localhost:9092")
+                                        .put(KafkaOptionRule.KAFKA_CONFIG.key(), "")
+                                        .build()));
     }
 }

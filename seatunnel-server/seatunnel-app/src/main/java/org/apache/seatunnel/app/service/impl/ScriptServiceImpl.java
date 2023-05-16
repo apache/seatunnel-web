@@ -17,9 +17,6 @@
 
 package org.apache.seatunnel.app.service.impl;
 
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_SCRIPT;
-import static com.google.common.base.Preconditions.checkState;
-
 import org.apache.seatunnel.app.common.ScriptParamStatusEnum;
 import org.apache.seatunnel.app.common.ScriptStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IScriptDao;
@@ -49,10 +46,11 @@ import org.apache.seatunnel.app.utils.Md5Utils;
 import org.apache.seatunnel.scheduler.dolphinscheduler.impl.InstanceServiceImpl;
 import org.apache.seatunnel.server.common.PageData;
 
-import com.google.common.base.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
+import com.google.common.base.Strings;
 
 import javax.annotation.Resource;
 
@@ -61,53 +59,57 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_SCRIPT;
+
 @Component
 public class ScriptServiceImpl implements IScriptService {
 
-    @Resource
-    private IScriptDao scriptDaoImpl;
+    @Resource private IScriptDao scriptDaoImpl;
 
-    @Resource
-    private IScriptParamDao scriptParamDaoImpl;
+    @Resource private IScriptParamDao scriptParamDaoImpl;
 
-    @Resource
-    private InstanceServiceImpl instanceService;
+    @Resource private InstanceServiceImpl instanceService;
 
-    @Resource
-    private IUserDao userDaoImpl;
+    @Resource private IUserDao userDaoImpl;
 
-    @Resource
-    private ITaskService iTaskService;
+    @Resource private ITaskService iTaskService;
 
     @Override
     public CreateScriptRes createScript(CreateScriptReq createScriptReq) {
         // 1. check script name.
         checkDuplicate(createScriptReq.getName(), createScriptReq.getCreatorId());
         // 2. create  script
-        int scriptId = translate(createScriptReq.getName(), createScriptReq.getCreatorId(), createScriptReq.getCreatorId(), createScriptReq.getType(), createScriptReq.getContent());
+        int scriptId =
+                translate(
+                        createScriptReq.getName(),
+                        createScriptReq.getCreatorId(),
+                        createScriptReq.getCreatorId(),
+                        createScriptReq.getType(),
+                        createScriptReq.getContent());
 
         final CreateScriptRes res = new CreateScriptRes();
         res.setId(scriptId);
         return res;
     }
 
-    private int translate(String name, Integer creatorId, Integer menderId, Byte type, String content) {
-        final CreateScriptDto dto = CreateScriptDto.builder()
-                .name(name)
-                .menderId(creatorId)
-                .creatorId(menderId)
-                .type(type)
-                .status((byte) ScriptStatusEnum.UNPUBLISHED.getCode())
-                .content(content)
-                .build();
+    private int translate(
+            String name, Integer creatorId, Integer menderId, Byte type, String content) {
+        final CreateScriptDto dto =
+                CreateScriptDto.builder()
+                        .name(name)
+                        .menderId(creatorId)
+                        .creatorId(menderId)
+                        .type(type)
+                        .status((byte) ScriptStatusEnum.UNPUBLISHED.getCode())
+                        .content(content)
+                        .build();
         return scriptDaoImpl.createScript(dto);
     }
 
     private void checkDuplicate(String name, Integer creatorId) {
-        final CheckScriptDuplicateDto dto = CheckScriptDuplicateDto.builder()
-                .creatorId(creatorId)
-                .name(name)
-                .build();
+        final CheckScriptDuplicateDto dto =
+                CheckScriptDuplicateDto.builder().creatorId(creatorId).name(name).build();
         scriptDaoImpl.checkScriptDuplicate(dto);
     }
 
@@ -121,21 +123,26 @@ public class ScriptServiceImpl implements IScriptService {
         final boolean needSave = checkIfNeedSave(updateScriptContentReq.getScriptId(), contentMd5);
 
         if (needSave) {
-            final UpdateScriptContentDto dto = UpdateScriptContentDto.builder()
-                    .id(updateScriptContentReq.getScriptId())
-                    .content(content)
-                    .contentMd5(contentMd5)
-                    .menderId(updateScriptContentReq.getMenderId())
-                    .build();
+            final UpdateScriptContentDto dto =
+                    UpdateScriptContentDto.builder()
+                            .id(updateScriptContentReq.getScriptId())
+                            .content(content)
+                            .contentMd5(contentMd5)
+                            .menderId(updateScriptContentReq.getMenderId())
+                            .build();
             scriptDaoImpl.updateScriptContent(dto);
         }
     }
 
     private boolean checkIfNeedSave(int id, String newContentMd5) {
         Script script = scriptDaoImpl.getScript(id);
-        checkState(Objects.nonNull(script) && (int) script.getStatus() != ScriptStatusEnum.DELETED.getCode(), NO_SUCH_SCRIPT.getTemplate());
+        checkState(
+                Objects.nonNull(script)
+                        && (int) script.getStatus() != ScriptStatusEnum.DELETED.getCode(),
+                NO_SUCH_SCRIPT.getTemplate());
 
-        final String oldContentMd5 = Strings.isNullOrEmpty(script.getContentMd5()) ? "" : script.getContentMd5();
+        final String oldContentMd5 =
+                Strings.isNullOrEmpty(script.getContentMd5()) ? "" : script.getContentMd5();
         return !newContentMd5.equals(oldContentMd5);
     }
 
@@ -149,12 +156,12 @@ public class ScriptServiceImpl implements IScriptService {
     @Override
     public PageInfo<ScriptSimpleInfoRes> list(ScriptListReq scriptListReq) {
 
-        final ListScriptsDto dto = ListScriptsDto.builder()
-                .name(scriptListReq.getName())
-                .build();
+        final ListScriptsDto dto = ListScriptsDto.builder().name(scriptListReq.getName()).build();
 
-        PageData<Script> scriptPageData = scriptDaoImpl.list(dto, scriptListReq.getRealPageNo(), scriptListReq.getPageSize());
-        final List<ScriptSimpleInfoRes> data = scriptPageData.getData().stream().map(this::translate).collect(Collectors.toList());
+        PageData<Script> scriptPageData =
+                scriptDaoImpl.list(dto, scriptListReq.getRealPageNo(), scriptListReq.getPageSize());
+        final List<ScriptSimpleInfoRes> data =
+                scriptPageData.getData().stream().map(this::translate).collect(Collectors.toList());
 
         final PageInfo<ScriptSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setPageNo(scriptListReq.getPageNo());
@@ -185,22 +192,25 @@ public class ScriptServiceImpl implements IScriptService {
     public void updateScriptParam(UpdateScriptParamReq updateScriptParamReq) {
         // 1. delete all old params first.
         // 2. save new params. (check params correctness)
-        scriptParamDaoImpl.updateStatusByScriptId(updateScriptParamReq.getScriptId(), ScriptParamStatusEnum.DELETED.getCode());
+        scriptParamDaoImpl.updateStatusByScriptId(
+                updateScriptParamReq.getScriptId(), ScriptParamStatusEnum.DELETED.getCode());
 
-        UpdateScriptParamDto dto = UpdateScriptParamDto.builder()
-                .scriptId(updateScriptParamReq.getScriptId())
-                .params(updateScriptParamReq.getParams())
-                .build();
+        UpdateScriptParamDto dto =
+                UpdateScriptParamDto.builder()
+                        .scriptId(updateScriptParamReq.getScriptId())
+                        .params(updateScriptParamReq.getParams())
+                        .build();
 
         scriptParamDaoImpl.batchInsert(dto);
     }
 
     @Override
     public void publishScript(PublishScriptReq req) {
-        final PushScriptDto dto = PushScriptDto.builder()
-                .scriptId(req.getScriptId())
-                .userId(req.getOperatorId())
-                .build();
+        final PushScriptDto dto =
+                PushScriptDto.builder()
+                        .scriptId(req.getScriptId())
+                        .userId(req.getOperatorId())
+                        .build();
         iTaskService.pushScriptToScheduler(dto);
     }
 

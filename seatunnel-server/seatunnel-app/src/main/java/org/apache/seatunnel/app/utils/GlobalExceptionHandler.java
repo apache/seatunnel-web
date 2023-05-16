@@ -21,10 +21,11 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
@@ -36,7 +37,9 @@ public class GlobalExceptionHandler {
     private Result<String> portalExceptionHandler(SeatunnelException e) {
         logError(e);
 
-        final SeatunnelException seatunnelException = Optional.ofNullable(e).orElse(SeatunnelException.newInstance(SeatunnelErrorEnum.UNKNOWN));
+        final SeatunnelException seatunnelException =
+                Optional.ofNullable(e)
+                        .orElse(SeatunnelException.newInstance(SeatunnelErrorEnum.UNKNOWN));
 
         final String message = seatunnelException.getMessage();
         final SeatunnelErrorEnum errorEnum = seatunnelException.getErrorEnum();
@@ -65,5 +68,4 @@ public class GlobalExceptionHandler {
     private void logError(Throwable throwable) {
         log.error(throwable.getMessage(), throwable);
     }
-
 }

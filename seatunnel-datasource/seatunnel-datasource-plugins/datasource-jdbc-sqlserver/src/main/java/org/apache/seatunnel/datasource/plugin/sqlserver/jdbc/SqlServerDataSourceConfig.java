@@ -30,31 +30,31 @@ public class SqlServerDataSourceConfig {
     public static final String PLUGIN_NAME = "JDBC-SQLServer";
 
     public static final DataSourcePluginInfo SQLSERVER_DATASOURCE_PLUGIN_INFO =
-        DataSourcePluginInfo.builder()
-            .name(PLUGIN_NAME)
-            .icon(PLUGIN_NAME)
-            .version("1.0.0")
-            .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-            .build();
+            DataSourcePluginInfo.builder()
+                    .name(PLUGIN_NAME)
+                    .icon(PLUGIN_NAME)
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .build();
 
     public static final Set<String> SQLSERVER_SYSTEM_DATABASES =
-        Sets.newHashSet(
-            "master",
-            "tempdb",
-            "model",
-            "msdb",
-            "ReportServer",
-            "ReportServerTempDB",
-            "SSISDB");
+            Sets.newHashSet(
+                    "master",
+                    "tempdb",
+                    "model",
+                    "msdb",
+                    "ReportServer",
+                    "ReportServerTempDB",
+                    "SSISDB");
 
     public static final OptionRule OPTION_RULE =
-        OptionRule.builder()
-            .required(SqlServerOptionRule.URL, SqlServerOptionRule.DRIVER)
-            .optional(SqlServerOptionRule.USER, SqlServerOptionRule.PASSWORD)
-            .build();
+            OptionRule.builder()
+                    .required(SqlServerOptionRule.URL, SqlServerOptionRule.DRIVER)
+                    .optional(SqlServerOptionRule.USER, SqlServerOptionRule.PASSWORD)
+                    .build();
 
     public static final OptionRule METADATA_RULE =
-        OptionRule.builder()
-            .required(SqlServerOptionRule.DATABASE, SqlServerOptionRule.TABLE)
-            .build();
+            OptionRule.builder()
+                    .required(SqlServerOptionRule.DATABASE, SqlServerOptionRule.TABLE)
+                    .build();
 }

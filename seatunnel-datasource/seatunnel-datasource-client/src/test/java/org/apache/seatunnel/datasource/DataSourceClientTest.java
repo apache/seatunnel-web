@@ -18,6 +18,7 @@
 package org.apache.seatunnel.datasource;
 
 import org.apache.commons.lang3.StringUtils;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,22 +28,22 @@ class DataSourceClientTest {
     @Test
     public void listAllDataSources() {
         Assertions.assertTrue(
-            DATA_SOURCE_CLIENT.listAllDataSources().stream()
-                .anyMatch(
-                    dataSourcePluginInfo ->
-                        StringUtils.equalsAnyIgnoreCase(
-                            dataSourcePluginInfo.getName(), "jdbc-mysql")));
+                DATA_SOURCE_CLIENT.listAllDataSources().stream()
+                        .anyMatch(
+                                dataSourcePluginInfo ->
+                                        StringUtils.equalsAnyIgnoreCase(
+                                                dataSourcePluginInfo.getName(), "jdbc-mysql")));
         Assertions.assertTrue(
-            DATA_SOURCE_CLIENT.listAllDataSources().stream()
-                .anyMatch(
-                    dataSourcePluginInfo ->
-                        StringUtils.equalsAnyIgnoreCase(
-                            dataSourcePluginInfo.getName(), "kafka")));
+                DATA_SOURCE_CLIENT.listAllDataSources().stream()
+                        .anyMatch(
+                                dataSourcePluginInfo ->
+                                        StringUtils.equalsAnyIgnoreCase(
+                                                dataSourcePluginInfo.getName(), "kafka")));
         Assertions.assertTrue(
-            DATA_SOURCE_CLIENT.listAllDataSources().stream()
-                .anyMatch(
-                    dataSourcePluginInfo ->
-                        StringUtils.equalsAnyIgnoreCase(
-                            dataSourcePluginInfo.getName(), "elasticsearch")));
+                DATA_SOURCE_CLIENT.listAllDataSources().stream()
+                        .anyMatch(
+                                dataSourcePluginInfo ->
+                                        StringUtils.equalsAnyIgnoreCase(
+                                                dataSourcePluginInfo.getName(), "elasticsearch")));
     }
 }

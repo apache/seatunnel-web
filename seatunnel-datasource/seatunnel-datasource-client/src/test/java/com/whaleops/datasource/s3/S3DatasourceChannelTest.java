@@ -19,10 +19,11 @@ package com.whaleops.datasource.s3;
 
 import org.apache.seatunnel.datasource.plugin.s3.S3DatasourceChannel;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
@@ -33,23 +34,23 @@ class S3DatasourceChannelTest {
     @Test
     void checkDataSourceConnectivity() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                S3_DATASOURCE_CHANNEL.checkDataSourceConnectivity("S3", createRequestParams());
-            });
+                () -> {
+                    S3_DATASOURCE_CHANNEL.checkDataSourceConnectivity("S3", createRequestParams());
+                });
     }
 
     private Map<String, String> createRequestParams() {
         Map<String, String> requestParams =
-            new ImmutableMap.Builder<String, String>()
-                .put("bucket", "s3a://poc-kuke")
-                .put("fs.s3a.endpoint", "s3.cn-north-1.amazonaws.com.cn")
-                .put(
-                    "fs.s3a.aws.credentials.provider",
-                    "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider")
-                .put("access_key", "AKIAYYUV5DMXADXRBGTA")
-                .put("secret_key", "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")
-                .put("hadoop_s3_properties", "")
-                .build();
+                new ImmutableMap.Builder<String, String>()
+                        .put("bucket", "s3a://poc-kuke")
+                        .put("fs.s3a.endpoint", "s3.cn-north-1.amazonaws.com.cn")
+                        .put(
+                                "fs.s3a.aws.credentials.provider",
+                                "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider")
+                        .put("access_key", "AKIAYYUV5DMXADXRBGTA")
+                        .put("secret_key", "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")
+                        .put("hadoop_s3_properties", "")
+                        .build();
         return requestParams;
     }
 }

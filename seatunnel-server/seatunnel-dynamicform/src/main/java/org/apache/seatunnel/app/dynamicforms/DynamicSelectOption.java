@@ -22,9 +22,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 public class DynamicSelectOption extends AbstractFormSelectOption {
-    @Getter
-    @Setter
-    private String api;
+    @Getter @Setter private String api;
 
     public DynamicSelectOption(@NonNull String api, @NonNull String label, @NonNull String field) {
         super(label, field);

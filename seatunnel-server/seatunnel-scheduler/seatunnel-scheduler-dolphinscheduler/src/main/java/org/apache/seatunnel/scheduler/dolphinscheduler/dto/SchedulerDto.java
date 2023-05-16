@@ -17,12 +17,12 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.dto;
 
-import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+
+import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
 
 @Data
 public class SchedulerDto {
@@ -31,18 +31,24 @@ public class SchedulerDto {
     private String processDefinitionName;
     private String projectName;
     private String definitionDescription;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date startTime;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date endTime;
+
     private String timezoneId;
     private String crontab;
     private String failureStrategy;
     private String warningType;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date createTime;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date updateTime;
+
     private int userId;
     private String userName;
     private String releaseState;

@@ -23,7 +23,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "scriptFullInfoRes", description = "script full info")
-public class ScriptFullInfoRes extends BaseScriptInfoRes{
+public class ScriptFullInfoRes extends BaseScriptInfoRes {
     @ApiModelProperty(value = "script content", dataType = "String")
     private String content;
 }

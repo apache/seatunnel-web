@@ -28,7 +28,3 @@ public interface UserLoginLogMapper {
 
     UserLoginLog checkLastTokenEnable(@Param("userId") Integer userId);
 }
-
-
-
-

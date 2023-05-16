@@ -33,13 +33,9 @@ public abstract class AbstractFormSelectOption extends AbstractFormOption {
     }
 
     public static class SelectOption {
-        @JsonProperty
-        @Getter
-        private String label;
+        @JsonProperty @Getter private String label;
 
-        @JsonProperty
-        @Getter
-        private Object value;
+        @JsonProperty @Getter private Object value;
 
         public SelectOption(@NonNull String label, @NonNull Object value) {
             this.label = label;

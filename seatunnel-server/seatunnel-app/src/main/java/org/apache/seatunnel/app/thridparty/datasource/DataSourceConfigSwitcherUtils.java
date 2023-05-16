@@ -17,7 +17,7 @@
 
 package org.apache.seatunnel.app.thridparty.datasource;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
@@ -43,51 +43,51 @@ import org.apache.seatunnel.app.thridparty.datasource.impl.TidbDataSourceConfigS
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-
 import java.util.ArrayList;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DataSourceConfigSwitcherUtils {
 
     public static FormStructure filterOptionRule(
-        String datasourceName,
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        PluginType pluginType,
-        BusinessMode businessMode,
-        OptionRule connectorOptionRule) {
+            String datasourceName,
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            PluginType pluginType,
+            BusinessMode businessMode,
+            OptionRule connectorOptionRule) {
         DataSourceConfigSwitcher dataSourceConfigSwitcher =
-            getDataSourceConfigSwitcher(datasourceName.toUpperCase());
+                getDataSourceConfigSwitcher(datasourceName.toUpperCase());
         return dataSourceConfigSwitcher.filterOptionRule(
-            connectorName,
-            dataSourceOptionRule,
-            virtualTableOptionRule,
-            businessMode,
-            pluginType,
-            connectorOptionRule,
-            new ArrayList<>());
+                connectorName,
+                dataSourceOptionRule,
+                virtualTableOptionRule,
+                businessMode,
+                pluginType,
+                connectorOptionRule,
+                new ArrayList<>());
     }
 
     public static Config mergeDatasourceConfig(
-        String datasourceName,
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            String datasourceName,
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
         DataSourceConfigSwitcher dataSourceConfigSwitcher =
-            getDataSourceConfigSwitcher(datasourceName.toUpperCase());
+                getDataSourceConfigSwitcher(datasourceName.toUpperCase());
         return dataSourceConfigSwitcher.mergeDatasourceConfig(
-            dataSourceInstanceConfig,
-            virtualTableDetail,
-            dataSourceOption,
-            selectTableFields,
-            businessMode,
-            pluginType,
-            connectorConfig);
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 
     private static DataSourceConfigSwitcher getDataSourceConfigSwitcher(String datasourceName) {
@@ -127,9 +127,9 @@ public class DataSourceConfigSwitcherUtils {
 
             default:
                 throw new SeaTunnelException(
-                    "data source : "
-                        + datasourceName
-                        + " is no implementation class for DataSourceConfigSwitcher");
+                        "data source : "
+                                + datasourceName
+                                + " is no implementation class for DataSourceConfigSwitcher");
         }
     }
 }
