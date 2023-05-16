@@ -59,13 +59,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import javax.annotation.Resource;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,12 +73,14 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     private ApplicationContext applicationContext;
 
-    @Resource private IJobDefinitionService jobDefinitionService;
+    @Resource
+    private IJobDefinitionService jobDefinitionService;
 
     @Autowired
     @Qualifier("virtualTableDaoImpl") private IVirtualTableDao virtualTableDao;
 
-    @Autowired private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
+    @Autowired
+    private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
 
     protected static final String DEFAULT_DATASOURCE_PLUGIN_VERSION = "1.0.0";
 
@@ -444,7 +440,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         List<DataSourcePluginInfo> dataSourcePluginInfos =
                 DataSourceClientFactory.getDataSourceClient().listAllDataSources();
         for (DataSourcePluginInfo dataSourcePluginInfo : dataSourcePluginInfos) {
-            // 查询所有数据源类型
+            // query datasource types
             if (BooleanUtils.isNotTrue(onlyShowVirtualDatasource)) {
                 List<DataSourcePluginInfo> dataSourcePluginInfoList =
                         dataSourcePluginInfoMap.computeIfAbsent(
@@ -562,7 +558,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     public DatasourceDetailRes queryDatasourceDetailByDatasourceName(String datasourceName) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_DETAIL, 0);
         Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
-        // @cc liuli 此方法已经抽离了，由于代码未提交，暂时先这样写
+        // @cc liuli
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceName);
         }

@@ -32,7 +32,7 @@ public interface DatasourceMapper extends BaseMapper<Datasource> {
             IPage<Datasource> page,
             @Param("pluginName") String pluginName,
             @Param("pluginVersion") String pluginVersion,
-            @Param("datasource_id") Long datasource_id);
+            @Param("datasource_id") Long datasourceId);
 
     List<Datasource> selectByPluginName(@Param("pluginName") String pluginName);
 

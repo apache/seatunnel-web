@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
@@ -28,11 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface IDatasourceService {
-
     /**
-     * 创建数据源
+     * create datasource
      *
-     * @param userId
+     * @param userId userid
      * @param datasourceName  is required //todo datasourceName global is required
      * @param pluginName is required
      * @param pluginVersion is required
@@ -50,7 +50,7 @@ public interface IDatasourceService {
             throws CodeGenerateUtils.CodeGenerateException;
 
     /**
-     * 更新数据源
+     * update datasource
      *
      * @param userId userid
      * @param datasourceId datasource id
@@ -105,7 +105,7 @@ public interface IDatasourceService {
      * @param userId userId
      * @param datasourceName datasourceName
      * @param dataSourceId dataSourceId
-     * @return
+     * @return boolean
      */
     boolean checkDatasourceNameUnique(Integer userId, String datasourceName, Long dataSourceId);
 
@@ -116,7 +116,7 @@ public interface IDatasourceService {
      * @param pluginName pluginName
      * @param pageNo pageNo
      * @param pageSize pageSize
-     * @return PageInfo<DatasourceRes>
+     * @return PageInfo DatasourceRes
      */
     PageInfo<DatasourceRes> queryDatasourceList(
             Integer userId, String searchVal, String pluginName, Integer pageNo, Integer pageSize);
@@ -150,7 +150,7 @@ public interface IDatasourceService {
      * datasourceIds
      *
      * @param datasourceIds datasourceIds
-     * @return List<DatasourceDetailRes>
+     * @return List DatasourceDetailRes
      */
     List<DatasourceDetailRes> queryDatasourceDetailListByDatasourceIds(List<String> datasourceIds);
 

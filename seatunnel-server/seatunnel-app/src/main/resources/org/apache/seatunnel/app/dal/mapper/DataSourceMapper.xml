@@ -79,6 +79,7 @@
             </if>
         </where>
     </select>
+    <select id="selectByPluginName" resultType="org.apache.seatunnel.app.dal.entity.Datasource"></select>
 
 
 </mapper>

@@ -19,37 +19,39 @@ package org.apache.seatunnel.app.thirdparty.datasource;
 
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.ClickhouseDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.DamengDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.ElasticSearchDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.KafkaDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.KafkaKingbaseDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.KingBaseDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.MysqlCDCDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.MysqlDatasourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.OracleCDCDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.OracleDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.PostgresCDCDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.PostgresqlDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.RedshiftDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.S3DataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.S3RedshiftDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.SqlServerCDCDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.SqlServerDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.StarRocksDataSourceConfigSwitcher;
-import org.apache.seatunnel.app.thirdparty.datasource.impl.TidbDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.ClickhouseDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.DamengDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.ElasticSearchDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.KafkaDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.KafkaKingbaseDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.KingBaseDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.MysqlCDCDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.MysqlDatasourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.OracleCDCDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.OracleDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.PostgresCDCDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.PostgresqlDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.RedshiftDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.S3DataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.S3RedshiftDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.SqlServerCDCDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.SqlServerDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.StarRocksDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdpart.datasource.impl.TidbDataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 
-import java.util.ArrayList;
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.ArrayList;
 
 public class DataSourceConfigSwitcherUtils {
 
