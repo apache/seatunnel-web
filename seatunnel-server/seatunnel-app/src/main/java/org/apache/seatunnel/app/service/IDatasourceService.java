@@ -32,8 +32,8 @@ public interface IDatasourceService {
     /**
      * 创建数据源
      *
-     * @param userId 用户id
-     * @param datasourceName 数据源名称 is required //todo datasourceName 全局唯一 必须
+     * @param userId
+     * @param datasourceName  is required //todo datasourceName global is required
      * @param pluginName is required
      * @param pluginVersion is required
      * @param description is optional
@@ -52,11 +52,11 @@ public interface IDatasourceService {
     /**
      * 更新数据源
      *
-     * @param userId 用户id
-     * @param datasourceId 数据源id
-     * @param datasourceName 数据源名称
-     * @param description 数据源描述
-     * @param datasourceConfig 数据源配�
+     * @param userId userid
+     * @param datasourceId datasource id
+     * @param datasourceName datasourceName
+     * @param description description
+     * @param datasourceConfig datasourceConfig
      * @return boolean
      */
     boolean updateDatasource(
@@ -67,21 +67,21 @@ public interface IDatasourceService {
             Map<String, String> datasourceConfig);
 
     /**
-     * 删除数据源
+     * delete datasource
      *
-     * @param userId 用户id
-     * @param datasourceId 数据源id
+     * @param userId userId
+     * @param datasourceId datasourceId
      * @return boolean
      */
     boolean deleteDatasource(Integer userId, Long datasourceId);
 
     /**
-     * 测试数据源是否可用
+     * test datasource is used
      *
-     * @param userId 用户id
-     * @param pluginName 数据源插件名称
-     * @param pluginVersion 数据源插件版本 default is 1.0.0
-     * @param datasourceConfig 数据源配置
+     * @param userId userId
+     * @param pluginName pluginName
+     * @param pluginVersion pluginVersion default is 1.0.0
+     * @param datasourceConfig datasourceConfig
      * @return boolean
      */
     boolean testDatasourceConnectionAble(
@@ -91,63 +91,63 @@ public interface IDatasourceService {
             Map<String, String> datasourceConfig);
 
     /**
-     * 测试数据源是否可用
+     * test datasource is used
      *
-     * @param userId 用户id
-     * @param datasourceId 数据源id
+     * @param userId userId
+     * @param datasourceId datasourceId
      * @return boolean
      */
     boolean testDatasourceConnectionAble(Integer userId, Long datasourceId);
 
     /**
-     * 查询数据源实例名称是否唯一
+     * checkDatasourceNameUnique
      *
-     * @param userId 用户id
-     * @param datasourceName 数据源名称
-     * @param dataSourceId 数据源id
+     * @param userId userId
+     * @param datasourceName datasourceName
+     * @param dataSourceId dataSourceId
      * @return
      */
     boolean checkDatasourceNameUnique(Integer userId, String datasourceName, Long dataSourceId);
 
     /**
-     * 查询数据源列表
+     * queryDatasourceList
      *
-     * @param userId 用户id
-     * @param pluginName 数据源插件名称
-     * @param pageNo 页码
-     * @param pageSize 每页条数
+     * @param userId userId
+     * @param pluginName pluginName
+     * @param pageNo pageNo
+     * @param pageSize pageSize
      * @return PageInfo<DatasourceRes>
      */
     PageInfo<DatasourceRes> queryDatasourceList(
             Integer userId, String searchVal, String pluginName, Integer pageNo, Integer pageSize);
 
     /**
-     * 根据datasourceId 查询详情
+     * datasourceId query detail
      *
-     * @param userId 用户id
-     * @param datasourceId 数据源id
+     * @param userId userId
+     * @param datasourceId datasourceId
      * @return DatasourceDetailRes
      */
     DatasourceDetailRes queryDatasourceDetailById(Integer userId, String datasourceId);
 
     /**
-     * 根据datasourceId 查询详情
+     * datasourceId query detail
      *
-     * @param datasourceId 数据源id
+     * @param datasourceId datasourceId
      * @return DatasourceDetailRes
      */
     DatasourceDetailRes queryDatasourceDetailById(String datasourceId);
 
     /**
-     * 根据datasourceName 查询详情
+     * datasourceName query detail
      *
-     * @param datasourceName 数据源名称
+     * @param datasourceName datasourceName
      * @return DatasourceDetailRes
      */
     DatasourceDetailRes queryDatasourceDetailByDatasourceName(String datasourceName);
 
     /**
-     * 根据datasourceIds 查询所有详情
+     * datasourceIds
      *
      * @param datasourceIds datasourceIds
      * @return List<DatasourceDetailRes>
@@ -155,7 +155,7 @@ public interface IDatasourceService {
     List<DatasourceDetailRes> queryDatasourceDetailListByDatasourceIds(List<String> datasourceIds);
 
     /**
-     * 注意：该接口仅限于导出数据使用，其他场景需要使用请提前评估！！！ 查询所有数据源实例 仅限于导出数据使用，其他场景需要使用请提前评估！！！
+     * Note: This interface is only used for exporting data, please evaluate it in advance for other scenarios!!! Querying all data source instances is limited to exporting data for use, please evaluate in advance for other scenarios!!!
      *
      * @return all datasource instance
      */
@@ -163,46 +163,46 @@ public interface IDatasourceService {
     List<DatasourceDetailRes> queryAllDatasourcesInstance();
 
     /**
-     * 根据datasourceName 查询配置参数
+     * datasourceName query config
      *
-     * @param datasourceId 数据源id
+     * @param datasourceId datasourceId
      * @return Map<String, String>
      */
     Map<String, String> queryDatasourceConfigById(String datasourceId);
 
     /**
-     * 根据plugin name 查询datasourceName and id @liuli
+     * plugin name datasourceName and id @liuli
      *
-     * @param pluginName 数据源插件名称
+     * @param pluginName pluginName
      * @return List<String> key: datasourceId value: datasourceName
      */
     Map<String, String> queryDatasourceNameByPluginName(String pluginName);
 
     /**
-     * 根据plugin name 查询配置参数
+     * plugin name query config
      *
-     * @param pluginName 数据源插件名称
+     * @param pluginName pluginName
      * @return OptionRule @liuli
      */
     OptionRule queryOptionRuleByPluginName(String pluginName);
 
     /**
-     * 根据plugin name 查询虚拟表的OptionRule
+     * plugin name OptionRule
      *
-     * @param pluginName 数据源插件名称
+     * @param pluginName pluginName
      * @return OptionRule
      */
     OptionRule queryVirtualTableOptionRuleByPluginName(String pluginName);
 
     /**
-     * 查询所有支持的数据源
+     * query all datasource
      *
      * @return
      */
     List<DataSourcePluginInfo> queryAllDatasources();
 
     /**
-     * 按照类型查询所有支持的数据源
+     * query all datasource by type
      *
      * @param type @see com.whaleops.datasource.plugin.api.DatasourcePluginTypeEnum
      * @return List<DataSourcePluginInfo>
@@ -210,16 +210,16 @@ public interface IDatasourceService {
     List<DataSourcePluginInfo> queryAllDatasourcesByType(Integer type);
 
     /**
-     * 所有支持的数据源
+     * all datasource
      *
-     * @param onlyShowVirtualDataSource 是否只显示虚拟数据源
-     * @return key: type, value: List<DataSourcePluginInfo> 按照类型进行返回
+     * @param onlyShowVirtualDataSource onlyShowVirtualDataSource
+     * @return key: type, value: List<DataSourcePluginInfo>
      */
     Map<Integer, List<DataSourcePluginInfo>> queryAllDatasourcesGroupByType(
             Boolean onlyShowVirtualDataSource);
 
     /**
-     * 根据数据源id查询数据源名称
+     * query by id
      *
      * @param datasourceId
      * @return
@@ -227,7 +227,7 @@ public interface IDatasourceService {
     String queryDatasourceNameById(String datasourceId);
 
     /**
-     * 根据数据源插件名称查询动态表单
+     * query dynamic form by pluginName
      *
      * @param pluginName
      * @return String json
@@ -235,7 +235,7 @@ public interface IDatasourceService {
     String getDynamicForm(String pluginName);
 
     /**
-     * 根据数据源名称查询数据库名称
+     * queryDatabaseByDatasourceName
      *
      * @param datasourceName datasourceName
      * @return List<String> databaseName
@@ -243,7 +243,7 @@ public interface IDatasourceService {
     List<String> queryDatabaseByDatasourceName(String datasourceName);
 
     /**
-     * 根据数据源名称和数据库名称查询表名称
+     * queryTableNames
      *
      * @param datasourceName datasourceName
      * @param databaseName databaseName
@@ -252,7 +252,7 @@ public interface IDatasourceService {
     List<String> queryTableNames(String datasourceName, String databaseName);
 
     /**
-     * 根据数据源名称和数据库名称查询表结构
+     * queryTableSchema
      *
      * @param datasourceName datasourceName
      * @param databaseName databaseName

@@ -452,7 +452,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                 dataSourcePluginInfoList.add(dataSourcePluginInfo);
                 continue;
             }
-            // 否则只查询虚拟数据源的
+
             if (Boolean.TRUE.equals(dataSourcePluginInfo.getSupportVirtualTables())) {
                 List<DataSourcePluginInfo> dataSourcePluginInfoList =
                         dataSourcePluginInfoMap.computeIfAbsent(

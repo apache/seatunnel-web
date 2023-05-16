@@ -218,19 +218,19 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                         .queryDatasourceDetailById(dataSourceInstanceId.toString())
                         .getPluginName();
 
-        // 2、通过DataSourceName查询出DataSourceName OptionRole
+        // 2、DataSourceName DataSourceName OptionRole
         OptionRule DataSourceNameOptionRole =
                 datasourceService.queryOptionRuleByPluginName(dataSourceName);
 
-        // 3、查询出虚拟表的OptionRole
+        // 3、OptionRole
         OptionRule virtualTableOptionRule =
                 datasourceService.queryVirtualTableOptionRuleByPluginName(dataSourceName);
 
-        // 3、通过dataSourceName 查询出connector
+        // 3、dataSourceName query connector
         String connectorName =
                 dataSourceMapperConfig.findConnectorForDatasourceName(dataSourceName).get();
 
-        // 5、调用工具类进行拆分
+        // 5、call utils
         PluginType connectorPluginType = PluginType.valueOf(pluginType.toUpperCase(Locale.ROOT));
 
         return DataSourceConfigSwitcherUtils.filterOptionRule(
@@ -300,7 +300,7 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
     /** Get an instance from a data source */
     private List<DataSourceInstance> getDataSourcesInstance(DataSourceInfo dataSourceInfo) {
 
-        // 通过dataSourceName 查询出所有对应的DataSourceInstance
+        // dataSourceName DataSourceInstance
         return datasourceService.queryDatasourceNameByPluginName(dataSourceInfo.getDatasourceName())
                 .entrySet().stream()
                 .map(
