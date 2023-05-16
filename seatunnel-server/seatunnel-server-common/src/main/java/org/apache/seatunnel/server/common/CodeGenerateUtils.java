@@ -14,13 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.seatunnel.server.common;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
 
-/** Rewriting based on Twitter snowflake algorithm */
+/**
+ * Rewriting based on Twitter snowflake algorithm
+ */
 public class CodeGenerateUtils {
 
     // start timestamp
@@ -38,24 +41,23 @@ public class CodeGenerateUtils {
 
     private static final long SYSTEM_TIMESTAMP = System.currentTimeMillis();
     private static final long SYSTEM_NANOTIME = System.nanoTime();
-
+    private static final int I = 1000000;
     private CodeGenerateUtils() throws CodeGenerateException {
         try {
             this.machineHash =
-                    Math.abs(Objects.hash(InetAddress.getLocalHost().getHostName()))
-                            % (2 << (MIDDLE_BIT - 1));
+                Math.abs(Objects.hash(InetAddress.getLocalHost().getHostName())) % (2 << (MIDDLE_BIT - 1));
         } catch (UnknownHostException e) {
             throw new CodeGenerateException(e.getMessage());
         }
     }
 
-    private static CodeGenerateUtils instance = null;
+    private static CodeGenerateUtils INSTANCE = null;
 
     public static synchronized CodeGenerateUtils getInstance() throws CodeGenerateException {
-        if (instance == null) {
-            instance = new CodeGenerateUtils();
+        if (INSTANCE == null) {
+            INSTANCE = new CodeGenerateUtils();
         }
-        return instance;
+        return INSTANCE;
     }
 
     public synchronized long genCode() throws CodeGenerateException {
@@ -74,13 +76,11 @@ public class CodeGenerateUtils {
             lowDigit = 0L;
         }
         recordMillisecond = nowtMillisecond;
-        return (nowtMillisecond - START_TIMESTAMP) << HIGH_DIGIT_LEFT
-                | machineHash << MIDDLE_LEFT
-                | lowDigit;
+        return (nowtMillisecond - START_TIMESTAMP) << HIGH_DIGIT_LEFT | machineHash << MIDDLE_LEFT | lowDigit;
     }
 
     private long systemMillisecond() {
-        return SYSTEM_TIMESTAMP + (System.nanoTime() - SYSTEM_NANOTIME) / 1000000;
+        return SYSTEM_TIMESTAMP + (System.nanoTime() - SYSTEM_NANOTIME) / I;
     }
 
     public static class CodeGenerateException extends RuntimeException {

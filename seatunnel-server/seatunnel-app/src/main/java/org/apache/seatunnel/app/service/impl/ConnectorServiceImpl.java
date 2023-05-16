@@ -16,6 +16,7 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
+import lombok.NonNull;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.bean.connector.ConnectorCache;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
@@ -212,31 +213,31 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                                 .getJobType()
                                 .toUpperCase());
 
-        // 1、通过dataSourceInstanceId反查询出dataSourceName,
+        // 1、通过dataSourceInstanceId query dataSourceName,
         String dataSourceName =
                 datasourceService
                         .queryDatasourceDetailById(dataSourceInstanceId.toString())
                         .getPluginName();
 
-        // 2、DataSourceName DataSourceName OptionRole
-        OptionRule DataSourceNameOptionRole =
+        // 2.DataSourceName DataSourceName OptionRole
+        OptionRule dataSourceNameOptionRole =
                 datasourceService.queryOptionRuleByPluginName(dataSourceName);
 
-        // 3、OptionRole
+        // 3.OptionRole
         OptionRule virtualTableOptionRule =
                 datasourceService.queryVirtualTableOptionRuleByPluginName(dataSourceName);
 
-        // 3、dataSourceName query connector
+        // 4.dataSourceName query connector
         String connectorName =
                 dataSourceMapperConfig.findConnectorForDatasourceName(dataSourceName).get();
 
-        // 5、call utils
+        // 5.call utils
         PluginType connectorPluginType = PluginType.valueOf(pluginType.toUpperCase(Locale.ROOT));
 
         return DataSourceConfigSwitcherUtils.filterOptionRule(
                 dataSourceName,
                 connectorName,
-                DataSourceNameOptionRole,
+                dataSourceNameOptionRole,
                 virtualTableOptionRule,
                 connectorPluginType,
                 businessMode,

@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.thirdparty.datasource;
-
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValue;
+package org.apache.seatunnel.app.thirdpart.datasource;
 
 import org.apache.seatunnel.api.configuration.Option;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
@@ -28,9 +25,11 @@ import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
-import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
-import org.apache.seatunnel.app.thirdparty.framework.UnSupportWrapperException;
+import org.apache.seatunnel.app.thirdpart.framework.SeaTunnelOptionRuleWrapper;
+import org.apache.seatunnel.app.thirdpart.framework.UnSupportWrapperException;
 import org.apache.seatunnel.common.constants.PluginType;
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValue;
 
 import java.util.List;
 import java.util.Map;

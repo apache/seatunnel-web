@@ -38,33 +38,32 @@ import java.util.stream.Collectors;
 
 @Component
 public class AvailableResourceRangeServiceImpl
-        implements AvailableResourceRangeService, ApplicationContextAware {
+    implements AvailableResourceRangeService, ApplicationContextAware {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(AvailableResourceRangeServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvailableResourceRangeServiceImpl.class);
 
     private final Map<String, ResourcePermissionQuery> resourceQueryMap = new HashMap<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         Map<String, ResourcePermissionQuery> beansOfType =
-                applicationContext.getBeansOfType(ResourcePermissionQuery.class);
+            applicationContext.getBeansOfType(ResourcePermissionQuery.class);
         beansOfType.forEach(
-                (key, value) -> {
-                    List typeList = value.accessTypes();
-                    if (typeList == null || typeList.isEmpty()) {
-                        return;
-                    }
-                    typeList.forEach(
-                            accessType -> resourceQueryMap.put(String.valueOf(accessType), value));
-                });
+            (key, value) -> {
+                List typeList = value.accessTypes();
+                if (typeList == null || typeList.isEmpty()) {
+                    return;
+                }
+                typeList.forEach(
+                    accessType -> resourceQueryMap.put(String.valueOf(accessType), value));
+            });
     }
 
     @Override
     public List queryAvailableResourceRangeBySourceType(String resourceType, int userId) {
         ResourcePermissionQuery resourcePermissionQuery = resourceQueryMap.get(resourceType);
         if (resourcePermissionQuery == null) {
-            logger.warn("resource type {} query handle not init", resourceType);
+            LOGGER.warn("resource type {} query handle not init", resourceType);
             return Collections.emptyList();
         }
         return resourcePermissionQuery.queryByResourceType(userId);
@@ -79,24 +78,27 @@ public class AvailableResourceRangeServiceImpl
         @Override
         public List<String> accessTypes() {
             return Collections.singletonList(
-                    SeatunnelResourcePermissionModuleEnum.DATASOURCE.name());
+                SeatunnelResourcePermissionModuleEnum.DATASOURCE.name());
         }
 
         @Override
         public List<Long> queryByResourceType(int userId) {
             List<Datasource> datasourceList = iDatasourceDao.selectDatasourceByUserId(userId);
-            return datasourceList == null || datasourceList.isEmpty()
-                    ? Collections.emptyList()
-                    : datasourceList.stream().map(Datasource::getId).collect(Collectors.toList());
+            return datasourceList == null || datasourceList.isEmpty() ? Collections.emptyList()
+                : datasourceList.stream().map(Datasource::getId).collect(Collectors.toList());
         }
     }
 
     interface ResourcePermissionQuery<T> {
 
-        /** resource type */
+        /**
+         * resource type
+         */
         List<String> accessTypes();
 
-        /** query by resource type */
+        /**
+         * query by resource type
+         */
         List<T> queryByResourceType(int userId);
     }
 }
