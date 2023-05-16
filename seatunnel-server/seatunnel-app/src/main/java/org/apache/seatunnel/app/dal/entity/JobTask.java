@@ -65,16 +65,19 @@ public class JobTask {
     @TableField("transform_options")
     private String transformOptions;
 
-    /** {@link java.util.List<DatabaseTableSchemaReq>} value */
+    /** {@link java.util.List} value */
     @TableField("output_schema")
     private String outputSchema;
 
-    @TableField private String config;
+    @TableField
+    private String config;
 
     /** {@link org.apache.seatunnel.common.constants.PluginType} values, lowercase */
-    @TableField private String type;
+    @TableField
+    private String type;
 
-    @TableField private String name;
+    @TableField
+    private String name;
 
     @TableField("create_time")
     private Date createTime;

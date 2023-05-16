@@ -117,8 +117,7 @@ public class SeaTunnelOptionRuleWrapper {
                 requiredList.stream()
                         .map(
                                 option -> {
-                                    if (option
-                                            instanceof RequiredOption.AbsolutelyRequiredOptions) {
+                                    if (option instanceof RequiredOption.AbsolutelyRequiredOptions) {
                                         List<AbstractFormOption> collect =
                                                 ((RequiredOption.AbsolutelyRequiredOptions) option)
                                                         .getRequiredOption().stream()
@@ -209,8 +208,7 @@ public class SeaTunnelOptionRuleWrapper {
                                         return collect;
                                     }
 
-                                    if (option
-                                            instanceof RequiredOption.ConditionalRequiredOptions) {
+                                    if (option instanceof RequiredOption.ConditionalRequiredOptions) {
                                         RequiredOption.ConditionalRequiredOptions
                                                 conditionalRequiredOptions =
                                                         (RequiredOption.ConditionalRequiredOptions)
@@ -393,8 +391,7 @@ public class SeaTunnelOptionRuleWrapper {
                 staticSelectOptionBuilder
                         .formStaticSelectOption()
                         .withDefaultValue(
-                                option.defaultValue() == null
-                                        ? null
+                                option.defaultValue() == null ? null
                                         : option.defaultValue().toString());
 
         String placeholderI18nOptionKey = i18nOptionKey + "_description";

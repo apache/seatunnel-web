@@ -40,16 +40,20 @@ public class JobVersion {
     @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
-    @TableField private String name;
+    @TableField
+    private String name;
 
     @TableField("job_id")
     private Long jobId;
 
-    /** {@link JobMode} value */
+    /**
+     * {@link JobMode} value
+     */
     @TableField("job_mode")
     private String jobMode;
 
-    @TableField private String env;
+    @TableField
+    private String env;
 
     @TableField("engine_name")
     private String engineName;

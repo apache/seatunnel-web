@@ -18,7 +18,7 @@
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
 public class MysqlDatasourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-    public static MysqlDatasourceConfigSwitcher instance = new MysqlDatasourceConfigSwitcher();
+    public static MysqlDatasourceConfigSwitcher INSTANCE = new MysqlDatasourceConfigSwitcher();
 
     private MysqlDatasourceConfigSwitcher() {}
 }

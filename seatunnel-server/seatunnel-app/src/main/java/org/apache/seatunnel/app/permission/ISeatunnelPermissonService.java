@@ -24,18 +24,18 @@ public interface ISeatunnelPermissonService {
     /**
      * func permission check
      *
-     * @param permissionKey
-     * @param userId
+     * @param permissionKey permissionKey
+     * @param userId userId
      */
     void funcPermissionCheck(String permissionKey, int userId);
 
     /**
      * func permission and resource permission check
      *
-     * @param permissionKey
-     * @param resourceType
-     * @param resourceCodes
-     * @param userId
+     * @param permissionKey permissionKey
+     * @param resourceType resourceType
+     * @param resourceCodes resourceCodes
+     * @param userId userId
      */
     void funcAndResourcePermissionCheck(
             String permissionKey, String resourceType, List<Object> resourceCodes, int userId);
@@ -43,18 +43,18 @@ public interface ISeatunnelPermissonService {
     /**
      * resource post handle
      *
-     * @param resourceType
-     * @param resourceCodes
-     * @param userId
+     * @param resourceType resourceType
+     * @param resourceCodes resourceCodes
+     * @param userId userId
      */
     void resourcePostHandle(String resourceType, List<Object> resourceCodes, int userId);
 
     /**
      * available resource range
      *
-     * @param resourceType
-     * @param userId
-     * @return
+     * @param resourceType resourceType
+     * @param userId userId
+     * @return list
      */
     List<Object> availableResourceRange(String resourceType, int userId);
 }

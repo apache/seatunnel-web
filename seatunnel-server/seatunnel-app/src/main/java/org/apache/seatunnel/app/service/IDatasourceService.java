@@ -166,7 +166,7 @@ public interface IDatasourceService {
      * datasourceName query config
      *
      * @param datasourceId datasourceId
-     * @return Map<String, String>
+     * @return Map
      */
     Map<String, String> queryDatasourceConfigById(String datasourceId);
 
@@ -174,7 +174,7 @@ public interface IDatasourceService {
      * plugin name datasourceName and id @liuli
      *
      * @param pluginName pluginName
-     * @return List<String> key: datasourceId value: datasourceName
+     * @return List String key: datasourceId value: datasourceName
      */
     Map<String, String> queryDatasourceNameByPluginName(String pluginName);
 
@@ -197,7 +197,7 @@ public interface IDatasourceService {
     /**
      * query all datasource
      *
-     * @return
+     * @return list
      */
     List<DataSourcePluginInfo> queryAllDatasources();
 
@@ -205,7 +205,7 @@ public interface IDatasourceService {
      * query all datasource by type
      *
      * @param type @see com.whaleops.datasource.plugin.api.DatasourcePluginTypeEnum
-     * @return List<DataSourcePluginInfo>
+     * @return List DataSourcePluginInfo
      */
     List<DataSourcePluginInfo> queryAllDatasourcesByType(Integer type);
 
@@ -213,7 +213,7 @@ public interface IDatasourceService {
      * all datasource
      *
      * @param onlyShowVirtualDataSource onlyShowVirtualDataSource
-     * @return key: type, value: List<DataSourcePluginInfo>
+     * @return key: type, value: List DataSourcePluginInfo
      */
     Map<Integer, List<DataSourcePluginInfo>> queryAllDatasourcesGroupByType(
             Boolean onlyShowVirtualDataSource);
@@ -221,15 +221,15 @@ public interface IDatasourceService {
     /**
      * query by id
      *
-     * @param datasourceId
-     * @return
+     * @param datasourceId datasourceId
+     * @return name
      */
     String queryDatasourceNameById(String datasourceId);
 
     /**
      * query dynamic form by pluginName
      *
-     * @param pluginName
+     * @param pluginName pluginName
      * @return String json
      */
     String getDynamicForm(String pluginName);
@@ -238,7 +238,7 @@ public interface IDatasourceService {
      * queryDatabaseByDatasourceName
      *
      * @param datasourceName datasourceName
-     * @return List<String> databaseName
+     * @return List String databaseName
      */
     List<String> queryDatabaseByDatasourceName(String datasourceName);
 
@@ -247,7 +247,7 @@ public interface IDatasourceService {
      *
      * @param datasourceName datasourceName
      * @param databaseName databaseName
-     * @return List<String> tableName
+     * @return List tableName
      */
     List<String> queryTableNames(String datasourceName, String databaseName);
 
@@ -257,7 +257,7 @@ public interface IDatasourceService {
      * @param datasourceName datasourceName
      * @param databaseName databaseName
      * @param tableName tableName
-     * @return List<TableField> tableField
+     * @return List tableField
      */
     List<TableField> queryTableSchema(String datasourceName, String databaseName, String tableName);
 }

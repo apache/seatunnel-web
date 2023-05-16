@@ -101,7 +101,7 @@ public class DataSourceConfigSwitcherUtils {
         // Use SPI
         switch (datasourceName.toUpperCase()) {
             case "JDBC-MYSQL":
-                return MysqlDatasourceConfigSwitcher.instance;
+                return MysqlDatasourceConfigSwitcher.INSTANCE;
             case "ELASTICSEARCH":
                 return ElasticSearchDataSourceConfigSwitcher.INSTANCE;
             case "KAFKA":

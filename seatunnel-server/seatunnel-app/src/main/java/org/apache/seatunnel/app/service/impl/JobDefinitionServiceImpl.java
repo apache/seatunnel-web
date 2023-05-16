@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.common.EngineType;
@@ -58,30 +75,30 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     @Transactional
     public long createJob(int userId, JobReq jobReq)
-            throws CodeGenerateUtils.CodeGenerateException {
+        throws CodeGenerateUtils.CodeGenerateException {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_CREATE, userId);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         jobDefinitionDao.add(
-                JobDefinition.builder()
-                        .id(uuid)
-                        .name(jobReq.getName())
-                        .description(jobReq.getDescription())
-                        .createUserId(userId)
-                        .updateUserId(userId)
-                        .jobType(jobReq.getJobType().name())
-                        .projectCode(jobReq.getProjectCode())
-                        .build());
+            JobDefinition.builder()
+                .id(uuid)
+                .name(jobReq.getName())
+                .description(jobReq.getDescription())
+                .createUserId(userId)
+                .updateUserId(userId)
+                .jobType(jobReq.getJobType().name())
+                .projectCode(jobReq.getProjectCode())
+                .build());
         jobVersionDao.createVersion(
-                JobVersion.builder()
-                        .jobId(uuid)
-                        .createUserId(userId)
-                        .updateUserId(userId)
-                        .name(DEFAULT_VERSION)
-                        .id(uuid)
-                        .engineName(EngineType.SeaTunnel.name())
-                        .jobMode(JobMode.BATCH.name())
-                        .engineVersion("2.3.0")
-                        .build());
+            JobVersion.builder()
+                .jobId(uuid)
+                .createUserId(userId)
+                .updateUserId(userId)
+                .name(DEFAULT_VERSION)
+                .id(uuid)
+                .engineName(EngineType.SeaTunnel.name())
+                .jobMode(JobMode.BATCH.name())
+                .engineVersion("2.3.0")
+                .build());
         return uuid;
     }
 
@@ -156,9 +173,9 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
         Map<Long, String> jobDefineMap = new HashMap<>();
         job.forEach(
-                jobDefine -> {
-                    jobDefineMap.put(jobDefine.getId(), jobDefine.getName());
-                });
+            jobDefine -> {
+                jobDefineMap.put(jobDefine.getId(), jobDefine.getName());
+            });
 
         return jobDefineMap;
     }

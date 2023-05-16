@@ -37,6 +37,7 @@ import org.apache.seatunnel.plugin.discovery.seatunnel.SeaTunnelSinkPluginDiscov
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -149,52 +150,52 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public DataSourceOption checkDatabaseAndTable(
-            String datasourceId, DataSourceOption dataSourceOption) {
+        String datasourceId, DataSourceOption dataSourceOption) {
         List<String> notExistDatabases = new ArrayList<>();
         String datasourceName =
-                dataSourceService.queryDatasourceDetailById(datasourceId).getDatasourceName();
+            dataSourceService.queryDatasourceDetailById(datasourceId).getDatasourceName();
         if (dataSourceOption.getDatabases() != null) {
             List<String> databases =
-                    dataSourceService.queryDatabaseByDatasourceName(datasourceName);
+                dataSourceService.queryDatabaseByDatasourceName(datasourceName);
             notExistDatabases.addAll(
-                    dataSourceOption.getDatabases().stream()
-                            .filter(database -> !databases.contains(database))
-                            .collect(Collectors.toList()));
+                dataSourceOption.getDatabases().stream()
+                    .filter(database -> !databases.contains(database))
+                    .collect(Collectors.toList()));
         }
         Map<String, Set<String>> tables = new HashMap<>();
         if (dataSourceOption.getTables() != null) {
             List<String> notExistTables = new ArrayList<>();
             dataSourceOption
-                    .getTables()
-                    .forEach(
-                            tableStr -> {
-                                String database;
-                                String table;
-                                //                                if (tableStr.contains(".")) {
-                                //                                    String[] split =
-                                // tableStr.split("\\.");
-                                //                                    database = split[0];
-                                //                                    table = split[1];
-                                //                                } else {
-                                database = dataSourceOption.getDatabases().get(0);
-                                table = tableStr;
-                                //                                }
-                                if (!tables.containsKey(database)) {
-                                    if (notExistDatabases.contains(database)) {
-                                        notExistTables.add(tableStr);
-                                        return;
-                                    } else {
-                                        tables.put(
-                                                database,
-                                                new HashSet<>(
-                                                        dataSourceService.queryTableNames(
-                                                                datasourceName, database)));
-                                    }
-                                }
-                                if (!tables.get(database).contains(table)) {
-                                    notExistTables.add(tableStr);
-                                }
-                            });
+                .getTables()
+                .forEach(
+                    tableStr -> {
+                        String database;
+                        String table;
+                        //                                if (tableStr.contains(".")) {
+                        //                                    String[] split =
+                        // tableStr.split("\\.");
+                        //                                    database = split[0];
+                        //                                    table = split[1];
+                        //                                } else {
+                        database = dataSourceOption.getDatabases().get(0);
+                        table = tableStr;
+                        //                                }
+                        if (!tables.containsKey(database)) {
+                            if (notExistDatabases.contains(database)) {
+                                notExistTables.add(tableStr);
+                                return;
+                            } else {
+                                tables.put(
+                                    database,
+                                    new HashSet<>(
+                                        dataSourceService.queryTableNames(
+                                            datasourceName, database)));
+                            }
+                        }
+                        if (!tables.get(database).contains(table)) {
+                            notExistTables.add(tableStr);
+                        }
+                    });
             return new DataSourceOption(notExistDatabases, notExistTables);
         }
         return new DataSourceOption(notExistDatabases, new ArrayList<>());

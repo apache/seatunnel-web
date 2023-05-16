@@ -41,9 +41,14 @@ import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DAT
 public class PostgresCDCDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
     private PostgresCDCDataSourceConfigSwitcher() {}
+    private int three = 3;
+    private int two = 2;
+
+    private PostgresCDCDataSourceConfigSwitcher() {
+    }
 
     public static final PostgresCDCDataSourceConfigSwitcher INSTANCE =
-            new PostgresCDCDataSourceConfigSwitcher();
+        new PostgresCDCDataSourceConfigSwitcher();
 
     private static final String FACTORY = "factory";
 
@@ -63,13 +68,13 @@ public class PostgresCDCDataSourceConfigSwitcher extends AbstractDataSourceConfi
 
     @Override
     public FormStructure filterOptionRule(
-            String connectorName,
-            OptionRule dataSourceOptionRule,
-            OptionRule virtualTableOptionRule,
-            BusinessMode businessMode,
-            PluginType pluginType,
-            OptionRule connectorOptionRule,
-            List<String> excludedKeys) {
+        String connectorName,
+        OptionRule dataSourceOptionRule,
+        OptionRule virtualTableOptionRule,
+        BusinessMode businessMode,
+        PluginType pluginType,
+        OptionRule connectorOptionRule,
+        List<String> excludedKeys) {
         if (PluginType.SOURCE.equals(pluginType)) {
             excludedKeys.add(DATABASE_NAMES);
             excludedKeys.add(TABLE_NAMES);
@@ -80,62 +85,62 @@ public class PostgresCDCDataSourceConfigSwitcher extends AbstractDataSourceConfi
             throw new UnsupportedOperationException("Unsupported plugin type: " + pluginType);
         }
         return super.filterOptionRule(
-                connectorName,
-                dataSourceOptionRule,
-                virtualTableOptionRule,
-                businessMode,
-                pluginType,
-                connectorOptionRule,
-                excludedKeys);
+            connectorName,
+            dataSourceOptionRule,
+            virtualTableOptionRule,
+            businessMode,
+            pluginType,
+            connectorOptionRule,
+            excludedKeys);
     }
 
     @Override
     public Config mergeDatasourceConfig(
-            Config dataSourceInstanceConfig,
-            VirtualTableDetailRes virtualTableDetail,
-            DataSourceOption dataSourceOption,
-            SelectTableFields selectTableFields,
-            BusinessMode businessMode,
-            PluginType pluginType,
-            Config connectorConfig) {
+        Config dataSourceInstanceConfig,
+        VirtualTableDetailRes virtualTableDetail,
+        DataSourceOption dataSourceOption,
+        SelectTableFields selectTableFields,
+        BusinessMode businessMode,
+        PluginType pluginType,
+        Config connectorConfig) {
         if (PluginType.SOURCE.equals(pluginType)) {
             // Add table-names
             Config config = ConfigFactory.empty();
             config = config.withValue(FACTORY, ConfigValueFactory.fromAnyRef("Postgres"));
             connectorConfig = connectorConfig.withValue(CATALOG, config.root());
             connectorConfig =
-                    connectorConfig.withValue(
-                            DATABASE_NAMES,
-                            ConfigValueFactory.fromIterable(dataSourceOption.getDatabases()));
+                connectorConfig.withValue(
+                    DATABASE_NAMES,
+                    ConfigValueFactory.fromIterable(dataSourceOption.getDatabases()));
             connectorConfig =
-                    connectorConfig.withValue(
-                            TABLE_NAMES,
-                            ConfigValueFactory.fromIterable(
-                                    mergeDatabaseAndTables(dataSourceOption)));
+                connectorConfig.withValue(
+                    TABLE_NAMES,
+                    ConfigValueFactory.fromIterable(
+                        mergeDatabaseAndTables(dataSourceOption)));
 
             if (businessMode.equals(DATA_INTEGRATION)) {
                 connectorConfig =
-                        connectorConfig.withValue(
-                                FORMAT_KEY, ConfigValueFactory.fromAnyRef(DEFAULT_FORMAT));
+                    connectorConfig.withValue(
+                        FORMAT_KEY, ConfigValueFactory.fromAnyRef(DEFAULT_FORMAT));
             } else if (businessMode.equals(DATA_REPLICA)
-                    && connectorConfig
-                            .getString(FORMAT_KEY)
-                            .toUpperCase(Locale.ROOT)
-                            .equals(DEBEZIUM_FORMAT)) {
+                && connectorConfig
+                .getString(FORMAT_KEY)
+                .toUpperCase(Locale.ROOT)
+                .equals(DEBEZIUM_FORMAT)) {
                 connectorConfig =
-                        connectorConfig.withValue(SCHEMA, generateDebeziumFormatSchema().root());
+                    connectorConfig.withValue(SCHEMA, generateDebeziumFormatSchema().root());
             }
         } else {
             throw new UnsupportedOperationException("Unsupported plugin type: " + pluginType);
         }
         return super.mergeDatasourceConfig(
-                dataSourceInstanceConfig,
-                virtualTableDetail,
-                dataSourceOption,
-                selectTableFields,
-                businessMode,
-                pluginType,
-                connectorConfig);
+            dataSourceInstanceConfig,
+            virtualTableDetail,
+            dataSourceOption,
+            selectTableFields,
+            businessMode,
+            pluginType,
+            connectorConfig);
     }
 
     private Config generateDebeziumFormatSchema() {
@@ -147,9 +152,9 @@ public class PostgresCDCDataSourceConfigSwitcher extends AbstractDataSourceConfi
         Config schema = ConfigFactory.empty();
         for (VirtualTableFieldRes virtualTableFieldRes : fieldResList) {
             schema =
-                    schema.withValue(
-                            virtualTableFieldRes.getFieldName(),
-                            ConfigValueFactory.fromAnyRef(virtualTableFieldRes.getFieldType()));
+                schema.withValue(
+                    virtualTableFieldRes.getFieldName(),
+                    ConfigValueFactory.fromAnyRef(virtualTableFieldRes.getFieldType()));
         }
         return schema.atKey("fields");
     }
@@ -157,26 +162,26 @@ public class PostgresCDCDataSourceConfigSwitcher extends AbstractDataSourceConfi
     private List<String> mergeDatabaseAndTables(DataSourceOption dataSourceOption) {
         List<String> tables = new ArrayList<>();
         dataSourceOption
-                .getDatabases()
-                .forEach(
-                        database -> {
-                            dataSourceOption
-                                    .getTables()
-                                    .forEach(
-                                            table -> {
-                                                final String[] tableFragments = table.split("\\.");
-                                                if (tableFragments.length == 3) {
-                                                    tables.add(table);
-                                                } else if (tableFragments.length == 2) {
-                                                    tables.add(
-                                                            getDatabaseAndTable(database, table));
-                                                } else {
-                                                    throw new IllegalArgumentException(
-                                                            "Illegal postgres table-name: "
-                                                                    + table);
-                                                }
-                                            });
-                        });
+            .getDatabases()
+            .forEach(
+                database -> {
+                    dataSourceOption
+                        .getTables()
+                        .forEach(
+                            table -> {
+                                final String[] tableFragments = table.split("\\.");
+                                if (tableFragments.length == three) {
+                                    tables.add(table);
+                                } else if (tableFragments.length == two) {
+                                    tables.add(
+                                        getDatabaseAndTable(database, table));
+                                } else {
+                                    throw new IllegalArgumentException(
+                                        "Illegal postgres table-name: "
+                                            + table);
+                                }
+                            });
+                });
         return tables;
     }
 

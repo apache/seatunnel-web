@@ -27,34 +27,33 @@ import java.util.List;
 @Component
 public class SeatunnelPermissionServiceImpl implements ISeatunnelPermissonService {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(SeatunnelPermissionServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SeatunnelPermissionServiceImpl.class);
 
     @Autowired private AvailableResourceRangeService availableResourceRangeService;
 
     @Override
     public void funcPermissionCheck(String permissionKey, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        logger.warn("func permission check in whaletunnel");
+        LOGGER.warn("func permission check in whaletunnel");
     }
 
     @Override
     public void funcAndResourcePermissionCheck(
             String permissionKey, String sourceType, List<Object> sourceCodes, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        logger.warn("func and resource permission check in whaletunnel");
+        LOGGER.warn("func and resource permission check in whaletunnel");
     }
 
     @Override
     public void resourcePostHandle(String sourceType, List<Object> sourceCodes, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        logger.warn("resource post handle in whaletunnel");
+        LOGGER.warn("resource post handle in whaletunnel");
     }
 
     @Override
     public List<Object> availableResourceRange(String sourceType, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        logger.warn("query available resource range in whaletunnel");
+        LOGGER.warn("query available resource range in whaletunnel");
         return availableResourceRangeService.queryAvailableResourceRangeBySourceType(
                 sourceType, userId);
     }

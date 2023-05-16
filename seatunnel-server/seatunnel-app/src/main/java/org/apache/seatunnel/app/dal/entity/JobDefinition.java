@@ -38,9 +38,11 @@ public class JobDefinition {
     @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
-    @TableField private String name;
+    @TableField
+    private String name;
 
-    @TableField private String description;
+    @TableField
+    private String description;
 
     /** {@link BusinessMode} string values */
     @TableField("job_type")
