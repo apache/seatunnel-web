@@ -32,8 +32,7 @@ import java.util.List;
 @Repository
 public class JobTaskDaoImpl implements IJobTaskDao {
 
-    @Resource
-    private JobTaskMapper jobTaskMapper;
+    @Resource private JobTaskMapper jobTaskMapper;
 
     @Override
     public List<JobTask> getTasksByVersionId(long jobVersionId) {

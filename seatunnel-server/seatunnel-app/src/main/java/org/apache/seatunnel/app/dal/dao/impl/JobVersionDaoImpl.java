@@ -34,8 +34,7 @@ import java.util.Map;
 @Repository
 public class JobVersionDaoImpl implements IJobVersionDao {
 
-    @Resource
-    private JobVersionMapper jobVersionMapper;
+    @Resource private JobVersionMapper jobVersionMapper;
 
     @Override
     public void createVersion(JobVersion jobVersion) {

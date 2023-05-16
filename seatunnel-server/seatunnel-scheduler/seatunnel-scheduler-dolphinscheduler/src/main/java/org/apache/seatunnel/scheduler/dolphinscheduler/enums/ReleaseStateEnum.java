@@ -17,8 +17,8 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.enums;
 
+import org.apache.seatunnel.server.common.SeaTunnelException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
-import org.apache.seatunnel.server.common.SeatunnelException;
 
 public enum ReleaseStateEnum {
     ONLINE(true),
@@ -37,7 +37,7 @@ public enum ReleaseStateEnum {
                 return value;
             }
         }
-        throw new SeatunnelException(SeatunnelErrorEnum.NO_SUCH_ELEMENT);
+        throw new SeaTunnelException(SeatunnelErrorEnum.NO_SUCH_ELEMENT);
     }
 
     public boolean isPublish() {

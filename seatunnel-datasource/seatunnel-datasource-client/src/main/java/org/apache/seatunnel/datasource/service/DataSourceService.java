@@ -59,7 +59,7 @@ public interface DataSourceService {
     /**
      * we can use this method to check data source connectivity
      *
-     * @param  pluginName source params
+     * @param pluginName source params
      * @return check result
      */
     Boolean checkDataSourceConnectivity(String pluginName, Map<String, String> datasourceParams);

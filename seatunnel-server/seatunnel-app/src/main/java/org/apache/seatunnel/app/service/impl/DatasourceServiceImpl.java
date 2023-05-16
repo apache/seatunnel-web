@@ -55,16 +55,18 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import javax.annotation.Resource;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
-        implements IDatasourceService, ApplicationContextAware {
+public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl implements IDatasourceService {
 
     private static final String VIRTUAL_TABLE_DATABASE_NAME = "default";
 

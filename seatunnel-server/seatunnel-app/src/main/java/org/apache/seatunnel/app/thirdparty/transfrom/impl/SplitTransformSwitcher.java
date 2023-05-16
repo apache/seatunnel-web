@@ -17,9 +17,7 @@
 
 package org.apache.seatunnel.app.thirdparty.transfrom.impl;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
-
+import com.google.auto.service.AutoService;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.job.TableSchemaReq;
 import org.apache.seatunnel.app.domain.request.job.transform.Split;

@@ -213,7 +213,7 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                                 .getJobType()
                                 .toUpperCase());
 
-        // 1、通过dataSourceInstanceId query dataSourceName,
+        // 1.dataSourceInstanceId query dataSourceName,
         String dataSourceName =
                 datasourceService
                         .queryDatasourceDetailById(dataSourceInstanceId.toString())
@@ -276,11 +276,10 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                                                     dataSourceMapperConfig.supportedBusinessMode(
                                                             datasourceName, pluginType);
                                             if ((businessMode == null
-                                                            || (businessModes.isPresent()
+                                                            || businessModes.isPresent()
                                                                     && businessModes
                                                                             .get()
-                                                                            .contains(
-                                                                                    businessMode)))
+                                                                            .contains(businessMode))
                                                     && (sceneMode == null
                                                             || (sceneModes.isPresent()
                                                                     && sceneModes

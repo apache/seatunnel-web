@@ -33,7 +33,7 @@ public interface IDatasourceService {
      * create datasource
      *
      * @param userId userid
-     * @param datasourceName  is required //todo datasourceName global is required
+     * @param datasourceName is required //todo datasourceName global is required
      * @param pluginName is required
      * @param pluginVersion is required
      * @param description is optional
@@ -155,7 +155,9 @@ public interface IDatasourceService {
     List<DatasourceDetailRes> queryDatasourceDetailListByDatasourceIds(List<String> datasourceIds);
 
     /**
-     * Note: This interface is only used for exporting data, please evaluate it in advance for other scenarios!!! Querying all data source instances is limited to exporting data for use, please evaluate in advance for other scenarios!!!
+     * Note: This interface is only used for exporting data, please evaluate it in advance for other
+     * scenarios!!! Querying all data source instances is limited to exporting data for use, please
+     * evaluate in advance for other scenarios!!!
      *
      * @return all datasource instance
      */

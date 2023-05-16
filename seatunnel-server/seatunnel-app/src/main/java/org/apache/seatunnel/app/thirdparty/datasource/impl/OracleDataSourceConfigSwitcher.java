@@ -19,6 +19,8 @@ package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 
+import org.apache.seatunnel.common.utils.SeaTunnelException;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

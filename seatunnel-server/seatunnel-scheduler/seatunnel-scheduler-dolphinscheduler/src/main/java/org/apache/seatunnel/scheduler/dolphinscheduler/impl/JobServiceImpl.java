@@ -27,8 +27,8 @@ import org.apache.seatunnel.scheduler.dolphinscheduler.dto.UpdateProcessDefiniti
 import org.apache.seatunnel.scheduler.dolphinscheduler.enums.ReleaseStateEnum;
 import org.apache.seatunnel.server.common.DateUtils;
 import org.apache.seatunnel.server.common.PageData;
+import org.apache.seatunnel.server.common.SeaTunnelException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
-import org.apache.seatunnel.server.common.SeatunnelException;
 import org.apache.seatunnel.spi.scheduler.IInstanceService;
 import org.apache.seatunnel.spi.scheduler.IJobService;
 import org.apache.seatunnel.spi.scheduler.dto.ComplementDataDto;
@@ -222,7 +222,7 @@ public class JobServiceImpl implements IJobService {
                     Thread.sleep(waitingSleepTime);
                 } catch (InterruptedException e) {
                     log.error("waiting for getting instance failed", e);
-                    throw new SeatunnelException(SeatunnelErrorEnum.GET_INSTANCE_FAILED);
+                    throw new SeaTunnelException(SeatunnelErrorEnum.GET_INSTANCE_FAILED);
                 }
             }
 

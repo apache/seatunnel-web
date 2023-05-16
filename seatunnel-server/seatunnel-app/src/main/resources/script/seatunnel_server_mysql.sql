@@ -412,3 +412,104 @@ CREATE TABLE IF NOT EXISTS `seatunnel`.`t_st_virtual_table`
     `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     primary key (`id`)
     )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+
+-- ----------------------------
+-- Table structure for t_st_job_definition
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_st_job_definition` (
+    `id` bigint(20) NOT NULL,
+    `name` varchar(50) NOT NULL,
+    `description` varchar(255) ,
+    `job_type` varchar(50),
+    `create_user_id` int(11) NOT NULL,
+    `update_user_id` int(11) NOT NULL,
+    `project_code` bigint(20) NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`),
+    key job_definition_index (project_code)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+
+-- ----------------------------
+-- Records of t_st_datasource
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_st_datasource`
+(
+    id                bigint                      NOT NULL,
+    datasource_name   varchar(63)                 NOT NULL,
+    plugin_name       varchar(63)                 NOT NULL,
+    plugin_version    varchar(63) default '1.0.0' NULL,
+    datasource_config varchar(1023)               NOT NULL,
+    description       varchar(63)                 NULL,
+    create_user_id    int                         NOT NULL,
+    update_user_id    int                         NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    unique key t_st_datasource_datasource_name_uindex (datasource_name),
+    primary key (`id`)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+
+-- ----------------------------
+-- Table structure for t_st_job_task
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_st_job_task` (
+    `id` bigint(20) NOT NULL,
+    `version_id` bigint(20) NOT NULL,
+    `plugin_id` varchar(50) NOT NULL,
+    `name` varchar(50) NOT NULL,
+    `config` text,
+    `transform_options` varchar(5000),
+    `output_schema` text,
+    `connector_type` varchar(50) NOT NULL,
+    `datasource_id` bigint(20),
+    `datasource_option` varchar(5000),
+    `select_table_fields` varchar(5000),
+    `scene_mode` varchar(50),
+    `type` varchar(50) NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`),
+    key job_task_plugin_id_index (plugin_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+
+-- ----------------------------
+-- Table structure for t_st_job_version
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `t_st_job_version` (
+    `id` bigint(20) NOT NULL,
+    `job_id` bigint(20) NOT NULL,
+    `name` varchar(255) NOT NULL,
+    `job_mode` varchar(10) NOT NULL,
+    `env` text,
+    `engine_name` varchar(50) NOT NULL,
+    `engine_version` varchar(50) NOT NULL,
+    `create_user_id` int(11) NOT NULL,
+    `update_user_id` int(11) NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+-- ----------------------------
+-- Records of t_st_virtual_table
+-- ----------------------------
+
+CREATE TABLE IF NOT EXISTS `t_st_virtual_table`
+(
+    id                    bigint        NOT NULL,
+    datasource_id         bigint        NOT NULL,
+    virtual_database_name varchar(63)   NOT NULL,
+    virtual_table_name    varchar(63)   NOT NULL,
+    table_fields          varchar(1023) NOT NULL,
+    virtual_table_config  varchar(1023) NOT NULL,
+    description           varchar(63)   NULL,
+    create_user_id        int           NOT NULL,
+    update_user_id        int           NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    primary key (`id`)
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;

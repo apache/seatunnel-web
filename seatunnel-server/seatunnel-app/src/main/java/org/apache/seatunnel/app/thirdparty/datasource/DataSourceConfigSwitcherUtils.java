@@ -19,7 +19,7 @@ package org.apache.seatunnel.app.thirdparty.datasource;
 
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
@@ -49,9 +49,9 @@ import org.apache.seatunnel.app.thirdpart.datasource.impl.TidbDataSourceConfigSw
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-
 import java.util.ArrayList;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DataSourceConfigSwitcherUtils {
 

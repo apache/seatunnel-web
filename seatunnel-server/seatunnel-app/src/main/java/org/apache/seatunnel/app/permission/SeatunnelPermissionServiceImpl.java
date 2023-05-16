@@ -27,7 +27,8 @@ import java.util.List;
 @Component
 public class SeatunnelPermissionServiceImpl implements ISeatunnelPermissonService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeatunnelPermissionServiceImpl.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(SeatunnelPermissionServiceImpl.class);
 
     @Autowired private AvailableResourceRangeService availableResourceRangeService;
 

@@ -79,15 +79,15 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_CREATE, userId);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         jobDefinitionDao.add(
-            JobDefinition.builder()
-                .id(uuid)
-                .name(jobReq.getName())
-                .description(jobReq.getDescription())
-                .createUserId(userId)
-                .updateUserId(userId)
-                .jobType(jobReq.getJobType().name())
-                .projectCode(jobReq.getProjectCode())
-                .build());
+                JobDefinition.builder()
+                        .id(uuid)
+                        .name(jobReq.getName())
+                        .description(jobReq.getDescription())
+                        .createUserId(userId)
+                        .updateUserId(userId)
+                        .jobType(jobReq.getJobType().name())
+                        .projectCode(jobReq.getProjectCode())
+                        .build());
         jobVersionDao.createVersion(
             JobVersion.builder()
                 .jobId(uuid)
@@ -104,17 +104,17 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, List<Long> projectCodes) {
+        String name, Integer pageNo, Integer pageSize, List<Long> projectCodes) {
         return getJob(name, pageNo, pageSize, projectCodes, null);
     }
 
     @Override
     public PageInfo<JobDefinitionRes> getJob(
-            String searchName,
-            Integer pageNo,
-            Integer pageSize,
-            List<Long> projectCodes,
-            String jobMode) {
+        String searchName,
+        Integer pageNo,
+        Integer pageSize,
+        List<Long> projectCodes,
+        String jobMode) {
         if (CollectionUtils.isEmpty(projectCodes)) {
             return new PageInfo<>();
         }

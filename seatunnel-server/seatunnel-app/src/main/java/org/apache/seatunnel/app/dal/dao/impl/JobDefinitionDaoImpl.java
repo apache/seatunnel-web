@@ -37,8 +37,7 @@ import java.util.List;
 @Repository
 public class JobDefinitionDaoImpl implements IJobDefinitionDao {
 
-    @Resource
-    private JobMapper jobMapper;
+    @Resource private JobMapper jobMapper;
 
     @Override
     public void add(JobDefinition job) {
@@ -57,20 +56,20 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
 
     @Override
     public PageInfo<JobDefinition> getJob(
-        String searchName,
-        Integer pageNo,
-        Integer pageSize,
-        List<Long> projectCodes,
-        String jobMode) {
+            String searchName,
+            Integer pageNo,
+            Integer pageSize,
+            List<Long> projectCodes,
+            String jobMode) {
         IPage<JobDefinition> jobDefinitionIPage;
         if (StringUtils.isEmpty(jobMode)) {
             jobDefinitionIPage =
-                jobMapper.queryJobListPaging(
-                    new Page<>(pageNo, pageSize), searchName, projectCodes);
+                    jobMapper.queryJobListPaging(
+                            new Page<>(pageNo, pageSize), searchName, projectCodes);
         } else {
             jobDefinitionIPage =
-                jobMapper.queryJobListPagingWithJobMode(
-                    new Page<>(pageNo, pageSize), searchName, projectCodes, jobMode);
+                    jobMapper.queryJobListPagingWithJobMode(
+                            new Page<>(pageNo, pageSize), searchName, projectCodes, jobMode);
         }
         PageInfo<JobDefinition> jobs = new PageInfo<>();
         jobs.setData(jobDefinitionIPage.getRecords());
@@ -87,8 +86,8 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
 
     public void delete(long id, long projectCode) {
         jobMapper.delete(
-            Wrappers.lambdaQuery(new JobDefinition())
-                .eq(JobDefinition::getProjectCode, projectCode)
-                .and(i -> i.eq(JobDefinition::getId, id)));
+                Wrappers.lambdaQuery(new JobDefinition())
+                        .eq(JobDefinition::getProjectCode, projectCode)
+                        .and(i -> i.eq(JobDefinition::getId, id)));
     }
 }

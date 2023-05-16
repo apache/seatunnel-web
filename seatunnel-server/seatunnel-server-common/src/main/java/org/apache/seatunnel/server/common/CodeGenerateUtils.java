@@ -21,9 +21,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
 
-/**
- * Rewriting based on Twitter snowflake algorithm
- */
+/** Rewriting based on Twitter snowflake algorithm */
 public class CodeGenerateUtils {
 
     // start timestamp
@@ -42,10 +40,12 @@ public class CodeGenerateUtils {
     private static final long SYSTEM_TIMESTAMP = System.currentTimeMillis();
     private static final long SYSTEM_NANOTIME = System.nanoTime();
     private static final int I = 1000000;
+
     private CodeGenerateUtils() throws CodeGenerateException {
         try {
             this.machineHash =
-                Math.abs(Objects.hash(InetAddress.getLocalHost().getHostName())) % (2 << (MIDDLE_BIT - 1));
+                    Math.abs(Objects.hash(InetAddress.getLocalHost().getHostName()))
+                            % (2 << (MIDDLE_BIT - 1));
         } catch (UnknownHostException e) {
             throw new CodeGenerateException(e.getMessage());
         }
@@ -76,7 +76,9 @@ public class CodeGenerateUtils {
             lowDigit = 0L;
         }
         recordMillisecond = nowtMillisecond;
-        return (nowtMillisecond - START_TIMESTAMP) << HIGH_DIGIT_LEFT | machineHash << MIDDLE_LEFT | lowDigit;
+        return (nowtMillisecond - START_TIMESTAMP) << HIGH_DIGIT_LEFT
+                | machineHash << MIDDLE_LEFT
+                | lowDigit;
     }
 
     private long systemMillisecond() {
