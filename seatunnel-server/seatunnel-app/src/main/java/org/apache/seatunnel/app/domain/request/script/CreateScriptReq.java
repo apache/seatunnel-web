@@ -28,12 +28,17 @@ import javax.validation.constraints.NotNull;
 public class CreateScriptReq {
     @ApiModelProperty(value = "script name", required = true, dataType = "String")
     private String name;
+
     @ApiModelProperty(value = "script type", required = true, dataType = "Byte")
-    @NotNull
-    private Byte type;
-    @ApiModelProperty(value = "script creator id", required = true, dataType = "Integer", hidden = true)
-    @NotNull
-    private Integer creatorId;
+    @NotNull private Byte type;
+
+    @ApiModelProperty(
+            value = "script creator id",
+            required = true,
+            dataType = "Integer",
+            hidden = true)
+    @NotNull private Integer creatorId;
+
     @ApiModelProperty(value = "script content", required = true, dataType = "String")
     private String content;
 }

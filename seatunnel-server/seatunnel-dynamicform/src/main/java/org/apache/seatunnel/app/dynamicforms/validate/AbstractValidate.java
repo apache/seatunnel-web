@@ -17,9 +17,9 @@
 
 package org.apache.seatunnel.app.dynamicforms.validate;
 
-import org.apache.seatunnel.app.dynamicforms.FormLocale;
-
 import org.apache.seatunnel.shade.com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.apache.seatunnel.app.dynamicforms.FormLocale;
 
 import lombok.Data;
 import lombok.Getter;
@@ -45,8 +45,7 @@ public class AbstractValidate<T extends AbstractValidate> {
         @JsonProperty("mutually-exclusive")
         MUTUALLY_EXCLUSIVE("mutually-exclusive");
 
-        @Getter
-        private String type;
+        @Getter private String type;
 
         RequiredType(String type) {
             this.type = type;

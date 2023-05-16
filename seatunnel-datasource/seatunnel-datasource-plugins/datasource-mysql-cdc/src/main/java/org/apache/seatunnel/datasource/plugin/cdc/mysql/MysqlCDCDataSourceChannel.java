@@ -22,9 +22,10 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.Sets;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -42,7 +43,7 @@ import java.util.Set;
 public class MysqlCDCDataSourceChannel implements DataSourceChannel {
 
     public static final Set<String> MYSQL_SYSTEM_DATABASES =
-        Sets.newHashSet("information_schema", "mysql", "performance_schema", "sys");
+            Sets.newHashSet("information_schema", "mysql", "performance_schema", "sys");
 
     @Override
     public boolean canAbleGetSchema() {
@@ -61,7 +62,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        String pluginName, Map<String, String> requestParams, String database) {
+            String pluginName, Map<String, String> requestParams, String database) {
         return this.getTableNames(requestParams, database);
     }
 
@@ -76,22 +77,22 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
 
     @Override
     public boolean checkDataSourceConnectivity(
-        String pluginName, Map<String, String> requestParams) {
+            String pluginName, Map<String, String> requestParams) {
         return this.checkJdbcConnectivity(requestParams);
     }
 
     @Override
     public List<TableField> getTableFields(
-        String pluginName, Map<String, String> requestParams, String database, String table) {
+            String pluginName, Map<String, String> requestParams, String database, String table) {
         return getTableFields(requestParams, database, table);
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        String pluginName,
-        Map<String, String> requestParams,
-        String database,
-        List<String> tables) {
+            String pluginName,
+            Map<String, String> requestParams,
+            String database,
+            List<String> tables) {
         Map<String, List<TableField>> tableFields = new HashMap<>(tables.size());
         for (String table : tables) {
             tableFields.put(table, getTableFields(requestParams, database, table));
@@ -102,9 +103,9 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
     @SuppressWarnings("checkstyle:MagicNumber")
     protected boolean checkJdbcConnectivity(Map<String, String> requestParams) {
         try (Connection connection = init(requestParams);
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
 
-            try (ResultSet resultSet = statement.executeQuery("SHOW MASTER STATUS");) {
+            try (ResultSet resultSet = statement.executeQuery("SHOW MASTER STATUS"); ) {
                 if (resultSet.next()) {
                     String binlogFile = resultSet.getString("File");
                     if (StringUtils.isBlank(binlogFile)) {
@@ -116,7 +117,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
             }
 
             try (ResultSet resultSet =
-                     statement.executeQuery("SHOW VARIABLES LIKE 'binlog_format'")) {
+                    statement.executeQuery("SHOW VARIABLES LIKE 'binlog_format'")) {
                 if (resultSet.next()) {
                     String binlogFormat = resultSet.getString("Value");
                     if (!"ROW".equalsIgnoreCase(binlogFormat)) {
@@ -128,7 +129,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
             }
 
             try (ResultSet resultSet =
-                     statement.executeQuery("SHOW VARIABLES LIKE 'binlog_row_image'")) {
+                    statement.executeQuery("SHOW VARIABLES LIKE 'binlog_row_image'")) {
                 if (resultSet.next()) {
                     String binlogRowImage = resultSet.getString("Value");
                     if (!"FULL".equalsIgnoreCase(binlogRowImage)) {
@@ -141,7 +142,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
             return true;
         } catch (Exception e) {
             throw new DataSourcePluginException(
-                "check jdbc connectivity failed, " + e.getMessage(), e);
+                    "check jdbc connectivity failed, " + e.getMessage(), e);
         }
     }
 
@@ -151,7 +152,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
         }
         String url = requestParams.get(MysqlCDCOptionRule.BASE_URL.key());
         if (null != requestParams.get(MysqlCDCOptionRule.PASSWORD.key())
-            && null != requestParams.get(MysqlCDCOptionRule.USERNAME.key())) {
+                && null != requestParams.get(MysqlCDCOptionRule.USERNAME.key())) {
             String username = requestParams.get(MysqlCDCOptionRule.USERNAME.key());
             String password = requestParams.get(MysqlCDCOptionRule.PASSWORD.key());
             return DriverManager.getConnection(url, username, password);
@@ -162,8 +163,8 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
     protected List<String> getDataBaseNames(Map<String, String> requestParams) throws SQLException {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
-             PreparedStatement statement = connection.prepareStatement("SHOW DATABASES;");
-             ResultSet re = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement("SHOW DATABASES;");
+                ResultSet re = statement.executeQuery()) {
             // filter system databases
             while (re.next()) {
                 String dbName = re.getString("database");
@@ -178,10 +179,10 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
     protected List<String> getTableNames(Map<String, String> requestParams, String dbName) {
         List<String> tableNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
-             ResultSet resultSet =
-                 connection
-                     .getMetaData()
-                     .getTables(dbName, null, null, new String[]{"TABLE"})) {
+                ResultSet resultSet =
+                        connection
+                                .getMetaData()
+                                .getTables(dbName, null, null, new String[] {"TABLE"})) {
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -195,9 +196,9 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
     }
 
     protected List<TableField> getTableFields(
-        Map<String, String> requestParams, String dbName, String tableName) {
+            Map<String, String> requestParams, String dbName, String tableName) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = init(requestParams);) {
+        try (Connection connection = init(requestParams); ) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, tableName);
             ResultSet resultSet = metaData.getColumns(dbName, null, tableName, null);
@@ -223,7 +224,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
     }
 
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
-        throws SQLException {
+            throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
         while (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
@@ -233,8 +234,8 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
 
     private boolean isNotSystemDatabase(String dbName) {
         return MYSQL_SYSTEM_DATABASES.stream()
-            .noneMatch(
-                systemDatabase -> StringUtils.equalsAnyIgnoreCase(systemDatabase, dbName));
+                .noneMatch(
+                        systemDatabase -> StringUtils.equalsAnyIgnoreCase(systemDatabase, dbName));
     }
 
     private boolean convertToBoolean(Object value) {

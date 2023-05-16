@@ -26,12 +26,10 @@ import java.util.List;
 
 public class StaticSelectOption extends AbstractFormSelectOption {
 
-    @Getter
-    @Setter
-    private List<SelectOption> options = new ArrayList<>();
+    @Getter @Setter private List<SelectOption> options = new ArrayList<>();
 
     public StaticSelectOption(
-        @NonNull List<SelectOption> options, @NonNull String label, @NonNull String field) {
+            @NonNull List<SelectOption> options, @NonNull String label, @NonNull String field) {
         super(label, field);
         this.options = options;
     }

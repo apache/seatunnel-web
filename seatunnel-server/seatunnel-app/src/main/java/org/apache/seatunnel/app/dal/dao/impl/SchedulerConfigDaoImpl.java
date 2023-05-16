@@ -29,8 +29,7 @@ import java.util.Objects;
 
 @Repository
 public class SchedulerConfigDaoImpl implements ISchedulerConfigDao {
-    @Resource
-    private SchedulerConfigMapper schedulerConfigMapper;
+    @Resource private SchedulerConfigMapper schedulerConfigMapper;
 
     @Override
     public boolean exists(int scriptId) {

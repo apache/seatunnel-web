@@ -22,7 +22,7 @@ public enum UserStatusEnum {
     DISABLE(1, "disable"),
     ;
     private final int code;
-    private final String  description;
+    private final String description;
 
     UserStatusEnum(int code, String description) {
         this.code = code;

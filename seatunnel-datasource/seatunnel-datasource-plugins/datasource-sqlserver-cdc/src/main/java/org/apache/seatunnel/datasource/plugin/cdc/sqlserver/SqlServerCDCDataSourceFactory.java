@@ -37,7 +37,7 @@ public class SqlServerCDCDataSourceFactory implements DataSourceFactory {
     @Override
     public Set<DataSourcePluginInfo> supportedDataSources() {
         return Collections.singleton(
-            SqlServerCDCDataSourceConfig.SQLSERVER_CDC_DATASOURCE_PLUGIN_INFO);
+                SqlServerCDCDataSourceConfig.SQLSERVER_CDC_DATASOURCE_PLUGIN_INFO);
     }
 
     @Override

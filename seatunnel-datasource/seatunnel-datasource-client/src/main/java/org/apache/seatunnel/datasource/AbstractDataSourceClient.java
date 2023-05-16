@@ -17,8 +17,6 @@
 
 package org.apache.seatunnel.datasource;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.exception.DataSourceSDKException;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
@@ -34,6 +32,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public abstract class AbstractDataSourceClient implements DataSourceService {
 
     private Map<String, DataSourcePluginInfo> supportedDataSourceInfo = new HashMap<>();
@@ -47,23 +47,23 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
     protected AbstractDataSourceClient() {
         AtomicInteger dataSourceIndex = new AtomicInteger();
         ServiceLoader.load(DataSourceFactory.class)
-            .forEach(
-                seaTunnelDataSourceFactory -> {
-                    seaTunnelDataSourceFactory
-                        .supportedDataSources()
-                        .forEach(
-                            dataSourceInfo -> {
-                                supportedDataSourceInfo.put(
-                                    dataSourceInfo.getName().toUpperCase(),
-                                    dataSourceInfo);
-                                supportedDataSourceIndex.put(
-                                    dataSourceInfo.getName().toUpperCase(),
-                                    dataSourceIndex.get());
-                                supportedDataSources.add(dataSourceInfo);
-                            });
-                    dataSourceChannels.add(seaTunnelDataSourceFactory.createChannel());
-                    dataSourceIndex.getAndIncrement();
-                });
+                .forEach(
+                        seaTunnelDataSourceFactory -> {
+                            seaTunnelDataSourceFactory
+                                    .supportedDataSources()
+                                    .forEach(
+                                            dataSourceInfo -> {
+                                                supportedDataSourceInfo.put(
+                                                        dataSourceInfo.getName().toUpperCase(),
+                                                        dataSourceInfo);
+                                                supportedDataSourceIndex.put(
+                                                        dataSourceInfo.getName().toUpperCase(),
+                                                        dataSourceIndex.get());
+                                                supportedDataSources.add(dataSourceInfo);
+                                            });
+                            dataSourceChannels.add(seaTunnelDataSourceFactory.createChannel());
+                            dataSourceIndex.getAndIncrement();
+                        });
         if (supportedDataSourceInfo.isEmpty()) {
             throw new DataSourceSDKException("No supported data source found");
         }
@@ -71,9 +71,9 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
 
     @Override
     public Boolean checkDataSourceConnectivity(
-        String pluginName, Map<String, String> dataSourceParams) {
+            String pluginName, Map<String, String> dataSourceParams) {
         return getDataSourceChannel(pluginName)
-            .checkDataSourceConnectivity(pluginName, dataSourceParams);
+                .checkDataSourceConnectivity(pluginName, dataSourceParams);
     }
 
     @Override
@@ -86,7 +86,7 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
         Integer index = supportedDataSourceIndex.get(pluginName.toUpperCase());
         if (index == null) {
             throw new DataSourceSDKException(
-                "The %s plugin is not supported or plugin not exist.", pluginName);
+                    "The %s plugin is not supported or plugin not exist.", pluginName);
         }
         return dataSourceChannels.get(index);
     }
@@ -99,12 +99,12 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
     @Override
     public OptionRule queryMetadataFieldByName(String pluginName) {
         return getDataSourceChannel(pluginName)
-            .getDatasourceMetadataFieldsByDataSourceName(pluginName);
+                .getDatasourceMetadataFieldsByDataSourceName(pluginName);
     }
 
     @Override
     public List<String> getTables(
-        String pluginName, String databaseName, Map<String, String> requestParams) {
+            String pluginName, String databaseName, Map<String, String> requestParams) {
         return getDataSourceChannel(pluginName).getTables(pluginName, requestParams, databaseName);
     }
 
@@ -115,21 +115,21 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
 
     @Override
     public List<TableField> getTableFields(
-        String pluginName,
-        Map<String, String> requestParams,
-        String databaseName,
-        String tableName) {
+            String pluginName,
+            Map<String, String> requestParams,
+            String databaseName,
+            String tableName) {
         return getDataSourceChannel(pluginName)
-            .getTableFields(pluginName, requestParams, databaseName, tableName);
+                .getTableFields(pluginName, requestParams, databaseName, tableName);
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        String pluginName,
-        Map<String, String> requestParams,
-        String databaseName,
-        List<String> tableNames) {
+            String pluginName,
+            Map<String, String> requestParams,
+            String databaseName,
+            List<String> tableNames) {
         return getDataSourceChannel(pluginName)
-            .getTableFields(pluginName, requestParams, databaseName, tableNames);
+                .getTableFields(pluginName, requestParams, databaseName, tableNames);
     }
 }

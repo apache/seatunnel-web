@@ -43,7 +43,8 @@ public interface IDolphinschedulerService {
 
     void startProcessDefinition(StartProcessDefinitionDto dto);
 
-    void updateProcessDefinitionState(long processDefinitionCode, String processDefinitionName, String state);
+    void updateProcessDefinitionState(
+            long processDefinitionCode, String processDefinitionName, String state);
 
     SchedulerDto createOrUpdateSchedule(JobDto dto);
 

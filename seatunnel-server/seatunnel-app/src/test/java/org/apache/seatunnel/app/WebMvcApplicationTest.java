@@ -27,10 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class WebMvcApplicationTest {
 
-    @LocalServerPort
-    protected int port;
+    @LocalServerPort protected int port;
 
-    @Autowired
-    protected MockMvc mockMvc;
-
+    @Autowired protected MockMvc mockMvc;
 }

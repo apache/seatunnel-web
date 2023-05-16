@@ -13,15 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>seatunnel-server</artifactId>
         <groupId>org.apache.seatunnel</groupId>
+        <artifactId>seatunnel-server</artifactId>
         <version>${revision}</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>seatunnel-app</artifactId>
 
@@ -83,8 +82,8 @@
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>log4j-to-slf4j</artifactId>
                     <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -125,16 +124,16 @@
             <version>${springfox-swagger.version}</version>
             <exclusions>
                 <exclusion>
+                    <groupId>org.springframework</groupId>
                     <artifactId>spring-aop</artifactId>
-                    <groupId>org.springframework</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.springframework</groupId>
                     <artifactId>spring-beans</artifactId>
-                    <groupId>org.springframework</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>spring-context</artifactId>
                     <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -158,8 +157,8 @@
             <artifactId>hibernate-validator</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>classmate</artifactId>
                     <groupId>com.fasterxml</groupId>
+                    <artifactId>classmate</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -188,8 +187,8 @@
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -200,8 +199,8 @@
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>slf4j-log4j12</artifactId>
                     <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

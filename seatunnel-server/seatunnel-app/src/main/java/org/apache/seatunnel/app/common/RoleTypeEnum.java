@@ -23,7 +23,7 @@ public enum RoleTypeEnum {
     ;
 
     private final int code;
-    private final String  description;
+    private final String description;
 
     RoleTypeEnum(int code, String description) {
         this.code = code;

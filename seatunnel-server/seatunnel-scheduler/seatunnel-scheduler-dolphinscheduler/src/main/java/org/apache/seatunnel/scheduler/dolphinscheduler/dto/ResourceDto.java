@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"pid"})
+@JsonIgnoreProperties(
+        ignoreUnknown = true,
+        value = {"pid"})
 public class ResourceDto {
     private int id;
     private int pid;

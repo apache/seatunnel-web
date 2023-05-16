@@ -22,10 +22,11 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-import lombok.NonNull;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,46 +45,46 @@ public class S3DatasourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         throw new UnsupportedOperationException("getTables is not supported for S3 datasource");
     }
 
     @Override
     public List<String> getDatabases(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         throw new UnsupportedOperationException("getDatabases is not supported for S3 datasource");
     }
 
     @Override
     public boolean checkDataSourceConnectivity(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         Configuration conf = HadoopS3AConfiguration.getConfiguration(requestParams);
         try (FileSystem fs = FileSystem.get(conf)) {
             fs.listStatus(new Path("/"));
             return true;
         } catch (IOException e) {
             throw new DataSourcePluginException(
-                String.format("check s3 connectivity failed, config is: %s", requestParams), e);
+                    String.format("check s3 connectivity failed, config is: %s", requestParams), e);
         }
     }
 
     @Override
     public List<TableField> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull String table) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull String table) {
         throw new UnsupportedOperationException(
-            "getTableFields is not supported for S3 datasource");
+                "getTableFields is not supported for S3 datasource");
     }
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull List<String> tables) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull List<String> tables) {
         throw new UnsupportedOperationException(
-            "getTableFields is not supported for S3 datasource");
+                "getTableFields is not supported for S3 datasource");
     }
 }

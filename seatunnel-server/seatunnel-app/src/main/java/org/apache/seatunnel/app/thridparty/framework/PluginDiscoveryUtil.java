@@ -49,13 +49,16 @@ import java.util.stream.Collectors;
 public class PluginDiscoveryUtil {
 
     public static List<ConnectorInfo> getAllConnectorsFromPluginMapping(PluginType pluginType) {
-        Map<PluginIdentifier, String> plugins = AbstractPluginDiscovery.getAllSupportedPlugins(pluginType);
+        Map<PluginIdentifier, String> plugins =
+                AbstractPluginDiscovery.getAllSupportedPlugins(pluginType);
         List<ConnectorInfo> connectorInfos = new ArrayList<>();
-        plugins.forEach((plugin, artifactId) -> connectorInfos.add(new ConnectorInfo(plugin, artifactId)));
+        plugins.forEach(
+                (plugin, artifactId) -> connectorInfos.add(new ConnectorInfo(plugin, artifactId)));
         return connectorInfos;
     }
 
-    public static Map<PluginIdentifier, ConnectorFeature> getConnectorFeatures(PluginType pluginType) throws IOException {
+    public static Map<PluginIdentifier, ConnectorFeature> getConnectorFeatures(
+            PluginType pluginType) throws IOException {
         Common.setStarter(true);
         if (!pluginType.equals(PluginType.SOURCE)) {
             throw new UnsupportedOperationException("ONLY support plugin type source");
@@ -64,57 +67,88 @@ public class PluginDiscoveryUtil {
         List<Factory> factories;
         if (path.toFile().exists()) {
             List<URL> files = FileUtils.searchJarFiles(path);
-            factories = FactoryUtil.discoverFactories(new URLClassLoader(files.toArray(new URL[0])));
+            factories =
+                    FactoryUtil.discoverFactories(new URLClassLoader(files.toArray(new URL[0])));
         } else {
-            factories = FactoryUtil.discoverFactories(Thread.currentThread().getContextClassLoader());
+            factories =
+                    FactoryUtil.discoverFactories(Thread.currentThread().getContextClassLoader());
         }
         Map<PluginIdentifier, ConnectorFeature> featureMap = new ConcurrentHashMap<>();
-        factories.forEach(plugin -> {
-            if (TableSourceFactory.class.isAssignableFrom(plugin.getClass())) {
-                TableSourceFactory tableSourceFactory = (TableSourceFactory) plugin;
-                PluginIdentifier info = PluginIdentifier.of("seatunnel", PluginType.SOURCE.getType(), plugin.factoryIdentifier());
-                featureMap.put(info, new ConnectorFeature(SupportColumnProjection.class.isAssignableFrom(tableSourceFactory.getSourceClass())));
-            }
-        });
+        factories.forEach(
+                plugin -> {
+                    if (TableSourceFactory.class.isAssignableFrom(plugin.getClass())) {
+                        TableSourceFactory tableSourceFactory = (TableSourceFactory) plugin;
+                        PluginIdentifier info =
+                                PluginIdentifier.of(
+                                        "seatunnel",
+                                        PluginType.SOURCE.getType(),
+                                        plugin.factoryIdentifier());
+                        featureMap.put(
+                                info,
+                                new ConnectorFeature(
+                                        SupportColumnProjection.class.isAssignableFrom(
+                                                tableSourceFactory.getSourceClass())));
+                    }
+                });
         return featureMap;
     }
 
-    public static List<ConnectorInfo> getDownloadedConnectors(@NonNull Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins, @NonNull PluginType pluginType) throws IOException {
-        LinkedHashMap<PluginIdentifier, OptionRule> pluginIdentifierOptionRuleLinkedHashMap = allPlugins.get(pluginType);
+    public static List<ConnectorInfo> getDownloadedConnectors(
+            @NonNull Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins,
+            @NonNull PluginType pluginType)
+            throws IOException {
+        LinkedHashMap<PluginIdentifier, OptionRule> pluginIdentifierOptionRuleLinkedHashMap =
+                allPlugins.get(pluginType);
         if (pluginIdentifierOptionRuleLinkedHashMap == null) {
             return new ArrayList<>();
         }
 
         List<ConnectorInfo> connectorInfos = new ArrayList<>();
-        pluginIdentifierOptionRuleLinkedHashMap.forEach((plugin, optionRule) -> connectorInfos.add(new ConnectorInfo(plugin, null)));
+        pluginIdentifierOptionRuleLinkedHashMap.forEach(
+                (plugin, optionRule) -> connectorInfos.add(new ConnectorInfo(plugin, null)));
         return connectorInfos;
     }
 
-    public static List<ConnectorInfo> getTransforms(@NonNull Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins) throws IOException {
-        LinkedHashMap<PluginIdentifier, OptionRule> pluginIdentifierOptionRuleLinkedHashMap = allPlugins.get(PluginType.TRANSFORM);
+    public static List<ConnectorInfo> getTransforms(
+            @NonNull Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins)
+            throws IOException {
+        LinkedHashMap<PluginIdentifier, OptionRule> pluginIdentifierOptionRuleLinkedHashMap =
+                allPlugins.get(PluginType.TRANSFORM);
         if (pluginIdentifierOptionRuleLinkedHashMap == null) {
             return new ArrayList<>();
         }
-        return pluginIdentifierOptionRuleLinkedHashMap.keySet().stream().map(t -> new ConnectorInfo(t, null)).collect(Collectors.toList());
+        return pluginIdentifierOptionRuleLinkedHashMap.keySet().stream()
+                .map(t -> new ConnectorInfo(t, null))
+                .collect(Collectors.toList());
     }
 
-    public static Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> getAllConnectors() throws IOException {
+    public static Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> getAllConnectors()
+            throws IOException {
         return new SeaTunnelSinkPluginDiscovery().getAllPlugin();
     }
 
-    public static ConcurrentMap<String, FormStructure> getDownloadedConnectorFormStructures(@NonNull Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins, @NonNull PluginType pluginType) {
-        LinkedHashMap<PluginIdentifier, OptionRule> pluginIdentifierOptionRuleLinkedHashMap = allPlugins.get(pluginType);
+    public static ConcurrentMap<String, FormStructure> getDownloadedConnectorFormStructures(
+            @NonNull Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins,
+            @NonNull PluginType pluginType) {
+        LinkedHashMap<PluginIdentifier, OptionRule> pluginIdentifierOptionRuleLinkedHashMap =
+                allPlugins.get(pluginType);
         ConcurrentMap<String, FormStructure> result = new ConcurrentHashMap<>();
         if (pluginIdentifierOptionRuleLinkedHashMap == null) {
             return result;
         }
 
-        pluginIdentifierOptionRuleLinkedHashMap.forEach((key, value) -> result.put(key.getPluginName(), SeaTunnelOptionRuleWrapper.wrapper(value, key.getPluginName(), pluginType)));
+        pluginIdentifierOptionRuleLinkedHashMap.forEach(
+                (key, value) ->
+                        result.put(
+                                key.getPluginName(),
+                                SeaTunnelOptionRuleWrapper.wrapper(
+                                        value, key.getPluginName(), pluginType)));
 
         return result;
     }
 
-    public static ConcurrentMap<String, FormStructure> getTransformFormStructures(Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins) {
+    public static ConcurrentMap<String, FormStructure> getTransformFormStructures(
+            Map<PluginType, LinkedHashMap<PluginIdentifier, OptionRule>> allPlugins) {
         return getDownloadedConnectorFormStructures(allPlugins, PluginType.TRANSFORM);
     }
 }

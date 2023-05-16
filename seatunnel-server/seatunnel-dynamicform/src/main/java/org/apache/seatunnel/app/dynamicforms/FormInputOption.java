@@ -27,11 +27,10 @@ public class FormInputOption extends AbstractFormOption {
     @Getter
     private final FormType formType = FormType.INPUT;
 
-    @Getter
-    private final InputType inputType;
+    @Getter private final InputType inputType;
 
     public FormInputOption(
-        @NonNull InputType inputType, @NonNull String label, @NonNull String field) {
+            @NonNull InputType inputType, @NonNull String label, @NonNull String field) {
         super(label, field);
         this.inputType = inputType;
     }
@@ -46,8 +45,7 @@ public class FormInputOption extends AbstractFormOption {
         @JsonProperty("textarea")
         TEXTAREA("textarea");
 
-        @Getter
-        private String inputType;
+        @Getter private String inputType;
 
         InputType(String inputType) {
             this.inputType = inputType;

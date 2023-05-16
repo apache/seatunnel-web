@@ -30,22 +30,22 @@ public class TidbDataSourceConfig {
     public static final String PLUGIN_NAME = "JDBC-TiDB";
 
     public static final DataSourcePluginInfo TIDB_DATASOURCE_PLUGIN_INFO =
-        DataSourcePluginInfo.builder()
-            .name(PLUGIN_NAME)
-            .icon(PLUGIN_NAME)
-            .version("1.0.0")
-            .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-            .build();
+            DataSourcePluginInfo.builder()
+                    .name(PLUGIN_NAME)
+                    .icon(PLUGIN_NAME)
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .build();
 
     public static final Set<String> TIDB_SYSTEM_DATABASES =
-        Sets.newHashSet("information_schema", "mysql", "performance_schema", "metrics_schema");
+            Sets.newHashSet("information_schema", "mysql", "performance_schema", "metrics_schema");
 
     public static final OptionRule OPTION_RULE =
-        OptionRule.builder()
-            .required(TidbOptionRule.URL, TidbOptionRule.DRIVER)
-            .optional(TidbOptionRule.USER, TidbOptionRule.PASSWORD)
-            .build();
+            OptionRule.builder()
+                    .required(TidbOptionRule.URL, TidbOptionRule.DRIVER)
+                    .optional(TidbOptionRule.USER, TidbOptionRule.PASSWORD)
+                    .build();
 
     public static final OptionRule METADATA_RULE =
-        OptionRule.builder().required(TidbOptionRule.DATABASE, TidbOptionRule.TABLE).build();
+            OptionRule.builder().required(TidbOptionRule.DATABASE, TidbOptionRule.TABLE).build();
 }

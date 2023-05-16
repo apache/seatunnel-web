@@ -17,8 +17,9 @@
 
 package org.apache.seatunnel.app.dynamicforms;
 
-import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,22 +119,22 @@ public class FormOptionBuilder {
         }
 
         public StaticSelectOptionBuilder addSelectOptions(
-            @NonNull List<ImmutablePair> selectOptions) {
+                @NonNull List<ImmutablePair> selectOptions) {
             for (ImmutablePair option : selectOptions) {
                 options.add(
-                    new AbstractFormSelectOption.SelectOption(
-                        option.left.toString(), option.right.toString()));
+                        new AbstractFormSelectOption.SelectOption(
+                                option.left.toString(), option.right.toString()));
             }
             return this;
         }
 
         public StaticSelectOptionBuilder addI18nSelectOptions(
-            @NonNull List<ImmutablePair> selectOptions) {
+                @NonNull List<ImmutablePair> selectOptions) {
             for (ImmutablePair option : selectOptions) {
                 options.add(
-                    new AbstractFormSelectOption.SelectOption(
-                        FormLocale.I18N_PREFIX + option.left.toString(),
-                        option.right.toString()));
+                        new AbstractFormSelectOption.SelectOption(
+                                FormLocale.I18N_PREFIX + option.left.toString(),
+                                option.right.toString()));
             }
             return this;
         }
@@ -141,19 +142,19 @@ public class FormOptionBuilder {
         public StaticSelectOptionBuilder addSelectOptions(@NonNull ImmutablePair... selectOptions) {
             for (ImmutablePair option : selectOptions) {
                 options.add(
-                    new AbstractFormSelectOption.SelectOption(
-                        option.left.toString(), option.right.toString()));
+                        new AbstractFormSelectOption.SelectOption(
+                                option.left.toString(), option.right.toString()));
             }
             return this;
         }
 
         public StaticSelectOptionBuilder addI18nSelectOptions(
-            @NonNull ImmutablePair... selectOptions) {
+                @NonNull ImmutablePair... selectOptions) {
             for (ImmutablePair option : selectOptions) {
                 options.add(
-                    new AbstractFormSelectOption.SelectOption(
-                        FormLocale.I18N_PREFIX + option.left.toString(),
-                        option.right.toString()));
+                        new AbstractFormSelectOption.SelectOption(
+                                FormLocale.I18N_PREFIX + option.left.toString(),
+                                option.right.toString()));
             }
             return this;
         }

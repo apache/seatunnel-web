@@ -17,16 +17,17 @@
 
 package org.apache.seatunnel.datasource.plugin.elasticsearch;
 
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.datasource.plugin.elasticsearch.client.EsRestClient;
 
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,47 +55,47 @@ public class ElasticSearchDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-        @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         databaseCheck(database);
         try (EsRestClient client =
-                 EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
+                EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
             return client.listIndex();
         }
     }
 
     @Override
     public List<String> getDatabases(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         return DEFAULT_DATABASES;
     }
 
     @Override
     public boolean checkDataSourceConnectivity(
-        @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
+            @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         try (EsRestClient client =
-                 EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
+                EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
             client.getClusterInfo();
             return true;
         } catch (Throwable e) {
             throw new DataSourcePluginException(
-                "check ElasticSearch connectivity failed, " + e.getMessage(), e);
+                    "check ElasticSearch connectivity failed, " + e.getMessage(), e);
         }
     }
 
     @Override
     public List<TableField> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull String table) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull String table) {
         databaseCheck(database);
         try (EsRestClient client =
-                 EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
+                EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
             Map<String, String> fieldTypeMapping = client.getFieldTypeMapping(table);
             List<TableField> fields = new ArrayList<>();
             fieldTypeMapping.forEach(
-                (fieldName, fieldType) ->
-                    fields.add(convertToTableField(fieldName, fieldType)));
+                    (fieldName, fieldType) ->
+                            fields.add(convertToTableField(fieldName, fieldType)));
             return fields;
         } catch (Exception ex) {
             throw new DataSourcePluginException("Get table fields failed", ex);
@@ -103,16 +104,16 @@ public class ElasticSearchDataSourceChannel implements DataSourceChannel {
 
     @Override
     public Map<String, List<TableField>> getTableFields(
-        @NonNull String pluginName,
-        @NonNull Map<String, String> requestParams,
-        @NonNull String database,
-        @NonNull List<String> tables) {
+            @NonNull String pluginName,
+            @NonNull Map<String, String> requestParams,
+            @NonNull String database,
+            @NonNull List<String> tables) {
         databaseCheck(database);
         Map<String, List<TableField>> tableFields = new HashMap<>();
         tables.forEach(
-            table ->
-                tableFields.put(
-                    table, getTableFields(pluginName, requestParams, database, table)));
+                table ->
+                        tableFields.put(
+                                table, getTableFields(pluginName, requestParams, database, table)));
         return tableFields;
     }
 

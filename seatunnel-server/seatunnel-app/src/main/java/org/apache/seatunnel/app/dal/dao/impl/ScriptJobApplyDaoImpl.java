@@ -33,8 +33,7 @@ import java.util.Objects;
 @Repository
 public class ScriptJobApplyDaoImpl implements IScriptJobApplyDao {
 
-    @Resource
-    private ScriptJobApplyMapper scriptJobApplyMapper;
+    @Resource private ScriptJobApplyMapper scriptJobApplyMapper;
 
     @Override
     public void insertOrUpdate(ScriptJobApplyDto dto) {

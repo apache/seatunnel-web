@@ -30,24 +30,24 @@ public class StarRocksDataSourceConfig {
     public static final String PLUGIN_NAME = "JDBC-StarRocks";
 
     public static final DataSourcePluginInfo STAR_ROCKS_DATA_SOURCE_PLUGIN_INFO =
-        DataSourcePluginInfo.builder()
-            .name(PLUGIN_NAME)
-            .icon(PLUGIN_NAME)
-            .version("1.0.0")
-            .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-            .build();
+            DataSourcePluginInfo.builder()
+                    .name(PLUGIN_NAME)
+                    .icon(PLUGIN_NAME)
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .build();
 
     public static final Set<String> STAR_ROCKS_SYSTEM_DATABASES =
-        Sets.newHashSet("_statistics_", "information_schema");
+            Sets.newHashSet("_statistics_", "information_schema");
 
     public static final OptionRule OPTION_RULE =
-        OptionRule.builder()
-            .required(StarRocksOptionRule.URL, StarRocksOptionRule.DRIVER)
-            .optional(StarRocksOptionRule.USER, StarRocksOptionRule.PASSWORD)
-            .build();
+            OptionRule.builder()
+                    .required(StarRocksOptionRule.URL, StarRocksOptionRule.DRIVER)
+                    .optional(StarRocksOptionRule.USER, StarRocksOptionRule.PASSWORD)
+                    .build();
 
     public static final OptionRule METADATA_RULE =
-        OptionRule.builder()
-            .required(StarRocksOptionRule.DATABASE, StarRocksOptionRule.TABLE)
-            .build();
+            OptionRule.builder()
+                    .required(StarRocksOptionRule.DATABASE, StarRocksOptionRule.TABLE)
+                    .build();
 }

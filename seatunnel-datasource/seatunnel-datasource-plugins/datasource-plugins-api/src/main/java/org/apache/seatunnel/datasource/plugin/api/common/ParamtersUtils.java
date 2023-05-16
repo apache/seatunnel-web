@@ -23,10 +23,10 @@ import java.util.Map;
 
 public class ParamtersUtils {
     /**
-     * for some parameters, we need to convert them to {@link Map} eg: s3Options {
-     * "access.value": "org.apache.hadoop.fs.s3a.S3AFileSystem", "access.key":
-     * "AKIAIOSFODNN7EXAMPLE", "hadoop_s3_properties": " fs.s3a.impl =
-     * org.apache.hadoop.fs.s3a.S3AFileSystem fs.s3a.access.key = AKIAIOSFODNN7EXAMPLE "
+     * for some parameters, we need to convert them to {@link Map} eg: s3Options { "access.value":
+     * "org.apache.hadoop.fs.s3a.S3AFileSystem", "access.key": "AKIAIOSFODNN7EXAMPLE",
+     * "hadoop_s3_properties": " fs.s3a.impl = org.apache.hadoop.fs.s3a.S3AFileSystem
+     * fs.s3a.access.key = AKIAIOSFODNN7EXAMPLE "
      *
      * <p>Convert parameters to {@link Map}
      *

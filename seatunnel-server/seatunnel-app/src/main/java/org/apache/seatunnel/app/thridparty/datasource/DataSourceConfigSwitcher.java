@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.app.thridparty.datasource;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -25,33 +27,30 @@ import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.common.constants.PluginType;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-
 import java.util.List;
 
 public interface DataSourceConfigSwitcher {
 
-    /**
-     * Use the OptionRule of the data source to filter the OptionRule of the connector
-     */
+    /** Use the OptionRule of the data source to filter the OptionRule of the connector */
     FormStructure filterOptionRule(
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        OptionRule connectorOptionRule,
-        List<String> excludedKeys);
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            OptionRule connectorOptionRule,
+            List<String> excludedKeys);
 
     /**
-     * Merge the parameters of the data source instance and connector configuration into the final connector parameters
+     * Merge the parameters of the data source instance and connector configuration into the final
+     * connector parameters
      */
     Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig);
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig);
 }
