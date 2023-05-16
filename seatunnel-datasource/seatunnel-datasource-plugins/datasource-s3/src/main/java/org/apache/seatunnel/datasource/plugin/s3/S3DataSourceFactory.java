@@ -40,13 +40,13 @@ public class S3DataSourceFactory implements DataSourceFactory {
     @Override
     public Set<DataSourcePluginInfo> supportedDataSources() {
         DataSourcePluginInfo s3DatasourcePluginInfo =
-            DataSourcePluginInfo.builder()
-                .name(PLUGIN_NAME)
-                .type(DatasourcePluginTypeEnum.FILE.getCode())
-                .version("1.0.0")
-                .supportVirtualTables(false)
-                .icon("S3File")
-                .build();
+                DataSourcePluginInfo.builder()
+                        .name(PLUGIN_NAME)
+                        .type(DatasourcePluginTypeEnum.FILE.getCode())
+                        .version("1.0.0")
+                        .supportVirtualTables(false)
+                        .icon("S3File")
+                        .build();
 
         return Sets.newHashSet(s3DatasourcePluginInfo);
     }

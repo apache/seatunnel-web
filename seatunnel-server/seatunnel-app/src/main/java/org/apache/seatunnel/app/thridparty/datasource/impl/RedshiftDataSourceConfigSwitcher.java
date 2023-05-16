@@ -24,7 +24,7 @@ import java.util.List;
 
 public class RedshiftDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
     private static final RedshiftDataSourceConfigSwitcher INSTANCE =
-        new RedshiftDataSourceConfigSwitcher();
+            new RedshiftDataSourceConfigSwitcher();
 
     public static final RedshiftDataSourceConfigSwitcher getInstance() {
         return INSTANCE;
@@ -35,8 +35,8 @@ public class RedshiftDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSw
         String[] split = fullTable.split("\\.");
         if (split.length != 2) {
             throw new SeaTunnelException(
-                "The tableName for postgres must be schemaName.tableName, but tableName is "
-                    + fullTable);
+                    "The tableName for postgres must be schemaName.tableName, but tableName is "
+                            + fullTable);
         }
 
         String schemaName = split[0];
@@ -53,6 +53,5 @@ public class RedshiftDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSw
         return JdbcUtils.replaceDatabase(url, databaseName);
     }
 
-    private RedshiftDataSourceConfigSwitcher() {
-    }
+    private RedshiftDataSourceConfigSwitcher() {}
 }

@@ -28,10 +28,12 @@ import java.util.Date;
 @Slf4j
 public class DateUtils {
     public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String DEFAULT_DATETIME_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ";
+    public static final String DEFAULT_DATETIME_FORMAT_WITH_TIMEZONE =
+            "yyyy-MM-dd'T'HH:mm:ss.SSSZZZ";
 
     /**
      * parse Date to String Date, use default datetime format 'yyyy-MM-dd HH:mm:ss'
+     *
      * @param date which need been format to String date
      * @return String date
      */
@@ -53,16 +55,19 @@ public class DateUtils {
 
     /**
      * parse String date to Date, use default datetime format 'yyyy-MM-dd HH:mm:ss'
+     *
      * @param date which need been parse to Date
      * @return Date
      */
     public static Date parse(String date) {
-        LocalDateTime localDateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DEFAULT_DATETIME_FORMAT));
+        LocalDateTime localDateTime =
+                LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DEFAULT_DATETIME_FORMAT));
         return localDateTime2Date(localDateTime);
     }
 
     public static Date parse(String date, String format) {
-        LocalDateTime localDateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(format));
+        LocalDateTime localDateTime =
+                LocalDateTime.parse(date, DateTimeFormatter.ofPattern(format));
         return localDateTime2Date(localDateTime);
     }
 

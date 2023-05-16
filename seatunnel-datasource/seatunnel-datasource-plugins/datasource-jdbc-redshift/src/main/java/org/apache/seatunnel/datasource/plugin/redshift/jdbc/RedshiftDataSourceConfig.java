@@ -30,33 +30,33 @@ public class RedshiftDataSourceConfig {
     public static final String PLUGIN_NAME = "JDBC-Redshift";
 
     public static final DataSourcePluginInfo REDSHIFT_DATASOURCE_PLUGIN_INFO =
-        DataSourcePluginInfo.builder()
-            .name(PLUGIN_NAME)
-            .icon("redshift")
-            .version("1.0.0")
-            .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-            .build();
+            DataSourcePluginInfo.builder()
+                    .name(PLUGIN_NAME)
+                    .icon("redshift")
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .build();
 
     public static final Set<String> REDSHIFT_SYSTEM_TABLES =
-        Sets.newHashSet(
-            "information_schema",
-            "pg_catalog",
-            "root",
-            "pg_toast",
-            "pg_temp_1",
-            "pg_toast_temp_1",
-            "postgres",
-            "template0",
-            "template1");
+            Sets.newHashSet(
+                    "information_schema",
+                    "pg_catalog",
+                    "root",
+                    "pg_toast",
+                    "pg_temp_1",
+                    "pg_toast_temp_1",
+                    "postgres",
+                    "template0",
+                    "template1");
 
     public static final OptionRule OPTION_RULE =
-        OptionRule.builder()
-            .required(RedshiftOptionRule.URL, RedshiftOptionRule.DRIVER)
-            .optional(RedshiftOptionRule.USER, RedshiftOptionRule.PASSWORD)
-            .build();
+            OptionRule.builder()
+                    .required(RedshiftOptionRule.URL, RedshiftOptionRule.DRIVER)
+                    .optional(RedshiftOptionRule.USER, RedshiftOptionRule.PASSWORD)
+                    .build();
 
     public static final OptionRule METADATA_RULE =
-        OptionRule.builder()
-            .required(RedshiftOptionRule.DATABASE, RedshiftOptionRule.TABLE)
-            .build();
+            OptionRule.builder()
+                    .required(RedshiftOptionRule.DATABASE, RedshiftOptionRule.TABLE)
+                    .build();
 }

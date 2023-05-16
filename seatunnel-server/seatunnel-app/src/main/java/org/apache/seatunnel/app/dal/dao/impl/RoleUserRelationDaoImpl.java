@@ -28,17 +28,17 @@ import javax.annotation.Resource;
 @Repository
 public class RoleUserRelationDaoImpl implements IRoleUserRelationDao {
 
-    @Resource
-    private RoleUserRelationMapper roleUserRelationMapper;
+    @Resource private RoleUserRelationMapper roleUserRelationMapper;
 
     @Override
-    public void add(RoleUserRelation roleUserRelation){
+    public void add(RoleUserRelation roleUserRelation) {
         roleUserRelationMapper.insert(roleUserRelation);
     }
 
     @Override
     public RoleUserRelation getByUserAndRole(Integer userId, Integer roleId) {
-        final RoleUserRelation roleUserRelation = roleUserRelationMapper.selectByUserIdAndRoleId(userId, roleId);
+        final RoleUserRelation roleUserRelation =
+                roleUserRelationMapper.selectByUserIdAndRoleId(userId, roleId);
         return roleUserRelation;
     }
 
@@ -46,5 +46,4 @@ public class RoleUserRelationDaoImpl implements IRoleUserRelationDao {
     public void deleteByUserId(Integer userId) {
         roleUserRelationMapper.deleteByUserId(userId);
     }
-
 }

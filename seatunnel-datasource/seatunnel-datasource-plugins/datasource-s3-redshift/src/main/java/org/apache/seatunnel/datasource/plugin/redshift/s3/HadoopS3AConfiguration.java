@@ -17,14 +17,15 @@
 
 package org.apache.seatunnel.datasource.plugin.redshift.s3;
 
-import static org.apache.hadoop.fs.FileSystem.FS_DEFAULT_NAME_KEY;
-
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 import java.util.Map;
+
+import static org.apache.hadoop.fs.FileSystem.FS_DEFAULT_NAME_KEY;
 
 @Slf4j
 public class HadoopS3AConfiguration {
@@ -42,11 +43,11 @@ public class HadoopS3AConfiguration {
 
         if (!s3Options.containsKey(S3RedshiftOptionRule.BUCKET.key())) {
             throw new IllegalArgumentException(
-                "S3Redshift datasource bucket is null, please check your config");
+                    "S3Redshift datasource bucket is null, please check your config");
         }
         if (!s3Options.containsKey(S3RedshiftOptionRule.FS_S3A_ENDPOINT.key())) {
             throw new IllegalArgumentException(
-                "S3Redshift datasource endpoint is null, please check your config");
+                    "S3Redshift datasource endpoint is null, please check your config");
         }
         String bucket = s3Options.get(S3RedshiftOptionRule.BUCKET.key());
 
@@ -58,38 +59,38 @@ public class HadoopS3AConfiguration {
         Configuration hadoopConf = new Configuration();
         hadoopConf.set(FS_DEFAULT_NAME_KEY, bucket);
         hadoopConf.set(
-            S3RedshiftOptionRule.FS_S3A_ENDPOINT.key(),
-            s3Options.get(S3RedshiftOptionRule.FS_S3A_ENDPOINT.key()));
+                S3RedshiftOptionRule.FS_S3A_ENDPOINT.key(),
+                s3Options.get(S3RedshiftOptionRule.FS_S3A_ENDPOINT.key()));
         hadoopConf.set(formatKey(protocol, HDFS_IMPL_KEY), fsImpl);
         if (s3Options.containsKey(S3RedshiftOptionRule.HADOOP_S3_PROPERTIES.key())) {
             Arrays.stream(
-                    s3Options
-                        .get(S3RedshiftOptionRule.HADOOP_S3_PROPERTIES.key())
-                        .split("\n"))
-                .map(String::trim)
-                .filter(StringUtils::isNotBlank)
-                .forEach(
-                    line -> {
-                        String[] kv = line.split("=");
-                        if (kv.length == 2) {
-                            hadoopConf.set(kv[0].trim(), kv[1].trim());
-                        }
-                    });
+                            s3Options
+                                    .get(S3RedshiftOptionRule.HADOOP_S3_PROPERTIES.key())
+                                    .split("\n"))
+                    .map(String::trim)
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(
+                            line -> {
+                                String[] kv = line.split("=");
+                                if (kv.length == 2) {
+                                    hadoopConf.set(kv[0].trim(), kv[1].trim());
+                                }
+                            });
         }
         if (S3RedshiftOptionRule.S3aAwsCredentialsProvider.SimpleAWSCredentialsProvider
-            .getProvider()
-            .equals(s3Options.get(S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key()))) {
+                .getProvider()
+                .equals(s3Options.get(S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key()))) {
             hadoopConf.set(
-                S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key(),
-                s3Options.get(S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key()));
+                    S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key(),
+                    s3Options.get(S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key()));
             hadoopConf.set(
-                "fs.s3a.access.key", s3Options.get(S3RedshiftOptionRule.ACCESS_KEY.key()));
+                    "fs.s3a.access.key", s3Options.get(S3RedshiftOptionRule.ACCESS_KEY.key()));
             hadoopConf.set(
-                "fs.s3a.secret.key", s3Options.get(S3RedshiftOptionRule.SECRET_KEY.key()));
+                    "fs.s3a.secret.key", s3Options.get(S3RedshiftOptionRule.SECRET_KEY.key()));
         } else {
             hadoopConf.set(
-                S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key(),
-                s3Options.get(S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key()));
+                    S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key(),
+                    s3Options.get(S3RedshiftOptionRule.S3A_AWS_CREDENTIALS_PROVIDER.key()));
         }
         return hadoopConf;
     }

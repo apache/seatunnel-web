@@ -23,12 +23,12 @@ import org.junit.jupiter.api.Test;
 class ElasticSearchDataSourceFactoryTest {
 
     private static final ElasticSearchDataSourceFactory ELASTIC_SEARCH_DATA_SOURCE_FACTORY =
-        new ElasticSearchDataSourceFactory();
+            new ElasticSearchDataSourceFactory();
 
     @Test
     void factoryIdentifier() {
         Assertions.assertEquals(
-            "ElasticSearch", ELASTIC_SEARCH_DATA_SOURCE_FACTORY.factoryIdentifier());
+                "ElasticSearch", ELASTIC_SEARCH_DATA_SOURCE_FACTORY.factoryIdentifier());
     }
 
     @Test

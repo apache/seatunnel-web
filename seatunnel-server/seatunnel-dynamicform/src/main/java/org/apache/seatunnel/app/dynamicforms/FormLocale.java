@@ -25,13 +25,10 @@ import lombok.NonNull;
 
 import java.util.LinkedHashMap;
 
-/**
- * Multi language support
- */
+/** Multi language support */
 @Data
 public class FormLocale {
-    @JsonIgnore
-    public static final String I18N_PREFIX = "i18n.";
+    @JsonIgnore public static final String I18N_PREFIX = "i18n.";
 
     @JsonProperty("zh_CN")
     private LinkedHashMap<String, String> zhCN = new LinkedHashMap<>();

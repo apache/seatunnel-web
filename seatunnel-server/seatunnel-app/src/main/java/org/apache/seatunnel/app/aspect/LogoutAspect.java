@@ -17,11 +17,8 @@
 
 package org.apache.seatunnel.app.aspect;
 
-import static org.apache.seatunnel.server.common.Constants.USER_ID;
-
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -31,8 +28,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import static org.apache.seatunnel.server.common.Constants.USER_ID;
 
 @Slf4j
 @Aspect
@@ -40,17 +41,15 @@ import javax.servlet.http.HttpServletRequest;
 @Order(2)
 public class LogoutAspect {
 
-    @Resource
-    private IUserDao userDaoImpl;
+    @Resource private IUserDao userDaoImpl;
 
     @Pointcut("execution(public * org.apache.seatunnel.app.controller.UserController.logout(..))")
-    public void logoutPointCut() {
-
-    }
+    public void logoutPointCut() {}
 
     @Before("logoutPointCut()")
     public void check(JoinPoint pjp) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         final Integer userId = (Integer) request.getAttribute(USER_ID);
         userDaoImpl.disableToken(userId);

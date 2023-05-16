@@ -17,23 +17,24 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.utils;
 
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.HTTP_REQUEST_FAILED;
-import static com.google.common.base.Preconditions.checkState;
-
 import org.apache.seatunnel.server.common.SeatunnelException;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.HTTP_REQUEST_FAILED;
 
 @Slf4j
 public class HttpUtils {

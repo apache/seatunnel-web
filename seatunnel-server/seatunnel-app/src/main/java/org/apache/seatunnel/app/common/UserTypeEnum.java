@@ -23,7 +23,7 @@ public enum UserTypeEnum {
     ;
 
     private final int code;
-    private final String  description;
+    private final String description;
 
     UserTypeEnum(int code, String description) {
         this.code = code;

@@ -17,6 +17,9 @@
 
 package org.apache.seatunnel.app.thridparty.datasource.impl;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -28,9 +31,6 @@ import org.apache.seatunnel.app.thridparty.datasource.SchemaGenerator;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.datasource.plugin.s3.S3OptionRule;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
-
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -38,145 +38,145 @@ import java.util.List;
 @Slf4j
 public class S3DataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    private S3DataSourceConfigSwitcher() {
-    }
+    private S3DataSourceConfigSwitcher() {}
 
     private static final S3DataSourceConfigSwitcher INSTANCE = new S3DataSourceConfigSwitcher();
 
     @Override
     public FormStructure filterOptionRule(
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        OptionRule connectorOptionRule,
-        List<String> excludedKeys) {
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            OptionRule connectorOptionRule,
+            List<String> excludedKeys) {
         excludedKeys.add(S3OptionRule.PATH.key());
         if (PluginType.SOURCE.equals(pluginType)) {
             excludedKeys.add(S3OptionRule.SCHEMA.key());
         }
 
         return super.filterOptionRule(
-            connectorName,
-            dataSourceOptionRule,
-            virtualTableOptionRule,
-            businessMode,
-            pluginType,
-            connectorOptionRule,
-            excludedKeys);
+                connectorName,
+                dataSourceOptionRule,
+                virtualTableOptionRule,
+                businessMode,
+                pluginType,
+                connectorOptionRule,
+                excludedKeys);
     }
 
     @Override
     public Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
         if (PluginType.SOURCE.equals(pluginType)) {
             connectorConfig =
-                connectorConfig
-                    .withValue(
-                        S3OptionRule.SCHEMA.key(),
-                        SchemaGenerator.generateSchemaBySelectTableFields(
-                                virtualTableDetail, selectTableFields)
-                            .root())
-                    .withValue(
-                        S3OptionRule.PATH.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.PATH.key())))
-                    .withValue(
-                        S3OptionRule.TYPE.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.TYPE.key())))
-                    .withValue(
-                        S3OptionRule.PARSE_PARSE_PARTITION_FROM_PATH.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(
-                                    S3OptionRule
-                                        .PARSE_PARSE_PARTITION_FROM_PATH
-                                        .key())))
-                    .withValue(
-                        S3OptionRule.DATE_FORMAT.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.DATE_FORMAT.key())))
-                    .withValue(
-                        S3OptionRule.DATETIME_FORMAT.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.DATETIME_FORMAT.key())))
-                    .withValue(
-                        S3OptionRule.TIME_FORMAT.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.TIME_FORMAT.key())));
+                    connectorConfig
+                            .withValue(
+                                    S3OptionRule.SCHEMA.key(),
+                                    SchemaGenerator.generateSchemaBySelectTableFields(
+                                                    virtualTableDetail, selectTableFields)
+                                            .root())
+                            .withValue(
+                                    S3OptionRule.PATH.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.PATH.key())))
+                            .withValue(
+                                    S3OptionRule.TYPE.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.TYPE.key())))
+                            .withValue(
+                                    S3OptionRule.PARSE_PARSE_PARTITION_FROM_PATH.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(
+                                                            S3OptionRule
+                                                                    .PARSE_PARSE_PARTITION_FROM_PATH
+                                                                    .key())))
+                            .withValue(
+                                    S3OptionRule.DATE_FORMAT.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.DATE_FORMAT.key())))
+                            .withValue(
+                                    S3OptionRule.DATETIME_FORMAT.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.DATETIME_FORMAT.key())))
+                            .withValue(
+                                    S3OptionRule.TIME_FORMAT.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.TIME_FORMAT.key())));
         } else if (PluginType.SINK.equals(pluginType)) {
-            if (virtualTableDetail.getDatasourceProperties().get(S3OptionRule.TIME_FORMAT.key()) == null) {
+            if (virtualTableDetail.getDatasourceProperties().get(S3OptionRule.TIME_FORMAT.key())
+                    == null) {
                 throw new IllegalArgumentException("S3 virtual table path is null");
             }
             connectorConfig =
-                connectorConfig
-                    .withValue(
-                        S3OptionRule.PATH.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.PATH.key())))
-                    .withValue(
-                        S3OptionRule.TYPE.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.TYPE.key())))
-                    .withValue(
-                        S3OptionRule.PARSE_PARSE_PARTITION_FROM_PATH.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(
-                                    S3OptionRule
-                                        .PARSE_PARSE_PARTITION_FROM_PATH
-                                        .key())))
-                    .withValue(
-                        S3OptionRule.DATE_FORMAT.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.DATE_FORMAT.key())))
-                    .withValue(
-                        S3OptionRule.DATETIME_FORMAT.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.DATETIME_FORMAT.key())))
-                    .withValue(
-                        S3OptionRule.TIME_FORMAT.key(),
-                        ConfigValueFactory.fromAnyRef(
-                            virtualTableDetail
-                                .getDatasourceProperties()
-                                .get(S3OptionRule.TIME_FORMAT.key())));
+                    connectorConfig
+                            .withValue(
+                                    S3OptionRule.PATH.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.PATH.key())))
+                            .withValue(
+                                    S3OptionRule.TYPE.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.TYPE.key())))
+                            .withValue(
+                                    S3OptionRule.PARSE_PARSE_PARTITION_FROM_PATH.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(
+                                                            S3OptionRule
+                                                                    .PARSE_PARSE_PARTITION_FROM_PATH
+                                                                    .key())))
+                            .withValue(
+                                    S3OptionRule.DATE_FORMAT.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.DATE_FORMAT.key())))
+                            .withValue(
+                                    S3OptionRule.DATETIME_FORMAT.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.DATETIME_FORMAT.key())))
+                            .withValue(
+                                    S3OptionRule.TIME_FORMAT.key(),
+                                    ConfigValueFactory.fromAnyRef(
+                                            virtualTableDetail
+                                                    .getDatasourceProperties()
+                                                    .get(S3OptionRule.TIME_FORMAT.key())));
         }
         return super.mergeDatasourceConfig(
-            dataSourceInstanceConfig,
-            virtualTableDetail,
-            dataSourceOption,
-            selectTableFields,
-            businessMode,
-            pluginType,
-            connectorConfig);
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 
     public static S3DataSourceConfigSwitcher getInstance() {

@@ -17,14 +17,14 @@
 
 package org.apache.seatunnel.app.dynamicforms.validate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import org.apache.seatunnel.shade.com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NonNull;
 
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
 public class UnionNonEmptyValidate extends AbstractValidate {
@@ -38,8 +38,8 @@ public class UnionNonEmptyValidate extends AbstractValidate {
         checkArgument(fields.size() > 0);
         this.fields = fields;
         this.withMessage(
-            "parameters:"
-                + fields
-                + " if any of these parameters is set, other parameters must also be set");
+                "parameters:"
+                        + fields
+                        + " if any of these parameters is set, other parameters must also be set");
     }
 }

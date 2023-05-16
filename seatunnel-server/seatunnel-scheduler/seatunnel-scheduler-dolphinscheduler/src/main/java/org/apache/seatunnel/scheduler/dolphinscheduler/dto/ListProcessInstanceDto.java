@@ -20,5 +20,4 @@ package org.apache.seatunnel.scheduler.dolphinscheduler.dto;
 import lombok.Data;
 
 @Data
-public class ListProcessInstanceDto extends BaseListDto{
-}
+public class ListProcessInstanceDto extends BaseListDto {}

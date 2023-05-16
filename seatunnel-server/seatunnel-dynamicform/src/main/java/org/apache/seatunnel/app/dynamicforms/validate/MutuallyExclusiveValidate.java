@@ -17,14 +17,14 @@
 
 package org.apache.seatunnel.app.dynamicforms.validate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import org.apache.seatunnel.shade.com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NonNull;
 
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
 public class MutuallyExclusiveValidate extends AbstractValidate {

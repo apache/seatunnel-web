@@ -19,13 +19,14 @@ package org.apache.seatunnel.datasource.plugin.elasticsearch;
 
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.Map;
@@ -34,19 +35,19 @@ import java.util.Map;
 @Disabled
 class ElasticSearchDataSourceChannelTest {
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(ElasticSearchDataSourceChannelTest.class);
+            LoggerFactory.getLogger(ElasticSearchDataSourceChannelTest.class);
 
     private static final ElasticSearchDataSourceChannel ELASTIC_SEARCH_DATA_SOURCE_CHANNEL =
-        new ElasticSearchDataSourceChannel();
+            new ElasticSearchDataSourceChannel();
 
     private static final String PLUGIN_NAME = "ElasticSearch";
 
     private static final String DATABASE = "Default";
 
     private static final Map<String, String> REQUEST_MAP =
-        new ImmutableMap.Builder<String, String>()
-            .put(ElasticSearchOptionRule.HOSTS.key(), "[\"http://localhost:9200\"]")
-            .build();
+            new ImmutableMap.Builder<String, String>()
+                    .put(ElasticSearchOptionRule.HOSTS.key(), "[\"http://localhost:9200\"]")
+                    .build();
 
     @Test
     void canAbleGetSchema() {
@@ -55,60 +56,61 @@ class ElasticSearchDataSourceChannelTest {
 
     @Test
     void getDataSourceOptions() {
-        Assertions.assertNotNull(ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDataSourceOptions(PLUGIN_NAME));
+        Assertions.assertNotNull(
+                ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDataSourceOptions(PLUGIN_NAME));
     }
 
     @Test
     void getDatasourceMetadataFieldsByDataSourceName() {
         Assertions.assertNotNull(
-            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDatasourceMetadataFieldsByDataSourceName(
-                PLUGIN_NAME));
+                ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDatasourceMetadataFieldsByDataSourceName(
+                        PLUGIN_NAME));
     }
 
     @Test
     void getTables() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                List<String> tables =
-                    ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTables(
-                        PLUGIN_NAME, REQUEST_MAP, DATABASE);
-                LOGGER.info("{}", tables);
-            });
+                () -> {
+                    List<String> tables =
+                            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTables(
+                                    PLUGIN_NAME, REQUEST_MAP, DATABASE);
+                    LOGGER.info("{}", tables);
+                });
     }
 
     @Test
     void getDatabases() {
         Assertions.assertLinesMatch(
-            Lists.newArrayList("default"),
-            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDatabases(PLUGIN_NAME, REQUEST_MAP));
+                Lists.newArrayList("default"),
+                ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDatabases(PLUGIN_NAME, REQUEST_MAP));
     }
 
     @Test
     void checkDataSourceConnectivity() {
         Assertions.assertTrue(
-            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.checkDataSourceConnectivity(
-                PLUGIN_NAME, REQUEST_MAP));
+                ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.checkDataSourceConnectivity(
+                        PLUGIN_NAME, REQUEST_MAP));
     }
 
     @Test
     void getTableFields() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                List<TableField> tableFields =
-                    ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTableFields(
-                        PLUGIN_NAME, REQUEST_MAP, DATABASE, "");
-                LOGGER.info("{}", tableFields);
-            });
+                () -> {
+                    List<TableField> tableFields =
+                            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTableFields(
+                                    PLUGIN_NAME, REQUEST_MAP, DATABASE, "");
+                    LOGGER.info("{}", tableFields);
+                });
     }
 
     @Test
     void testGetTableFields() {
         Assertions.assertDoesNotThrow(
-            () -> {
-                Map<String, List<TableField>> tableFields =
-                    ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTableFields(
-                        PLUGIN_NAME, REQUEST_MAP, DATABASE, Lists.newArrayList(""));
-                LOGGER.info("{}", tableFields);
-            });
+                () -> {
+                    Map<String, List<TableField>> tableFields =
+                            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTableFields(
+                                    PLUGIN_NAME, REQUEST_MAP, DATABASE, Lists.newArrayList(""));
+                    LOGGER.info("{}", tableFields);
+                });
     }
 }

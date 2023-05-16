@@ -17,10 +17,10 @@
 
 package org.apache.seatunnel.app.dynamicforms;
 
-import org.apache.seatunnel.app.dynamicforms.validate.AbstractValidate;
-
 import org.apache.seatunnel.shade.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.apache.seatunnel.app.dynamicforms.validate.AbstractValidate;
 
 import lombok.Data;
 import lombok.Getter;
@@ -63,8 +63,7 @@ public abstract class AbstractFormOption<T extends AbstractFormOption, V extends
         @JsonProperty("select")
         SELECT("select");
 
-        @Getter
-        private String formType;
+        @Getter private String formType;
 
         FormType(String formType) {
             this.formType = formType;

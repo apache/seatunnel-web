@@ -25,8 +25,8 @@ public interface RoleUserRelationMapper {
 
     int insert(RoleUserRelation record);
 
-    RoleUserRelation selectByUserIdAndRoleId(@Param("userId")Integer userId, @Param("roleId")Integer roleId);
+    RoleUserRelation selectByUserIdAndRoleId(
+            @Param("userId") Integer userId, @Param("roleId") Integer roleId);
 
-    void deleteByUserId(@Param("userId")Integer userId);
-
+    void deleteByUserId(@Param("userId") Integer userId);
 }

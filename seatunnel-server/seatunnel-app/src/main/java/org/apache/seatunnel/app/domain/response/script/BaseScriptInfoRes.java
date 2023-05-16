@@ -26,18 +26,25 @@ import java.util.Date;
 public class BaseScriptInfoRes {
     @ApiModelProperty(value = "script id", dataType = "int")
     private int id;
+
     @ApiModelProperty(value = "script name", dataType = "String")
     private String name;
+
     @ApiModelProperty(value = "script status", dataType = "String")
     private String status;
+
     @ApiModelProperty(value = "script type", dataType = "type")
     private byte type;
+
     @ApiModelProperty(value = "script creator id", required = true, dataType = "Integer")
     private Integer creatorId;
+
     @ApiModelProperty(value = "script mender id", required = true, dataType = "Integer")
     private Integer menderId;
+
     @ApiModelProperty(value = "script create time", dataType = "Date")
     private Date createTime;
+
     @ApiModelProperty(value = "script update time", dataType = "Date")
     private Date updateTime;
 }

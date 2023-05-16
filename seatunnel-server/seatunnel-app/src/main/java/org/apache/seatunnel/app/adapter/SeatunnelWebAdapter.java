@@ -48,8 +48,7 @@ public class SeatunnelWebAdapter implements WebMvcConfigurer {
         return new AuthenticationInterceptor();
     }
 
-    @Resource
-    private UserIdMethodArgumentResolver currentUserMethodArgumentResolver;
+    @Resource private UserIdMethodArgumentResolver currentUserMethodArgumentResolver;
 
     /**
      * Cookie
@@ -70,10 +69,18 @@ public class SeatunnelWebAdapter implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor())
-            .order(1)
-            .addPathPatterns(LOGIN_INTERCEPTOR_PATH_PATTERN)
-            .excludePathPatterns(LOGIN_PATH_PATTERN, REGISTER_PATH_PATTERN,
-                "/swagger-resources/**", "/webjars/**", "/v2/**", "*.html", "/ui/**", "/error", "/swagger-ui.html**");
+                .order(1)
+                .addPathPatterns(LOGIN_INTERCEPTOR_PATH_PATTERN)
+                .excludePathPatterns(
+                        LOGIN_PATH_PATTERN,
+                        REGISTER_PATH_PATTERN,
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v2/**",
+                        "*.html",
+                        "/ui/**",
+                        "/error",
+                        "/swagger-ui.html**");
     }
 
     @Override
@@ -84,7 +91,8 @@ public class SeatunnelWebAdapter implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/ui/**").addResourceLocations("file:ui/");
     }
 
@@ -93,5 +101,4 @@ public class SeatunnelWebAdapter implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("redirect:/ui/");
         registry.addViewController("/ui/").setViewName("forward:/ui/index.html");
     }
-
 }

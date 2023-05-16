@@ -17,6 +17,9 @@
 
 package org.apache.seatunnel.app.thridparty.datasource.impl;
 
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
+
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -25,9 +28,6 @@ import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thridparty.datasource.AbstractDataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
-
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,39 +47,39 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
 
     @Override
     public FormStructure filterOptionRule(
-        String connectorName,
-        OptionRule dataSourceOptionRule,
-        OptionRule virtualTableOptionRule,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        OptionRule connectorOptionRule,
-        List<String> excludedKeys) {
+            String connectorName,
+            OptionRule dataSourceOptionRule,
+            OptionRule virtualTableOptionRule,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            OptionRule connectorOptionRule,
+            List<String> excludedKeys) {
         Map<PluginType, List<String>> filterFieldMap = new HashMap<>();
 
         filterFieldMap.put(
-            PluginType.SINK,
-            Arrays.asList(QUERY_KEY, TABLE_KEY, DATABASE_KEY, GENERATE_SINK_SQL));
+                PluginType.SINK,
+                Arrays.asList(QUERY_KEY, TABLE_KEY, DATABASE_KEY, GENERATE_SINK_SQL));
         filterFieldMap.put(PluginType.SOURCE, Collections.singletonList(QUERY_KEY));
 
         return super.filterOptionRule(
-            connectorName,
-            dataSourceOptionRule,
-            virtualTableOptionRule,
-            businessMode,
-            pluginType,
-            connectorOptionRule,
-            filterFieldMap.get(pluginType));
+                connectorName,
+                dataSourceOptionRule,
+                virtualTableOptionRule,
+                businessMode,
+                pluginType,
+                connectorOptionRule,
+                filterFieldMap.get(pluginType));
     }
 
     @Override
     public Config mergeDatasourceConfig(
-        Config dataSourceInstanceConfig,
-        VirtualTableDetailRes virtualTableDetail,
-        DataSourceOption dataSourceOption,
-        SelectTableFields selectTableFields,
-        BusinessMode businessMode,
-        PluginType pluginType,
-        Config connectorConfig) {
+            Config dataSourceInstanceConfig,
+            VirtualTableDetailRes virtualTableDetail,
+            DataSourceOption dataSourceOption,
+            SelectTableFields selectTableFields,
+            BusinessMode businessMode,
+            PluginType pluginType,
+            Config connectorConfig) {
 
         // replace database in url
         if (dataSourceOption.getDatabases().size() == 1) {
@@ -87,13 +87,13 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
             String url = dataSourceInstanceConfig.getString(URL_KEY);
             String newUrl = replaceDatabaseNameInUrl(url, databaseName);
             dataSourceInstanceConfig =
-                dataSourceInstanceConfig.withValue(
-                    URL_KEY, ConfigValueFactory.fromAnyRef(newUrl));
+                    dataSourceInstanceConfig.withValue(
+                            URL_KEY, ConfigValueFactory.fromAnyRef(newUrl));
         }
         if (pluginType.equals(PluginType.SINK)) {
             connectorConfig =
-                connectorConfig.withValue(
-                    GENERATE_SINK_SQL, ConfigValueFactory.fromAnyRef(false));
+                    connectorConfig.withValue(
+                            GENERATE_SINK_SQL, ConfigValueFactory.fromAnyRef(false));
         }
         if (businessMode.equals(BusinessMode.DATA_INTEGRATION)) {
 
@@ -109,33 +109,19 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
                 String sql = tableFieldsToSql(tableFields, databaseName, tableName);
 
                 connectorConfig =
-                    connectorConfig.withValue(QUERY_KEY, ConfigValueFactory.fromAnyRef(sql));
+                        connectorConfig.withValue(QUERY_KEY, ConfigValueFactory.fromAnyRef(sql));
             } else if (pluginType.equals(PluginType.SINK)) {
                 connectorConfig =
-                    connectorConfig.withValue(
-                        DATABASE_KEY, ConfigValueFactory.fromAnyRef(databaseName));
+                        connectorConfig.withValue(
+                                DATABASE_KEY, ConfigValueFactory.fromAnyRef(databaseName));
                 connectorConfig =
-                    connectorConfig.withValue(
-                        TABLE_KEY, ConfigValueFactory.fromAnyRef(tableName));
+                        connectorConfig.withValue(
+                                TABLE_KEY, ConfigValueFactory.fromAnyRef(tableName));
             } else {
                 throw new UnsupportedOperationException("Unsupported plugin type: " + pluginType);
             }
 
             return super.mergeDatasourceConfig(
-                dataSourceInstanceConfig,
-                virtualTableDetail,
-                dataSourceOption,
-                selectTableFields,
-                businessMode,
-                pluginType,
-                connectorConfig);
-        } else if (businessMode.equals(BusinessMode.DATA_REPLICA)) {
-            String databaseName = dataSourceOption.getDatabases().get(0);
-            if (pluginType.equals(PluginType.SINK)) {
-                connectorConfig =
-                    connectorConfig.withValue(
-                        DATABASE_KEY, ConfigValueFactory.fromAnyRef(databaseName));
-                return super.mergeDatasourceConfig(
                     dataSourceInstanceConfig,
                     virtualTableDetail,
                     dataSourceOption,
@@ -143,9 +129,23 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
                     businessMode,
                     pluginType,
                     connectorConfig);
+        } else if (businessMode.equals(BusinessMode.DATA_REPLICA)) {
+            String databaseName = dataSourceOption.getDatabases().get(0);
+            if (pluginType.equals(PluginType.SINK)) {
+                connectorConfig =
+                        connectorConfig.withValue(
+                                DATABASE_KEY, ConfigValueFactory.fromAnyRef(databaseName));
+                return super.mergeDatasourceConfig(
+                        dataSourceInstanceConfig,
+                        virtualTableDetail,
+                        dataSourceOption,
+                        selectTableFields,
+                        businessMode,
+                        pluginType,
+                        connectorConfig);
             } else {
                 throw new UnsupportedOperationException(
-                    "JDBC DATA_REPLICA Unsupported plugin type: " + pluginType);
+                        "JDBC DATA_REPLICA Unsupported plugin type: " + pluginType);
             }
 
         } else {
@@ -154,7 +154,7 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
     }
 
     protected String generateSql(
-        List<String> tableFields, String database, String schema, String table) {
+            List<String> tableFields, String database, String schema, String table) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ");
         for (int i = 0; i < tableFields.size(); i++) {

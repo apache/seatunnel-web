@@ -17,13 +17,13 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.dto;
 
-import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
+
+import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -41,8 +41,10 @@ public class TaskInstanceDto {
     private long taskCode;
     private String taskInstancePriority;
     private String host;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date startTime;
+
     private int id;
     private String state;
     private String workerGroup;
@@ -54,11 +56,15 @@ public class TaskInstanceDto {
     private int maxRetryTimes;
     private int retryTimes;
     private String executorName;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date submitTime;
+
     private String name;
     private int retryInterval;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date endTime;
+
     private String processInstanceName;
 }

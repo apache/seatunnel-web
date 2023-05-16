@@ -17,9 +17,9 @@
 
 package org.apache.seatunnel.app.utils;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JdbcUtils {
 
