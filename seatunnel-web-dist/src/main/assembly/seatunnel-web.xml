@@ -86,6 +86,19 @@
             <scope>provided</scope>
         </dependencySet>
 
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <unpack>false</unpack>
+            <includes>
+                <include>*:*:jar</include>
+            </includes>
+            <excludes>
+                <exclude>org.apache.seatunnel:datasource-*:jar</exclude>
+            </excludes>
+            <outputDirectory>/libs</outputDirectory>
+        </dependencySet>
+
         <!-- ============ Logging Jars ============  -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
