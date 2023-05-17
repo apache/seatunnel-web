@@ -15,16 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.thirdpart.datasource;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
 
-    public static final String OPTIONS = "OPTIONS";
+import org.apache.seatunnel.datasource.DataSourceClient;
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+public class DataSourceClientFactory {
+
+    private static DataSourceClient instance;
+
+    private static final Object LOCK = new Object();
+
+    public static DataSourceClient getDataSourceClient() {
+        if (null != instance) {
+            return instance;
+        }
+        synchronized (LOCK) {
+            if (null != instance) {
+                return instance;
+            }
+            instance = new DataSourceClient();
+            return instance;
+        }
+    }
 }

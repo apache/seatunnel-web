@@ -15,16 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.dal.mapper;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.seatunnel.app.dal.entity.JobTask;
 
-    public static final String OPTIONS = "OPTIONS";
-
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
-}
+public interface JobTaskMapper extends BaseMapper<JobTask> {}

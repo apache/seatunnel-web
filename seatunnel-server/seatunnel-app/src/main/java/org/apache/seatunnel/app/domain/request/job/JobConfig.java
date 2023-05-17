@@ -15,16 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.domain.request.job;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
 
-    public static final String OPTIONS = "OPTIONS";
+import lombok.Data;
+import org.apache.seatunnel.app.common.EngineType;
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+import java.util.Map;
+
+@Data
+public class JobConfig {
+
+    private String name;
+
+    private String description;
+
+    private Map<String, Object> env;
+
+    private EngineType engine;
 }

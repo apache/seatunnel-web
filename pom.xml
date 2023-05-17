@@ -500,6 +500,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.apache.seatunnel</groupId>
+                <artifactId>seatunnel-datasource-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -525,6 +530,8 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
+
+
 
     </dependencies>
 

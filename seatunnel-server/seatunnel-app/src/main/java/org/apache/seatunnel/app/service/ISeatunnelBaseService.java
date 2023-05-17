@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.service;
 
-package org.apache.seatunnel.server.common;
+import java.util.List;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+public interface ISeatunnelBaseService {
 
-    public static final String OPTIONS = "OPTIONS";
+    void funcPermissionCheck(String permissionKey, int userId);
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+    void funcAndResourcePermissionCheck(
+            String permissionKey, String resourceType, List resourceCodes, int userId);
+
+    void resourcePostHandle(String sourceType, List resourceCodes, int userId);
+
+    List availableResourceRange(String resourceType, int userId);
 }

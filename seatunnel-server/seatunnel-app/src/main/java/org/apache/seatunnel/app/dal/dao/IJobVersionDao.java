@@ -15,16 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.dal.dao;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+import org.apache.seatunnel.app.dal.entity.JobVersion;
 
-    public static final String OPTIONS = "OPTIONS";
+import java.util.List;
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+public interface IJobVersionDao {
+
+    void createVersion(JobVersion jobVersion);
+
+    void updateVersion(JobVersion version);
+
+    JobVersion getLatestVersion(long jobId);
+
+    List<JobVersion> getLatestVersionByJobIds(List<Long> jobIds);
+
+    JobVersion getVersionById(long jobVersionId);
+
+    List<JobVersion> getVersionsByIds(List<Long> jobVersionIds);
 }

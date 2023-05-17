@@ -15,16 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.domain.request.job.transform;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    public static final String OPTIONS = "OPTIONS";
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class RenameField extends TransformOption {
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+    private String targetName;
 }

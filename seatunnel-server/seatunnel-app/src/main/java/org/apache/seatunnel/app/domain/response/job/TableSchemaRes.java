@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.domain.response.job;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-    public static final String OPTIONS = "OPTIONS";
+import java.util.List;
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+@Data
+@RequiredArgsConstructor
+public class TableSchemaRes {
+
+    private List<TableField> fields;
 }

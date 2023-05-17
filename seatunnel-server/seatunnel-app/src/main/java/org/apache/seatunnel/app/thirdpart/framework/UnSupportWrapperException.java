@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.thirdpart.framework;
 
-package org.apache.seatunnel.server.common;
+import lombok.NonNull;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
-
-    public static final String OPTIONS = "OPTIONS";
-
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+public class UnSupportWrapperException extends RuntimeException {
+    public UnSupportWrapperException(
+            @NonNull String formName, @NonNull String label, @NonNull String typeName) {
+        super(
+                String.format(
+                        "Form: %s, label: %s, typeName: %s not yet supported",
+                        formName, label, typeName));
+    }
 }

@@ -1,3 +1,4 @@
+package org.apache.seatunnel.app.domain.response.job;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -14,17 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import lombok.Data;
+import org.apache.seatunnel.app.common.EngineType;
 
-package org.apache.seatunnel.server.common;
+import java.util.Map;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+@Data
+public class JobConfigRes {
 
-    public static final String OPTIONS = "OPTIONS";
+    private long id;
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+    private String name;
+
+    private String description;
+
+    private Map<String, Object> env;
+
+    private EngineType engine;
 }

@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.thirdpart.datasource.impl;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+public class DamengDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
+    private static final DamengDataSourceConfigSwitcher INSTANCE =
+            new DamengDataSourceConfigSwitcher();
 
-    public static final String OPTIONS = "OPTIONS";
+    public static final DamengDataSourceConfigSwitcher getInstance() {
+        return INSTANCE;
+    }
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+    private DamengDataSourceConfigSwitcher() {}
 }

@@ -15,16 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.server.common;
+package org.apache.seatunnel.app.thirdpart.datasource.impl;
 
-public class Constants {
-    public static final String BLANK_SPACE = " ";
-    public static final String COMMA = ",";
-    public static final String UNDERLINE = "_";
-    public static final String TOKEN = "token";
-    public static final String USER_ID = "id";
+import org.apache.seatunnel.app.thirdpart.datasource.AbstractDataSourceConfigSwitcher;
 
-    public static final String OPTIONS = "OPTIONS";
+public class SqlServerDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    public static final String METRICS_QUERY_KEY_SPLIT = "::";
+    private static final SqlServerDataSourceConfigSwitcher INSTANCE =
+            new SqlServerDataSourceConfigSwitcher();
+
+    public static final SqlServerDataSourceConfigSwitcher getInstance() {
+        return INSTANCE;
+    }
+
+    private SqlServerDataSourceConfigSwitcher() {}
 }
