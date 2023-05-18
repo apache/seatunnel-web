@@ -20,9 +20,12 @@ package org.apache.seatunnel.app.permission;
 import org.apache.seatunnel.app.dal.dao.IDatasourceDao;
 import org.apache.seatunnel.app.dal.entity.Datasource;
 import org.apache.seatunnel.app.permission.enums.SeatunnelResourcePermissionModuleEnum;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -70,11 +73,8 @@ public class AvailableResourceRangeServiceImpl
     @Component
     public static class DataSourceQuery implements ResourcePermissionQuery<Long> {
 
-        private final IDatasourceDao iDatasourceDao;
-
-        public DataSourceQuery(IDatasourceDao iDatasourceDao) {
-            this.iDatasourceDao = iDatasourceDao;
-        }
+        @Autowired
+        @Qualifier("datasourceDaoImpl") private IDatasourceDao iDatasourceDao;
 
         @Override
         public List<String> accessTypes() {

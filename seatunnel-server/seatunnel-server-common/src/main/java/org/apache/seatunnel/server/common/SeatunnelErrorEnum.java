@@ -120,6 +120,11 @@ public enum SeatunnelErrorEnum {
             60017,
             "can not found connector for datasource",
             "can not found connector for datasource [%s]"),
+    DATA_SOURCE_HAD_USED(
+            1600000,
+            "data source already used ( workflowName - taskName):{0}",
+            "datasource is using:{0}"),
+    INVALID_DATASOURCE(-70001, "Datasource [{0}] invalid", "datasource [{0}] invalid"),
     ;
 
     private final int code;

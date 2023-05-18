@@ -16,9 +16,10 @@
  */
 package org.apache.seatunnel.app.dal.dao;
 
+import org.apache.seatunnel.app.dal.entity.Datasource;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.seatunnel.app.dal.entity.Datasource;
 
 import java.util.List;
 

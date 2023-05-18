@@ -17,13 +17,6 @@
 
 package org.apache.seatunnel.app.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
 import org.apache.seatunnel.app.dal.dao.IDatasourceDao;
@@ -40,8 +33,8 @@ import org.apache.seatunnel.app.permission.enums.SeatunnelResourcePermissionModu
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
-import org.apache.seatunnel.app.thirdpart.datasource.DataSourceClientFactory;
-import org.apache.seatunnel.app.thirdpart.framework.SeaTunnelOptionRuleWrapper;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
+import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
@@ -50,25 +43,46 @@ import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import javax.annotation.Resource;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl implements IDatasourceService {
+public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
+        implements IDatasourceService, ApplicationContextAware {
 
     private static final String VIRTUAL_TABLE_DATABASE_NAME = "default";
 
-    @Resource private IDatasourceDao datasourceDao;
+    @Qualifier("datasourceDaoImpl") @Autowired
+    private IDatasourceDao datasourceDao;
+
+    private ApplicationContext applicationContext;
 
     @Resource private IJobDefinitionService jobDefinitionService;
 
-    @Resource private IVirtualTableDao virtualTableDao;
-
-    @Resource private ITableSchemaService tableSchemaService;
+    @Autowired
+    @Qualifier("virtualTableDaoImpl") private IVirtualTableDao virtualTableDao;
 
     @Autowired private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
 
@@ -297,10 +311,13 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl implements I
         String config = datasource.getDatasourceConfig();
         Map<String, String> datasourceConfig = JsonUtils.toMap(config, String.class, String.class);
         String pluginName = datasource.getPluginName();
+        ITableSchemaService tableSchemaService =
+                (ITableSchemaService) applicationContext.getBean("tableSchemaServiceImpl");
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
             List<TableField> tableFields =
                     DataSourceClientFactory.getDataSourceClient()
                             .getTableFields(pluginName, datasourceConfig, databaseName, tableName);
+
             tableSchemaService.getAddSeaTunnelSchema(tableFields, pluginName);
             return tableFields;
         }
@@ -600,5 +617,10 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl implements I
                 Collections.singletonList(Long.parseLong(datasourceId)),
                 userId);
         return this.queryDatasourceDetailById(datasourceId);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

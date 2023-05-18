@@ -17,13 +17,16 @@
 
 package org.apache.seatunnel.app.dal.dao.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
 import org.apache.seatunnel.app.dal.mapper.JobVersionMapper;
+
 import org.springframework.stereotype.Repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import javax.annotation.Resource;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

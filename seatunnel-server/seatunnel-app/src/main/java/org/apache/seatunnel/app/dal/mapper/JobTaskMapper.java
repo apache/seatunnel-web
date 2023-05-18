@@ -17,7 +17,8 @@
 
 package org.apache.seatunnel.app.dal.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.seatunnel.app.dal.entity.JobTask;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 public interface JobTaskMapper extends BaseMapper<JobTask> {}

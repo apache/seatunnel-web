@@ -16,13 +16,14 @@
  */
 package org.apache.seatunnel.app.service;
 
-import lombok.NonNull;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
+
+import lombok.NonNull;
 
 import java.util.List;
 import java.util.Map;

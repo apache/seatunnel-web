@@ -1,7 +1,5 @@
 package org.apache.seatunnel.app.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.domain.request.connector.ConnectorStatus;
 import org.apache.seatunnel.app.domain.request.connector.SceneMode;
@@ -10,16 +8,21 @@ import org.apache.seatunnel.app.domain.response.connector.DataSourceInstance;
 import org.apache.seatunnel.app.service.IConnectorService;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.JsonUtils;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import javax.annotation.Resource;
+
 import java.io.IOException;
 import java.util.List;
 
-@RequestMapping("/whaletunnel/api/v1/datasource")
+@RequestMapping("/seatunnel/api/v1/datasource")
 @RestController
 public class ConnectorDataSourceController {
 

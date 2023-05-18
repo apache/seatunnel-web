@@ -17,9 +17,9 @@
 
 package org.apache.seatunnel.app.domain.request.job;
 
+import org.apache.seatunnel.app.common.EngineType;
 
 import lombok.Data;
-import org.apache.seatunnel.app.common.EngineType;
 
 import java.util.Map;
 

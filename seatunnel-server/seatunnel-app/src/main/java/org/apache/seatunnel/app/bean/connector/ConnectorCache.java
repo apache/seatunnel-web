@@ -17,24 +17,28 @@
 
 package org.apache.seatunnel.app.bean.connector;
 
-import lombok.NonNull;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorFeature;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
-import org.apache.seatunnel.app.thirdpart.framework.PluginDiscoveryUtil;
+import org.apache.seatunnel.app.thirdparty.framework.PluginDiscoveryUtil;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.common.constants.PluginType;
-
 import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
-import org.apache.seatunnel.server.common.SeaTunnelException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
+
 import org.springframework.stereotype.Component;
 
+import lombok.NonNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -146,7 +150,7 @@ public class ConnectorCache {
             return sinkFormStructureCache.get(connectorName);
         }
 
-        throw new SeaTunnelException(SeatunnelErrorEnum.UNSUPPORTED_CONNECTOR_TYPE, pluginType);
+        throw new SeatunnelException(SeatunnelErrorEnum.UNSUPPORTED_CONNECTOR_TYPE, pluginType);
     }
 
     public OptionRule getOptionRule(@NonNull String pluginType, @NonNull String connectorName) {

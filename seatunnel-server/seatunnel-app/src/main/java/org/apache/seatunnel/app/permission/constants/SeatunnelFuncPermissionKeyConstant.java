@@ -17,7 +17,6 @@
 
 package org.apache.seatunnel.app.permission.constants;
 
-
 public class SeatunnelFuncPermissionKeyConstant {
 
     /** cluster */

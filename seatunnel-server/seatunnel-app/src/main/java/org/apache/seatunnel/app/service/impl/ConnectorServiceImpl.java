@@ -16,7 +16,6 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
-import lombok.NonNull;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.bean.connector.ConnectorCache;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
@@ -32,8 +31,8 @@ import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyC
 import org.apache.seatunnel.app.service.IConnectorService;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
-import org.apache.seatunnel.app.thirdpart.datasource.DataSourceConfigSwitcherUtils;
-import org.apache.seatunnel.app.thirdpart.transfrom.TransformConfigSwitcherUtils;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
+import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -41,9 +40,16 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.NonNull;
+
 import javax.annotation.Resource;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

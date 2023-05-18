@@ -16,12 +16,13 @@
  */
 package org.apache.seatunnel.app.service;
 
-import lombok.NonNull;
 import org.apache.seatunnel.app.domain.request.connector.ConnectorStatus;
 import org.apache.seatunnel.app.domain.request.connector.SceneMode;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.domain.response.connector.DataSourceInstance;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
+
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.util.List;

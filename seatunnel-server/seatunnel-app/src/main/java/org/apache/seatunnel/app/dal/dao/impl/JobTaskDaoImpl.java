@@ -17,13 +17,16 @@
 
 package org.apache.seatunnel.app.dal.dao.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.seatunnel.app.dal.dao.IJobTaskDao;
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.dal.mapper.JobTaskMapper;
+
 import org.springframework.stereotype.Repository;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
 import javax.annotation.Resource;
+
 import java.util.List;
 
 @Repository

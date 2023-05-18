@@ -231,6 +231,7 @@ The text of each license is the standard Apache 2.0 license.
      (The Apache Software License, Version 2.0) jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.7.1 - http://github.com/FasterXML/jackson)
      (The Apache Software License, Version 2.0) Jackson datatype: jdk8 (com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
      (The Apache Software License, Version 2.0) Jackson datatype: JSR310 (com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
+     (The Apache Software License, Version 2.0) Defect Detection Metadata: JSR305 (com.google.code.findbugs:jsr305:3.0.0 - http://findbugs.sourceforge.net/)
      (The Apache Software License, Version 2.0) Jackson-module-parameter-names (com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.3 - https://github.com/FasterXML/jackson-modules-java8/jackson-module-parameter-names)
      (Apache License 2.0) Jakarta Bean Validation API (jakarta.validation:jakarta.validation-api:2.0.2 - https://beanvalidation.org)
      (Apache License, version 2.0) JBoss Logging 3 (org.jboss.logging:jboss-logging:3.4.1.Final - http://www.jboss.org)

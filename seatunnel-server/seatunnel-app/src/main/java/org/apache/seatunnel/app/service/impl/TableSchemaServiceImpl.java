@@ -17,7 +17,6 @@
 
 package org.apache.seatunnel.app.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.seatunnel.api.table.catalog.DataTypeConvertor;
 import org.apache.seatunnel.api.table.factory.DataTypeConvertorFactory;
 import org.apache.seatunnel.api.table.type.SeaTunnelDataType;
@@ -29,7 +28,6 @@ import org.apache.seatunnel.app.domain.response.job.TableSchemaRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
-import org.apache.seatunnel.app.utils.SeaTunnelException;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.FileUtils;
@@ -37,14 +35,24 @@ import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 import org.apache.seatunnel.plugin.discovery.seatunnel.SeaTunnelSinkPluginDiscovery;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
+
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.annotation.Resource;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +64,8 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
 
     @Resource private ConnectorDataSourceMapperConfig connectorDataSourceMapperConfig;
 
-    @Resource private IDatasourceService dataSourceService;
+    @Resource(name = "datasourceServiceImpl")
+    private IDatasourceService dataSourceService;
 
     private final DataTypeConvertorFactory factory;
 
@@ -129,7 +138,7 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
                         .findConnectorForDatasourceName(pluginName)
                         .orElseThrow(
                                 () ->
-                                        new SeaTunnelException(
+                                        new SeatunnelException(
                                                 SeatunnelErrorEnum.ILLEGAL_STATE,
                                                 "Unsupported Data Source Name"));
         return connectorCache

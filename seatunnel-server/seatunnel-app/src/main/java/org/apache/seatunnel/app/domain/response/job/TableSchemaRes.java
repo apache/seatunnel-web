@@ -17,9 +17,10 @@
 
 package org.apache.seatunnel.app.domain.response.job;
 
+import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
 import java.util.List;
 

@@ -1,9 +1,5 @@
 package org.apache.seatunnel.app.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NonNull;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobTaskDao;
@@ -19,15 +15,27 @@ import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyC
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
-import org.apache.seatunnel.server.common.SeaTunnelException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 
 import javax.annotation.Resource;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,11 +46,14 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Resource private IJobDefinitionDao jobDefinitionDao;
+    @Resource(name = "jobDefinitionDaoImpl")
+    private IJobDefinitionDao jobDefinitionDao;
 
-    @Resource private IJobTaskDao jobTaskDao;
+    @Resource(name = "jobTaskDaoImpl")
+    private IJobTaskDao jobTaskDao;
 
-    @Resource private IJobVersionDao jobVersionDao;
+    @Resource(name = "jobVersionDaoImpl")
+    private IJobVersionDao jobVersionDao;
 
     @Override
     @Transactional
@@ -95,7 +106,7 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
             try {
                 JobMode.valueOf(jobMode);
             } catch (Exception e) {
-                throw new SeaTunnelException(
+                throw new SeatunnelException(
                         SeatunnelErrorEnum.ILLEGAL_STATE, "Unsupported JobMode");
             }
         }

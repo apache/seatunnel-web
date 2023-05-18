@@ -138,4 +138,9 @@ public class UserDaoImpl implements IUserDao {
     public UserLoginLog getLastLoginLog(Integer userId) {
         return userLoginLogMapper.checkLastTokenEnable(userId);
     }
+
+    @Override
+    public List<User> queryEnabledUsers() {
+        return userMapper.queryEnabledUsers();
+    }
 }

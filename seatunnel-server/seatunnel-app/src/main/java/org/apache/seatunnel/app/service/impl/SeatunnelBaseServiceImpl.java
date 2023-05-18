@@ -18,6 +18,7 @@ package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.permission.ISeatunnelPermissonService;
 import org.apache.seatunnel.app.service.ISeatunnelBaseService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

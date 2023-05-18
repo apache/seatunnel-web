@@ -1,9 +1,10 @@
 package org.apache.seatunnel.app.domain.request.job;
 
+import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 
 @Data
 @ApiModel(value = "JobDefinition Request", description = "job info")

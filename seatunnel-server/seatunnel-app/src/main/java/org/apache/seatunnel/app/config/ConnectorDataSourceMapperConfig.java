@@ -16,15 +16,17 @@
  */
 package org.apache.seatunnel.app.config;
 
-import lombok.Data;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.connector.SceneMode;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.domain.response.connector.DataSourceInfo;
 import org.apache.seatunnel.common.constants.PluginType;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;

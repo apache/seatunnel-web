@@ -17,18 +17,22 @@
 
 package org.apache.seatunnel.app.dal.dao.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.mapper.JobMapper;
 import org.apache.seatunnel.app.domain.response.PageInfo;
+
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.stereotype.Repository;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.NonNull;
+
 import javax.annotation.Resource;
+
 import java.util.List;
 
 @Repository

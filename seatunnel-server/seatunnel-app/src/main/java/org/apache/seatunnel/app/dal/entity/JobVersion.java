@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-
 package org.apache.seatunnel.app.dal.entity;
+
+import org.apache.seatunnel.common.constants.JobMode;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -26,7 +27,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.seatunnel.common.constants.JobMode;
 
 import java.util.Date;
 

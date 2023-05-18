@@ -98,6 +98,7 @@
         <jwt.version>0.10.7</jwt.version>
         <cron-utils.version>9.1.6</cron-utils.version>
         <commons-io.version>2.11.0</commons-io.version>
+        <jsr305.version>3.0.0</jsr305.version>
 
         <hadoop-uber.version>2.3.1</hadoop-uber.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>
@@ -505,6 +506,12 @@
                 <artifactId>seatunnel-datasource-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${jsr305.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -530,8 +537,6 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
-
-
 
     </dependencies>
 

@@ -17,10 +17,12 @@
 
 package org.apache.seatunnel.app.dal.mapper;
 
+import org.apache.seatunnel.app.dal.entity.JobDefinition;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
 
 import java.util.List;
 

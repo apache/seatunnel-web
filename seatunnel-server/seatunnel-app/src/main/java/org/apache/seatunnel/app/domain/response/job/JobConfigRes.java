@@ -15,8 +15,9 @@ package org.apache.seatunnel.app.domain.response.job;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import lombok.Data;
 import org.apache.seatunnel.app.common.EngineType;
+
+import lombok.Data;
 
 import java.util.Map;
 

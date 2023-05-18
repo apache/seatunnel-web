@@ -17,9 +17,10 @@
 
 package org.apache.seatunnel.app.dal.dao;
 
-import lombok.NonNull;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.domain.response.PageInfo;
+
+import lombok.NonNull;
 
 import java.util.List;
 
