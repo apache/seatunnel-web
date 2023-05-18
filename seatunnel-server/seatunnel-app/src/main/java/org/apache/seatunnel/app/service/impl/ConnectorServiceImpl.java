@@ -16,7 +16,6 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
-import lombok.NonNull;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.bean.connector.ConnectorCache;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;

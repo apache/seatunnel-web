@@ -37,8 +37,7 @@ import java.util.List;
 @Slf4j
 public class S3DataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    private S3DataSourceConfigSwitcher() {
-    }
+    private S3DataSourceConfigSwitcher() {}
 
     private static final S3DataSourceConfigSwitcher INSTANCE = new S3DataSourceConfigSwitcher();
 

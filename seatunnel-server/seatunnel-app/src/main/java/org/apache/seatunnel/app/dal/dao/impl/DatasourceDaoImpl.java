@@ -4,11 +4,11 @@ import org.apache.seatunnel.app.dal.dao.IDatasourceDao;
 import org.apache.seatunnel.app.dal.entity.Datasource;
 import org.apache.seatunnel.app.dal.mapper.DatasourceMapper;
 
+import org.springframework.stereotype.Repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 
 import javax.annotation.Resource;
 
@@ -17,8 +17,7 @@ import java.util.List;
 @Repository
 public class DatasourceDaoImpl implements IDatasourceDao {
 
-    @Resource
-    private DatasourceMapper datasourceMapper;
+    @Resource private DatasourceMapper datasourceMapper;
 
     @Override
     public boolean insertDatasource(Datasource datasource) {

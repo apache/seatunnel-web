@@ -55,6 +55,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import javax.annotation.Resource;
 
 import java.util.ArrayList;
@@ -66,23 +69,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl implements IDatasourceService {
+public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
+        implements IDatasourceService, ApplicationContextAware {
 
     private static final String VIRTUAL_TABLE_DATABASE_NAME = "default";
 
-    @Qualifier("datasourceDaoImpl") @Autowired
-    private IDatasourceDao datasourceDao;
+    @Autowired
+    @Qualifier("datasourceDaoImpl") private IDatasourceDao datasourceDao;
 
     private ApplicationContext applicationContext;
 
-    @Resource
-    private IJobDefinitionService jobDefinitionService;
+    @Resource private IJobDefinitionService jobDefinitionService;
 
     @Autowired
     @Qualifier("virtualTableDaoImpl") private IVirtualTableDao virtualTableDao;
 
-    @Autowired
-    private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
+    @Autowired private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
 
     protected static final String DEFAULT_DATASOURCE_PLUGIN_VERSION = "1.0.0";
 

@@ -28,8 +28,9 @@ import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
-import org.apache.seatunnel.app.thirdpart.framework.SeaTunnelOptionRuleWrapper;
-import org.apache.seatunnel.app.thirdpart.framework.UnSupportWrapperException;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.exceptions.UnSupportWrapperException;
+import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
 import org.apache.seatunnel.common.constants.PluginType;
 
 import java.util.List;

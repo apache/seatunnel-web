@@ -75,7 +75,7 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     @Transactional
     public long createJob(int userId, JobReq jobReq)
-        throws CodeGenerateUtils.CodeGenerateException {
+            throws CodeGenerateUtils.CodeGenerateException {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_CREATE, userId);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         jobDefinitionDao.add(
@@ -89,32 +89,32 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .projectCode(jobReq.getProjectCode())
                         .build());
         jobVersionDao.createVersion(
-            JobVersion.builder()
-                .jobId(uuid)
-                .createUserId(userId)
-                .updateUserId(userId)
-                .name(DEFAULT_VERSION)
-                .id(uuid)
-                .engineName(EngineType.SeaTunnel.name())
-                .jobMode(JobMode.BATCH.name())
-                .engineVersion("2.3.0")
-                .build());
+                JobVersion.builder()
+                        .jobId(uuid)
+                        .createUserId(userId)
+                        .updateUserId(userId)
+                        .name(DEFAULT_VERSION)
+                        .id(uuid)
+                        .engineName(EngineType.SeaTunnel.name())
+                        .jobMode(JobMode.BATCH.name())
+                        .engineVersion("2.3.0")
+                        .build());
         return uuid;
     }
 
     @Override
     public PageInfo<JobDefinitionRes> getJob(
-        String name, Integer pageNo, Integer pageSize, List<Long> projectCodes) {
+            String name, Integer pageNo, Integer pageSize, List<Long> projectCodes) {
         return getJob(name, pageNo, pageSize, projectCodes, null);
     }
 
     @Override
     public PageInfo<JobDefinitionRes> getJob(
-        String searchName,
-        Integer pageNo,
-        Integer pageSize,
-        List<Long> projectCodes,
-        String jobMode) {
+            String searchName,
+            Integer pageNo,
+            Integer pageSize,
+            List<Long> projectCodes,
+            String jobMode) {
         if (CollectionUtils.isEmpty(projectCodes)) {
             return new PageInfo<>();
         }
@@ -173,9 +173,9 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
         Map<Long, String> jobDefineMap = new HashMap<>();
         job.forEach(
-            jobDefine -> {
-                jobDefineMap.put(jobDefine.getId(), jobDefine.getName());
-            });
+                jobDefine -> {
+                    jobDefineMap.put(jobDefine.getId(), jobDefine.getName());
+                });
 
         return jobDefineMap;
     }

@@ -33,7 +33,6 @@ import org.apache.seatunnel.plugin.discovery.seatunnel.SeaTunnelSinkPluginDiscov
 
 import lombok.NonNull;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;

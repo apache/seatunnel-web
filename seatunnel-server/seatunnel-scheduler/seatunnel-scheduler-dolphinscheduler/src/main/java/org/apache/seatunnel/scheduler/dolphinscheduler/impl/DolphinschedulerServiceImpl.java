@@ -41,8 +41,8 @@ import org.apache.seatunnel.scheduler.dolphinscheduler.dto.UpdateProcessDefiniti
 import org.apache.seatunnel.scheduler.dolphinscheduler.utils.HttpUtils;
 import org.apache.seatunnel.server.common.DateUtils;
 import org.apache.seatunnel.server.common.PageData;
-import org.apache.seatunnel.server.common.SeaTunnelException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 import org.apache.seatunnel.spi.scheduler.dto.InstanceLogDto;
 import org.apache.seatunnel.spi.scheduler.dto.JobDto;
 
@@ -648,25 +648,34 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
                         .findAny()
                         .orElse(null);
         if (Objects.isNull(projectDto)) {
-            throw new SeaTunnelException(NO_MATCHED_PROJECT, projectName);
+            throw new SeatunnelException(NO_MATCHED_PROJECT, projectName);
         }
         return projectDto;
     }
 
     @Override
     public void execute(long processInstanceId, ExecuteTypeEnum executeType) {
-        final Map result = HttpUtils.builder()
-            .withUrl(apiPrefix.concat(String.format(EXECUTE, defaultProjectCode)))
-            .withMethod(Connection.Method.POST)
-            .withRequestBody(this.objectToString(null))
-            .withData(createParamMap(PROCESS_INSTANCE_ID, processInstanceId, EXECUTE_TYPE, executeType.name()))
-            .withToken(TOKEN, token)
-            .execute(Map.class);
+        final Map result =
+                HttpUtils.builder()
+                        .withUrl(apiPrefix.concat(String.format(EXECUTE, defaultProjectCode)))
+                        .withMethod(Connection.Method.POST)
+                        .withRequestBody(this.objectToString(null))
+                        .withData(
+                                createParamMap(
+                                        PROCESS_INSTANCE_ID,
+                                        processInstanceId,
+                                        EXECUTE_TYPE,
+                                        executeType.name()))
+                        .withToken(TOKEN, token)
+                        .execute(Map.class);
         checkResult(result, false);
     }
 
-    private TaskDefinitionDto buildTaskDefinitionJson(Long taskCode, TaskDescriptionDto taskDescriptionDto) {
-        final ResourceDto resourceDto = createOrUpdateScriptContent(taskDescriptionDto.getName(), taskDescriptionDto.getContent());
+    private TaskDefinitionDto buildTaskDefinitionJson(
+            Long taskCode, TaskDescriptionDto taskDescriptionDto) {
+        final ResourceDto resourceDto =
+                createOrUpdateScriptContent(
+                        taskDescriptionDto.getName(), taskDescriptionDto.getContent());
         final TaskDefinitionDto taskDefinitionDto = new TaskDefinitionDto();
         taskDefinitionDto.setCode(taskCode);
         taskDefinitionDto.setName(taskDescriptionDto.getName());
@@ -711,18 +720,20 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
             return Collections.emptyList();
         }
         final List<LocalParam> localParams = Lists.newArrayListWithCapacity(params.size());
-        params.forEach((k, v) -> {
-            final LocalParam localParam = new LocalParam();
-            localParam.setProp(k);
-            localParam.setDirect(LOCAL_PARAMS_DIRECT_DEFAULT);
-            localParam.setType(LOCAL_PARAMS_TYPE_DEFAULT);
-            localParam.setValue(v);
-            localParams.add(localParam);
-        });
+        params.forEach(
+                (k, v) -> {
+                    final LocalParam localParam = new LocalParam();
+                    localParam.setProp(k);
+                    localParam.setDirect(LOCAL_PARAMS_DIRECT_DEFAULT);
+                    localParam.setType(LOCAL_PARAMS_TYPE_DEFAULT);
+                    localParam.setValue(v);
+                    localParams.add(localParam);
+                });
         return localParams;
     }
 
-    private List<TaskRelationDto> buildTaskRelationJson(Long taskCode, TaskDescriptionDto taskDescriptionDto) {
+    private List<TaskRelationDto> buildTaskRelationJson(
+            Long taskCode, TaskDescriptionDto taskDescriptionDto) {
 
         final TaskRelationDto taskRelationDto = new TaskRelationDto();
         taskRelationDto.setName(BLANK_SPACE);
@@ -748,25 +759,29 @@ public class DolphinschedulerServiceImpl implements IDolphinschedulerService, In
     }
 
     private void updateContent(int id, String content) {
-        final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(String.format(UPDATE_CONTENT, id)))
-                .withMethod(Connection.Method.PUT)
-                .withData(createParamMap(RESOURCE_ID, id, RESOURCE_TYPE_FILE_CONTENT, content))
-                .withRequestBody(this.objectToString(null))
-                .withToken(TOKEN, token)
-                .execute(Map.class);
+        final Map result =
+                HttpUtils.builder()
+                        .withUrl(apiPrefix.concat(String.format(UPDATE_CONTENT, id)))
+                        .withMethod(Connection.Method.PUT)
+                        .withData(
+                                createParamMap(
+                                        RESOURCE_ID, id, RESOURCE_TYPE_FILE_CONTENT, content))
+                        .withRequestBody(this.objectToString(null))
+                        .withToken(TOKEN, token)
+                        .execute(Map.class);
         checkResult(result, false);
     }
 
     private void onlineCreateResource(OnlineCreateResourceDto createDto) {
         final Map<String, Object> map = createDto.toMap();
-        final Map result = HttpUtils.builder()
-                .withUrl(apiPrefix.concat(ONLINE_CREATE_RESOURCE))
-                .withMethod(Connection.Method.POST)
-                .withData(translate(map))
-                .withRequestBody(this.objectToString(null))
-                .withToken(TOKEN, token)
-                .execute(Map.class);
+        final Map result =
+                HttpUtils.builder()
+                        .withUrl(apiPrefix.concat(ONLINE_CREATE_RESOURCE))
+                        .withMethod(Connection.Method.POST)
+                        .withData(translate(map))
+                        .withRequestBody(this.objectToString(null))
+                        .withToken(TOKEN, token)
+                        .execute(Map.class);
         checkResult(result, false);
     }
 

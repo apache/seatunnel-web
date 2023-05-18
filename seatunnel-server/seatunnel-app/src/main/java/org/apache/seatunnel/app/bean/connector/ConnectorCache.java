@@ -21,7 +21,7 @@ import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorFeature;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
-import org.apache.seatunnel.app.thirdpart.framework.PluginDiscoveryUtil;
+import org.apache.seatunnel.app.thirdparty.framework.PluginDiscoveryUtil;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.common.constants.PluginType;

@@ -21,10 +21,6 @@ import org.apache.seatunnel.shade.com.typesafe.config.Config;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
-
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
@@ -44,7 +40,6 @@ import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DAT
 
 public class PostgresCDCDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    private PostgresCDCDataSourceConfigSwitcher() {}
     private int three = 3;
     private int two = 2;
 
