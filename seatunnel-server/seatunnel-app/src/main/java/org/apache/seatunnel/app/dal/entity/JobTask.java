@@ -50,18 +50,18 @@ public class JobTask {
     @TableField("datasource_id")
     private Long dataSourceId;
 
-    /** {@link DataSourceOption} value */
+    /** { value */
     @TableField("datasource_option")
     private String dataSourceOption;
 
-    /** {@link SelectTableFields} value */
+    /** { value */
     @TableField("select_table_fields")
     private String selectTableFields;
 
     @TableField("scene_mode")
     private String sceneMode;
 
-    /** {@link TransformOptions} value */
+    /**  value */
     @TableField("transform_options")
     private String transformOptions;
 

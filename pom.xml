@@ -61,7 +61,6 @@
         <maven-shade-plugin.version>3.3.0</maven-shade-plugin.version>
         <lombok.version>1.18.0</lombok.version>
         <skipUT>false</skipUT>
-        <datasource-s3.version>1.0.0-SNAPSHOT</datasource-s3.version>
         <!-- dependency -->
         <commons.logging.version>1.2</commons.logging.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -516,7 +515,7 @@
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>datasource-s3</artifactId>
-                <version>${datasource-s3.version}</version>
+                <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
 
