@@ -190,6 +190,7 @@ public class KafkaKingbaseDataSourceConfigSwitcher extends AbstractDataSourceCon
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
+
     @Slf4j
     public static class SchemaGenerator {
 
