@@ -61,7 +61,7 @@ public class JobTask {
     @TableField("scene_mode")
     private String sceneMode;
 
-    /**  value */
+    /** value */
     @TableField("transform_options")
     private String transformOptions;
 
