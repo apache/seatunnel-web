@@ -57,6 +57,12 @@ seatunnel-config-shade-2.3.1.jar
 seatunnel-jackson-2.3.1-optional.jar
 seatunnel-api-2.3.1.jar
 seatunnel-plugin-discovery-2.3.1.jar
+seatunnel-dynamicform-1.0.0-SNAPSHOT.jar
+seatunnel-plugin-discovery-2.3.1.jar
+seatunnel-scheduler-dolphinscheduler-1.0.0-SNAPSHOT.jar
+seatunnel-server-common-1.0.0-SNAPSHOT.jar
+seatunnel-datasource-client-1.0.0-SNAPSHOT.jar
+seatunnel-spi-1.0.0-SNAPSHOT.jar
 slf4j-api-1.7.25.jar
 snakeyaml-1.29.jar
 spring-aop-5.3.20.jar
