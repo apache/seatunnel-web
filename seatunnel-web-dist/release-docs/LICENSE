@@ -224,6 +224,10 @@ The text of each license is the standard Apache 2.0 license.
      (Apache License, Version 2.0) Apache Commons Lang (org.apache.commons:commons-lang3:3.12.0 - http://commons.apache.org/proper/commons-lang/)
      (Apache License, Version 2.0) Apache Commons IO (commons-io:commons-io:2.11.0 - https://mvnrepository.com/artifact/commons-io/commons-io/2.11.0)
      (Apache License, Version 2.0) config (com.typesafe:config:1.3.3 - https://github.com/lightbend/config)
+     (Apache License, Version 2.0) SeaTunnel Common (org.apache.seatunnel:seatunnel-common:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-common)
+     (Apache License, Version 2.0) SeaTunnel API (org.apache.seatunnel:seatunnel-api:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-api)
+     (Apache License, Version 2.0) SeaTunnel API (org.apache.seatunnel:seatunnel-plugin-discovery:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-plugin-discovery)
+
      (The Apache Software License, Version 2.0) Guava: Google Core Libraries for Java (com.google.guava:guava:19.0 - https://github.com/google/guava/guava)
      (Apache License 2.0) Hibernate Validator Engine (org.hibernate.validator:hibernate-validator:6.2.2.Final - http://hibernate.org/validator/hibernate-validator)
      (The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.12.7 - http://github.com/FasterXML/jackson)
