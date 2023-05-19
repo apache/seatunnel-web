@@ -56,7 +56,6 @@ seatunnel-config-base-2.3.1.jar
 seatunnel-config-shade-2.3.1.jar
 seatunnel-jackson-2.3.1-optional.jar
 seatunnel-api-2.3.1.jar
-seatunnel-plugin-discovery-2.3.1.jar
 seatunnel-dynamicform-1.0.0-SNAPSHOT.jar
 seatunnel-plugin-discovery-2.3.1.jar
 seatunnel-scheduler-dolphinscheduler-1.0.0-SNAPSHOT.jar
