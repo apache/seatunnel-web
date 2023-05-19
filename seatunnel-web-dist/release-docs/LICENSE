@@ -281,6 +281,7 @@ The text of each license is the standard Apache 2.0 license.
      (Apache License, Version 2.0) Spring Transaction (org.springframework:spring-tx:5.3.20 - https://github.com/spring-projects/spring-framework)
      (Apache License, Version 2.0) Spring Web (org.springframework:spring-web:5.3.20 - https://github.com/spring-projects/spring-framework)
      (Apache License, Version 2.0) Spring Web MVC (org.springframework:spring-webmvc:5.3.20 - https://github.com/spring-projects/spring-framework)
+     (Apache License, Version 2.0) Annotation Libraries (com.google.auto.service:auto-service-annotations:1.0.1 - https://github.com/google/auto/tree/master/service)
      (The Apache Software License, Version 2.0) springfox-core (io.springfox:springfox-core:2.6.1 - https://github.com/springfox/springfox)
      (The Apache Software License, Version 2.0) springfox-schema (io.springfox:springfox-schema:2.6.1 - https://github.com/springfox/springfox)
      (The Apache Software License, Version 2.0) springfox-spi (io.springfox:springfox-spi:2.6.1 - https://github.com/springfox/springfox)
