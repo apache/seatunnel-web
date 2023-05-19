@@ -91,3 +91,5 @@ swagger-annotations-1.5.10.jar
 swagger-models-1.5.10.jar
 tomcat-embed-el-9.0.63.jar
 h2-2.1.214.jar
+auto-service-annotations-1.0.1.jar
+jsr305-3.0.0.jar
