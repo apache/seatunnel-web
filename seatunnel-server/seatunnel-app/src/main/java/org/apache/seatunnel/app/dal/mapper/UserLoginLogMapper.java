@@ -19,8 +19,10 @@ package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface UserLoginLogMapper {
     int insert(UserLoginLog userLoginLog);
 

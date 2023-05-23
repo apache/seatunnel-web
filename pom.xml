@@ -61,7 +61,6 @@
         <maven-shade-plugin.version>3.3.0</maven-shade-plugin.version>
         <lombok.version>1.18.0</lombok.version>
         <skipUT>false</skipUT>
-
         <!-- dependency -->
         <commons.logging.version>1.2</commons.logging.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -98,7 +97,8 @@
         <jwt.version>0.10.7</jwt.version>
         <cron-utils.version>9.1.6</cron-utils.version>
         <commons-io.version>2.11.0</commons-io.version>
-
+        <jsr305.version>3.0.0</jsr305.version>
+        <auto-service-annotation.version>1.0.1</auto-service-annotation.version>
         <hadoop-uber.version>2.3.1</hadoop-uber.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>
         <aws-java-sdk-bundle.version>1.11.271</aws-java-sdk-bundle.version>
@@ -499,6 +499,30 @@
                         <artifactId>javassist</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.seatunnel</groupId>
+                <artifactId>seatunnel-datasource-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service-annotations</artifactId>
+                <version>${auto-service-annotation.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.seatunnel</groupId>
+                <artifactId>datasource-s3</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${jsr305.version}</version>
             </dependency>
         </dependencies>
 
