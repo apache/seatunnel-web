@@ -19,10 +19,12 @@ package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.User;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+@Mapper
 public interface UserMapper {
     User selectByPrimaryKey(@Param("id") Integer id);
 
@@ -43,4 +45,6 @@ public interface UserMapper {
 
     User selectByNameAndPasswd(
             @Param("username") String username, @Param("password") String password);
+
+    List<User> queryEnabledUsers();
 }

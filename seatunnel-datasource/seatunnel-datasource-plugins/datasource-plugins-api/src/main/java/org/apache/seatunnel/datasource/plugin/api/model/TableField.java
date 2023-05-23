@@ -37,4 +37,8 @@ public class TableField {
     private Boolean nullable;
 
     private Map<String, String> properties;
+
+    private Boolean unSupport;
+
+    private String outputDataType;
 }

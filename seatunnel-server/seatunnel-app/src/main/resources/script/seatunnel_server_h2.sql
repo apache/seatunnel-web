@@ -173,3 +173,224 @@ CREATE TABLE `user_login_log` (
 -- ----------------------------
 
 INSERT INTO `seatunnel`.`user`(`username`,`password`,`status`,`type`) values ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);
+
+
+
+-- ----------------------------
+-- Table structure for t_ds_task_definition
+-- ----------------------------
+DROP TABLE IF EXISTS t_ds_task_definition CASCADE;
+CREATE TABLE t_ds_task_definition
+(
+    id                      int(11) NOT NULL AUTO_INCREMENT,
+    code                    bigint(20) NOT NULL,
+    name                    varchar(200) DEFAULT NULL,
+    version                 int(11) DEFAULT NULL,
+    description             text,
+    user_id                 int(11) DEFAULT NULL,
+    task_type               varchar(50) NOT NULL,
+    task_params             longtext,
+    flag                    tinyint(2) DEFAULT NULL,
+    task_priority           tinyint(4) DEFAULT '2',
+    worker_group            varchar(200) DEFAULT NULL,
+    environment_code        bigint(20) DEFAULT '-1',
+    fail_retry_times        int(11) DEFAULT NULL,
+    fail_retry_interval     int(11) DEFAULT NULL,
+    timeout_flag            tinyint(2) DEFAULT '0',
+    timeout_notify_strategy tinyint(4) DEFAULT NULL,
+    timeout                 int(11) DEFAULT '0',
+    delay_time              int(11) DEFAULT '0',
+    task_group_id           int(11) DEFAULT NULL,
+    task_group_priority     tinyint(4) DEFAULT '0',
+    resource_ids            text,
+    create_time             datetime    NOT NULL,
+    update_time             datetime     DEFAULT NULL,
+    PRIMARY KEY (id, code)
+);
+
+-- ----------------------------
+-- Table structure for t_ds_task_definition_log
+-- ----------------------------
+DROP TABLE IF EXISTS t_ds_task_definition_log CASCADE;
+CREATE TABLE t_ds_task_definition_log
+(
+    id                      int(11) NOT NULL AUTO_INCREMENT,
+    code                    bigint(20) NOT NULL,
+    name                    varchar(200) DEFAULT NULL,
+    version                 int(11) DEFAULT NULL,
+    description             text,
+    user_id                 int(11) DEFAULT NULL,
+    task_type               varchar(50) NOT NULL,
+    task_params             text,
+    flag                    tinyint(2) DEFAULT NULL,
+    task_priority           tinyint(4) DEFAULT '2',
+    worker_group            varchar(200) DEFAULT NULL,
+    environment_code        bigint(20) DEFAULT '-1',
+    fail_retry_times        int(11) DEFAULT NULL,
+    fail_retry_interval     int(11) DEFAULT NULL,
+    timeout_flag            tinyint(2) DEFAULT '0',
+    timeout_notify_strategy tinyint(4) DEFAULT NULL,
+    timeout                 int(11) DEFAULT '0',
+    delay_time              int(11) DEFAULT '0',
+    resource_ids            text,
+    operator                int(11) DEFAULT NULL,
+    task_group_id           int(11) DEFAULT NULL,
+    task_group_priority     tinyint(4) DEFAULT '0',
+    operate_time            datetime     DEFAULT NULL,
+    create_time             datetime    NOT NULL,
+    update_time             datetime     DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+
+
+-- ----------------------------
+-- Table structure for t_ds_process_task_relation
+-- ----------------------------
+DROP TABLE IF EXISTS t_ds_process_task_relation CASCADE;
+CREATE TABLE t_ds_process_task_relation
+(
+    id                         int(11) NOT NULL AUTO_INCREMENT,
+    name                       varchar(200) DEFAULT NULL,
+    process_definition_version int(11) DEFAULT NULL,
+    project_code               bigint(20) NOT NULL,
+    process_definition_code    bigint(20) NOT NULL,
+    pre_task_code              bigint(20) NOT NULL,
+    pre_task_version           int(11) NOT NULL,
+    post_task_code             bigint(20) NOT NULL,
+    post_task_version          int(11) NOT NULL,
+    condition_type             tinyint(2) DEFAULT NULL,
+    condition_params           text,
+    create_time                datetime NOT NULL,
+    update_time                datetime     DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+-- ----------------------------
+-- Table structure for t_ds_process_task_relation_log
+-- ----------------------------
+DROP TABLE IF EXISTS t_ds_process_task_relation_log CASCADE;
+CREATE TABLE t_ds_process_task_relation_log
+(
+    id                         int(11) NOT NULL AUTO_INCREMENT,
+    name                       varchar(200) DEFAULT NULL,
+    process_definition_version int(11) DEFAULT NULL,
+    project_code               bigint(20) NOT NULL,
+    process_definition_code    bigint(20) NOT NULL,
+    pre_task_code              bigint(20) NOT NULL,
+    pre_task_version           int(11) NOT NULL,
+    post_task_code             bigint(20) NOT NULL,
+    post_task_version          int(11) NOT NULL,
+    condition_type             tinyint(2) DEFAULT NULL,
+    condition_params           text,
+    operator                   int(11) DEFAULT NULL,
+    operate_time               datetime     DEFAULT NULL,
+    create_time                datetime NOT NULL,
+    update_time                datetime     DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+
+
+
+
+-- ----------------------------
+-- Table structure for t_st_job_definition
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_job_definition` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_job_definition` (
+    `id` bigint(20) NOT NULL,
+    `name` varchar(50) NOT NULL,
+    `description` varchar(255) ,
+    `job_type` varchar(50),
+    `create_user_id` int(11) NOT NULL,
+    `update_user_id` int(11) NOT NULL,
+    `project_code` bigint(20) NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    ) ;
+
+
+-- ----------------------------
+-- Records of t_st_datasource
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_datasource` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_datasource`
+(
+    id                bigint                      NOT NULL,
+    datasource_name   varchar(63)                 NOT NULL,
+    plugin_name       varchar(63)                 NOT NULL,
+    plugin_version    varchar(63) default '1.0.0' NULL,
+    datasource_config varchar(1023)               NOT NULL,
+    description       varchar(63)                 NULL,
+    create_user_id    int                         NOT NULL,
+    update_user_id    int                         NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    primary key (`id`)
+    );
+
+
+-- ----------------------------
+-- Table structure for t_st_job_task
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_job_task` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_job_task` (
+    `id` bigint(20) NOT NULL,
+    `version_id` bigint(20) NOT NULL,
+    `plugin_id` varchar(50) NOT NULL,
+    `name` varchar(50) NOT NULL,
+    `config` text,
+    `transform_options` varchar(5000),
+    `output_schema` text,
+    `connector_type` varchar(50) NOT NULL,
+    `datasource_id` bigint(20),
+    `datasource_option` varchar(5000),
+    `select_table_fields` varchar(5000),
+    `scene_mode` varchar(50),
+    `type` varchar(50) NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    );
+
+
+-- ----------------------------
+-- Table structure for t_st_job_version
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_job_version` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_job_version` (
+    `id` bigint(20) NOT NULL,
+    `job_id` bigint(20) NOT NULL,
+    `name` varchar(255) NOT NULL,
+    `job_mode` varchar(10) NOT NULL,
+    `env` text,
+    `engine_name` varchar(50) NOT NULL,
+    `engine_version` varchar(50) NOT NULL,
+    `create_user_id` int(11) NOT NULL,
+    `update_user_id` int(11) NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    );
+
+-- ----------------------------
+-- Records of t_st_virtual_table
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_virtual_table` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_virtual_table`
+(
+    id                    bigint        NOT NULL,
+    datasource_id         bigint        NOT NULL,
+    virtual_database_name varchar(63)   NOT NULL,
+    virtual_table_name    varchar(63)   NOT NULL,
+    table_fields          varchar(1023) NOT NULL,
+    virtual_table_config  varchar(1023) NOT NULL,
+    description           varchar(63)   NULL,
+    create_user_id        int           NOT NULL,
+    update_user_id        int           NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    primary key (`id`)
+    );
