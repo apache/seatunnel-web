@@ -17,7 +17,9 @@
 
 package org.apache.seatunnel.app.interceptor;
 
+import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
+import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 import org.apache.seatunnel.app.security.JwtUtils;
 
@@ -91,7 +93,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         map.forEach(request::setAttribute);
-
+        User user = new User();
+        user.setUsername((String) map.get("name"));
+        user.setId((Integer) map.get("id"));
+        //        user.setStatus((Byte) map.get("status"));
+        //        user.setType((Byte) map.get("type"));
+        request.setAttribute(Constants.SESSION_USER, user);
         return true;
     }
 

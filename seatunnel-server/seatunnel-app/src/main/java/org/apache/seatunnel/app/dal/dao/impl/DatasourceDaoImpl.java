@@ -132,6 +132,8 @@ public class DatasourceDaoImpl implements IDatasourceDao {
 
     @Override
     public List<Datasource> selectDatasourceByUserId(int userId) {
-        return datasourceMapper.selectByUserId(userId);
+        QueryWrapper<Datasource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("create_user_id", userId);
+        return datasourceMapper.selectList(queryWrapper);
     }
 }

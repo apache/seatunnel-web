@@ -15,8 +15,7 @@
  * limitations under the License.
 */
 
-CREATE
-DATABASE IF NOT EXISTS seatunnel;
+CREATE DATABASE IF NOT EXISTS seatunnel;
 
 
 -- ----------------------------
@@ -196,7 +195,6 @@ CREATE TABLE `seatunnel`.`t_ds_task_definition` (
                                         `name` varchar(200) DEFAULT NULL COMMENT 'task definition name',
                                         `version` int(11) DEFAULT '0' COMMENT 'task definition version',
                                         `description` text COMMENT 'description',
-                                        `project_code` bigint(20) NOT NULL COMMENT 'project code',
                                         `user_id` int(11) DEFAULT NULL COMMENT 'task definition creator id',
                                         `task_type` varchar(50) NOT NULL COMMENT 'task type',
                                         `task_params` longtext COMMENT 'job custom parameters',
@@ -230,7 +228,6 @@ CREATE TABLE `seatunnel`.`t_ds_task_definition_log` (
                                             `name` varchar(200) DEFAULT NULL COMMENT 'task definition name',
                                             `version` int(11) DEFAULT '0' COMMENT 'task definition version',
                                             `description` text COMMENT 'description',
-                                            `project_code` bigint(20) NOT NULL COMMENT 'project code',
                                             `user_id` int(11) DEFAULT NULL COMMENT 'task definition creator id',
                                             `task_type` varchar(50) NOT NULL COMMENT 'task type',
                                             `task_params` longtext COMMENT 'job custom parameters',
@@ -252,8 +249,7 @@ CREATE TABLE `seatunnel`.`t_ds_task_definition_log` (
                                             `create_time` datetime NOT NULL COMMENT 'create time',
                                             `update_time` datetime NOT NULL COMMENT 'update time',
                                             PRIMARY KEY (`id`),
-                                            UNIQUE KEY `uniq_code_version` (`code`,`version`) USING BTREE,
-                                            KEY `idx_project_code` (`project_code`)
+                                            UNIQUE KEY `uniq_code_version` (`code`,`version`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 

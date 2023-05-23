@@ -17,7 +17,6 @@
 
 package org.apache.seatunnel.app.dal.mapper;
 
-import org.apache.seatunnel.app.dal.entity.DefinitionGroupByUser;
 import org.apache.seatunnel.app.dal.entity.TaskDefinition;
 import org.apache.seatunnel.app.dal.entity.TaskDefinitionLog;
 import org.apache.seatunnel.app.dal.entity.TaskMainInfo;
@@ -38,18 +37,6 @@ import java.util.Map;
 public interface TaskDefinitionMapper extends BaseMapper<TaskDefinition> {
 
     /**
-     * query task definition by name
-     *
-     * @param projectCode projectCode
-     * @param name name
-     * @return task definition
-     */
-    TaskDefinition queryByName(
-            @Param("projectCode") long projectCode,
-            @Param("processCode") long processCode,
-            @Param("name") String name);
-
-    /**
      * query task definition by code
      *
      * @param code taskDefinitionCode
@@ -60,19 +47,9 @@ public interface TaskDefinitionMapper extends BaseMapper<TaskDefinition> {
     /**
      * query all task definition list
      *
-     * @param projectCode projectCode
      * @return task definition list
      */
-    List<TaskDefinition> queryAllDefinitionList(@Param("projectCode") long projectCode);
-
-    /**
-     * count task definition group by user
-     *
-     * @param projectCodes projectCodes
-     * @return task definition list
-     */
-    List<DefinitionGroupByUser> countDefinitionGroupByUser(
-            @Param("projectCodes") Long[] projectCodes);
+    List<TaskDefinition> queryAllDefinitionList();
 
     /**
      * list all resource ids
@@ -109,8 +86,7 @@ public interface TaskDefinitionMapper extends BaseMapper<TaskDefinition> {
     /**
      * task main info page
      *
-     * @param page page
-     * @param projectCodes projectCodes
+     * @param page page // * @param projectCodes projectCodes
      * @param searchWorkflowName searchWorkflowName
      * @param searchTaskName searchTaskName
      * @param taskType taskType
@@ -118,7 +94,7 @@ public interface TaskDefinitionMapper extends BaseMapper<TaskDefinition> {
      */
     IPage<TaskMainInfo> queryDefineListPaging(
             IPage<TaskMainInfo> page,
-            @Param("projectCodes") List<Long> projectCodes,
+            //            @Param("projectCodes") List<Long> projectCodes,
             @Param("searchWorkflowName") String searchWorkflowName,
             @Param("searchTaskName") String searchTaskName,
             @Param("taskType") String taskType);

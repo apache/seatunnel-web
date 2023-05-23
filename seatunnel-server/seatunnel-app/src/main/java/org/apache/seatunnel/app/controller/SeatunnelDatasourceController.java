@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.dao.TaskDefinitionDao;
+import org.apache.seatunnel.app.dal.entity.TaskMainInfo;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.datasource.DatabaseTableFields;
 import org.apache.seatunnel.app.domain.dto.datasource.DatabaseTables;
@@ -42,6 +43,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -193,25 +195,28 @@ public class SeatunnelDatasourceController extends BaseController {
                         description,
                         stringStringMap));
     }
-    //
-    //    @ApiOperation(value = "delete datasource by id", notes = "delete datasource by id")
-    //    @DeleteMapping("/{id}")
-    //    Result<Boolean> deleteDatasource(@ApiIgnore @RequestAttribute(value = SESSION_USER) User
-    // loginUser,
-    //                                     @PathVariable("id") String id) {
-    //        Long datasourceId = Long.parseLong(id);
-    //        List<TaskMainInfo> taskMainInfos =
-    // taskDefinitionDao.queryByDataSourceId(datasourceId);
-    //        if (taskMainInfos.size() > 0) {
-    //            throw new SeatunnelException(SeatunnelErrorEnum.DATA_SOURCE_HAD_USED,
-    //                    taskMainInfos.stream().map(info -> String.format("%s - %s - %s",
-    // info.getProjectName(),
-    //                            info.getProcessDefinitionName(),
-    // info.getTaskName())).collect(Collectors.toList()));
-    //        }
-    //        return Result.success(datasourceService.deleteDatasource(loginUser.getId(),
-    // datasourceId));
-    //    }
+
+    @ApiOperation(value = "delete datasource by id", notes = "delete datasource by id")
+    @DeleteMapping("/{id}")
+    Result<Boolean> deleteDatasource(
+            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
+            @PathVariable("id") String id) {
+        Long datasourceId = Long.parseLong(id);
+        List<TaskMainInfo> taskMainInfos = taskDefinitionDao.queryByDataSourceId(datasourceId);
+        if (taskMainInfos.size() > 0) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.DATA_SOURCE_HAD_USED,
+                    taskMainInfos.stream()
+                            .map(
+                                    info ->
+                                            String.format(
+                                                    "%s - %s",
+                                                    info.getProcessDefinitionName(),
+                                                    info.getTaskName()))
+                            .collect(Collectors.toList()));
+        }
+        return Result.success(datasourceService.deleteDatasource(loginUser.getId(), datasourceId));
+    }
 
     @ApiOperation(value = "get datasource detail", notes = "get datasource detail")
     @ApiImplicitParams({

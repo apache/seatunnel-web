@@ -64,7 +64,7 @@ public class TaskDefinition {
     private String description;
 
     /** project code */
-    private long projectCode;
+    //    private long projectCode;
 
     /** task user id */
     private int userId;
@@ -96,8 +96,8 @@ public class TaskDefinition {
     private String userName;
 
     /** project name */
-    @TableField(exist = false)
-    private String projectName;
+    //    @TableField(exist = false)
+    //    private String projectName;
 
     /** worker group */
     private String workerGroup;
@@ -213,13 +213,13 @@ public class TaskDefinition {
         this.userName = userName;
     }
 
-    public String getProjectName() {
-        return projectName;
-    }
+    //    public String getProjectName() {
+    //        return projectName;
+    //    }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
+    //    public void setProjectName(String projectName) {
+    //        this.projectName = projectName;
+    //    }
 
     public String getTaskParams() {
         return taskParams;
@@ -298,13 +298,13 @@ public class TaskDefinition {
         this.version = version;
     }
 
-    public long getProjectCode() {
-        return projectCode;
-    }
+    //    public long getProjectCode() {
+    //        return projectCode;
+    //    }
 
-    public void setProjectCode(long projectCode) {
-        this.projectCode = projectCode;
-    }
+    //    public void setProjectCode(long projectCode) {
+    //        this.projectCode = projectCode;
+    //    }
 
     public String getTaskType() {
         return taskType;
@@ -463,9 +463,6 @@ public class TaskDefinition {
                 + version
                 + ", description='"
                 + description
-                + '\''
-                + ", projectCode="
-                + projectCode
                 + ", userId="
                 + userId
                 + ", taskType="
@@ -483,9 +480,6 @@ public class TaskDefinition {
                 + taskPriority
                 + ", userName='"
                 + userName
-                + '\''
-                + ", projectName='"
-                + projectName
                 + '\''
                 + ", workerGroup='"
                 + workerGroup

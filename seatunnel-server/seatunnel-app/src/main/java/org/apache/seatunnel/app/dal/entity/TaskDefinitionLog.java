@@ -46,8 +46,8 @@ public class TaskDefinitionLog extends TaskDefinition {
         this.setUserName(taskDefinition.getUserName());
         this.setWorkerGroup(taskDefinition.getWorkerGroup());
         this.setEnvironmentCode(taskDefinition.getEnvironmentCode());
-        this.setProjectCode(taskDefinition.getProjectCode());
-        this.setProjectName(taskDefinition.getProjectName());
+        //        this.setProjectCode(taskDefinition.getProjectCode());
+        //        this.setProjectName(taskDefinition.getProjectName());
         this.setResourceIds(taskDefinition.getResourceIds());
         this.setTaskParams(taskDefinition.getTaskParams());
         this.setTaskParamList(taskDefinition.getTaskParamList());

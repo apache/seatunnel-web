@@ -203,11 +203,10 @@
     <select id="queryByDataSourceId" resultType="org.apache.seatunnel.app.dal.entity.TaskMainInfo">
         select td.name task_name,td.code task_code,td.version task_version,td.task_type,td.create_time task_create_time,td.update_time task_update_time,
                pd.code process_definition_code,pd.version process_definition_version,pd.name process_definition_name,pd.release_state process_release_state,
-               pt.pre_task_code upstream_task_code, td.project_code, p.name project_name
+               pt.pre_task_code upstream_task_code
         from t_ds_process_task_relation pt
                  LEFT JOIN t_ds_task_definition td ON td.code	= pt.post_task_code and td.version=pt.post_task_version
                  LEFT JOIN t_ds_process_definition pd ON pt.process_definition_code = pd.code and pt.process_definition_version=pd.version
-                 LEFT JOIN t_ds_project p ON td.project_code = p.code
         where td.task_params like concat('%"datasource":', #{dataSourceId}, ',%')
     </select>
 </mapper>
