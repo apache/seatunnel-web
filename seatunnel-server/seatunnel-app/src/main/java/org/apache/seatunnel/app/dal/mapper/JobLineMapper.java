@@ -15,26 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
+package org.apache.seatunnel.app.dal.mapper;
 
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
+import org.apache.seatunnel.app.dal.entity.JobLine;
 
-import lombok.NonNull;
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
-public interface IJobDefinitionDao {
+public interface JobLineMapper extends BaseMapper<JobLine> {
 
-    void add(JobDefinition job);
+    void deleteLinesByVersionId(@Param("versionId") long jobVersionId);
 
-    JobDefinition getJob(long id);
-
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJob(@NonNull String name);
-
-    void delete(long id);
+    void insertBatchLines(@Param("lines") List<JobLine> lines);
 }

@@ -17,24 +17,15 @@
 
 package org.apache.seatunnel.app.dal.dao;
 
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-
-import lombok.NonNull;
+import org.apache.seatunnel.app.dal.entity.JobLine;
 
 import java.util.List;
 
-public interface IJobDefinitionDao {
+public interface IJobLineDao {
 
-    void add(JobDefinition job);
+    void deleteLinesByVersionId(long jobVersionId);
 
-    JobDefinition getJob(long id);
+    void insertLines(List<JobLine> lines);
 
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJob(@NonNull String name);
-
-    void delete(long id);
+    List<JobLine> getLinesByVersionId(long jobVersionId);
 }

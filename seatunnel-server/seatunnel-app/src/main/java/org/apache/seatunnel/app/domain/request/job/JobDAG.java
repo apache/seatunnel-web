@@ -15,26 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
+package org.apache.seatunnel.app.domain.request.job;
 
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-
-import lombok.NonNull;
+import lombok.Data;
 
 import java.util.List;
 
-public interface IJobDefinitionDao {
+@Data
+public class JobDAG {
 
-    void add(JobDefinition job);
-
-    JobDefinition getJob(long id);
-
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJob(@NonNull String name);
-
-    void delete(long id);
+    private List<Edge> edges;
 }

@@ -28,29 +28,25 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/** Save DAG task line */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("t_st_job_definition")
-public class JobDefinition {
+@TableName("t_st_job_line")
+public class JobLine {
 
     @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
-    @TableField private String name;
+    @TableField("version_id")
+    private Long versionId;
 
-    @TableField private String description;
+    @TableField("input_plugin_id")
+    private String inputPluginId;
 
-    /** string values */
-    @TableField("job_type")
-    private String jobType;
-
-    @TableField("create_user_id")
-    private Integer createUserId;
-
-    @TableField("update_user_id")
-    private Integer updateUserId;
+    @TableField("target_plugin_id")
+    private String targetPluginId;
 
     @TableField("create_time")
     private Date createTime;

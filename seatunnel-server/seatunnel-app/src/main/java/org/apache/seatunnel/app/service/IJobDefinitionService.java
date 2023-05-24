@@ -33,13 +33,12 @@ public interface IJobDefinitionService {
 
     long createJob(int userId, JobReq jobReq) throws CodeGenerateUtils.CodeGenerateException;
 
-    PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, List<Long> projectCodes);
+    PageInfo<JobDefinitionRes> getJob(String name, Integer pageNo, Integer pageSize);
 
     PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, List<Long> projectCodes, String jobMode);
+            String name, Integer pageNo, Integer pageSize, String jobMode);
 
-    Map<Long, String> getJob(@NonNull List<Long> projectCodes, @NonNull String name);
+    Map<Long, String> getJob(@NonNull String name);
 
     JobDefinition getJobDefinitionByJobId(long jobId);
 
@@ -47,5 +46,5 @@ public interface IJobDefinitionService {
 
     boolean getUsedByDataSourceIdAndVirtualTable(long datasourceId, String tableName);
 
-    void deleteJob(long id, long projectCode);
+    void deleteJob(long id);
 }

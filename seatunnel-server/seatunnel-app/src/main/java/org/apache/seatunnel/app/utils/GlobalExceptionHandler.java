@@ -21,13 +21,12 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Optional;
 
 @RestControllerAdvice
 @Slf4j
@@ -37,14 +36,21 @@ public class GlobalExceptionHandler {
     private Result<String> portalExceptionHandler(SeatunnelException e) {
         logError(e);
 
-        final SeatunnelException seatunnelException =
-                Optional.ofNullable(e)
-                        .orElse(SeatunnelException.newInstance(SeatunnelErrorEnum.UNKNOWN));
+        //        final SeatunnelException seatunnelException =
+        //                Optional.ofNullable(e)
+        //
+        // .orElse(SeatunnelException.newInstance(SeatunnelErrorEnum.UNKNOWN));
 
-        final String message = seatunnelException.getMessage();
-        final SeatunnelErrorEnum errorEnum = seatunnelException.getErrorEnum();
+        final String message = e.getMessage();
+        final SeatunnelErrorEnum errorEnum = e.getErrorEnum();
 
         return Result.failure(errorEnum, message);
+    }
+
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    private Result<String> missParam(MissingServletRequestParameterException e) {
+        logError(e);
+        return Result.failure(SeatunnelErrorEnum.UNKNOWN, "miss param");
     }
 
     @ExceptionHandler(value = IllegalStateException.class)

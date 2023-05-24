@@ -15,46 +15,44 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.entity;
+package org.apache.seatunnel.app.domain.request.job;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import org.apache.seatunnel.app.domain.request.connector.SceneMode;
+import org.apache.seatunnel.common.constants.PluginType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@TableName("t_st_job_definition")
-public class JobDefinition {
+@AllArgsConstructor
+@Builder
+public class PluginConfig {
 
-    @TableId(value = "id", type = IdType.INPUT)
-    private Long id;
+    private String pluginId;
 
-    @TableField private String name;
+    private String name;
 
-    @TableField private String description;
+    private PluginType type;
 
-    /** string values */
-    @TableField("job_type")
-    private String jobType;
+    private String connectorType;
 
-    @TableField("create_user_id")
-    private Integer createUserId;
+    private DataSourceOption tableOption;
 
-    @TableField("update_user_id")
-    private Integer updateUserId;
+    private SelectTableFields selectTableFields;
 
-    @TableField("create_time")
-    private Date createTime;
+    private Map<String, Object> transformOptions;
 
-    @TableField("update_time")
-    private Date updateTime;
+    private List<DatabaseTableSchemaReq> outputSchema;
+
+    private Long dataSourceId;
+
+    private SceneMode sceneMode;
+
+    private String config;
 }

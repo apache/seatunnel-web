@@ -20,7 +20,8 @@ package org.apache.seatunnel.app.domain.request.job.transform;
 public enum Transform {
     REPLACE,
     COPY,
-    SPLIT,
+    MULTIFIELDSPLIT,
     FIELDMAPPER,
-    FILTERROWKIND
+    FILTERROWKIND,
+    SPLIT
 }

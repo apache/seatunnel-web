@@ -15,46 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.entity;
+package org.apache.seatunnel.app.domain.request.job;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("t_st_job_definition")
-public class JobDefinition {
+public class DatabaseTableSchemaReq {
 
-    @TableId(value = "id", type = IdType.INPUT)
-    private Long id;
-
-    @TableField private String name;
-
-    @TableField private String description;
-
-    /** string values */
-    @TableField("job_type")
-    private String jobType;
-
-    @TableField("create_user_id")
-    private Integer createUserId;
-
-    @TableField("update_user_id")
-    private Integer updateUserId;
-
-    @TableField("create_time")
-    private Date createTime;
-
-    @TableField("update_time")
-    private Date updateTime;
+    private String database;
+    private String tableName;
+    private List<TableField> fields;
 }

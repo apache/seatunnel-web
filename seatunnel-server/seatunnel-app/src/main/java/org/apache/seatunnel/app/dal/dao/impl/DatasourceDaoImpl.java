@@ -64,7 +64,10 @@ public class DatasourceDaoImpl implements IDatasourceDao {
 
     @Override
     public boolean checkDatasourceNameUnique(String dataSourceName, Long dataSourceId) {
-        return datasourceMapper.checkDataSourceNameUnique(dataSourceName, dataSourceId) <= 0;
+        QueryWrapper<Datasource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("datasource_name", dataSourceName);
+        queryWrapper.ne("id", dataSourceId);
+        return datasourceMapper.selectList(queryWrapper).size() <= 0;
     }
 
     @Override

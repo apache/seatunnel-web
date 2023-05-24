@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
+package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
+import org.apache.seatunnel.app.dal.entity.JobLine;
+import org.apache.seatunnel.app.dal.entity.JobTask;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 
 import lombok.NonNull;
 
 import java.util.List;
 
-public interface IJobDefinitionDao {
+public interface IJobInstanceService {
+    JobExecutorRes createExecuteResource(
+            @NonNull Integer userId, @NonNull Long projectCode, @NonNull Long jobDefineId);
 
-    void add(JobDefinition job);
+    String generateJobConfig(Long jobId, List<JobTask> tasks, List<JobLine> lines, String envStr);
 
-    JobDefinition getJob(long id);
+    JobExecutorRes getExecuteResource(@NonNull Long jobEngineId);
 
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJob(@NonNull String name);
-
-    void delete(long id);
+    void complete(
+            @NonNull Integer userId,
+            @NonNull Long projectCode,
+            @NonNull Long jobInstanceId,
+            @NonNull String jobEngineId);
 }

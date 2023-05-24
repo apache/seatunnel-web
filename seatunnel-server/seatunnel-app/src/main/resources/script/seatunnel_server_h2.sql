@@ -305,7 +305,6 @@ CREATE TABLE IF NOT EXISTS `t_st_job_definition` (
     `job_type` varchar(50),
     `create_user_id` int(11) NOT NULL,
     `update_user_id` int(11) NOT NULL,
-    `project_code` bigint(20) NOT NULL,
     `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
@@ -394,3 +393,26 @@ CREATE TABLE IF NOT EXISTS `t_st_virtual_table`
     `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     primary key (`id`)
     );
+
+
+DROP TABLE IF EXISTS `t_ds_process_definition` CASCADE;
+CREATE TABLE IF NOT EXISTS  `t_ds_process_definition` (
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'self-increasing id',
+    `code` bigint(20) NOT NULL COMMENT 'encoding',
+    `name` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'process definition name',
+    `version` int(11) DEFAULT '0' COMMENT 'process definition version',
+    `description` text COLLATE utf8_bin COMMENT 'description',
+    `release_state` tinyint(4) DEFAULT NULL COMMENT 'process definition release state：0:offline,1:online',
+    `user_id` int(11) DEFAULT NULL COMMENT 'process definition creator id',
+    `global_params` text COLLATE utf8_bin COMMENT 'global parameters',
+    `flag` tinyint(4) DEFAULT NULL COMMENT '0 not available, 1 available',
+    `locations` longtext COLLATE utf8_bin COMMENT 'Node location information',
+    `warning_group_id` int(11) DEFAULT NULL COMMENT 'alert group id',
+    `timeout` int(11) DEFAULT '0' COMMENT 'time out, unit: minute',
+    `tenant_id` int(11) NOT NULL DEFAULT '-1' COMMENT 'tenant id',
+    `execution_type` tinyint(4) DEFAULT '0' COMMENT 'execution_type 0:parallel,1:serial wait,2:serial discard,3:serial priority',
+    `create_time` datetime NOT NULL COMMENT 'create time',
+    `update_time` datetime NOT NULL COMMENT 'update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_code` (`code`) USING BTREE
+    ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

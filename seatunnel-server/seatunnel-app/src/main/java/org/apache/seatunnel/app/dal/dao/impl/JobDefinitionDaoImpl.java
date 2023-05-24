@@ -57,20 +57,15 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
 
     @Override
     public PageInfo<JobDefinition> getJob(
-            String searchName,
-            Integer pageNo,
-            Integer pageSize,
-            List<Long> projectCodes,
-            String jobMode) {
+            String searchName, Integer pageNo, Integer pageSize, String jobMode) {
         IPage<JobDefinition> jobDefinitionIPage;
         if (StringUtils.isEmpty(jobMode)) {
             jobDefinitionIPage =
-                    jobMapper.queryJobListPaging(
-                            new Page<>(pageNo, pageSize), searchName, projectCodes);
+                    jobMapper.queryJobListPaging(new Page<>(pageNo, pageSize), searchName);
         } else {
             jobDefinitionIPage =
                     jobMapper.queryJobListPagingWithJobMode(
-                            new Page<>(pageNo, pageSize), searchName, projectCodes, jobMode);
+                            new Page<>(pageNo, pageSize), searchName, jobMode);
         }
         PageInfo<JobDefinition> jobs = new PageInfo<>();
         jobs.setData(jobDefinitionIPage.getRecords());
@@ -81,14 +76,12 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
     }
 
     @Override
-    public List<JobDefinition> getJob(@NonNull List<Long> projectCodes, @NonNull String name) {
-        return jobMapper.queryJobList(name, projectCodes);
+    public List<JobDefinition> getJob(@NonNull String name) {
+        return jobMapper.queryJobList(name);
     }
 
-    public void delete(long id, long projectCode) {
+    public void delete(long id) {
         jobMapper.delete(
-                Wrappers.lambdaQuery(new JobDefinition())
-                        .eq(JobDefinition::getProjectCode, projectCode)
-                        .and(i -> i.eq(JobDefinition::getId, id)));
+                Wrappers.lambdaQuery(new JobDefinition()).and(i -> i.eq(JobDefinition::getId, id)));
     }
 }

@@ -15,26 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
+package org.apache.seatunnel.app.domain.response.executor;
 
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-import lombok.NonNull;
+@Data
+@AllArgsConstructor
+public class JobExecutorRes {
 
-import java.util.List;
+    private final Long jobInstanceId;
 
-public interface IJobDefinitionDao {
+    private final String jobConfig;
 
-    void add(JobDefinition job);
+    /** engine name Spark/Flink/SeaTunnel */
+    private final String engine;
 
-    JobDefinition getJob(long id);
+    /** The driver run mode, only spark use now, support 'client' and 'cluster' */
+    private final String deployMode;
 
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJob(@NonNull String name);
-
-    void delete(long id);
+    /** The engine run mode, for SeaTunnel Engine only support 'local' and null */
+    private final String master;
 }
