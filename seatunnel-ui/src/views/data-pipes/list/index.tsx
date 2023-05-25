@@ -83,7 +83,7 @@ const DataPipesList = defineComponent({
         <NCard title={this.t('data_pipes.data_pipes')}>
           {{
             'header-extra': () => (
-              <NButton onClick={this.handleCreate} type='primary'>
+              <NButton onClick={this.handleCreate} type='success'>
                 {this.t('data_pipes.create')}
               </NButton>
             )

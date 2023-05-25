@@ -82,7 +82,7 @@ const DataPipesCreate = defineComponent({
                 <NButton secondary onClick={this.handleClickDataPipes}>
                   {this.t('data_pipes.cancel')}
                 </NButton>
-                <NButton secondary type='primary' onClick={this.handleAdd}>
+                <NButton secondary type='success' onClick={this.handleAdd}>
                   {this.t('data_pipes.save')}
                 </NButton>
               </NSpace>

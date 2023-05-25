@@ -24,6 +24,7 @@ import log from '@/locales/en_US/log'
 import jobs from '@/locales/en_US/jobs'
 import tasks from '@/locales/en_US/tasks'
 import setting from '@/locales/en_US/setting'
+import datasource from '@/locales/en_US/datasource'
 
 export default {
   login,
@@ -34,5 +35,6 @@ export default {
   log,
   jobs,
   tasks,
-  setting
+  setting,
+  datasource
 }
