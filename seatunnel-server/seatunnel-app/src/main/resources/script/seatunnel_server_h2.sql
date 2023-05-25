@@ -416,3 +416,68 @@ CREATE TABLE IF NOT EXISTS  `t_ds_process_definition` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_code` (`code`) USING BTREE
     ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+
+-- ----------------------------
+-- Table structure for t_st_job_instance
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_job_instance` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_job_instance` (
+    `id` bigint(20) NOT NULL,
+    `job_define_id` bigint(20) NOT NULL,
+    `job_status` varchar(50),
+    `job_config` text NOT NULL,
+    `engine_name` varchar(50) NOT NULL,
+    `engine_version` varchar(50) NOT NULL,
+    `job_engine_id` varchar(200),
+    `create_user_id` int(20) NOT NULL,
+    `update_user_id` int(20),
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+
+-- ----------------------------
+-- Table structure for t_st_job_metrics
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_job_metrics` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_job_metrics` (
+    `id` bigint(20) NOT NULL,
+    `job_instance_id` bigint(20) NOT NULL,
+    `pipeline_id` int(20) NOT NULL,
+    `read_row_count` bigint(20) NOT NULL,
+    `write_row_count` bigint(20) NOT NULL,
+    `source_table_names` varchar(200),
+    `sink_table_names` varchar(200),
+    `read_qps` bigint(20),
+    `write_qps` bigint(20),
+    `record_delay` bigint(20),
+    `status` varchar(20),
+    `create_user_id` int(20) NOT NULL,
+    `update_user_id` int(20),
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+-- ----------------------------
+-- Records of t_st_job_metrics
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_st_job_instance_history
+-- ----------------------------
+DROP TABLE IF EXISTS `t_st_job_instance_history` CASCADE;
+CREATE TABLE IF NOT EXISTS `t_st_job_instance_history` (
+    `id` bigint(20) NOT NULL,
+    `dag` text NOT NULL,
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+-- ----------------------------
+-- Records of t_st_job_instance_history
+-- ----------------------------

@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.utils;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -47,10 +48,17 @@ public class GlobalExceptionHandler {
         return Result.failure(errorEnum, message);
     }
 
+    @ExceptionHandler(value = DataSourcePluginException.class)
+    private Result<String> dsHandler(DataSourcePluginException e) {
+        logError(e);
+        final String message = e.getMessage();
+        return Result.failure(SeatunnelErrorEnum.INVALID_DATASOURCE, e.getMessage());
+    }
+
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
     private Result<String> missParam(MissingServletRequestParameterException e) {
         logError(e);
-        return Result.failure(SeatunnelErrorEnum.UNKNOWN, "miss param");
+        return Result.failure(SeatunnelErrorEnum.MISSING_PARAM, e.getParameterName());
     }
 
     @ExceptionHandler(value = IllegalStateException.class)

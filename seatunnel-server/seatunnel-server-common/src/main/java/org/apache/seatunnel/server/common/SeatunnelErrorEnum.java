@@ -125,6 +125,7 @@ public enum SeatunnelErrorEnum {
             "data source already used ( workflowName - taskName):{0}",
             "datasource is using:{0}"),
     INVALID_DATASOURCE(-70001, "Datasource [{0}] invalid", "datasource [{0}] invalid"),
+    MISSING_PARAM(1777000, "param miss [{0}]", "param miss [{0}]"),
     ;
 
     private final int code;

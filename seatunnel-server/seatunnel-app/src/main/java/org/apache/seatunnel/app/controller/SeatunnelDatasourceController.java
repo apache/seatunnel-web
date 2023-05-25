@@ -26,6 +26,8 @@ import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.datasource.DatabaseTableFields;
 import org.apache.seatunnel.app.domain.dto.datasource.DatabaseTables;
 import org.apache.seatunnel.app.domain.dto.datasource.TableInfo;
+import org.apache.seatunnel.app.domain.request.datasource.DatasourceCheckReq;
+import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
@@ -116,18 +118,16 @@ public class SeatunnelDatasourceController extends BaseController {
     @PostMapping("/create")
     Result<String> createDatasource(
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestParam("datasourceName") String datasourceName,
-            @RequestParam("pluginName") String pluginName,
-            @RequestParam("description") String description,
-            @RequestParam("datasourceConfig") String datasourceConfig) {
+            @RequestBody DatasourceReq req) {
+        String datasourceConfig = req.getDatasourceConfig();
         Map<String, String> stringStringMap = JSONUtils.toMap(datasourceConfig);
         return Result.success(
                 datasourceService.createDatasource(
                         loginUser.getId(),
-                        datasourceName,
-                        pluginName,
+                        req.getDatasourceName(),
+                        req.getPluginName(),
                         DEFAULT_PLUGIN_VERSION,
-                        description,
+                        req.getDescription(),
                         stringStringMap));
     }
 
@@ -149,12 +149,14 @@ public class SeatunnelDatasourceController extends BaseController {
     @PostMapping("/check/connect")
     Result<Boolean> testConnect(
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestParam("pluginName") String pluginName,
-            @RequestParam("datasourceConfig") String datasourceConfig) {
-        Map<String, String> stringStringMap = JSONUtils.toMap(datasourceConfig);
+            @RequestBody DatasourceCheckReq req) {
+        Map<String, String> stringStringMap = JSONUtils.toMap(req.getDatasourceConfig());
         return Result.success(
                 datasourceService.testDatasourceConnectionAble(
-                        loginUser.getId(), pluginName, DEFAULT_PLUGIN_VERSION, stringStringMap));
+                        loginUser.getId(),
+                        req.getPluginName(),
+                        DEFAULT_PLUGIN_VERSION,
+                        stringStringMap));
     }
 
     @ApiOperation(value = "update datasource", notes = "update datasource")
@@ -182,17 +184,15 @@ public class SeatunnelDatasourceController extends BaseController {
     Result<Boolean> updateDatasource(
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @PathVariable("id") String id,
-            @RequestParam("datasourceName") String datasourceName,
-            @RequestParam("description") String description,
-            @RequestParam("datasourceConfig") String datasourceConfig) {
-        Map<String, String> stringStringMap = JSONUtils.toMap(datasourceConfig);
+            @RequestBody DatasourceReq req) {
+        Map<String, String> stringStringMap = JSONUtils.toMap(req.getDatasourceConfig());
         Long datasourceId = Long.parseLong(id);
         return Result.success(
                 datasourceService.updateDatasource(
                         loginUser.getId(),
                         datasourceId,
-                        datasourceName,
-                        description,
+                        req.getDatasourceName(),
+                        req.getDescription(),
                         stringStringMap));
     }
 

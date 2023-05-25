@@ -40,7 +40,7 @@ import io.swagger.annotations.ApiParam;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/whaletunnel/api/v1/job/definition")
+@RequestMapping("/seatunnel/api/v1/job/definition")
 public class JobDefinitionController {
 
     @Resource private IJobDefinitionService jobService;

@@ -524,6 +524,12 @@
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.seatunnel</groupId>
+                <artifactId>seatunnel-engine-client</artifactId>
+                <version>${seatunnel-framework.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>

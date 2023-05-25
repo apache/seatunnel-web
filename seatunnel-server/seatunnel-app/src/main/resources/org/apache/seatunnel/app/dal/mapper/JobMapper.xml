@@ -22,7 +22,6 @@
     <result column="job_type" jdbcType="VARCHAR" property="jobType"/>
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId"/>
-    <result column="project_code" jdbcType="BIGINT" property="projectCode"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
   </resultMap>
