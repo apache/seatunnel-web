@@ -22,9 +22,10 @@ import org.apache.seatunnel.app.dynamicforms.AbstractFormOption;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;

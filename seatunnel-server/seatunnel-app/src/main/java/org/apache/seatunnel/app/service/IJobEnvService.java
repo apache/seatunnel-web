@@ -16,7 +16,6 @@
  */
 package org.apache.seatunnel.app.service;
 
-
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 
 public interface IJobEnvService {
