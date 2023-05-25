@@ -16,52 +16,43 @@
  */
 
 import utils from '@/utils'
-import dataPipes from '@/router/data-pipes'
-import jobs from '@/router/jobs'
-import tasks from '@/router/tasks'
-import userManage from '@/router/user-manage'
-import datasource from '@/router/datasource'
-import type { RouteRecordRaw } from 'vue-router'
 import type { Component } from 'vue'
 
 const modules = import.meta.glob('/src/views/**/**.tsx')
 const components: { [key: string]: Component } = utils.mapping(modules)
 
-const basePage: RouteRecordRaw[] = [
-  {
-    path: '/',
-    redirect: { name: 'login' }
+export default {
+  path: '/datasource',
+  name: 'datasource',
+  meta: {
+    title: 'datasource'
   },
-  dataPipes,
-  jobs,
-  tasks,
-  userManage,
-  datasource
-]
-
-const loginPage: RouteRecordRaw[] = [
-  {
-    path: '/login',
-    name: 'login',
-    component: components['login']
-  },
-  {
-    path: '/setting',
-    redirect: { name: 'setting' },
-    component: () => import('@/layouts/dashboard'),
-    children: [
-      {
-        path: '/setting',
-        name: 'setting',
-        component: components['setting'],
-        meta: {
-          title: 'setting'
-        }
+  redirect: { name: 'datasource-list' },
+  component: () => import('@/layouts/dashboard'),
+  children: [
+    {
+      path: '/datasource/list',
+      name: 'datasource-list',
+      component: components['datasource-list'],
+      meta: {
+        title: 'datasource-list'
       }
-    ]
-  }
-]
-
-const routes: RouteRecordRaw[] = [...basePage, ...loginPage]
-
-export default routes
+    },
+    {
+      path: '/datasource/create',
+      name: 'datasource-create',
+      component: components['datasource-create'],
+      meta: {
+        title: 'datasource-create'
+      }
+    },
+    {
+      path: '/datasource/:id',
+      name: 'datasource-edit',
+      component: components['datasource-create'],
+      meta: {
+        title: 'datasource-edit'
+      }
+    }
+  ]
+}

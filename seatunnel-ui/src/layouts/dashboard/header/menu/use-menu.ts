@@ -36,6 +36,10 @@ export function useMenu() {
       key: 'tasks'
     },
     {
+      label: () => h(NEllipsis, null, { default: () => t('menu.datasource') }),
+      key: 'datasource'
+    },
+    {
       label: () => h(NEllipsis, null, { default: () => t('menu.user_manage') }),
       key: 'user-manage'
     }
