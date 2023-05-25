@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源'
+interface SourceType {}
+
+interface DatasourceTypeStore {
+  types: SourceType[]
 }
+
+type StructureItem = { [key: string]: any }
+
+interface FormStructuresStore {
+  items: Map<string, StructureItem[]>
+}
+
+export { DatasourceTypeStore, SourceType, FormStructuresStore, StructureItem }

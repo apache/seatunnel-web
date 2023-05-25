@@ -22,5 +22,6 @@ export default {
   help: 'Help',
   setting: 'Setting',
   logout: 'Logout',
-  tasks: 'Tasks'
+  tasks: 'Tasks',
+  datasource: 'Datasource'
 }

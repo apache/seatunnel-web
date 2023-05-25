@@ -15,13 +15,32 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源'
+interface DatasourceConfig {}
+
+interface DatasourceList {
+  createUserName: string
+  createTime: string
+  updateUserName: string
+  updateTime: string
+  id: string
+  datasourceName: string
+  pluginName: string
+  pluginVersion: string
+  description: string
+  datasourceConfig: DatasourceConfig
+  createUserId: number
+  updateUserId: number
+}
+
+interface DatasourceTypeList {
+  name: string
+  icon: string
+  version: string
+  type: number
+  supportVirtualTables: boolean
+}
+
+export {
+  DatasourceList,
+  DatasourceTypeList
 }

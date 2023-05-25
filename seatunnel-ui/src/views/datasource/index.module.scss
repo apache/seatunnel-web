@@ -15,13 +15,36 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源'
+.conditions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pagination {
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+.typeBox {
+  display: flex;
+  padding: 5px 14px;
+
+  .text-color {
+    color: #1890ff;
+    cursor: pointer;
+  }
+}
+
+.disabledBox {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.detail-content {
+  padding-top: 20px;
 }

@@ -15,13 +15,26 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源'
-}
+import { defineStore } from 'pinia'
+import { FormStructuresStore, StructureItem } from './types'
+export type { StructureItem }
+
+export const useFormStructuresStore = defineStore({
+  id: 'form-structures',
+  state: (): FormStructuresStore => ({
+    items: new Map()
+  }),
+  persist: {
+    storage: sessionStorage
+  },
+  getters: {
+    getItem(state) {
+      return (key: string): StructureItem[] | undefined => state.items.get(key)
+    }
+  },
+  actions: {
+    setItem(key: string, item: StructureItem[]): void {
+      this.items.set(key, item)
+    }
+  }
+})
