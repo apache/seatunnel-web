@@ -25,6 +25,7 @@ import jobs from '@/locales/zh_CN/jobs'
 import tasks from '@/locales/zh_CN/tasks'
 import setting from '@/locales/zh_CN/setting'
 import datasource from '@/locales/zh_CN/datasource'
+import virtual_tables from '@/locales/zh_CN/virtual-tables'
 
 export default {
   login,
@@ -36,5 +37,6 @@ export default {
   jobs,
   tasks,
   setting,
-  datasource
+  datasource,
+  virtual_tables
 }
