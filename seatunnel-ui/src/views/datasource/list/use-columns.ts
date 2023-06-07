@@ -19,11 +19,13 @@ import { h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NPopover, NButton, NSpace } from 'naive-ui'
 import JsonHighlight from '../components/json-highlight'
+import { getTableColumn } from '@/common/table'
 
 export function useColumns(onCallback: Function) {
   const { t } = useI18n()
   const getColumns = () => {
     return [
+      ...getTableColumn([{ key: 'id', title: t('datasource.id') }]),
       {
         title: t('datasource.datasource_name'),
         key: 'datasourceName'

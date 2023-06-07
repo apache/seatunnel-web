@@ -15,14 +15,37 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源',
-  virtual_tables: '虚拟表'
-}
+import { defineComponent, PropType } from 'vue'
+import { NCard, NGrid, NGi, NSpace } from 'naive-ui'
+
+const StepThreeParams = defineComponent({
+  name: 'StepThreeParams',
+  props: {
+    params: {
+      type: Array as PropType<{ label: string; value: string }[]>,
+      default: []
+    },
+    cols: {
+      type: Number,
+      default: 1
+    }
+  },
+  setup(props) {
+    return () => (
+      <NCard>
+        <NGrid cols={props.cols}>
+          {props.params.map((item) => (
+            <NGi>
+              <NSpace>
+                <span>{item.label}:</span>
+                <span>{item.value}</span>
+              </NSpace>
+            </NGi>
+          ))}
+        </NGrid>
+      </NCard>
+    )
+  }
+})
+
+export default StepThreeParams

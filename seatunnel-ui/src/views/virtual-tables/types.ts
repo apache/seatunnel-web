@@ -14,15 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+export type { DataTableColumns } from 'naive-ui'
+//export type {
+//  VirtualTableDetail,
+//  VirtualTableRecord,
+//  IDetailTableRecord
+//} from '@/service/modules/virtual-table/types'
+//import type { VirtualTableListParameters } from '@/service/modules/virtual-table/types'
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源',
-  virtual_tables: '虚拟表'
-}
+//export type Params = Omit<VirtualTableListParameters, 'pageNo' | 'pageSize'>

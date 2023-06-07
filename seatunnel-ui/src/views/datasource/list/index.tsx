@@ -142,7 +142,7 @@ const DatasourceList = defineComponent({
             )
           }}
         </NCard>
-        <NCard title='' class={styles['mt-8']}>
+        <NCard>
           <NDataTable
             row-class-name='data-source-items'
             columns={columns}
