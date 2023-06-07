@@ -16,6 +16,7 @@
  */
 
 export default {
+  id: 'Id',
   datasource: 'DataSource',
   create_datasource: 'Create DataSource',
   choose_datasource_type: 'Choose DataSource Type',

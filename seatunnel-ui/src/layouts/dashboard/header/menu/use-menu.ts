@@ -40,6 +40,10 @@ export function useMenu() {
       key: 'datasource'
     },
     {
+      label: () => h(NEllipsis, null, { default: () => t('menu.virtual_tables') }),
+      key: 'virtual-tables'
+    },
+    {
       label: () => h(NEllipsis, null, { default: () => t('menu.user_manage') }),
       key: 'user-manage'
     }

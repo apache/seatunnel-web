@@ -23,5 +23,6 @@ export default {
   setting: 'Setting',
   logout: 'Logout',
   tasks: 'Tasks',
-  datasource: 'Datasource'
+  datasource: 'Datasource',
+  virtual_tables: 'Virtual Tables'
 }
