@@ -42,7 +42,7 @@ public class JobDefinition {
 
     @TableField private String description;
 
-    /** {@link BusinessMode} string values */
+    /** string values */
     @TableField("job_type")
     private String jobType;
 
@@ -51,9 +51,6 @@ public class JobDefinition {
 
     @TableField("update_user_id")
     private Integer updateUserId;
-
-    @TableField("project_code")
-    private Long projectCode;
 
     @TableField("create_time")
     private Date createTime;

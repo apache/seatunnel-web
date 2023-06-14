@@ -32,10 +32,9 @@ public interface IJobDefinitionDao {
 
     void updateJob(JobDefinition jobDefinition);
 
-    PageInfo<JobDefinition> getJob(
-            String name, Integer pageNo, Integer pageSize, List<Long> projectCodes, String jobMode);
+    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
 
-    List<JobDefinition> getJob(@NonNull List<Long> projectCodes, @NonNull String name);
+    List<JobDefinition> getJob(@NonNull String name);
 
-    void delete(long id, long projectCode);
+    void delete(long id);
 }

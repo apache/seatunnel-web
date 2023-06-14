@@ -316,11 +316,9 @@ CREATE TABLE IF NOT EXISTS `seatunnel`.`t_st_job_definition` (
     `job_type` varchar(50),
     `create_user_id` int(11) NOT NULL,
     `update_user_id` int(11) NOT NULL,
-    `project_code` bigint(20) NOT NULL,
     `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`),
-    key job_definition_index (project_code)
+    PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
 
 
@@ -409,103 +407,89 @@ CREATE TABLE IF NOT EXISTS `seatunnel`.`t_st_virtual_table`
     primary key (`id`)
     )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
 
+DROP TABLE IF EXISTS `seatunnel`.`t_ds_process_definition`;
+CREATE TABLE IF NOT EXISTS  `seatunnel`.`t_ds_process_definition` (
+                                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'self-increasing id',
+                                           `code` bigint(20) NOT NULL COMMENT 'encoding',
+                                           `name` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'process definition name',
+                                           `version` int(11) DEFAULT '0' COMMENT 'process definition version',
+                                           `description` text COLLATE utf8_bin COMMENT 'description',
+                                           `release_state` tinyint(4) DEFAULT NULL COMMENT 'process definition release state：0:offline,1:online',
+                                           `user_id` int(11) DEFAULT NULL COMMENT 'process definition creator id',
+                                           `global_params` text COLLATE utf8_bin COMMENT 'global parameters',
+                                           `flag` tinyint(4) DEFAULT NULL COMMENT '0 not available, 1 available',
+                                           `locations` longtext COLLATE utf8_bin COMMENT 'Node location information',
+                                           `warning_group_id` int(11) DEFAULT NULL COMMENT 'alert group id',
+                                           `timeout` int(11) DEFAULT '0' COMMENT 'time out, unit: minute',
+                                           `tenant_id` int(11) NOT NULL DEFAULT '-1' COMMENT 'tenant id',
+                                           `execution_type` tinyint(4) DEFAULT '0' COMMENT 'execution_type 0:parallel,1:serial wait,2:serial discard,3:serial priority',
+                                           `create_time` datetime NOT NULL COMMENT 'create time',
+                                           `update_time` datetime NOT NULL COMMENT 'update time',
+                                           PRIMARY KEY (`id`),
+                                           UNIQUE KEY `idx_code` (`code`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 
 -- ----------------------------
--- Table structure for t_st_job_definition
+-- Table structure for t_st_job_instance
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `t_st_job_definition` (
+DROP TABLE IF EXISTS `seatunnel`.`t_st_job_instance`;
+CREATE TABLE IF NOT EXISTS `seatunnel`.`t_st_job_instance` (
     `id` bigint(20) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `description` varchar(255) ,
-    `job_type` varchar(50),
-    `create_user_id` int(11) NOT NULL,
-    `update_user_id` int(11) NOT NULL,
-    `project_code` bigint(20) NOT NULL,
-    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`),
-    key job_definition_index (project_code)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
-
-
--- ----------------------------
--- Records of t_st_datasource
--- ----------------------------
-CREATE TABLE IF NOT EXISTS `t_st_datasource`
-(
-    id                bigint                      NOT NULL,
-    datasource_name   varchar(63)                 NOT NULL,
-    plugin_name       varchar(63)                 NOT NULL,
-    plugin_version    varchar(63) default '1.0.0' NULL,
-    datasource_config varchar(1023)               NOT NULL,
-    description       varchar(63)                 NULL,
-    create_user_id    int                         NOT NULL,
-    update_user_id    int                         NOT NULL,
-    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    unique key t_st_datasource_datasource_name_uindex (datasource_name),
-    primary key (`id`)
-    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
-
-
--- ----------------------------
--- Table structure for t_st_job_task
--- ----------------------------
-CREATE TABLE IF NOT EXISTS `t_st_job_task` (
-    `id` bigint(20) NOT NULL,
-    `version_id` bigint(20) NOT NULL,
-    `plugin_id` varchar(50) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `config` text,
-    `transform_options` varchar(5000),
-    `output_schema` text,
-    `connector_type` varchar(50) NOT NULL,
-    `datasource_id` bigint(20),
-    `datasource_option` varchar(5000),
-    `select_table_fields` varchar(5000),
-    `scene_mode` varchar(50),
-    `type` varchar(50) NOT NULL,
-    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`),
-    key job_task_plugin_id_index (plugin_id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
-
-
--- ----------------------------
--- Table structure for t_st_job_version
--- ----------------------------
-CREATE TABLE IF NOT EXISTS `t_st_job_version` (
-    `id` bigint(20) NOT NULL,
-    `job_id` bigint(20) NOT NULL,
-    `name` varchar(255) NOT NULL,
-    `job_mode` varchar(10) NOT NULL,
-    `env` text,
+    `job_define_id` bigint(20) NOT NULL,
+    `job_status` varchar(50),
+    `job_config` text NOT NULL,
     `engine_name` varchar(50) NOT NULL,
     `engine_version` varchar(50) NOT NULL,
-    `create_user_id` int(11) NOT NULL,
-    `update_user_id` int(11) NOT NULL,
+    `job_engine_id` varchar(200),
+    `create_user_id` int(20) NOT NULL,
+    `update_user_id` int(20),
+    `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+
+
+-- ----------------------------
+-- Table structure for t_st_job_metrics
+-- ----------------------------
+DROP TABLE IF EXISTS `seatunnel`.`t_st_job_metrics`;
+CREATE TABLE IF NOT EXISTS `seatunnel`.`t_st_job_metrics` (
+    `id` bigint(20) NOT NULL,
+    `job_instance_id` bigint(20) NOT NULL,
+    `pipeline_id` int(20) NOT NULL,
+    `read_row_count` bigint(20) NOT NULL,
+    `write_row_count` bigint(20) NOT NULL,
+    `source_table_names` varchar(200),
+    `sink_table_names` varchar(200),
+    `read_qps` bigint(20),
+    `write_qps` bigint(20),
+    `record_delay` bigint(20),
+    `status` varchar(20),
+    `create_user_id` int(20) NOT NULL,
+    `update_user_id` int(20),
     `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
 
 -- ----------------------------
--- Records of t_st_virtual_table
+-- Records of t_st_job_metrics
 -- ----------------------------
 
-CREATE TABLE IF NOT EXISTS `t_st_virtual_table`
-(
-    id                    bigint        NOT NULL,
-    datasource_id         bigint        NOT NULL,
-    virtual_database_name varchar(63)   NOT NULL,
-    virtual_table_name    varchar(63)   NOT NULL,
-    table_fields          varchar(1023) NOT NULL,
-    virtual_table_config  varchar(1023) NOT NULL,
-    description           varchar(63)   NULL,
-    create_user_id        int           NOT NULL,
-    update_user_id        int           NOT NULL,
+-- ----------------------------
+-- Table structure for t_st_job_instance_history
+-- ----------------------------
+DROP TABLE IF EXISTS `seatunnel`.`t_st_job_instance_history`;
+CREATE TABLE IF NOT EXISTS `seatunnel`.`t_st_job_instance_history` (
+    `id` bigint(20) NOT NULL,
+    `dag` text NOT NULL,
     `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    primary key (`id`)
-    )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 collate=utf8mb4_bin;
+
+-- ----------------------------
+-- Records of t_st_job_instance_history
+-- ----------------------------

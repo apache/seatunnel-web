@@ -227,6 +227,7 @@ The text of each license is the standard Apache 2.0 license.
      (Apache License, Version 2.0) SeaTunnel Common (org.apache.seatunnel:seatunnel-common:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-common)
      (Apache License, Version 2.0) SeaTunnel API (org.apache.seatunnel:seatunnel-api:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-api)
      (Apache License, Version 2.0) SeaTunnel Plugin Discovery (org.apache.seatunnel:seatunnel-plugin-discovery:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-plugin-discovery)
+     (Apache License, Version 2.0) SeaTunnel Engine Client (org.apache.seatunnel:seatunnel-engine-client:2.3.1 - https://mvnrepository.com/artifact/org.apache.seatunnel/seatunnel-engine-client)
 
      (The Apache Software License, Version 2.0) Guava: Google Core Libraries for Java (com.google.guava:guava:19.0 - https://github.com/google/guava/guava)
      (Apache License 2.0) Hibernate Validator Engine (org.hibernate.validator:hibernate-validator:6.2.2.Final - http://hibernate.org/validator/hibernate-validator)
