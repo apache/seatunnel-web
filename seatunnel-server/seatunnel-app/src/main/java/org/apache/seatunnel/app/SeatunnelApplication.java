@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableConfigurationProperties
 @EnableScheduling
 @EnableAsync(proxyTargetClass = true)
-@MapperScan({"org.apache.seatunnel.app.dal"})
+@MapperScan({"org.apache.seatunnel.app.dal.mapper"})
 public class SeatunnelApplication {
     public static void main(String[] args) {
         SpringApplication.run(SeatunnelApplication.class, args);
