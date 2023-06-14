@@ -27,7 +27,7 @@ import org.apache.seatunnel.app.dal.mapper.TaskDefinitionMapper;
 import org.apache.commons.collections4.CollectionUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Repository
+@Service
 public class TaskDefinitionDaoImpl implements TaskDefinitionDao {
 
     @Autowired private TaskDefinitionMapper taskDefinitionMapper;

@@ -22,7 +22,6 @@
     <result column="job_type" jdbcType="VARCHAR" property="jobType"/>
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId"/>
-    <result column="project_code" jdbcType="BIGINT" property="projectCode"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
   </resultMap>
@@ -40,13 +39,11 @@
     select
     <include refid="Base_Column_List"/>, create_time, update_time
     from t_st_job_definition
-    where project_code in
-    <foreach collection="projectCodes" item="i" open="(" close=")" separator=",">
-      #{i}
-    </foreach>
+    <where>
     <if test="searchName!=null and searchName != ''">
       and name LIKE concat('%', #{searchName}, '%')
     </if>
+    </where>
     order by update_time desc
   </select>
 
@@ -54,23 +51,23 @@
     select t.*
     from t_st_job_definition t
     join (select * from t_st_job_version where job_mode = #{jobMode}) v on t.id = v.job_id
-    where project_code in
-    <foreach collection="projectCodes" item="i" open="(" close=")" separator=",">
-      #{i}
-    </foreach>
+    <where>
     <if test="searchName!=null and searchName != ''">
       and name LIKE concat('%', #{searchName}, '%')
     </if>
+    </where>
     order by update_time desc
   </select>
 
   <select id="queryJobList" resultType="org.apache.seatunnel.app.dal.entity.JobDefinition">
     select
     <include refid="Base_Column_List"/>, create_time, update_time
-    from t_st_job_definition where project_code = #{projectCode}
+    from t_st_job_definition
+    <where>
     <if test="searchName!=null and searchName != ''">
       and name LIKE concat('%', #{searchName}, '%')
     </if>
+    </where>
     order by update_time desc
   </select>
 </mapper>

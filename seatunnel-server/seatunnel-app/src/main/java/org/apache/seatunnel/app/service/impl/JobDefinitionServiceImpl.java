@@ -48,7 +48,6 @@ import javax.annotation.Resource;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +85,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .createUserId(userId)
                         .updateUserId(userId)
                         .jobType(jobReq.getJobType().name())
-                        .projectCode(jobReq.getProjectCode())
                         .build());
         jobVersionDao.createVersion(
                 JobVersion.builder()
@@ -103,21 +101,13 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, List<Long> projectCodes) {
-        return getJob(name, pageNo, pageSize, projectCodes, null);
+    public PageInfo<JobDefinitionRes> getJob(String name, Integer pageNo, Integer pageSize) {
+        return getJob(name, pageNo, pageSize, null);
     }
 
     @Override
     public PageInfo<JobDefinitionRes> getJob(
-            String searchName,
-            Integer pageNo,
-            Integer pageSize,
-            List<Long> projectCodes,
-            String jobMode) {
-        if (CollectionUtils.isEmpty(projectCodes)) {
-            return new PageInfo<>();
-        }
+            String searchName, Integer pageNo, Integer pageSize, String jobMode) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_VIEW, 0);
         if (StringUtils.isNotEmpty(jobMode)) {
             try {
@@ -128,7 +118,7 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
             }
         }
         PageInfo<JobDefinition> jobDefinitionPageInfo =
-                jobDefinitionDao.getJob(searchName, pageNo, pageSize, projectCodes, jobMode);
+                jobDefinitionDao.getJob(searchName, pageNo, pageSize, jobMode);
         List<Integer> userIds =
                 jobDefinitionPageInfo.getData().stream()
                         .map(JobDefinition::getCreateUserId)
@@ -149,7 +139,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
             jobDefinitionRes.setUpdateUserId(jobDefinitionRes.getUpdateUserId());
             jobDefinitionRes.setCreateTime(jobDefinition.getCreateTime());
             jobDefinitionRes.setUpdateTime(jobDefinition.getUpdateTime());
-            jobDefinitionRes.setProjectCode(jobDefinition.getProjectCode());
             jobDefinitionResList.add(jobDefinitionRes);
         }
         PageInfo<JobDefinitionRes> pageInfo = new PageInfo<>();
@@ -161,12 +150,10 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public Map<Long, String> getJob(@NonNull List<Long> projectCodes, @NonNull String name) {
-        if (CollectionUtils.isEmpty(projectCodes)) {
-            return Collections.emptyMap();
-        }
+    public Map<Long, String> getJob(@NonNull String name) {
+
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_VIEW, 0);
-        List<JobDefinition> job = jobDefinitionDao.getJob(projectCodes, name);
+        List<JobDefinition> job = jobDefinitionDao.getJob(name);
         if (CollectionUtils.isEmpty(job)) {
             return new HashMap<>();
         }
@@ -222,8 +209,8 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public void deleteJob(long id, long projectCode) {
+    public void deleteJob(long id) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_DELETE, 0);
-        jobDefinitionDao.delete(id, projectCode);
+        jobDefinitionDao.delete(id);
     }
 }
