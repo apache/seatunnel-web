@@ -27,10 +27,10 @@ import {
   NCard,
   useDialog
 } from 'naive-ui'
-import StepOneForm from './StepOneForm'
-import StepTwoForm from './StepTwoForm'
-import StepTwoTable from './StepTwoTable'
-import StepThreeParams from './StepThreeParams'
+import StepOneForm from './step-one-form'
+import StepTwoForm from './step-two-form'
+import StepTwoTable from './step-two-table'
+import StepThreeParams from './step-three-params'
 import { PlusOutlined } from '@vicons/antd'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
