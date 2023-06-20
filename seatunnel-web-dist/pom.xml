@@ -104,7 +104,7 @@
             </dependencies>
 
             <build>
-                <finalName>apache-seatunnel-web-incubating-${project.version}</finalName>
+                <finalName>apache-seatunnel-web-${project.version}</finalName>
                 <plugins>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
@@ -361,7 +361,7 @@
             </dependencies>
 
             <build>
-                <finalName>apache-seatunnel-web-incubating-${project.version}</finalName>
+                <finalName>apache-seatunnel-web-${project.version}</finalName>
                 <plugins>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>

@@ -24,7 +24,7 @@
         <format>zip</format>
         <format>tar.gz</format>
     </formats>
-    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeBaseDirectory>true</includeBaseDirectory>
     <fileSets>
         <fileSet>
             <directory>../seatunnel-server/seatunnel-app/src/main/resources</directory>
@@ -81,6 +81,7 @@
             </includes>
             <excludes>
                 <exclude>org.apache.seatunnel:datasource-*:jar</exclude>
+                <exclude>org.apache.logging.log4j:*:jar</exclude>
             </excludes>
             <outputDirectory>/libs</outputDirectory>
             <scope>provided</scope>
@@ -95,6 +96,7 @@
             </includes>
             <excludes>
                 <exclude>org.apache.seatunnel:datasource-*:jar</exclude>
+                <exclude>org.apache.logging.log4j:*:jar</exclude>
             </excludes>
             <outputDirectory>/libs</outputDirectory>
         </dependencySet>
@@ -107,10 +109,12 @@
             <outputDirectory>/libs</outputDirectory>
             <includes>
                 <include>org.slf4j:slf4j-api:jar</include>
-                <include>org.slf4j:jcl-over-slf4j:jar</include>
+                <include>org.apache.logging.log4j:log4j-to-slf4j:jar</include>
                 <include>org.apache.logging.log4j:log4j-api:jar</include>
-                <include>org.apache.logging.log4j:log4j-core:jar</include>
-                <include>org.apache.logging.log4j:log4j-slf4j-impl:jar</include>
+                <include>org.slf4j:jcl-over-slf4j:jar</include>
+                <include>org.slf4j:log4j-over-slf4j:jar</include>
+                <include>ch.qos.logback:logback-classic:jar</include>
+                <include>ch.qos.logback:logback-core:jar</include>
             </includes>
         </dependencySet>
     </dependencySets>
