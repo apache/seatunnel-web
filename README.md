@@ -1,4 +1,4 @@
-# Apache SeaTunnel (Incubating)
+# Apache SeaTunnel
 
 <img src="https://seatunnel.apache.org/image/logo.png" alt="seatunnel logo" height="200px" align="right" />
 
@@ -106,19 +106,19 @@ cd incubator-seatunnel-web
 sh build.sh code
 ```
 
-Then you can find the installer package in dir `incubator-seatunnel-web/seatunnel-web-dist/target/apache-seatunnel-web-incubating-${project.version}.tar.gz`.
+Then you can find the installer package in dir `incubator-seatunnel-web/seatunnel-web-dist/target/apache-seatunnel-web-${project.version}.tar.gz`.
 
 #### 3.2 Install
 
-Copy the `apache-seatunnel-web-incubating-${project.version}.tar.gz` to your server node and unzip it.
+Copy the `apache-seatunnel-web-${project.version}.tar.gz` to your server node and unzip it.
 
 ```shell
-tar -zxvf apache-seatunnel-web-incubating-${project.version}.tar.gz
+tar -zxvf apache-seatunnel-web-${project.version}.tar.gz
 ```
 
 #### 3.3 Init database
 
-1. Edit `apache-seatunnel-web-incubating-${project.version}/script/seatunnel_server_env.sh` file, Complete the installed database address, port, username, and password. Here is an example:
+1. Edit `apache-seatunnel-web-${project.version}/script/seatunnel_server_env.sh` file, Complete the installed database address, port, username, and password. Here is an example:
 
     ```
     export HOSTNAME="localhost"
@@ -126,18 +126,18 @@ tar -zxvf apache-seatunnel-web-incubating-${project.version}.tar.gz
     export USERNAME="root"
     export PASSWORD="123456"
     ```
-2. Run init shell `sh apache-seatunnel-web-incubating-${project.version}/script/init_sql.sh` If there are no errors during operation, it indicates successful initialization.
+2. Run init shell `sh apache-seatunnel-web-${project.version}/script/init_sql.sh` If there are no errors during operation, it indicates successful initialization.
 
 #### 3.4 Config application and Run SeaTunnel Web Backend Server
 
-Edit `apache-seatunnel-web-incubating-${project.version}/config/application.yml` Fill in the database connection information and DS interface related information in the file.
+Edit `apache-seatunnel-web-${project.version}/config/application.yml` Fill in the database connection information and DS interface related information in the file.
 
 ![image](docs/images/application_config.png)
 
 #### 3.5 Start SeaTunnel Web
 
 ```shell
-cd apache-seatunnel-web-incubating-${project.version}
+cd apache-seatunnel-web-${project.version}
 sh bin/seatunnel-backend-daemon.sh start
 ```
 
