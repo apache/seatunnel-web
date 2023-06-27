@@ -35,7 +35,63 @@ export default {
       name: 'tasks-list',
       component: components['tasks-list'],
       meta: {
-        title: 'tasks-list'
+        title: 'tasks-list',
+        showSide: true
+      }
+    },
+    {
+      path: '/tasks/list1',
+      name: 'tasks-list1',
+      component: components['tasks-list'],
+      meta: {
+        title: 'tasks-list',
+        showSide: true
+      }
+    },
+    {
+      path: '/task/synchronization-definition',
+      name: 'synchronization-definition',
+      component: components['task-synchronization-definition'],
+      meta: {
+        title: '同步任务定义',
+        activeMenu: 'projects',
+        showSide: true
+        // auth: 'project:seatunnel-task:view'
+      }
+    },
+    {
+      path: '/task/synchronization-definition/:jobDefinitionCode',
+      name: 'synchronization-definition-dag',
+      component: components['task-synchronization-definition-dag'],
+      meta: {
+        title: '同步任务定义画布',
+        activeMenu: 'projects',
+        activeSide: '/task/synchronization-definition',
+        showSide: true,
+        auth: ['project:seatunnel-task:create', 'project:seatunnel-task:update']
+      }
+    },
+    {
+      path: '/task/synchronization-instance',
+      name: 'synchronization-instance',
+      component: components['task-synchronization-instance'],
+      meta: {
+        title: '同步任务实例',
+        activeMenu: 'projects',
+        showSide: true
+        // auth: 'project:seatunnel-task-instance:view'
+      }
+    },
+    {
+      path: '/task/synchronization-instance/:taskCode',
+      name: 'synchronization-instance-detail',
+      component: components['task-synchronization-instance-detail'],
+      meta: {
+        title: '同步任务实例详情',
+        activeMenu: 'projects',
+        activeSide: '/task/synchronization-instance',
+        showSide: true,
+        auth: 'project:seatunnel-task-instance:details'
       }
     }
   ]
