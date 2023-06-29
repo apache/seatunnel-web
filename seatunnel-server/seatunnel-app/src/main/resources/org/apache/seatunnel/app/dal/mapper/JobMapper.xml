@@ -27,12 +27,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     id
-    , `name`, `description`,`job_type`, project_code, create_user_id, update_user_id
+    , `name`, `description`,`job_type`, create_user_id, update_user_id
   </sql>
   <insert id="insert" parameterType="org.apache.seatunnel.app.dal.entity.JobDefinition">
     insert into `t_st_job_definition` (<include refid="Base_Column_List"/>)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
-    #{description,jdbcType=VARCHAR},#{jobType,jdbcType=VARCHAR},#{projectCode,jdbcType=BIGINT},
+    #{description,jdbcType=VARCHAR},#{jobType,jdbcType=VARCHAR},
     #{createUserId,jdbcType=BIGINT}, #{updateUserId,jdbcType=BIGINT})
   </insert>
   <select id="queryJobListPaging" resultType="org.apache.seatunnel.app.dal.entity.JobDefinition">
