@@ -52,14 +52,14 @@ const VirtualTablesDetail = defineComponent({
       onChangeStep,
       createOrUpdate
     } = useDetail(route.params.id as string)
-
+    console.log('create')
     const onClose = () => {
       dialog.warning({
         title: t('virtual_tables.warning'),
         content: t('virtual_tables.close_confirm_tips'),
         onPositiveClick: () => {
           router.push({
-            name: 'datasource-list',
+            name: 'virtual-tables-list',
             query: { tab: 'virtual-tables' }
           })
         },
@@ -80,16 +80,16 @@ const VirtualTablesDetail = defineComponent({
           <NBreadcrumbItem>
             {t(
               route.params.id
-                ? 'virtualTables.edit_virtual_tables'
-                : 'virtualTables.create_virtual_tables'
+                ? t('virtualTables.edit_virtual_tables')
+                : t('virtual_tables.create_virtual_tables')
             )}
           </NBreadcrumbItem>
         </NBreadcrumb>
         <NCard
           title={t(
             route.params.id
-              ? 'virtualTables.edit_virtual_tables'
-              : 'virtualTables.create_virtual_tables'
+              ? t('virtualTables.edit_virtual_tables')
+              : t('virtual_tables.create_virtual_tables')
           )}
         >
           <div class={styles['detail-content']}>
@@ -121,7 +121,7 @@ const VirtualTablesDetail = defineComponent({
                 </NButton>
               </div>
               <StepTwoTable
-                //list={state.stepTwo.list}
+                list={state.stepTwo.list}
                 fieldTypes={state.fieldTypes}
               />
             </div>
@@ -155,7 +155,7 @@ const VirtualTablesDetail = defineComponent({
               </div>
               <StepTwoTable
                 class={styles['width-100']}
-                //list={state.stepTwo.list}
+                list={state.stepTwo.list}
                 plain
                 fieldTypes={state.fieldTypes}
               />

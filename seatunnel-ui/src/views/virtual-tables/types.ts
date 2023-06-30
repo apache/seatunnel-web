@@ -16,11 +16,11 @@
  */
 export type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 export type { DataTableColumns } from 'naive-ui'
-//export type {
-//  VirtualTableDetail,
-//  VirtualTableRecord,
-//  IDetailTableRecord
-//} from '@/service/modules/virtual-table/types'
-//import type { VirtualTableListParameters } from '@/service/modules/virtual-table/types'
+export type {
+  VirtualTableDetail,
+  VirtualTableRecord,
+  IDetailTableRecord
+} from '@/service/virtual-table/types'
+import type { VirtualTableListParameters } from '@/service/virtual-table/types'
 
-//export type Params = Omit<VirtualTableListParameters, 'pageNo' | 'pageSize'>
+export type Params = Omit<VirtualTableListParameters, 'pageNo' | 'pageSize'>
