@@ -132,7 +132,8 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                                         || pluginName.equals("FilterRowKind")
                                         || pluginName.equals("Replace")
                                         || pluginName.equals("Copy")
-                                        || pluginName.equals("Split");
+                                        || pluginName.equals("MultiFieldSplit")
+                                        || pluginName.equals("Sql");
                             })
                     .collect(Collectors.toList());
         }
