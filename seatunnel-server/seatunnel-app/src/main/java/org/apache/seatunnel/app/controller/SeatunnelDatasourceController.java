@@ -150,13 +150,14 @@ public class SeatunnelDatasourceController extends BaseController {
     Result<Boolean> testConnect(
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestBody DatasourceCheckReq req) {
-        Map<String, String> stringStringMap = JSONUtils.toMap(req.getDatasourceConfig());
+
+        // Map<String, String> stringStringMap = JSONUtils.toMap(req.getDatasourceConfig());
         return Result.success(
                 datasourceService.testDatasourceConnectionAble(
                         loginUser.getId(),
                         req.getPluginName(),
                         DEFAULT_PLUGIN_VERSION,
-                        stringStringMap));
+                        req.getDatasourceConfig()));
     }
 
     @ApiOperation(value = "update datasource", notes = "update datasource")

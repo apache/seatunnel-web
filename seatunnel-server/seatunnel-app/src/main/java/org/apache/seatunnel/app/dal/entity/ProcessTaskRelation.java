@@ -44,8 +44,8 @@ public class ProcessTaskRelation {
     /** process version */
     private int processDefinitionVersion;
 
-    /** project code */
-    private long projectCode;
+    //    /** project code */
+    //    private long projectCode;
 
     /** process code */
     private long processDefinitionCode;
@@ -93,7 +93,7 @@ public class ProcessTaskRelation {
             Date updateTime) {
         this.name = name;
         this.processDefinitionVersion = processDefinitionVersion;
-        this.projectCode = projectCode;
+        //        this.projectCode = projectCode;
         this.processDefinitionCode = processDefinitionCode;
         this.preTaskCode = preTaskCode;
         this.preTaskVersion = preTaskVersion;

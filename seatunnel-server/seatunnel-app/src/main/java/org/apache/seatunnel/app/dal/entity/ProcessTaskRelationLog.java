@@ -41,7 +41,7 @@ public class ProcessTaskRelationLog extends ProcessTaskRelation {
         this.setName(processTaskRelation.getName());
         this.setProcessDefinitionCode(processTaskRelation.getProcessDefinitionCode());
         this.setProcessDefinitionVersion(processTaskRelation.getProcessDefinitionVersion());
-        this.setProjectCode(processTaskRelation.getProjectCode());
+        //        this.setProjectCode(processTaskRelation.getProjectCode());
         this.setPreTaskCode(processTaskRelation.getPreTaskCode());
         this.setPreTaskVersion(processTaskRelation.getPreTaskVersion());
         this.setPostTaskCode(processTaskRelation.getPostTaskCode());
