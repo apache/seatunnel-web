@@ -19,6 +19,7 @@ import { defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NSpace, NCard, NSwitch, NList, NListItem, NSelect } from 'naive-ui'
 import { useSettingStore } from '@/store/setting'
+import Theme from './theme'
 
 const Setting = defineComponent({
   name: 'Setting',
@@ -105,16 +106,17 @@ const Setting = defineComponent({
               <NSpace justify='space-between' align='center'>
                 <span>{t('setting.model')}</span>
                 <div class='w-56'>
-                  <NSelect
+                  <Theme/>
+                  {/* <NSelect
                     value={'light'}
                     options={[
                       { value: 'light', label: t('setting.light') }
                     ]}
-                  />
+                  /> */}
                 </div>
               </NSpace>
             </NListItem>
-            <NListItem>
+            {/* <NListItem>
               <NSpace justify='space-between' align='center'>
                 <span>{t('setting.hue')}</span>
                 <div class='w-56'>
@@ -126,7 +128,7 @@ const Setting = defineComponent({
                   />
                 </div>
               </NSpace>
-            </NListItem>
+            </NListItem> */}
             <NListItem>
               <NSpace justify='space-between' align='center'>
                 <span>{t('setting.fillet')}</span>
