@@ -81,11 +81,11 @@ const SynchronizationDefinition = defineComponent({
           ? {
               ...query,
               ...route.query,
-              searchProjectCode: variables.projectCodes
+              // searchProjectCode: variables.projectCodes
             }
           : {
               ...route.query,
-              searchProjectCode: variables.projectCodes
+              // searchProjectCode: variables.projectCodes
             }
       })
       requestData()
@@ -154,14 +154,6 @@ const SynchronizationDefinition = defineComponent({
               )}
             </NButton>
             <NSpace justify='end'>
-              {/* {this.globalProject && (
-                <ProjectSelector
-                  initCode={
-                    this.projectCodes.length == 1 ? this.projectCodes[0] : null
-                  }
-                  onGetprojectList={this.getProjectCodeList}
-                ></ProjectSelector>
-              )} */}
               <NInput
                 clearable
                 v-model={[this.searchName, 'value']}

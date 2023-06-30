@@ -20,11 +20,11 @@ import {
   queryRuleList,
   getRuleFormCreateJson,
   getDatasourceOptionsById
-} from '@/service/modules/data-quality'
+} from '@/service/data-quality'
 import {
   getDatasourceTablesById,
   getDatasourceTableColumnsById
-} from '@/service/modules/data-source'
+} from '@/service/data-source'
 import type { IJsonItem, IResponseJsonItem, IJsonItemParams } from '../types'
 
 export function useRules(

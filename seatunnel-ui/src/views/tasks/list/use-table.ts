@@ -140,7 +140,7 @@ export function useTable() {
       pageSize: params.pageSize,
       name: params.name
     }).then((res: ResponseTable<Array<JobDetail> | []>) => {
-      state.tableData = res.data.data as any
+      state.tableData = res.data as any
       state.totalPage = res.data.totalPage
       state.loading = false
     })

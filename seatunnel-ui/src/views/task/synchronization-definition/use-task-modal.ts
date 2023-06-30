@@ -77,7 +77,6 @@ export function useTaskModal(
 
   const submitSyncTaskDefinition = () => {
     createSyncTaskDefinition({
-      // projectCode: variables.projectCode,
       description: variables.model.description,
       name: variables.model.name,
       jobType: variables.model.jobType
@@ -88,7 +87,7 @@ export function useTaskModal(
       ctx.emit('confirmModal', props.showModalRef)
 
       router.push({
-        path: `/projects/${variables.projectCode}/task/synchronization-definition/${res}`,
+        path: `/task/synchronization-definition/${res}`,
         query: {
           global: String(projectStore.getGlobalFlag),
           project: (route.query.project as string) || 'all'

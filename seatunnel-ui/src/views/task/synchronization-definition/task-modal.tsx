@@ -41,11 +41,11 @@ const TaskModal = defineComponent({
   setup(props, ctx) {
     const { t } = useI18n()
     const { variables, handleValidate } = useTaskModal(props, ctx)
-    const projectStore = useProjectStore()
-    const projectCode = ref([])
-    const globalFlag = projectStore.getGlobalFlag
-    projectCode.value = globalFlag ? [] : projectStore.getCurrentProject[0]
-    const showPre = ref(globalFlag ? true : false)
+    // const projectStore = useProjectStore()
+    // const projectCode = ref([])
+    // const globalFlag = projectStore.getGlobalFlag
+    // projectCode.value = globalFlag ? [] : projectStore.getCurrentProject[0]
+    // const showPre = ref(globalFlag ? true : false)
     const synchronizationForm: any = ref(null)
 
     const cancelModal = () => {
@@ -54,35 +54,35 @@ const TaskModal = defineComponent({
       ctx.emit('cancelModal', props.showModalRef)
     }
 
-    const projectRule = {
-      projectCode: {
-        required: true,
-        validator() {
-          if (projectCode.value.length == 0) {
-            return new Error(t('project.dag.project_empty'))
-          }
-        },
-        trigger: 'blur'
-      }
-    }
+    // const projectRule = {
+    //   projectCode: {
+    //     required: true,
+    //     validator() {
+    //       if (projectCode.value.length == 0) {
+    //         return new Error(t('project.dag.project_empty'))
+    //       }
+    //     },
+    //     trigger: 'blur'
+    //   }
+    // }
 
     const preCancle = () => {
       ctx.emit('cancelModal')
-      projectCode.value = []
+      // projectCode.value = []
       variables.model.name = ''
       variables.model.description = ''
     }
 
     const confirmModal = () => {
       handleValidate()
-      projectCode.value = []
+      // projectCode.value = []
     }
 
     const getNextStep = () => {
       if (synchronizationForm.value) {
         synchronizationForm.value.validate(async (valid: any) => {
           if (!valid) {
-            showPre.value = false
+            // showPre.value = false
             variables.model.name = ''
             variables.model.description = ''
           }
@@ -90,13 +90,13 @@ const TaskModal = defineComponent({
       }
     }
 
-    const getProjectList = (projectListItem: any) => {
-      if (projectListItem) {
-        projectCode.value = [projectListItem] as any
-      } else {
-        projectCode.value = []
-      }
-    }
+    // const getProjectList = (projectListItem: any) => {
+    //   if (projectListItem) {
+    //     projectCode.value = [projectListItem] as any
+    //   } else {
+    //     projectCode.value = []
+    //   }
+    // }
     return {
       t,
       ...toRefs(variables),
@@ -104,29 +104,29 @@ const TaskModal = defineComponent({
       confirmModal,
       preCancle,
       getNextStep,
-      projectCode,
-      projectRule,
-      showPre,
       synchronizationForm,
-      getProjectList,
-      globalFlag
+      // projectCode,
+      // projectRule,
+      // showPre,
+      // getProjectList,
+      // globalFlag
     }
   },
   render() {
     const {
-      projectCode,
-      projectRule,
-      getNextStep,
-      preCancle,
-      showPre,
-      globalFlag,
       t,
-      getProjectList,
-      showModalRef
+      projectCode,
+      getNextStep,
+      showModalRef,
+      preCancle,
+      // projectRule,
+      // showPre,
+      // globalFlag,
+      // getProjectList,
     } = this
     return (
       <template>
-        {globalFlag && (
+        {/* {globalFlag && (
           <Modal
             show={showModalRef && showPre && globalFlag}
             title={t('project.workflow.select_project')}
@@ -151,12 +151,12 @@ const TaskModal = defineComponent({
               </NFormItem>
             </NForm>
           </Modal>
-        )}
+        )} */}
         <Modal
           title={this.t(
             'project.synchronization_definition.create_synchronization_task'
           )}
-          show={showModalRef && !showPre}
+          show={showModalRef}
           onCancel={this.cancelModal}
           onConfirm={this.confirmModal}
           confirmLoading={this.saving}

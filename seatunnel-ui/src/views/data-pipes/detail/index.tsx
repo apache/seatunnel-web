@@ -22,7 +22,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { scriptDetail } from '@/service/script'
 import MonacoEditor from '@/components/monaco-editor'
 import type { Router, RouteLocationNormalizedLoaded } from 'vue-router'
-import type { ResponseBasic } from '@/service/types'
 import type { ScriptDetail } from '@/service/script/types'
 
 const DataPipesDetail = defineComponent({
@@ -42,10 +41,10 @@ const DataPipesDetail = defineComponent({
 
     onMounted(() => {
       scriptDetail(Number(route.params.dataPipeId)).then(
-        (res: ResponseBasic<ScriptDetail>) => {
-          variables.name = res.data.name
-          variables.type = res.data.type
-          variables.content = res.data.content
+        (res: ScriptDetail) => {
+          variables.name = res.name
+          variables.type = res.type
+          variables.content = res.content
         }
       )
     })

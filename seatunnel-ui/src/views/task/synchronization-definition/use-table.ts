@@ -18,7 +18,7 @@
 import { useI18n } from 'vue-i18n'
 import { h, reactive, ref } from 'vue'
 import { useTableOperation } from '@/hooks'
-import { EditOutlined } from '@vicons/antd'
+import { EditOutlined, PlayCircleOutlined } from '@vicons/antd'
 import {
   querySyncTaskDefinitionPaging,
   deleteSyncTaskDefinition
@@ -66,23 +66,6 @@ export function useTable() {
         ),
         key: 'name'
       },
-      useTableLink({
-        title: t('project.project_name'),
-        key: 'projectName',
-        ...COLUMN_WIDTH_CONFIG['name'],
-        button: {
-          onClick: (row: any) => {
-            // changeProject(row.projectCode)
-            router.push({
-              path: route.path,
-              query: {
-                project: String(row.projectCode),
-                global: 'false'
-              }
-            })
-          }
-        }
-      }),
       {
         title: t('project.synchronization_definition.business_model'),
         key: 'jobKey',
@@ -116,22 +99,21 @@ export function useTable() {
           buttons: [
             {
               text: t('project.synchronization_definition.edit'),
-              permission: 'project:seatunnel-task:update',
               onClick: (row: any) => {
                 router.push({
                   path: `/task/synchronization-definition/${row.id}`,
-                  query: {
-                    // global: String(projectStore.getGlobalFlag),
-                    // project: (route.query.project as string) || 'all'
-                  }
                 })
               },
               icon: h(EditOutlined)
             },
+
+            {
+              text: t('project.synchronization_definition.delete'),
+              icon: h(PlayCircleOutlined)
+            },
             {
               isDelete: true,
               text: t('project.synchronization_definition.delete'),
-              permission: 'project:seatunnel-task:delete',
               onPositiveClick: (row: any) => void handleDelete(row),
               popTips: t('security.token.delete_confirm')
             }

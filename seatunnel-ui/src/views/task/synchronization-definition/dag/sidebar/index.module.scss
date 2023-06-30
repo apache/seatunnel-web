@@ -25,11 +25,13 @@
   padding: 1px 15px;
   border: 1px solid #eee;
   border-radius: 5px;
-
+  height: 36px;
+  display: flex;
+  align-items: center;
   .task-image {
     width: 20px;
     height: 20px;
-    margin-top: 6px;
+    // margin-top: 6px;
   }
 }
 
