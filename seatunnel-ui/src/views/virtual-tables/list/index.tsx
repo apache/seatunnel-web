@@ -32,14 +32,14 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useTable } from './use-table'
 import { useColumns } from './use-columns'
-//import { useSource } from '../datasource/list/use-source'
+import { useSource } from '@/views/datasource/list/use-source'
 import styles from '../index.module.scss'
 
 const VirtualTablesList = defineComponent({
   setup() {
     const { t } = useI18n()
     const router = useRouter()
-    //const { state: sourceState } = useSource(true)
+    const { state: sourceState } = useSource(true)
     const { columns } = useColumns(
       (id: string, type: 'edit' | 'delete') => {
         if (type === 'edit') {
@@ -66,9 +66,9 @@ const VirtualTablesList = defineComponent({
                 v-model:value={state.params.pluginName}
                 clearable
                 placeholder={t('virtual_tables.source_type_tips')}
-                //options={
-                //  sourceState.types as Array<SelectGroupOption | SelectOption>
-                //}
+                options={
+                 sourceState.types as Array<SelectGroupOption | SelectOption>
+                }
                 class={styles['type-width']}
               />
               <NInput

@@ -16,22 +16,43 @@
  */
 
 import { defineStore } from 'pinia'
-import { ThemeState } from './types'
+import themeList from '@/themes'
+import type { ThemeState, ITheme } from './types'
 
 export const useThemeStore = defineStore({
   id: 'theme',
   state: (): ThemeState => ({
-    darkTheme: false
+    darkTheme: false,
+    theme: 'light',
+    isNavLogoBlack: false,
+    navTextColor: ''
   }),
   persist: true,
   getters: {
-    getTheme(): boolean {
+    getDarkTheme(): boolean {
       return this.darkTheme
+    },
+    getTheme(): ITheme {
+      return this.theme
+    },
+    getIsNavLogoBlack(): boolean {
+      return this.isNavLogoBlack
+    },
+    getNavTextColor(): string {
+      return this.navTextColor
     }
   },
   actions: {
-    setDarkTheme(): void {
-      this.darkTheme = !this.darkTheme
+    setTheme(theme: ITheme): void {
+      this.theme = theme
+      this.darkTheme = theme === 'dark'
+      this.isNavLogoBlack = theme === 'light'
+      const themeConfig = themeList[theme]
+      //@ts-ignore
+      this.navTextColor = themeConfig?.Menu?.itemTextColor || ''
+    },
+    init(theme?: ITheme): void {
+      this.setTheme(theme || this.theme)
     }
   }
 })
