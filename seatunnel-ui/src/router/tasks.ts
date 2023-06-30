@@ -27,36 +27,18 @@ export default {
   meta: {
     title: 'tasks'
   },
-  redirect: { name: 'tasks-list' },
+  redirect: { name: 'synchronization-definition' },
   component: () => import('@/layouts/dashboard'),
   children: [
-    {
-      path: '/tasks/list',
-      name: 'tasks-list',
-      component: components['tasks-list'],
-      meta: {
-        title: 'tasks-list',
-        showSide: true
-      }
-    },
-    {
-      path: '/tasks/list1',
-      name: 'tasks-list1',
-      component: components['tasks-list'],
-      meta: {
-        title: 'tasks-list',
-        showSide: true
-      }
-    },
     {
       path: '/task/synchronization-definition',
       name: 'synchronization-definition',
       component: components['task-synchronization-definition'],
       meta: {
         title: '同步任务定义',
-        activeMenu: 'projects',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-definition',
         showSide: true
-        // auth: 'project:seatunnel-task:view'
       }
     },
     {
@@ -65,10 +47,9 @@ export default {
       component: components['task-synchronization-definition-dag'],
       meta: {
         title: '同步任务定义画布',
-        activeMenu: 'projects',
-        activeSide: '/task/synchronization-definition',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-definition',
         showSide: true,
-        auth: ['project:seatunnel-task:create', 'project:seatunnel-task:update']
       }
     },
     {
@@ -77,9 +58,9 @@ export default {
       component: components['task-synchronization-instance'],
       meta: {
         title: '同步任务实例',
-        activeMenu: 'projects',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-instance',
         showSide: true
-        // auth: 'project:seatunnel-task-instance:view'
       }
     },
     {
@@ -88,10 +69,9 @@ export default {
       component: components['task-synchronization-instance-detail'],
       meta: {
         title: '同步任务实例详情',
-        activeMenu: 'projects',
-        activeSide: '/task/synchronization-instance',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-instance',
         showSide: true,
-        auth: 'project:seatunnel-task-instance:details'
       }
     }
   ]

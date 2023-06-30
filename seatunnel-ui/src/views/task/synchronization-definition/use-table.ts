@@ -108,7 +108,7 @@ export function useTable() {
             },
 
             {
-              text: t('project.synchronization_definition.delete'),
+              text: t('project.synchronization_definition.start'),
               icon: h(PlayCircleOutlined)
             },
             {

@@ -19,7 +19,7 @@ import { defineComponent, ref, PropType, onMounted, watch, h } from 'vue'
 import { NLayoutSider, NMenu, NIcon, NDropdown, NEllipsis } from 'naive-ui'
 import { useThemeStore } from '@/store/theme'
 // import { DashOutlined } from '@vicons/antd'
-import { useMenuClick } from './use-menuClick'
+// import { useMenuClick } from './use-menuClick'
 import styles from './index.module.scss'
 import { PartitionOutlined, ProjectOutlined, RightOutlined } from '@vicons/antd'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
@@ -73,11 +73,12 @@ const Sidebar = defineComponent({
             {
               to: {
                 path: '/task/synchronization-definition'
-              }
+              },
+              exact: false
             },
             { default: () => t('menu.sync_task_definition') }
-        ),
-        key: 'task-definition',
+          ),
+        key: 'synchronization-definition'
       },
       {
         label: () =>
@@ -86,43 +87,28 @@ const Sidebar = defineComponent({
             {
               to: {
                 path: '/task/synchronization-instance'
-              }
+              },
+              exact: false
             },
             { default: () => t('menu.sync_task_instance') }
-        ),
-        key: 'task-instance',
+          ),
+        key: 'synchronization-instance'
       }
     ])
-
-
 
     onMounted(() => {
       console.log(route, 'route')
     })
-
-    const handleSelectItem = (key: string, options: any) => {
-      console.log(route, 'route')
-      onClickMenu('routeKey')
-    }
-
-    const handleShowDrop = (show: boolean) => {
-      showDrop.value = show
-    }
-
-    const onClickMenu = (key: string) => {
-      console.log(route, 'route')
-    }
+   
 
     return {
       collapsedRef,
       defaultExpandedKeys,
-      onClickMenu,
       menuStyle,
-      handleSelectItem,
       themeStore,
-      handleShowDrop,
       showDrop,
-      sideMenuOptions
+      sideMenuOptions,
+      route
     }
   },
   render() {
@@ -137,13 +123,11 @@ const Sidebar = defineComponent({
         onExpand={() => (this.collapsedRef = false)}
         width={196}
       >
-
         <NMenu
           class='tab-vertical'
-          value={this.sideKey}
+          value={this.$props.sideKey}
           options={this.sideMenuOptions}
           defaultExpandedKeys={this.defaultExpandedKeys}
-          onUpdateValue={this.onClickMenu}
         />
       </NLayoutSider>
     )

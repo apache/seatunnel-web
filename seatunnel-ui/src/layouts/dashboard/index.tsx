@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { defineComponent, watch, watchEffect, ref, Ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { defineComponent, watch, watchEffect, ref, Ref, onMounted } from 'vue'
+import { useRoute, useRouter, RouteLocationMatched } from 'vue-router'
 import {
   NLayout,
   NLayoutHeader,
@@ -32,20 +32,23 @@ const Dashboard = defineComponent({
     window.$message = useMessage()
     const route = useRoute()
     let showSide = ref(false)
+
+    const menuKey = ref(route.meta.activeMenu as string)
+
     watch(
       () => route,
       () => {
         showSide.value = route?.meta?.showSide as boolean
-        console.log(showSide, 'route')
+        menuKey.value = route.meta.activeSide as string
       },
       {
         immediate: true,
         deep: true
       }
     )
-
     return {
-      showSide
+      showSide,
+      menuKey
     }
   },
   render() {
@@ -56,7 +59,7 @@ const Dashboard = defineComponent({
         </NLayoutHeader>
         <NLayoutContent style={{ height: 'calc(100vh - 65px)' }}>
           <NLayout has-sider position='absolute'>
-            { this.showSide && <Sidebar />}
+            { this.showSide && <Sidebar sideKey={this.menuKey} />}
             <NLayoutContent
               native-scrollbar={false}
               style='padding: 16px 22px 0px 22px'

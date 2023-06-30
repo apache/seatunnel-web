@@ -28,6 +28,7 @@ import datasource from '@/locales/zh_CN/datasource'
 import virtual_tables from '@/locales/zh_CN/virtual-tables'
 import theme from '@/locales/zh_CN/theme'
 import project from '@/locales/zh_CN/project'
+import hook from '@/locales/zh_CN/hook'
 
 export default {
   login,
@@ -42,5 +43,6 @@ export default {
   datasource,
   virtual_tables,
   theme,
-  project
+  project,
+  hook
 }

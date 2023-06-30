@@ -15,27 +15,17 @@
  * limitations under the License.
  */
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import App from './App'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import i18n from '@/locales'
-import router from './router'
-import utils from '@/utils'
-import './index.css'
-import './assets/styles/default.scss'
+const clipboard = (text: string): boolean => {
+  const inp = document.createElement('input')
+  document.body.appendChild(inp)
+  inp.value = text
+  inp.select()
+  let result = false
+  try {
+    result = document.execCommand('copy')
+  } catch (err) {}
+  inp.remove()
+  return result
+}
 
-const meta = document.createElement('meta')
-meta.name = 'naive-ui-style'
-document.head.appendChild(meta)
-
-const app = createApp(App)
-const pinia = createPinia()
-
-pinia.use(piniaPluginPersistedstate)
-app.config.globalProperties.trim = utils.trim
-
-app.use(router)
-app.use(pinia)
-app.use(i18n)
-app.mount('#app')
+export default clipboard

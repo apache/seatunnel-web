@@ -91,11 +91,6 @@ const SynchronizationDefinition = defineComponent({
       requestData()
     }
 
-    const onReset = () => {
-      variables.searchName = ''
-      // variables.projectCodes = useProjectStore().getCurrentProject
-    }
-
     const handleKeyup = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         onSearch()
@@ -135,7 +130,6 @@ const SynchronizationDefinition = defineComponent({
       onConfirmModal,
       handleModalChange,
       onSearch,
-      onReset,
       getProjectCodeList,
       handleKeyup,
     }
@@ -162,11 +156,7 @@ const SynchronizationDefinition = defineComponent({
                 )}
                 onKeyup={this.handleKeyup}
               />
-              <NButton onClick={this.onReset}>
-                <NIcon>
-                  <ReloadOutlined />
-                </NIcon>
-              </NButton>
+
               <NButton type='primary' onClick={this.onSearch}>
                 <NIcon>
                   <SearchOutlined />

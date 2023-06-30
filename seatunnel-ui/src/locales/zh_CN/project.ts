@@ -978,6 +978,7 @@ export default {
     update_time: '更新时间',
     operation: '操作',
     edit: '编辑',
+    start: '运行',
     delete: '删除',
     delete_confirm: '确定删除吗?',
     task_name_tips: '请输入任务名称',

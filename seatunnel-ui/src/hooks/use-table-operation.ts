@@ -200,7 +200,7 @@ export const useTableOperation = (
   return {
     title: params.title,
     key: params.key,
-    ...COLUMN_WIDTH_CONFIG['operation'](params.itemNum),
+    ...COLUMN_WIDTH_CONFIG['operation'](params.itemNum as any),
     // ...COLUMN_WIDTH_CONFIG['operation'](params.itemNum || permissionLength),
     render: (rowData: any, index: number) => {
       const buttonVnodes = getButtonVnodes(rowData, index)
