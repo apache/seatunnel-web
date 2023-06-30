@@ -21,6 +21,10 @@ import { NPopover, NButton, NSpace } from 'naive-ui'
 import JsonHighlight from '../components/json-highlight'
 import { getTableColumn } from '@/common/table'
 
+import { useTableOperation } from '@/hooks'
+import { EditOutlined } from '@vicons/antd'
+import ResourceAuth from '@/components/resource-auth'
+
 export function useColumns(onCallback: Function) {
   const { t } = useI18n()
   const getColumns = () => {
@@ -85,11 +89,11 @@ export function useColumns(onCallback: Function) {
             default: () => [
               h(
                 NButton,
-                {
+          {
                   text: true,
                   onClick: () => void onCallback(row.id, 'edit')
-                },
-                {
+          },
+          {
                   default: () => t('datasource.edit')
                 }
               ),
@@ -98,11 +102,11 @@ export function useColumns(onCallback: Function) {
                 {
                   text: true,
                   onClick: () => void onCallback(row.id, 'delete')
-                },
+          },
                 { default: () => t('datasource.delete') }
               )
-            ]
-          })
+        ]
+      })
       }
     ]
   }

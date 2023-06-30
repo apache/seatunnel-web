@@ -16,15 +16,15 @@
  */
 import { reactive, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-//import {
-//  getVirtualTableDetail,
-//  createVirtualTable,
-//  updateVirtualTable,
-//  getFieldType
-//} from '@/service/modules/virtual-table'
+import {
+  getVirtualTableDetail,
+  createVirtualTable,
+  updateVirtualTable,
+  getFieldType
+} from '@/service/virtual-table'
 import { omit } from 'lodash'
 import { useRouter } from 'vue-router'
-//import type { IDetailTableRecord, VirtualTableDetail } from './types'
+import type { IDetailTableRecord, VirtualTableDetail } from './types'
 
 export const useDetail = (id: string) => {
   const state = reactive({
@@ -38,7 +38,7 @@ export const useDetail = (id: string) => {
       datasourceId: ''
     },
     stepTwo: {
-      //list: [] as IDetailTableRecord[],
+      list: [] as IDetailTableRecord[],
       loading: false,
       config: []
     },
@@ -61,27 +61,28 @@ export const useDetail = (id: string) => {
   const queryById = async () => {
     if (state.loading) return {}
     state.loading = true
-    //const res = await getVirtualTableDetail(id)
-    //state.stepOne.pluginName = res.pluginName
-    //state.stepOne.datasourceName = res.datasourceName
-    //state.stepOne.datasourceId = res.datasourceId
-    //state.stepOne.tableName = res.tableName
-    //state.stepTwo.list = res.fields.map((item: { [key: string]: any }) => ({
-    //  ...item,
-    //  nullable: Number(item.nullable),
-    //  primaryKey: Number(item.primaryKey)
-    //}))
-    //tempDatabaseProperties = res.datasourceProperties
+    const res = await getVirtualTableDetail(id)
+    state.stepOne.pluginName = res.pluginName
+    state.stepOne.datasourceName = res.datasourceName
+    state.stepOne.datasourceId = res.datasourceId
+    state.stepOne.tableName = res.tableName
+    state.stepTwo.list = res.fields.map((item: { [key: string]: any }) => ({
+      ...item,
+      nullable: Number(item.nullable),
+      primaryKey: Number(item.primaryKey)
+    }))
+    tempDatabaseProperties = res.datasourceProperties
     state.loading = false
   }
 
   const queryFieldsType = async () => {
-    //const res = await getFieldType()
-    //state.fieldTypes = res
-    //defaultRecord.fieldType = state.fieldTypes[0]
+    const res = await getFieldType()
+    console.log(res, 'type')
+    state.fieldTypes = res
+    defaultRecord.fieldType = state.fieldTypes[0]
   }
 
-  const formatParams = () => {
+  const formatParams = (): VirtualTableDetail => {
     const databaseProperties = {} as { [key: string]: string }
     state.stepTwo.config.forEach((item: { key: string; value: string }) => {
       databaseProperties[item.key] = item.value
@@ -91,11 +92,11 @@ export const useDetail = (id: string) => {
       datasourceName: state.stepOne.datasourceName || '',
       pluginName: state.stepOne.pluginName || '',
       tableName: state.stepOne.tableName,
-      //tableFields: state.stepTwo.list.map((item) => ({
-      //  ...omit(item, ['key', 'isEdit']),
-      //  nullable: Boolean(item.nullable),
-      //  primaryKey: Boolean(item.nullable)
-      //})),
+      tableFields: state.stepTwo.list.map((item) => ({
+        ...omit(item, ['key', 'isEdit']),
+        nullable: Boolean(item.nullable),
+        primaryKey: Boolean(item.nullable)
+      })),
       databaseProperties,
       databaseName: 'default'
     }
@@ -107,13 +108,13 @@ export const useDetail = (id: string) => {
     state.saving = true
 
     try {
-      //id
-      //  ? await updateVirtualTable(values, id)
-      //  : await createVirtualTable(values)
+      id
+        ? await updateVirtualTable(values, id)
+        : await createVirtualTable(values)
 
       state.saving = false
       router.push({
-        name: 'datasource-list',
+        name: 'virtual-tables-list',
         query: { tab: 'virtual-tables' }
       })
       return true
@@ -124,10 +125,11 @@ export const useDetail = (id: string) => {
   }
 
   const onAddRecord = () => {
-    //state.stepTwo.list.unshift({
-    //  ...defaultRecord,
-    //  key: Date.now() + Math.random() * 1000
-    //})
+    state.stepTwo.list.unshift({
+      ...defaultRecord,
+      key: Date.now() + Math.random() * 1000
+    })
+    console.log(state, 'ta')
   }
 
   const onChangeStep = async (step: -1 | 1) => {
@@ -150,15 +152,15 @@ export const useDetail = (id: string) => {
       try {
         const values = await stepTwoFormRef.value.getValues()
         state.stepTwo.config = values
-        //const flag = state.stepTwo.list.some((item) => item.isEdit)
-        //if (flag) {
-        //  window.$message.error(t('virtual_tables.save_data_tips'))
-        //  return
-        //}
-        //if (state.stepTwo.list.length === 0) {
-        //  window.$message.error(t('virtual_tables.table_data_required_tips'))
-        //  return
-        //}
+        const flag = state.stepTwo.list.some((item) => item.isEdit)
+        if (flag) {
+          window.$message.error(t('virtualTables.save_data_tips'))
+          return
+        }
+        if (state.stepTwo.list.length === 0) {
+          window.$message.error(t('virtualTables.table_data_required_tips'))
+          return
+        }
       } finally {
         state.goNexting = false
       }
@@ -167,6 +169,7 @@ export const useDetail = (id: string) => {
   }
 
   onMounted(() => {
+    console.log('vir')
     if (id) {
       queryById()
     }

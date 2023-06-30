@@ -39,11 +39,9 @@ const App = defineComponent({
     const themeStore = useThemeStore()
     const settingStore = useSettingStore()
     const currentTheme = computed(() =>
-      themeStore.darkTheme ? darkTheme : undefined
+      themeStore.getDarkTheme ? darkTheme : undefined
     )
-    const themeOverrides: Ref<GlobalThemeOverrides> = ref(
-      themeList[currentTheme.value ? 'dark' : 'light']
-    )
+    const themeOverrides = computed(() => themeList[currentTheme.value ? 'dark' : 'light'])
     const setBorderRadius = (v: number) => {
       (themeOverrides.value.common as Partial<ThemeCommonVars & CustomThemeCommonVars>).borderRadius =
         v + 'px'
@@ -66,7 +64,8 @@ const App = defineComponent({
     return {
       settingStore,
       currentTheme,
-      themeOverrides
+      themeOverrides,
+      themeList
     }
   },
   render() {

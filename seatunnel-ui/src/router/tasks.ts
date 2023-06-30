@@ -27,15 +27,51 @@ export default {
   meta: {
     title: 'tasks'
   },
-  redirect: { name: 'tasks-list' },
+  redirect: { name: 'synchronization-definition' },
   component: () => import('@/layouts/dashboard'),
   children: [
     {
-      path: '/tasks/list',
-      name: 'tasks-list',
-      component: components['tasks-list'],
+      path: '/task/synchronization-definition',
+      name: 'synchronization-definition',
+      component: components['task-synchronization-definition'],
       meta: {
-        title: 'tasks-list'
+        title: '同步任务定义',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-definition',
+        showSide: true
+      }
+    },
+    {
+      path: '/task/synchronization-definition/:jobDefinitionCode',
+      name: 'synchronization-definition-dag',
+      component: components['task-synchronization-definition-dag'],
+      meta: {
+        title: '同步任务定义画布',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-definition',
+        showSide: true,
+      }
+    },
+    {
+      path: '/task/synchronization-instance',
+      name: 'synchronization-instance',
+      component: components['task-synchronization-instance'],
+      meta: {
+        title: '同步任务实例',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-instance',
+        showSide: true
+      }
+    },
+    {
+      path: '/task/synchronization-instance/:taskCode',
+      name: 'synchronization-instance-detail',
+      component: components['task-synchronization-instance-detail'],
+      meta: {
+        title: '同步任务实例详情',
+        activeMenu: 'tasks',
+        activeSide: 'synchronization-instance',
+        showSide: true,
       }
     }
   ]

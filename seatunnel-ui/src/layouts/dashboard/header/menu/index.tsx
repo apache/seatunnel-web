@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { defineComponent, toRefs } from 'vue'
+import { defineComponent, toRefs, ref, watch } from 'vue'
 import { NMenu, NSpace } from 'naive-ui'
 import { useRouter, useRoute } from 'vue-router'
 import { useMenu } from './use-menu'
@@ -30,17 +30,26 @@ const Menu = defineComponent({
       router.push({ path: `/${key}` })
     }
 
+    const menuKey = ref(route.meta.activeMenu as string)
+
+    watch(
+      () => route.path,
+      () => {
+        menuKey.value = route.meta.activeMenu as string
+      }
+    )
+
     return {
       ...toRefs(state),
       handleMenuClick,
-      route
+      menuKey
     }
   },
   render() {
     return (
       <NSpace align='center' class='h-16'>
         <NMenu
-          value={this.route.path.split('/')[1]}
+          value={this.menuKey}
           mode='horizontal'
           options={this.menuOptions}
           onUpdateValue={this.handleMenuClick}

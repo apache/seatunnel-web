@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 import { onMounted, reactive, watch } from 'vue'
-import { datasourceTypeList } from '@/service/datasource'
+import { getDatasourceType } from '@/service/data-source'
 import { useI18n } from 'vue-i18n'
 import type { SelectOption } from 'naive-ui'
 import type { ResponseBasic } from '@/service/types'
-import type { DatasourceTypeList } from '@/service/datasource/types'
+import type { DatasourceTypeList } from '@/service/data-source/types'
 
 type Key = '1' | '2' | '3' | '4' | '5'
 type IType = {
@@ -43,7 +43,7 @@ export const useSource = (showVirtualDataSource = false) => {
   })
 
   const querySource = () => {
-    datasourceTypeList({
+    getDatasourceType({
       showVirtualDataSource,
       source: 'WT'
     }).then((res: ResponseBasic<Array<DatasourceTypeList> | Array<any>>) => {
@@ -52,7 +52,7 @@ export const useSource = (showVirtualDataSource = false) => {
         en_US: {} as { [key: string]: string }
       }
 
-      state.types = Object.entries(res.data).map(([key, value]) => {
+      state.types = Object.entries(res).map(([key, value]) => {
         return {
           type: 'group',
           label: i18n.t(`datasource.${TYPE_MAP[key as Key]}`),

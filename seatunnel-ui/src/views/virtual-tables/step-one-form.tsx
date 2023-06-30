@@ -24,7 +24,7 @@ import {
   SelectGroupOption
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
-//import { useSource } from '../datasource/list/use-source'
+import { useSource } from '../datasource/list/use-source'
 import { useTable } from '../datasource/list/use-table'
 import styles from './index.module.scss'
 
@@ -38,7 +38,7 @@ const StepOneForm = defineComponent({
   },
   setup(props, { expose }) {
     const { t } = useI18n()
-    //const { state: sourceState } = useSource(true)
+    const { state: sourceState } = useSource(true)
     const { data: datasourceState, getList } = useTable()
     const rules = {
       pluginName: {
@@ -63,7 +63,7 @@ const StepOneForm = defineComponent({
     const handleUpdateType = (type: string) => {
       if (type === paramsRef.value.pluginName) return
       datasourceState.pageSize = 99999
-      //getList(type)
+      getList(type)
       paramsRef.value.datasourceName = null
       paramsRef.value.tableName = null
     }
@@ -93,10 +93,10 @@ const StepOneForm = defineComponent({
             v-model:value={props.params.pluginName}
             filterable
             placeholder={t('virtual_tables.source_type_tips')}
-            //options={
-            //  sourceState.types as Array<SelectGroupOption | SelectOption>
-            //}
-            //loading={sourceState.loading}
+            options={
+             sourceState.types as Array<SelectGroupOption | SelectOption>
+            }
+            loading={sourceState.loading}
             class={styles['type-width']}
             onUpdateValue={(value) => void handleUpdateType(value)}
           />

@@ -14,7 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { GlobalThemeOverrides } from '../type'
 
-const dark = {}
+const dark = {
+  common: {
+    bodyColor: '#141414',
+    // baseColor: '#f8f8fc',
+
+    /**************** Brand color */
+    primaryColor: '#177ddc',
+    primaryColorHover: '#1765ad',
+    primaryColorPressed: '#3c9ae8',
+    primaryColorSuppl: '#177ddc',
+
+    /**************** Function of color */
+    infoColor: '#177ddc',
+    // successColor: '#49aa19',
+    // warningColor: '#d89614',
+    // errorColor: '#a61d24'
+  },
+  // Layout: {
+  //   headerColor: '#141414'
+  // },
+  // DataTable: {
+  //   thTextColor: '#fff',
+  //   tdColorHover: '#f2f2fa'
+  // },
+  // Space: {
+  //   gapLarge: '28px 32px'
+  // }
+} as GlobalThemeOverrides
 
 export default dark
