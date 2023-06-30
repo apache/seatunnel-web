@@ -15,12 +15,26 @@
  * limitations under the License.
  */
 
-import { axios } from '@/service/service'
+import { defineStore } from 'pinia'
+import { FormStructuresStore, StructureItem } from './types'
+export type { StructureItem }
 
-export function virtualTableList(params: any): any {
-  return axios({
-    url: '/virtual_table/list',
-    method: 'get',
-    params
-  })
-}
+export const useFormStructuresStore = defineStore({
+  id: 'form-structures',
+  state: (): FormStructuresStore => ({
+    items: new Map()
+  }),
+  persist: {
+    storage: sessionStorage
+  },
+  getters: {
+    getItem(state) {
+      return (key: string): StructureItem[] | undefined => state.items.get(key)
+    }
+  },
+  actions: {
+    setItem(key: string, item: StructureItem[]): void {
+      this.items.set(key, item)
+    }
+  }
+})

@@ -17,9 +17,7 @@
 import { onMounted, reactive, watch } from 'vue'
 import { getDatasourceType } from '@/service/data-source'
 import { useI18n } from 'vue-i18n'
-import type { SelectOption } from 'naive-ui'
-import type { ResponseBasic } from '@/service/types'
-import type { DatasourceTypeList } from '@/service/data-source/types'
+import type { SelectOption } from './types'
 
 type Key = '1' | '2' | '3' | '4' | '5'
 type IType = {
@@ -39,25 +37,32 @@ export const useSource = (showVirtualDataSource = false) => {
     5: 'remote_connection'
   }
   const state = reactive({
+    loading: false,
     types: [] as IType[]
   })
 
-  const querySource = () => {
-    getDatasourceType({
-      showVirtualDataSource,
-      source: 'WT'
-    }).then((res: ResponseBasic<Array<DatasourceTypeList> | Array<any>>) => {
+  const querySource = async () => {
+    if (state.loading) return
+    state.loading = true
+    try {
+      const res = (await getDatasourceType({
+        showVirtualDataSource,
+        source: 'WT'
+      })) as {
+        Key: { code: number; name: string; chineseName: string }[]
+      }
+
+      console.log(res, 'ers')
       const locales = {
         zh_CN: {} as { [key: string]: string },
         en_US: {} as { [key: string]: string }
       }
-
       state.types = Object.entries(res).map(([key, value]) => {
         return {
           type: 'group',
           label: i18n.t(`datasource.${TYPE_MAP[key as Key]}`),
           key: TYPE_MAP[key as Key],
-          children: (value as any).map((item: any) => {
+          children: value.map((item) => {
             locales.zh_CN[item.name] = item.chineseName
             locales.en_US[item.name] = item.name
             return {
@@ -67,10 +72,11 @@ export const useSource = (showVirtualDataSource = false) => {
           })
         }
       })
-
       i18n.mergeLocaleMessage('zh_CN', locales.zh_CN)
       i18n.mergeLocaleMessage('en_US', locales.en_US)
-    })
+    } finally {
+      state.loading = false
+    }
   }
 
   onMounted(() => {

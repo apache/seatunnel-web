@@ -14,33 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+export interface VirtualTableListParameters {
+  pageNo: number
+  pageSize: number
+  pluginName: string | null
+  datasourceName: string | null
+}
 
-interface DatasourceConfig {}
+export type IDetailTableRecord = {
+  fieldName?: string
+  fieldType: string
+  nullable: number | boolean
+  primaryKey: number | boolean
+  fieldComment?: string
+  isEdit?: boolean
+  key?: number
+  defaultValue?: string
+}
 
-interface DatasourceList {
-  createUserName: string
-  createTime: string
-  updateUserName: string
-  updateTime: string
-  id: string
+export interface VirtualTableDetail {
+  datasourceId: string
   datasourceName: string
   pluginName: string
-  pluginVersion: string
+  tableName: string
+  tableFields: IDetailTableRecord[]
+  databaseProperties: { [key: string]: string }
+  databaseName?: string
+}
+
+export interface VirtualTableRecord {
+  tableId: string
+  datasourceName: string
+  databaseName: string
+  tableName: string
   description: string
-  datasourceConfig: DatasourceConfig
-  createUserId: number
-  updateUserId: number
+  key: number
+  createTime: string
 }
 
-interface DatasourceTypeList {
-  name: string
-  icon: string
-  version: string
-  type: number
-  supportVirtualTables: boolean
-}
-
-export {
-  DatasourceList,
-  DatasourceTypeList
+export interface DynamicConfigParameters {
+  pluginName: string
+  datasourceName: string
 }

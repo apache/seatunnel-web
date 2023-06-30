@@ -14,3 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+export type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+export type { SelectOption } from 'naive-ui'
+export type { DataSourceDetail } from '@/service/data-source/types'

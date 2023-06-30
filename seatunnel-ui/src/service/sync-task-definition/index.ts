@@ -19,7 +19,7 @@ import { axios } from '@/service/service'
 
 export function querySyncTaskDefinitionPaging(params: any): any {
   return axios({
-    url: '/ws/seaTunnel/syncTaskDefinitionPaging',
+    url: '/job/definition',
     method: 'get',
     params
   })
@@ -215,7 +215,7 @@ export function listEngineType(): any {
 
 export function getDatabaseByDatasource(datasourceName: string): any {
   return axios({
-    url: '/v1/datasource/databases',
+    url: '/datasource/databases',
     method: 'get',
     params: {
       datasourceName
@@ -232,7 +232,7 @@ export function getTableByDatabase(
   size = size || 100
   filterName = filterName || ''
   return axios({
-    url: '/v1/datasource/tables',
+    url: '/datasource/tables',
     method: 'get',
     params: {
       datasourceName,
@@ -249,7 +249,7 @@ export function getInputTableSchema(
   tableName: string
 ): any {
   return axios({
-    url: '/v1/datasource/schema',
+    url: '/datasource/schema',
     method: 'get',
     params: {
       datasourceId,
@@ -296,7 +296,7 @@ export function checkDatabaseAndTable(
 
 export function modelInfo(datasourceId: string, data: any): any {
   return axios({
-    url: `/v1/datasource/schemas?datasourceId=${datasourceId}`,
+    url: `/datasource/schemas?datasourceId=${datasourceId}`,
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'

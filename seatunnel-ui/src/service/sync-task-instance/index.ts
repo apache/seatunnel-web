@@ -19,7 +19,7 @@ import { axios } from '@/service/service'
 
 export function queryRunningInstancePaging(params: any): any {
   return axios({
-    url: '/whaletunnel/api/v1/job/metrics/detail',
+    url: '/job/metrics/detail',
     method: 'get',
     timeout: 60000,
     params
@@ -28,7 +28,7 @@ export function queryRunningInstancePaging(params: any): any {
 
 export function querySyncTaskInstanceDetail(params: any): any {
   return axios({
-    url: '/whaletunnel/api/v1/job/metrics/summary',
+    url: '/job/metrics/summary',
     method: 'get',
     timeout: 60000,
     params
@@ -37,7 +37,7 @@ export function querySyncTaskInstanceDetail(params: any): any {
 
 export function querySyncTaskInstanceDag(params: any): any {
   return axios({
-    url: '/whaletunnel/api/v1/job/metrics/dag',
+    url: '/job/metrics/dag',
     method: 'get',
     timeout: 60000,
     params

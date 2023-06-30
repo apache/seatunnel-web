@@ -67,9 +67,20 @@ service.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 }, err)
 
 service.interceptors.response.use((res: AxiosResponse) => {
-  if (res.data.success) return res.data
+  if (res.data.code === undefined) {
+    return res.data
+  }
 
-  handleError(res)
+  if (res.data.success) return res.data.data
+
+  switch (res.data.code) {
+    case 0:
+      return res.data.data
+    
+    default:
+      handleError(res)
+      throw new Error()
+  }
 }, err)
 
 export { service as axios }

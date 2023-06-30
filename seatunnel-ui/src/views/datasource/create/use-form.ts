@@ -22,7 +22,7 @@ import {
   useFormStructuresStore,
   StructureItem
 } from '@/store/datasource'
-import { dynamicFormItems } from '@/service/datasource'
+import { dynamicFormItems } from '@/service/data-source'
 import { useFormField } from '@/components/dynamic-form/use-form-field'
 import { useFormRequest } from '@/components/dynamic-form/use-form-request'
 import { useFormValidate } from '@/components/dynamic-form/use-form-validate'
@@ -64,10 +64,10 @@ export function useForm(type: string) {
       return
     }
 
-    const result: ResponseBasic<string> = await dynamicFormItems(value)
+    const result: any = await dynamicFormItems(value)
 
     try {
-      const res = JSON.parse(result.data)
+      const res = JSON.parse(result)
       res.forms = res.forms.map((form: any) => ({ ...form, span: 12 }))
       Object.assign(state.detailForm, useFormField(res.forms))
       Object.assign(
