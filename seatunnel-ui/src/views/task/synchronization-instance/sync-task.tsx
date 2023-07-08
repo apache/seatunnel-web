@@ -271,32 +271,12 @@ const SyncTask = defineComponent({
       <NSpace vertical>
         <NCard>
           <NGrid cols={26} yGap={10} xGap={5}>
-            {this.globalProject && (
-              <NGi span={5}>
-                <ProjectSelector
-                  initCode={
-                    this.projectCodes.length == 1 ? this.projectCodes[0] : null
-                  }
-                  onGetprojectList={this.getProjectCodeList}
-                  style={{ 'width': '100%' }}
-                ></ProjectSelector>
-              </NGi>
-            )}
             
             <NGi span={5}>
               <NInput
                 v-model={[this.taskName, 'value']}
                 placeholder={this.t(
                   'project.synchronization_instance.task_name'
-                )}
-                onKeyup={this.handleKeyup}
-              />
-            </NGi>
-            <NGi span={5}>
-              <NInput
-                v-model={[this.workflowInstance, 'value']}
-                placeholder={this.t(
-                  'project.synchronization_instance.workflow_instance'
                 )}
                 onKeyup={this.handleKeyup}
               />
@@ -311,13 +291,6 @@ const SyncTask = defineComponent({
               />
             </NGi>
             <NGi span={6}>
-              <NInput
-                v-model={[this.host, 'value']}
-                placeholder={this.t('project.synchronization_instance.host')}
-                onKeyup={this.handleKeyup}
-              />
-            </NGi>
-            <NGi span={6}>
               <NSelect
                 style={{ width: '100%' }}
                 v-model={[this.stateType, 'value']}
@@ -326,19 +299,21 @@ const SyncTask = defineComponent({
                 clearable
               />
             </NGi>
-            <NGi span={26}>
+            <NGi span={7}>
+              <NDatePicker
+                v-model={[this.datePickerRange, 'formattedValue']}
+                type='datetimerange'
+                start-placeholder={this.t(
+                  'project.synchronization_instance.start_time'
+                )}
+                end-placeholder={this.t(
+                  'project.synchronization_instance.end_time'
+                )}
+                shortcuts={this.rangeShortCuts.rangeOption}
+              />
+            </NGi>
+            <NGi span={4}>
               <NSpace justify='end'>
-                <NDatePicker
-                  v-model={[this.datePickerRange, 'formattedValue']}
-                  type='datetimerange'
-                  start-placeholder={this.t(
-                    'project.synchronization_instance.start_time'
-                  )}
-                  end-placeholder={this.t(
-                    'project.synchronization_instance.end_time'
-                  )}
-                  shortcuts={this.rangeShortCuts.rangeOption}
-                />
                 <NButton onClick={this.onReset}>
                   <NIcon>
                     <ReloadOutlined />

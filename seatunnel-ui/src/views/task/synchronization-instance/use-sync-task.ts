@@ -22,7 +22,11 @@ import {
   AlignLeftOutlined,
   CheckCircleOutlined,
   ClearOutlined,
-  DownloadOutlined
+  DownloadOutlined,
+  SyncOutlined,
+  PlayCircleOutlined,
+  PauseCircleOutlined,
+  DeleteOutlined
 } from '@vicons/antd'
 import { useI18n } from 'vue-i18n'
 import {
@@ -98,7 +102,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       }
     ]
   }
-
+  // 
   const createColumns = (variables: any) => {
     variables.columns = [
       {
@@ -132,28 +136,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         },
         // 'project'
       ),
-      useTableLink({
-        title: t('project.project_name'),
-        key: 'projectName',
-        ...COLUMN_WIDTH_CONFIG['link_name'],
-        button: {
-          onClick: (row: any) => {
-            // changeProject(row.projectCode)
-            router.push({
-              path: route.path,
-              query: {
-                project: String(row.projectCode),
-                global: 'false'
-              }
-            })
-          }
-        }
-      }),
-      {
-        title: t('project.synchronization_instance.workflow_instance'),
-        key: 'processInstanceName',
-        ...COLUMN_WIDTH_CONFIG['link_name']
-      },
       {
         title: t('project.synchronization_instance.amount_of_data_read'),
         key: 'readRowCount',
@@ -168,11 +150,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         title: t('project.synchronization_instance.execute_user'),
         key: 'executorName',
         ...COLUMN_WIDTH_CONFIG['state']
-      },
-      {
-        title: t('project.synchronization_instance.node_type'),
-        key: 'taskType',
-        ...COLUMN_WIDTH_CONFIG['userName']
       },
       {
         title: t('project.synchronization_instance.state'),
@@ -200,57 +177,57 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         key: 'duration',
         ...COLUMN_WIDTH_CONFIG['duration']
       },
-      {
-        title: t('project.synchronization_instance.number_of_retries'),
-        key: 'retryTimes',
-        ...COLUMN_WIDTH_CONFIG['size']
-      },
-      {
-        title: t('project.synchronization_instance.rerun_mark'),
-        key: 'dryRun',
-        ...COLUMN_WIDTH_CONFIG['size']
-      },
-      {
-        title: t('project.synchronization_instance.host'),
-        key: 'host',
-        ...COLUMN_WIDTH_CONFIG['name']
-      },
       useTableOperation(
         {
           title: t('project.synchronization_instance.operation'),
           key: 'operation',
+          itemNum: 3,
           buttons: [
+            // {
+            //   text: t('project.synchronization_instance.clean_state'),
+            //   icon: h(ClearOutlined),
+            //   onClick: (row: any) => void handleCleanState(row),
+            //   disabled: (row: any) => row.state === 'RUNNING_EXECUTION'
+            // },
+            // {
+            //   text: t('project.synchronization_instance.forced_success'),
+            //   icon: h(CheckCircleOutlined),
+            //   onClick: (row: any) => void handleForcedSuccess(row),
+            //   disabled: (row: any) =>
+            //     !(
+            //       row.state === 'FAILURE' ||
+            //       row.state === 'NEED_FAULT_TOLERANCE' ||
+            //       row.state === 'KILL'
+            //     )
+            // },
+            // {
+            //   text: t('project.workflow.rerun'),
+            //   icon: h(SyncOutlined)
+            // },
+            // {
+            //   text: t('project.synchronization_instance.view_log'),
+            //   icon: h(AlignLeftOutlined),
+            //   onClick: (row) => void handleLog(row),
+            //   disabled: (row) => !row.host
+            // },
             {
-              text: t('project.synchronization_instance.clean_state'),
-              permission: 'project:seatunnel-task-instance:clean-state',
-              icon: h(ClearOutlined),
-              onClick: (row: any) => void handleCleanState(row),
-              disabled: (row: any) => row.state === 'RUNNING_EXECUTION'
-            },
-            {
-              text: t('project.synchronization_instance.forced_success'),
-              permission: 'project:seatunnel-task-instance:force-success',
-              icon: h(CheckCircleOutlined),
-              onClick: (row: any) => void handleForcedSuccess(row),
-              disabled: (row: any) =>
-                !(
-                  row.state === 'FAILURE' ||
-                  row.state === 'NEED_FAULT_TOLERANCE' ||
-                  row.state === 'KILL'
-                )
-            },
-            {
-              text: t('project.synchronization_instance.view_log'),
-              permission: 'project:seatunnel-task-instance:log',
-              icon: h(AlignLeftOutlined),
-              onClick: (row) => void handleLog(row),
-              disabled: (row) => !row.host
-            },
-            {
-              text: t('project.synchronization_instance.download_log'),
-              permission: 'project:seatunnel-task-instance:download-log',
-              icon: h(DownloadOutlined),
+              text: t('project.workflow.recovery_suspend'),
+              icon: h(PlayCircleOutlined),
               onClick: (row) => void downloadLog(row.id)
+            },
+            {
+              text: t('project.workflow.pause'),
+              icon: h(PauseCircleOutlined),
+              onClick: (row) => void downloadLog(row.id)
+            },
+            {
+              isDelete: true,
+              text: t('project.synchronization_instance.delete'),
+              icon: h(DeleteOutlined),
+              onClick: (row) => void downloadLog(row.id),
+              onPositiveClick: () => { console.log('123')},
+              positiveText: t('project.synchronization_instance.confirm'),
+              popTips: t('project.synchronization_instance.delete_confirm'),
             }
           ]
         },
@@ -274,16 +251,19 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     variables.loadingRef = true
 
     params['projectCodes'] = variables.projectCodes
-
-    querySyncTaskInstancePaging(params)
-      .then((res: any) => {
-        variables.tableData = res.totalList as any
-        variables.totalPage = res.totalPage
-        variables.loadingRef = false
-      })
-      .catch(() => {
-        variables.loadingRef = false
-      })
+    console.log('12312')
+    variables.tableData = [{name: 'sfda'}] as any
+    variables.loadingRef = false
+    // querySyncTaskInstancePaging(params)
+    //   .then((res: any) => {
+    //     variables.tableData = res.totalList as any
+    //     variables.totalPage = res.totalPage
+    //     variables.loadingRef = false
+    //   })
+    //   .catch(() => {
+    //     variables.loadingRef = false
+    //     variables.tableData = [{}] as any
+    //   })
   }
 
   const handleLog = (row: any) => {

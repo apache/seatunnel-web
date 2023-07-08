@@ -133,6 +133,7 @@ export function useTable() {
   }
 
   const getTableData = (params: any) => {
+    console.log('1234')
     if (state.loading) return
     state.loading = true
     taskInstanceList({
@@ -143,6 +144,9 @@ export function useTable() {
       state.tableData = res.data as any
       state.totalPage = res.data.totalPage
       state.loading = false
+    }).catch(() => {
+      console.log('123')
+      state.tableData = [{name: 'name'}] as any
     })
   }
 

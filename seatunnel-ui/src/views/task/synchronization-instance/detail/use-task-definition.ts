@@ -18,11 +18,11 @@
 import {
   querySyncTaskInstanceDetail,
   querySyncTaskInstanceDag
-} from '@/service/modules/sync-task-instance'
+} from '@/service/sync-task-instance'
 import { useRoute } from 'vue-router'
 import { uuid } from '@/common/common'
-import { useDagAddShape } from '@/views/projects/task/synchronization-instance/detail/dag/use-dag-add-shape'
-import { useDagLayout } from '@/views/projects/task/synchronization-instance/detail/dag/use-dag-layout'
+import { useDagAddShape } from '@/views/task/synchronization-instance/detail/dag/use-dag-add-shape'
+import { useDagLayout } from '@/views/task/synchronization-instance/detail/dag/use-dag-layout'
 import { Graph } from '@antv/x6'
 import { getDefinitionConfig } from '@/service/sync-task-definition'
 

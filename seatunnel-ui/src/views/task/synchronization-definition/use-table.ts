@@ -21,7 +21,8 @@ import { useTableOperation } from '@/hooks'
 import { EditOutlined, PlayCircleOutlined } from '@vicons/antd'
 import {
   querySyncTaskDefinitionPaging,
-  deleteSyncTaskDefinition
+  deleteSyncTaskDefinition,
+  executeJob
 } from '@/service/sync-task-definition'
 import { useRoute, useRouter } from 'vue-router'
 import type { Router } from 'vue-router'
@@ -106,9 +107,10 @@ export function useTable() {
               },
               icon: h(EditOutlined)
             },
-
+            
             {
               text: t('project.synchronization_definition.start'),
+              onClick: (row: any) => void handleRun(row),
               icon: h(PlayCircleOutlined)
             },
             {
@@ -139,6 +141,16 @@ export function useTable() {
       .catch(() => {
         variables.loadingRef = false
       })
+  }
+
+  const handleRun = (row: any) => {
+    executeJob(row.id).then(() => {
+      getTableData({
+        pageSize: variables.pageSize,
+        pageNo: variables.page,
+        searchName: variables.searchName
+      })
+    })
   }
 
   const handleDelete = (row: any) => {

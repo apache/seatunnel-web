@@ -315,3 +315,12 @@ export function sqlModelInfo(taskId: string, pluginId: string, data: any): any {
     transformRequest: () => JSON.stringify(data)
   })
 }
+export function executeJob(jobDefineId: number): any {
+  return axios({
+    url: `/job/executor/execute?jobDefineId=${jobDefineId}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+  })
+}

@@ -63,7 +63,7 @@ export const COLUMN_WIDTH_CONFIG = {
   },
   operation: (number: number): CommonColumnInfo => ({
     fixed: 'right',
-    width: Math.max(30 * number + 12 * (number - 1) + 24, 100)
+    width: Math.max(28 * number + 12 * (number - 1) + 24, 100)
   }),
   processDefinitionName: {
     width: 120,
