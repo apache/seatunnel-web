@@ -26,6 +26,9 @@ import tasks from '@/locales/zh_CN/tasks'
 import setting from '@/locales/zh_CN/setting'
 import datasource from '@/locales/zh_CN/datasource'
 import virtual_tables from '@/locales/zh_CN/virtual-tables'
+import theme from '@/locales/zh_CN/theme'
+import project from '@/locales/zh_CN/project'
+import hook from '@/locales/zh_CN/hook'
 
 export default {
   login,
@@ -38,5 +41,8 @@ export default {
   tasks,
   setting,
   datasource,
-  virtual_tables
+  virtual_tables,
+  theme,
+  project,
+  hook
 }

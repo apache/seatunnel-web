@@ -24,5 +24,7 @@ export default {
   logout: '登出',
   tasks: '任务',
   datasource: '数据源',
-  virtual_tables: '虚拟表'
+  virtual_tables: '虚拟表',
+  sync_task_definition: '同步任务定义',
+  sync_task_instance: '同步任务实例',
 }

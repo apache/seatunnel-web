@@ -198,7 +198,7 @@ export function useTable() {
     if (state.loading) return
     state.loading = true
     scriptList(params).then((res: ResponseTable<Array<ScriptDetail> | []>) => {
-      state.tableData = res.data.data as any
+      state.tableData = res.data as any
       state.totalPage = res.data.totalPage
       state.loading = false
     })

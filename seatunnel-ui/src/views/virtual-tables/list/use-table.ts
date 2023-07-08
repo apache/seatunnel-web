@@ -16,19 +16,17 @@
  */
 import { onMounted, reactive } from 'vue'
 import {
-  virtualTableList
-  //deleteVirtualTable
-} from '@/service/virtual-tables'
-import { useRoute, useRouter } from 'vue-router'
-//import type { Params } from '../types'
+  getVirtualTableList,
+  deleteVirtualTable
+} from '@/service/virtual-table'
+import { stringifyQuery, useRoute, useRouter } from 'vue-router'
 
 export function useTable() {
-  const initialParams: any = {
-    pluginName: null,
-    datasourceName: null
-  }
   const state = reactive({
-    params: { ...initialParams },
+    params: {
+      pluginName: null,
+      datasourceName: null
+    },
     list: [],
     loading: false,
     page: 1,
@@ -39,12 +37,12 @@ export function useTable() {
   const router = useRouter()
 
   const getList = async () => {
-    const result = await virtualTableList({
+    const result = await getVirtualTableList({
       pageNo: state.page,
       pageSize: state.pageSize,
-      ...state.params
+      pluginName: state.params.pluginName || '',
+      datasourceName: state.params.datasourceName || '',
     })
-    console.log(result)
     state.list = result?.data
     state.itemCount = result?.total
   }
@@ -57,16 +55,16 @@ export function useTable() {
   }
 
   const onDelete = async (id: string) => {
-    //await deleteVirtualTable(id)
+    await deleteVirtualTable(id)
     updateList()
   }
 
   const initSearch = () => {
     const { pluginName, datasourceName } = route.query
     if (pluginName) {
-      state.params.pluginName = pluginName as string
+      state.params.pluginName = pluginName as any
       if (datasourceName) {
-        state.params.datasourceName = datasourceName as string
+        state.params.datasourceName = datasourceName as any
       }
     }
   }

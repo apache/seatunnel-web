@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-interface ThemeState {
-  darkTheme: boolean
-}
+export type ITheme = 'light' | 'dark' | 'dark-blue'
 
-export { ThemeState }
+export interface ThemeState {
+  darkTheme: boolean
+  theme: ITheme
+  isNavLogoBlack: boolean
+  navTextColor: ''
+}

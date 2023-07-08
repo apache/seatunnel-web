@@ -35,7 +35,8 @@ export default {
       name: 'datasource-list',
       component: components['datasource-list'],
       meta: {
-        title: 'datasource-list'
+        title: 'datasource-list',
+        activeMenu: 'datasource'
       }
     },
     {
@@ -43,7 +44,8 @@ export default {
       name: 'datasource-create',
       component: components['datasource-create'],
       meta: {
-        title: 'datasource-create'
+        title: 'datasource-create',
+        activeMenu: 'datasource'
       }
     },
     {
@@ -51,7 +53,8 @@ export default {
       name: 'datasource-edit',
       component: components['datasource-create'],
       meta: {
-        title: 'datasource-edit'
+        title: 'datasource-edit',
+        activeMenu: 'datasource'
       }
     }
   ]

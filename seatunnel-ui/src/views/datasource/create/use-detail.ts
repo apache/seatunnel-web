@@ -21,7 +21,7 @@ import {
   datasourceAdd,
   datasourceUpdate,
   checkConnect
-} from '@/service/datasource'
+} from '@/service/data-source'
 import { useI18n } from 'vue-i18n'
 import { omit } from 'lodash'
 import { useRouter } from 'vue-router'
@@ -56,12 +56,12 @@ export function useDetail(
   const queryById = async () => {
     try {
       const result = await datasourceDetail(id)
-      await getFormItems(result.data.pluginName)
+      await getFormItems(result.pluginName)
       setFieldsValue({
-        datasourceName: result.data.datasourceName,
-        pluginName: result.data.pluginName,
-        description: result.data.description,
-        ...result.data.datasourceConfig
+        datasourceName: result.datasourceName,
+        pluginName: result.pluginName,
+        description: result.description,
+        ...result.datasourceConfig
       })
     } finally {}
   }
