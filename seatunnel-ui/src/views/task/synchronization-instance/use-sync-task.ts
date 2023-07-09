@@ -29,11 +29,7 @@ import {
   DeleteOutlined
 } from '@vicons/antd'
 import { useI18n } from 'vue-i18n'
-import {
-  cleanState,
-  downloadLog,
-  forceSuccess
-} from '@/service/task-instances'
+import { cleanState, downloadLog, forceSuccess } from '@/service/task-instances'
 import {
   COLUMN_WIDTH_CONFIG,
   DefaultTableWidth,
@@ -43,7 +39,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { ITaskState } from '@/common/types'
 import { tasksState } from '@/common/common'
 import { NIcon, NSpin, NTooltip } from 'naive-ui'
-import { querySyncTaskInstancePaging } from '@/service/sync-task-instance'
+import {
+  querySyncTaskInstancePaging,
+  hanldlePauseJob,
+  hanldleRecoverJob,
+  hanldleDelJob
+} from '@/service/sync-task-instance'
 import type { RowKey } from 'naive-ui/lib/data-table/src/interface'
 import type { Router } from 'vue-router'
 import {
@@ -102,7 +103,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       }
     ]
   }
-  // 
+  //
   const createColumns = (variables: any) => {
     variables.columns = [
       {
@@ -133,7 +134,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
               })
             }
           }
-        },
+        }
         // 'project'
       ),
       {
@@ -213,24 +214,26 @@ export function useSyncTask(syncTaskType = 'BATCH') {
             {
               text: t('project.workflow.recovery_suspend'),
               icon: h(PlayCircleOutlined),
-              onClick: (row) => void downloadLog(row.id)
+              onClick: (row) => void handleRecover(row.id)
             },
             {
               text: t('project.workflow.pause'),
               icon: h(PauseCircleOutlined),
-              onClick: (row) => void downloadLog(row.id)
+              onClick: (row) => void handlePause(row.id)
             },
             {
               isDelete: true,
               text: t('project.synchronization_instance.delete'),
               icon: h(DeleteOutlined),
-              onClick: (row) => void downloadLog(row.id),
-              onPositiveClick: () => { console.log('123')},
+              onClick: (row) => void handleDel(row.id),
+              onPositiveClick: () => {
+                console.log('123')
+              },
               positiveText: t('project.synchronization_instance.confirm'),
-              popTips: t('project.synchronization_instance.delete_confirm'),
+              popTips: t('project.synchronization_instance.delete_confirm')
             }
           ]
-        },
+        }
         // 'project'
       )
     ]
@@ -241,29 +244,31 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   }
 
   const getTableData = (params: any) => {
-    if (
-      variables.loadingRef ||
-      !variables.projectCodes ||
-      variables.projectCodes.length === 0 ||
-      variables.projectCodes[0] === undefined
-    )
-      return
+    if (variables.loadingRef) return
     variables.loadingRef = true
 
     params['projectCodes'] = variables.projectCodes
-    console.log('12312')
-    variables.tableData = [{name: 'sfda'}] as any
+    variables.tableData = [{ name: 'sfda' }] as any
     variables.loadingRef = false
-    // querySyncTaskInstancePaging(params)
-    //   .then((res: any) => {
-    //     variables.tableData = res.totalList as any
-    //     variables.totalPage = res.totalPage
-    //     variables.loadingRef = false
-    //   })
-    //   .catch(() => {
-    //     variables.loadingRef = false
-    //     variables.tableData = [{}] as any
-    //   })
+    querySyncTaskInstancePaging(params)
+      .then((res: any) => {
+        variables.tableData = res.totalList as any
+        variables.totalPage = res.totalPage
+        variables.loadingRef = false
+      })
+      .catch(() => {
+        variables.loadingRef = false
+        variables.tableData = [{}] as any
+      })
+  }
+  const handleRecover = (row: any) => {
+    hanldleRecoverJob(row)
+  }
+  const handlePause = (row: any) => {
+    hanldlePauseJob(row)
+  }
+  const handleDel = (row: any) => {
+    hanldleDelJob(row)
   }
 
   const handleLog = (row: any) => {

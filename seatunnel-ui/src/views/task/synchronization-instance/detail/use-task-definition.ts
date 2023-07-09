@@ -35,13 +35,11 @@ export function useTaskDefinition(t: any) {
 
   const getJobDag = async (graph: Graph) => {
     const dagData = await querySyncTaskInstanceDag({
-      projectCode: route.params.projectCode,
-      key: route.query.key
+      jobInstanceId: route.query.key
     })
 
     const pipelineData = await querySyncTaskInstanceDetail({
-      projectCode: route.params.projectCode,
-      key: route.query.key
+      jobInstanceId: route.query.key
     })
 
     if (Object.keys(dagData).length < 1 || pipelineData.length < 1) {

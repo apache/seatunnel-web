@@ -17,7 +17,7 @@
 
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { queryRunningInstancePaging } from '@/service/modules/sync-task-instance'
+import { queryRunningInstancePaging } from '@/service/sync-task-instance'
 import { useRoute } from 'vue-router'
 
 export function useRunningInstance() {
@@ -34,7 +34,7 @@ export function useRunningInstance() {
     variables.columns = [
       {
         title: t('project.synchronization_instance.pipeline_id'),
-        key: 'pipelineId',
+        key: 'pipelineId'
       },
       {
         title: t('project.synchronization_instance.source'),
@@ -78,13 +78,15 @@ export function useRunningInstance() {
 
     queryRunningInstancePaging({
       projectCode: route.params.projectCode,
-      key: route.query.key
-    }).then((res: any) => {
-      variables.tableData = res
-      variables.loadingRef = false
-    }).catch(() => {
-      variables.loadingRef = false
+      jobInstanceId: route.query.key
     })
+      .then((res: any) => {
+        variables.tableData = res
+        variables.loadingRef = false
+      })
+      .catch(() => {
+        variables.loadingRef = false
+      })
   }
 
   return {
