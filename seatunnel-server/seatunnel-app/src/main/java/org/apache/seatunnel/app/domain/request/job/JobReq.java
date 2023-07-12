@@ -34,7 +34,4 @@ public class JobReq {
 
     @ApiModelProperty(value = "job type", dataType = "String")
     private BusinessMode jobType;
-
-    @ApiModelProperty(value = "project code", dataType = "Long")
-    private Long projectCode;
 }
