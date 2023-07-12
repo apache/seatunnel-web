@@ -26,16 +26,12 @@ import lombok.NonNull;
 import java.util.List;
 
 public interface IJobInstanceService {
-    JobExecutorRes createExecuteResource(
-            @NonNull Integer userId, @NonNull Long projectCode, @NonNull Long jobDefineId);
+    JobExecutorRes createExecuteResource(@NonNull Integer userId, @NonNull Long jobDefineId);
 
     String generateJobConfig(Long jobId, List<JobTask> tasks, List<JobLine> lines, String envStr);
 
     JobExecutorRes getExecuteResource(@NonNull Long jobEngineId);
 
     void complete(
-            @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId);
+            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
 }

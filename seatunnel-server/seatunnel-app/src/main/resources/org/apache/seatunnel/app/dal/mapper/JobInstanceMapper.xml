@@ -29,16 +29,27 @@
         id
         , `job_define_id`, `job_status`, `job_config`, `engine_name`, `engine_version`, `job_engine_id`
     </sql>
-    <insert id="insert" parameterType="org.apache.seatunnel.app.dal.entity.JobInstance">
-        insert into `t_st_job_instance` (<include refid="Base_Column_List"/>, `create_user_id`, `update_user_id`)
-        values (#{id,jdbcType=BIGINT},
-        #{jobDefineId,jdbcType=BIGINT},
-        #{jobStatus,jdbcType=VARCHAR},
-        #{jobConfig,jdbcType=VARCHAR},
-        #{engineName,jdbcType=VARCHAR},
-        #{engineVersion,jdbcType=VARCHAR},
-        #{jobEngineId,jdbcType=VARCHAR},
-        #{createUserId,jdbcType=BIGINT},
-        #{updateUserId,jdbcType=BIGINT})
-    </insert>
+
+    <select id="queryJobInstanceListPaging" resultType="org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto">
+        SELECT *
+        FROM t_st_job_instance
+        <where>
+            <if test="startTime != null">
+                AND create_time <![CDATA[ >=]]> #{startTime}
+            </if>
+            <if test="endTime == null">
+                AND (end_time is null or end_time <![CDATA[ <=]]> #{endTime})
+            </if>
+            <if test="endTime != null">
+                AND (end_time <![CDATA[ <=]]> #{endTime} or end_time is null)
+            </if>
+            <if test="jobDefineId != null">
+                AND job_define_id = #{jobDefineId}
+            </if>
+            <if test="jobMode != null">
+                AND job_type = #{jobMode}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
 </mapper>

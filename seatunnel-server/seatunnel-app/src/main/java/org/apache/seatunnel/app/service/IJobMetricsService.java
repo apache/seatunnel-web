@@ -29,39 +29,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IJobMetricsService {
 
     List<JobPipelineSummaryMetricsRes> getJobPipelineSummaryMetrics(
-            @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId);
+            @NonNull Integer userId, @NonNull Long jobInstanceId);
 
     List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
-            @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId);
+            @NonNull Integer userId, @NonNull Long jobInstanceId);
 
-    JobDAG getJobDAG(
-            @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId)
+    JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId)
             throws JsonProcessingException;
 
     ImmutablePair<Long, String> getInstanceIdAndEngineId(@NonNull String key);
 
     void syncJobDataToDb(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull String jobEngineId);
+            @NonNull JobInstance jobInstance, @NonNull Integer userId, @NonNull String jobEngineId);
 
     JobSummaryMetricsRes getJobSummaryMetrics(
+            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
+
+    Map<Long, JobSummaryMetricsRes> getALLJobSummaryMetrics(
             @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId);
+            @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
+            @NonNull List<Long> jobInstanceIdList,
+            @NonNull String syncTaskType);
 }

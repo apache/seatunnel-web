@@ -33,7 +33,7 @@ public class JobInstanceHistoryDaoImpl implements IJobInstanceHistoryDao {
     @Resource private JobInstanceHistoryMapper jobInstanceHistoryMapper;
 
     @Override
-    public JobInstanceHistory getByInstanceId(Long jobInstanceId, Long projectCode) {
+    public JobInstanceHistory getByInstanceId(Long jobInstanceId) {
         return jobInstanceHistoryMapper.selectOne(
                 Wrappers.lambdaQuery(new JobInstanceHistory())
                         .eq(JobInstanceHistory::getId, jobInstanceId));

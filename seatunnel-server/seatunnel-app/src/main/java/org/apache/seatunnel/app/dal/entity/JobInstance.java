@@ -67,4 +67,10 @@ public class JobInstance {
 
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField("end_time")
+    private Date endTime;
+
+    @TableField("job_type")
+    private String jobType;
 }

@@ -19,8 +19,13 @@ package org.apache.seatunnel.app.dal.dao;
 
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.mapper.JobInstanceMapper;
+import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.NonNull;
+
+import java.util.Date;
+import java.util.List;
 
 public interface IJobInstanceDao {
 
@@ -33,4 +38,13 @@ public interface IJobInstanceDao {
     void insert(@NonNull JobInstance jobInstance);
 
     JobInstanceMapper getJobInstanceMapper();
+
+    IPage<SeaTunnelJobInstanceDto> queryJobInstanceListPaging(
+            IPage<JobInstance> page,
+            Date startTime,
+            Date endTime,
+            Long jobDefineId,
+            String jobMode);
+
+    List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList);
 }

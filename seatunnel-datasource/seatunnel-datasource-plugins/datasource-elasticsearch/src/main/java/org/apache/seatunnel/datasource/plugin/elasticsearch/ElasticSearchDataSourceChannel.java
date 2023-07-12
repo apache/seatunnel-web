@@ -118,7 +118,7 @@ public class ElasticSearchDataSourceChannel implements DataSourceChannel {
     }
 
     private static void databaseCheck(@NonNull String database) {
-        if (!StringUtils.equalsAnyIgnoreCase(database, DATABASE)) {
+        if (!StringUtils.equalsIgnoreCase(database, DATABASE)) {
             throw new IllegalArgumentException("database not found: " + database);
         }
     }

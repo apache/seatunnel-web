@@ -18,7 +18,23 @@
 package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.JobInstance;
+import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+
+import org.apache.ibatis.annotations.Param;
+
+import org.mapstruct.Mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
-public interface JobInstanceMapper extends BaseMapper<JobInstance> {}
+import java.util.Date;
+
+@Mapper
+public interface JobInstanceMapper extends BaseMapper<JobInstance> {
+    IPage<SeaTunnelJobInstanceDto> queryJobInstanceListPaging(
+            IPage<JobInstance> page,
+            @Param("startTime") Date startTime,
+            @Param("endTime") Date endTime,
+            @Param("jobDefineId") Long jobDefineId,
+            @Param("jobMode") String jobMode);
+}
