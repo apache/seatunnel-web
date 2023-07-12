@@ -52,13 +52,12 @@ import {
   cleanStateByIds,
   forcedSuccessByIds
 } from '@/service/sync-task-instance'
-import { useProjectStore } from '@/store/project'
 import { getRemainTime } from '@/utils/time'
 
 export function useSyncTask(syncTaskType = 'BATCH') {
   const { t } = useI18n()
   const router: Router = useRouter()
-  const projectStore = useProjectStore()
+  // const projectStore = useProjectStore()
   const route = useRoute()
   const message = useMessage()
 
@@ -77,16 +76,12 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     skipLineNum: ref(0),
     limit: ref(1000),
     taskName: ref(''),
-    workflowInstance: ref(''),
     executeUser: ref(''),
     host: ref(''),
     stateType: null as null | string,
     syncTaskType,
     checkedRowKeys: [] as Array<RowKey>,
     buttonList: [],
-    projectCodes:
-      route.query.searchProjectCode || projectStore.getCurrentProject,
-    globalProject: projectStore.getGlobalFlag,
     datePickerRange: [
       format(startOfToday(), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
@@ -108,18 +103,12 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   //
   const createColumns = (variables: any) => {
     variables.columns = [
-      // {
-      //   type: 'selection',
-      //   className: 'btn-selected',
-      //   ...COLUMN_WIDTH_CONFIG['selection']
-      // },
       useTableLink(
         {
           title: t('project.synchronization_definition.task_name'),
           key: 'jobDefineName',
           ...COLUMN_WIDTH_CONFIG['link_name'],
           button: {
-            permission: 'project:seatunnel-task-instance:details',
             // disabled: (row: any) =>
             //   !row.jobInstanceEngineId ||
             //   !row.jobInstanceEngineId.includes('::'),
@@ -155,17 +144,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         key: 'jobStatus',
         ...COLUMN_WIDTH_CONFIG['state']
       },
-      // {
-      //   title: t('project.synchronization_instance.state'),
-      //   key: 'jobStatus',
-      //   render: (row: any) => renderStateCell(row.state, t),
-      //   ...COLUMN_WIDTH_CONFIG['state']
-      // },
-      // {
-      //   title: t('project.synchronization_instance.submit_time'),
-      //   key: 'createTime',
-      //   ...COLUMN_WIDTH_CONFIG['time']
-      // },
       {
         title: t('project.synchronization_instance.start_time'),
         key: 'createTime',
@@ -188,33 +166,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
           key: 'operation',
           itemNum: 3,
           buttons: [
-            // {
-            //   text: t('project.synchronization_instance.clean_state'),
-            //   icon: h(ClearOutlined),
-            //   onClick: (row: any) => void handleCleanState(row),
-            //   disabled: (row: any) => row.state === 'RUNNING_EXECUTION'
-            // },
-            // {
-            //   text: t('project.synchronization_instance.forced_success'),
-            //   icon: h(CheckCircleOutlined),
-            //   onClick: (row: any) => void handleForcedSuccess(row),
-            //   disabled: (row: any) =>
-            //     !(
-            //       row.state === 'FAILURE' ||
-            //       row.state === 'NEED_FAULT_TOLERANCE' ||
-            //       row.state === 'KILL'
-            //     )
-            // },
-            // {
-            //   text: t('project.workflow.rerun'),
-            //   icon: h(SyncOutlined)
-            // },
-            // {
-            //   text: t('project.synchronization_instance.view_log'),
-            //   icon: h(AlignLeftOutlined),
-            //   onClick: (row) => void handleLog(row),
-            //   disabled: (row) => !row.host
-            // },
             {
               text: t('project.workflow.recovery_suspend'),
               icon: h(PlayCircleOutlined),
@@ -238,7 +189,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
             }
           ]
         }
-        // 'project'
       )
     ]
 
@@ -251,8 +201,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     if (variables.loadingRef) return
     variables.loadingRef = true
 
-    // params['projectCodes'] = variables.projectCodes
-    // variables.tableData = [{ name: 'sfda' }] as any
     variables.loadingRef = false
     querySyncTaskInstancePaging(params)
       .then((res: any) => {
@@ -308,7 +256,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
           ? variables.page - 1
           : variables.page,
       taskName: variables.taskName,
-      processInstanceName: variables.workflowInstance,
       host: variables.host,
       stateType: variables.stateType,
       startDate: variables.datePickerRange ? variables.datePickerRange[0] : '',
@@ -320,7 +267,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
 
   const onReset = () => {
     variables.taskName = ''
-    variables.workflowInstance = ''
     variables.executeUser = ''
     variables.host = ''
     variables.stateType = null
@@ -328,7 +274,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       format(startOfToday(), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
     ]
-    variables.projectCodes = useProjectStore().getCurrentProject
   }
   const onBatchCleanState = (ids: any) => {
     cleanStateByIds(ids).then(() => {

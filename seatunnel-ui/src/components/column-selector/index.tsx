@@ -21,8 +21,8 @@ import {
   filterColumns,
   getColumnsBytable,
   getCheckboxList
-} from '../utils/dealColumns'
-import { getColumns, setColumns } from '../utils/storeColums'
+} from './dealColumns'
+import { getColumns, setColumns } from './dealColumns'
 import './index.scss'
 import { useI18n } from 'vue-i18n'
 

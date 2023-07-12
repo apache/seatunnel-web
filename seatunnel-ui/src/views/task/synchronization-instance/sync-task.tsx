@@ -47,9 +47,7 @@ import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
 import { useAsyncState } from '@vueuse/core'
 import { queryLog } from '@/service/log'
 import { LogRes } from '@/service/log/types'
-import ColumnSelector from '../../projects/components/column-selector'
-import { useProjectStore } from '@/store/project'
-import ProjectSelector from '../../projects/components/projectSelector'
+import ColumnSelector from '@/components/column-selector'
 import { getRangeShortCuts } from '@/utils/timePickeroption'
 import { useRoute, useRouter } from 'vue-router'
 import _ from 'lodash'
@@ -241,13 +239,6 @@ const SyncTask = defineComponent({
     const handleChangeColumn = (options: any) => {
       tableColumn.value = options
     }
-    const getProjectCodeList = (codes: any) => {
-      if (!codes) {
-        variables.projectCodes = useProjectStore().getGolbalProject
-      } else {
-        variables.projectCodes = [codes]
-      }
-    }
 
     return {
       t,
@@ -260,7 +251,6 @@ const SyncTask = defineComponent({
       handleKeyup,
       handleChangeColumn,
       batchBtnListClick,
-      getProjectCodeList,
       tableColumn,
       rangeShortCuts
     }

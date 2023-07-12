@@ -30,8 +30,10 @@ import theme from '@/locales/en_US/theme'
 import project from '@/locales/en_US/project'
 import hook from '@/locales/en_US/hook'
 import common from '@/locales/en_US/common'
+import security from '@/locales/en_US/security'
 
 export default {
+  security,
   common,
   login,
   menu,

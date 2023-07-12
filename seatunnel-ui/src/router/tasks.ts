@@ -35,7 +35,7 @@ export default {
       name: 'synchronization-definition',
       component: components['task-synchronization-definition'],
       meta: {
-        title: '同步任务定义',
+        title: 'synchronization-definition',
         activeMenu: 'tasks',
         activeSide: 'synchronization-definition',
         showSide: true
@@ -46,7 +46,7 @@ export default {
       name: 'synchronization-definition-dag',
       component: components['task-synchronization-definition-dag'],
       meta: {
-        title: '同步任务定义画布',
+        title: 'synchronization-definition-dag',
         activeMenu: 'tasks',
         activeSide: 'synchronization-definition',
         showSide: true,
@@ -57,7 +57,7 @@ export default {
       name: 'synchronization-instance',
       component: components['task-synchronization-instance'],
       meta: {
-        title: '同步任务实例',
+        title: 'synchronization-instance',
         activeMenu: 'tasks',
         activeSide: 'synchronization-instance',
         showSide: true
@@ -68,7 +68,7 @@ export default {
       name: 'synchronization-instance-detail',
       component: components['task-synchronization-instance-detail'],
       meta: {
-        title: '同步任务实例详情',
+        title: 'synchronization-instance-detail',
         activeMenu: 'tasks',
         activeSide: 'synchronization-instance',
         showSide: true,

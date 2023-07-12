@@ -30,8 +30,10 @@ import theme from '@/locales/zh_CN/theme'
 import project from '@/locales/zh_CN/project'
 import hook from '@/locales/zh_CN/hook'
 import common from '@/locales/zh_CN/common'
+import security from '@/locales/zh_CN/security'
 
 export default {
+  security,
   common,
   login,
   menu,

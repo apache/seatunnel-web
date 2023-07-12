@@ -121,3 +121,12 @@ export function getCheckboxList(
   }
   return checkboxList
 }
+
+
+export function setColumns(key: string, value: any) {
+  localStorage.setItem(`col_${key}`, JSON.stringify(value))
+}
+
+export function getColumns(key: string): Array<any> {
+  return JSON.parse(localStorage.getItem(`col_${key}`) as string) as Array<any>
+}
