@@ -29,8 +29,10 @@ import virtual_tables from '@/locales/en_US/virtual-tables'
 import theme from '@/locales/en_US/theme'
 import project from '@/locales/en_US/project'
 import hook from '@/locales/en_US/hook'
+import common from '@/locales/en_US/common'
 
 export default {
+  common,
   login,
   menu,
   modal,

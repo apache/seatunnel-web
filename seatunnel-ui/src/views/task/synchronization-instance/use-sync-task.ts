@@ -39,6 +39,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ITaskState } from '@/common/types'
 import { tasksState } from '@/common/common'
 import { NIcon, NSpin, NTooltip } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import {
   querySyncTaskInstancePaging,
   hanldlePauseJob,
@@ -52,13 +53,14 @@ import {
   forcedSuccessByIds
 } from '@/service/sync-task-instance'
 import { useProjectStore } from '@/store/project'
-// import { changeProject } from '../../utils/changeProject'
+import { getRemainTime } from '@/utils/time'
 
 export function useSyncTask(syncTaskType = 'BATCH') {
   const { t } = useI18n()
   const router: Router = useRouter()
   const projectStore = useProjectStore()
   const route = useRoute()
+  const message = useMessage()
 
   const variables = reactive({
     tableWidth: DefaultTableWidth,
@@ -106,36 +108,32 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   //
   const createColumns = (variables: any) => {
     variables.columns = [
-      {
-        type: 'selection',
-        className: 'btn-selected',
-        ...COLUMN_WIDTH_CONFIG['selection']
-      },
+      // {
+      //   type: 'selection',
+      //   className: 'btn-selected',
+      //   ...COLUMN_WIDTH_CONFIG['selection']
+      // },
       useTableLink(
         {
           title: t('project.synchronization_definition.task_name'),
-          key: 'name',
+          key: 'jobDefineName',
           ...COLUMN_WIDTH_CONFIG['link_name'],
           button: {
             permission: 'project:seatunnel-task-instance:details',
-            disabled: (row: any) =>
-              !row.jobInstanceEngineId ||
-              !row.jobInstanceEngineId.includes('::'),
+            // disabled: (row: any) =>
+            //   !row.jobInstanceEngineId ||
+            //   !row.jobInstanceEngineId.includes('::'),
             onClick: (row: any) => {
               router.push({
-                path: `/projects/${row.projectCode}/task/synchronization-instance/${row.taskCode}`,
+                path: `/task/synchronization-instance/${row.jobDefineId}`,
                 query: {
-                  taskName: row.name,
-                  key: row.jobInstanceEngineId,
-                  seaTunnelJobId: row.seaTunnelJobId,
-                  project: route.query.project,
-                  global: route.query.global
+                  jobInstanceId: row.id,
+                  taskName: row.jobDefineName,
                 }
               })
             }
           }
         }
-        // 'project'
       ),
       {
         title: t('project.synchronization_instance.amount_of_data_read'),
@@ -149,23 +147,28 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       },
       {
         title: t('project.synchronization_instance.execute_user'),
-        key: 'executorName',
+        key: 'createUserId',
         ...COLUMN_WIDTH_CONFIG['state']
       },
       {
         title: t('project.synchronization_instance.state'),
-        key: 'state',
-        render: (row: any) => renderStateCell(row.state, t),
+        key: 'jobStatus',
         ...COLUMN_WIDTH_CONFIG['state']
       },
-      {
-        title: t('project.synchronization_instance.submit_time'),
-        key: 'submitTime',
-        ...COLUMN_WIDTH_CONFIG['time']
-      },
+      // {
+      //   title: t('project.synchronization_instance.state'),
+      //   key: 'jobStatus',
+      //   render: (row: any) => renderStateCell(row.state, t),
+      //   ...COLUMN_WIDTH_CONFIG['state']
+      // },
+      // {
+      //   title: t('project.synchronization_instance.submit_time'),
+      //   key: 'createTime',
+      //   ...COLUMN_WIDTH_CONFIG['time']
+      // },
       {
         title: t('project.synchronization_instance.start_time'),
-        key: 'startTime',
+        key: 'createTime',
         ...COLUMN_WIDTH_CONFIG['time']
       },
       {
@@ -175,7 +178,8 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       },
       {
         title: t('project.synchronization_instance.run_time'),
-        key: 'duration',
+        key: 'runningTime',
+        render: (row: any) => getRemainTime(row.runningTime),
         ...COLUMN_WIDTH_CONFIG['duration']
       },
       useTableOperation(
@@ -247,8 +251,8 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     if (variables.loadingRef) return
     variables.loadingRef = true
 
-    params['projectCodes'] = variables.projectCodes
-    variables.tableData = [{ name: 'sfda' }] as any
+    // params['projectCodes'] = variables.projectCodes
+    // variables.tableData = [{ name: 'sfda' }] as any
     variables.loadingRef = false
     querySyncTaskInstancePaging(params)
       .then((res: any) => {
@@ -258,17 +262,23 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       })
       .catch(() => {
         variables.loadingRef = false
-        variables.tableData = [{}] as any
+        variables.tableData = [] as any
       })
   }
-  const handleRecover = (row: any) => {
-    hanldleRecoverJob(row)
+  const handleRecover = (id: number) => {
+    hanldleRecoverJob(id).then(() => {
+      message.success(t('common.success_tips'))
+    })
   }
-  const handlePause = (row: any) => {
-    hanldlePauseJob(row)
+  const handlePause = (id: number) => {
+    hanldlePauseJob(id).then(() => {
+      message.success(t('common.success_tips'))
+    })
   }
-  const handleDel = (row: any) => {
-    hanldleDelJob(row)
+  const handleDel = (id: number) => {
+    hanldleDelJob(id).then(() => {
+      message.success(t('common.success_tips'))
+    })
   }
 
   const handleLog = (row: any) => {

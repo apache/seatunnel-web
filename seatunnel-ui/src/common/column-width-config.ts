@@ -35,7 +35,7 @@ export const COLUMN_WIDTH_CONFIG = {
     }
   },
   link_name: {
-    width: 400
+    width: 240
   },
   state: {
     width: 120

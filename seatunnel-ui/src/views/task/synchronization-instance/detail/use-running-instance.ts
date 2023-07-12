@@ -77,8 +77,7 @@ export function useRunningInstance() {
     variables.loadingRef = true
 
     queryRunningInstancePaging({
-      projectCode: route.params.projectCode,
-      jobInstanceId: route.query.key
+      jobInstanceId: route.query.jobInstanceId
     })
       .then((res: any) => {
         variables.tableData = res

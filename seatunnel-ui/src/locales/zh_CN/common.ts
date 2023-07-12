@@ -16,16 +16,8 @@
  */
 
 export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源',
-  virtual_tables: '虚拟表',
-  sync_task_definition: '同步任务定义',
-  sync_task_instance: '同步任务实例',
-  synchronization_instance: '同步任务实例',
+  success_tips: '操作成功',
+  hour: '时',
+  min: '分',
+  second: '秒',
 }

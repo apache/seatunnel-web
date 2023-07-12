@@ -30,16 +30,16 @@ export function useTaskDefinition(t: any) {
   const route = useRoute()
 
   const getJobConfig = async () => {
-    return await getDefinitionConfig(route.query.seaTunnelJobId as string)
+    return await getDefinitionConfig(route.params.taskCode as string)
   }
 
   const getJobDag = async (graph: Graph) => {
     const dagData = await querySyncTaskInstanceDag({
-      jobInstanceId: route.query.key
+      jobInstanceId: route.query.jobInstanceId
     })
 
     const pipelineData = await querySyncTaskInstanceDetail({
-      jobInstanceId: route.query.key
+      jobInstanceId: route.query.jobInstanceId
     })
 
     if (Object.keys(dagData).length < 1 || pipelineData.length < 1) {
