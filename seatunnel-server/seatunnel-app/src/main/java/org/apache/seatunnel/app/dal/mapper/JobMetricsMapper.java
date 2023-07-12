@@ -25,8 +25,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 
 public interface JobMetricsMapper extends BaseMapper<JobMetrics> {
-    List<JobMetrics> queryJobMetricsByInstanceId(
-            @Param("projectCode") Long projectCode, @Param("jobInstanceId") Long jobInstanceId);
+    List<JobMetrics> queryJobMetricsByInstanceId(@Param("jobInstanceId") Long jobInstanceId);
 
     void insertBatchMetrics(@Param("jobMetrics") List<JobMetrics> jobMetrics);
 }

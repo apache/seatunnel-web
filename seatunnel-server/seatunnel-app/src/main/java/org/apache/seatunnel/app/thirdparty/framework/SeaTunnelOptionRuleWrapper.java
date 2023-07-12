@@ -34,6 +34,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.NonNull;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -288,6 +289,7 @@ public class SeaTunnelOptionRuleWrapper {
                 || Float.class.equals(option.typeReference().getType())
                 || Integer.class.equals(option.typeReference().getType())
                 || Long.class.equals(option.typeReference().getType())
+                || BigDecimal.class.equals(option.typeReference().getType())
                 || String.class.equals(option.typeReference().getType())) {
 
             if (option.key().toLowerCase(Locale.ROOT).equals("password")) {

@@ -36,4 +36,6 @@ public class JobExecutorRes {
 
     /** The engine run mode, for SeaTunnel Engine only support 'local' and null */
     private final String master;
+
+    private final String jobMode;
 }

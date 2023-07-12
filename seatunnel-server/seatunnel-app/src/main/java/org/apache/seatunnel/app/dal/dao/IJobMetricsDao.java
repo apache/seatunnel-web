@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface IJobMetricsDao {
 
-    List<JobMetrics> getByInstanceId(@NonNull Long projectCode, @NonNull Long jobInstanceId);
+    List<JobMetrics> getByInstanceId(@NonNull Long jobInstanceId);
 
     JobMetricsMapper getJobMetricsMapper();
 }

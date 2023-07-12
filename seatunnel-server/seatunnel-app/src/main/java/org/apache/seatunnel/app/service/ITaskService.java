@@ -17,28 +17,18 @@
 
 package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.app.domain.dto.job.PushScriptDto;
-import org.apache.seatunnel.app.domain.request.task.ExecuteReq;
-import org.apache.seatunnel.app.domain.request.task.InstanceListReq;
-import org.apache.seatunnel.app.domain.request.task.InstanceLogRes;
-import org.apache.seatunnel.app.domain.request.task.JobListReq;
-import org.apache.seatunnel.app.domain.request.task.RecycleScriptReq;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.task.InstanceSimpleInfoRes;
-import org.apache.seatunnel.app.domain.response.task.JobSimpleInfoRes;
-
-public interface ITaskService {
-    Long pushScriptToScheduler(PushScriptDto pushScriptDto);
-
-    void recycleScriptFromScheduler(RecycleScriptReq req);
-
-    PageInfo<JobSimpleInfoRes> listJob(JobListReq req);
-
-    PageInfo<InstanceSimpleInfoRes> listInstance(InstanceListReq req);
-
-    InstanceSimpleInfoRes tmpExecute(ExecuteReq req);
-
-    InstanceLogRes queryInstanceLog(Long instanceId);
-
-    void kill(Long instanceId);
-}
+// public interface ITaskService {
+//    Long pushScriptToScheduler(PushScriptDto pushScriptDto);
+//
+//    void recycleScriptFromScheduler(RecycleScriptReq req);
+//
+//    PageInfo<JobSimpleInfoRes> listJob(JobListReq req);
+//
+//    PageInfo<InstanceSimpleInfoRes> listInstance(InstanceListReq req);
+//
+//    InstanceSimpleInfoRes tmpExecute(ExecuteReq req);
+//
+//    InstanceLogRes queryInstanceLog(Long instanceId);
+//
+//    void kill(Long instanceId);
+// }

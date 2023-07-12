@@ -67,11 +67,11 @@
         <h2.version>2.1.214</h2.version>
         <junit.version>5.9.0</junit.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
         <guava.version>19.0</guava.version>
         <checker.qual.version>3.10.0</checker.qual.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <seatunnel-framework.version>2.4.5-WS-SNAPSHOT</seatunnel-framework.version>
+        <seatunnel-framework.version>2.4.7-WS-SNAPSHOT</seatunnel-framework.version>
         <redshift.version>2.1.0.9</redshift.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>
         <aws-java-sdk-bundle.version>1.11.271</aws-java-sdk-bundle.version>
@@ -433,7 +433,6 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-jdbc</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -488,7 +487,6 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>seatunnel-hadoop3-3.1.4-uber</artifactId>
                 <version>${hadoop-uber.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.avro</groupId>
@@ -582,7 +580,6 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-kafka</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
@@ -636,7 +633,6 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-jdbc</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
@@ -858,13 +854,11 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-mysql</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-sqlserver</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
@@ -877,6 +871,21 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seatunnel</groupId>
+            <artifactId>connector-cdc-sqlserver</artifactId>
+            <version>${seatunnel-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seatunnel</groupId>
+            <artifactId>connector-cdc-mysql</artifactId>
+            <version>${seatunnel-framework.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
