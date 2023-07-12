@@ -1138,7 +1138,11 @@ export default {
     engine: 'Engine',
     write: 'Write',
     read: 'Read',
-    line: 'lines'
+    line: 'lines',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    delete_confirm: 'Delete?',
   },
   menu: {
     fav: 'Favorites',

@@ -18,11 +18,11 @@
 import {
   querySyncTaskInstanceDetail,
   querySyncTaskInstanceDag
-} from '@/service/modules/sync-task-instance'
+} from '@/service/sync-task-instance'
 import { useRoute } from 'vue-router'
 import { uuid } from '@/common/common'
-import { useDagAddShape } from '@/views/projects/task/synchronization-instance/detail/dag/use-dag-add-shape'
-import { useDagLayout } from '@/views/projects/task/synchronization-instance/detail/dag/use-dag-layout'
+import { useDagAddShape } from '@/views/task/synchronization-instance/detail/dag/use-dag-add-shape'
+import { useDagLayout } from '@/views/task/synchronization-instance/detail/dag/use-dag-layout'
 import { Graph } from '@antv/x6'
 import { getDefinitionConfig } from '@/service/sync-task-definition'
 
@@ -30,18 +30,16 @@ export function useTaskDefinition(t: any) {
   const route = useRoute()
 
   const getJobConfig = async () => {
-    return await getDefinitionConfig(route.query.seaTunnelJobId as string)
+    return await getDefinitionConfig(route.params.taskCode as string)
   }
 
   const getJobDag = async (graph: Graph) => {
     const dagData = await querySyncTaskInstanceDag({
-      projectCode: route.params.projectCode,
-      key: route.query.key
+      jobInstanceId: route.query.jobInstanceId
     })
 
     const pipelineData = await querySyncTaskInstanceDetail({
-      projectCode: route.params.projectCode,
-      key: route.query.key
+      jobInstanceId: route.query.jobInstanceId
     })
 
     if (Object.keys(dagData).length < 1 || pipelineData.length < 1) {

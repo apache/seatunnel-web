@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { onMounted, reactive } from 'vue'
-import { getDatasourceType } from '@/service/modules/data-source'
+import { getDatasourceType } from '@/service/data-source'
 import { useI18n } from 'vue-i18n'
 import type { SelectOption } from 'naive-ui'
 

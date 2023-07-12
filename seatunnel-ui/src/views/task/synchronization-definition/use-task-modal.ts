@@ -18,11 +18,9 @@
 import { useI18n } from 'vue-i18n'
 import { reactive, ref, SetupContext } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-// import { useSynchronizationDefinitionStore } from '@/store/synchronization-definition'
 import { createSyncTaskDefinition } from '@/service/sync-task-definition'
 import type { FormItemRule } from 'naive-ui'
 import type { Router } from 'vue-router'
-import { useProjectStore } from '@/store/project'
 
 export function useTaskModal(
   props: any,
@@ -31,10 +29,8 @@ export function useTaskModal(
   const { t } = useI18n()
   const router: Router = useRouter()
   const route = useRoute()
-  const projectStore = useProjectStore()
 
   const variables = reactive({
-    projectCode: projectStore.getCurrentProject[0],
     taskModalFormRef: ref(),
     saving: false,
     model: {
@@ -88,10 +84,6 @@ export function useTaskModal(
 
       router.push({
         path: `/task/synchronization-definition/${res}`,
-        query: {
-          global: String(projectStore.getGlobalFlag),
-          project: (route.query.project as string) || 'all'
-        }
       })
     })
   }
