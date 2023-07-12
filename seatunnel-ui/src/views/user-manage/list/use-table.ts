@@ -125,7 +125,7 @@ export function useTable() {
     state.loading = true
     userList({ ...params }).then(
       (res: ResponseTable<Array<UserDetail> | []>) => {
-        state.tableData = res.data.data as any
+        state.tableData = res.data as any
         state.totalPage = res.data.totalPage
         state.loading = false
       }

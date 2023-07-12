@@ -35,7 +35,8 @@ export default {
       name: 'data-pipes-list',
       component: components['data-pipes-list'],
       meta: {
-        title: 'data-pipes-list'
+        title: 'data-pipes-list',
+        activeMenu: 'data-pipes'
       }
     },
     {
@@ -43,7 +44,8 @@ export default {
       name: 'data-pipes-detail',
       component: components['data-pipes-detail'],
       meta: {
-        title: 'data-pipes-detail'
+        title: 'data-pipes-detail',
+        activeMenu: 'data-pipes'
       }
     },
     {
@@ -51,7 +53,8 @@ export default {
       name: 'data-pipes-edit',
       component: components['data-pipes-edit'],
       meta: {
-        title: 'data-pipes-edit'
+        title: 'data-pipes-edit',
+        activeMenu: 'data-pipes'
       }
     },
     {
@@ -59,7 +62,8 @@ export default {
       name: 'data-pipes-create',
       component: components['data-pipes-create'],
       meta: {
-        title: 'data-pipes-create'
+        title: 'data-pipes-create',
+        activeMenu: 'data-pipes'
       }
     }
   ]

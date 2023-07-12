@@ -24,5 +24,7 @@ export default {
   logout: 'Logout',
   tasks: 'Tasks',
   datasource: 'Datasource',
-  virtual_tables: 'Virtual Tables'
+  virtual_tables: 'Virtual Tables',
+  sync_task_definition: 'Syncing Task Definition',
+  sync_task_instance: 'Syncing Task Instance',
 }

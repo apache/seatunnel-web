@@ -35,7 +35,8 @@ export default {
       name: 'jobs-list',
       component: components['jobs-list'],
       meta: {
-        title: 'jobs-list'
+        title: 'jobs-list',
+        activeMenu: 'job'
       }
     }
   ]

@@ -19,8 +19,8 @@ import { reactive } from 'vue'
 import {
   datasourceList,
   datasourceDelete
-} from '@/service/datasource'
-import type { DatasourceList } from '@/service/datasource/types'
+} from '@/service/data-source'
+import type { DatasourceList } from '@/service/data-source/types'
 import type { ResponseTable } from '@/service/types'
 
 export function useTable() {
@@ -32,15 +32,15 @@ export function useTable() {
     list: []
   })
 
-  const getList = () => {
+  const getList = (pluginName = '') => {
     datasourceList({
       pageNo: data.page,
       pageSize: data.pageSize,
       searchVal: data.searchVal,
-      pluginName: ''
-    }).then((res: ResponseTable<Array<DatasourceList> | []>) => {
-      data.list = res.data.data as any
-      data.itemCount = res.data.totalCount
+      pluginName
+    }).then((res: any) => {
+      data.list = res.data
+      data.itemCount = res.totalCount
     })
   }
 

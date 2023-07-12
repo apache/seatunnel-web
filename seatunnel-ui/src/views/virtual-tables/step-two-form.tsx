@@ -18,8 +18,8 @@ import { defineComponent, reactive, ref } from 'vue'
 import { NForm } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { DynamicFormItem } from '@/components/dynamic-form/dynamic-form-item'
-//import { StructureItem } from '@/store/datasource/form-structures'
-//import { getDynamicConfig } from '@/service/modules/virtual-table'
+import { StructureItem } from '@/store/datasource/form-structures'
+import { getDynamicConfig } from '@/service/virtual-table'
 import { useFormField } from '@/components/dynamic-form/use-form-field'
 import { useFormRequest } from '@/components/dynamic-form/use-form-request'
 import { useFormValidate } from '@/components/dynamic-form/use-form-validate'
@@ -33,7 +33,7 @@ const StepTwoForm = defineComponent({
 
     const state = reactive({
       rules: {},
-      //formStructure: [] as StructureItem[],
+      formStructure: [] as StructureItem[],
       locales: {} as any,
       formName: 'step-two-form',
       detailForm: {} as { [key: string]: string },
@@ -42,27 +42,27 @@ const StepTwoForm = defineComponent({
 
     const getFormItems = async (pluginName: string, datasourceName: string) => {
       if (!pluginName || !datasourceName) return false
-      //const result = await getDynamicConfig({
-      //  pluginName,
-      //  datasourceName
-      //})
+      const result = await getDynamicConfig({
+        pluginName,
+        datasourceName
+      })
       try {
-        //const res = JSON.parse(result)
-        //
-        //state.locales = res.locales
-        //Object.assign(state.detailForm, useFormField(res.forms))
-        //Object.assign(
-        //  state.rules,
-        //  useFormValidate(res.forms, state.detailForm, t)
-        //)
-        //state.formStructure = useFormStructure(
-        //  res.apis ? useFormRequest(res.apis, res.forms) : res.forms
-        //) as any
-        //
-        //state.formStructure = res.forms.map((item: any) => ({
-        //  ...item,
-        //  span: 8
-        //}))
+        const res = JSON.parse(result)
+
+        state.locales = res.locales
+        Object.assign(state.detailForm, useFormField(res.forms))
+        Object.assign(
+          state.rules,
+          useFormValidate(res.forms, state.detailForm, t)
+        )
+        state.formStructure = useFormStructure(
+          res.apis ? useFormRequest(res.apis, res.forms) : res.forms
+        ) as any
+
+        state.formStructure = res.forms.map((item: any) => ({
+          ...item,
+          span: 8
+        }))
         return true
       } catch (err) {
         return false
@@ -71,13 +71,13 @@ const StepTwoForm = defineComponent({
 
     const getValues = async () => {
       await stepTwoFormRef.value.validate()
-      //return state.formStructure.map((item) => {
-      //  return {
-      //    label: item.label,
-      //    key: item.field,
-      //    value: state.detailForm[item.field]
-      //  }
-      //})
+      return state.formStructure.map((item) => {
+        return {
+          label: item.label,
+          key: item.field,
+          value: state.detailForm[item.field]
+        }
+      })
     }
 
     const setValues = (values: { [key: string]: string }) => {
@@ -101,14 +101,14 @@ const StepTwoForm = defineComponent({
         model={state.detailForm}
         labelWidth={100}
       >
-        {/*{state.formStructure.length > 0 && (*/}
-        {/*  <DynamicFormItem*/}
-        {/*    model={state.detailForm}*/}
-        {/*    formStructure={state.formStructure}*/}
-        {/*    name={state.formName}*/}
-        {/*    locales={state.locales}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {state.formStructure.length > 0 && (
+          <DynamicFormItem
+            model={state.detailForm}
+            formStructure={state.formStructure}
+            name={state.formName}
+            locales={state.locales}
+          />
+        )}
       </NForm>
     )
   }

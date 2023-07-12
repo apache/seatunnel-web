@@ -19,8 +19,10 @@ package org.apache.seatunnel.app.domain.request.datasource;
 
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class DatasourceCheckReq {
     private String pluginName;
-    private String datasourceConfig;
+    private Map<String, String> datasourceConfig;
 }

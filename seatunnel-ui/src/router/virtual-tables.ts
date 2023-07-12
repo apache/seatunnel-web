@@ -35,7 +35,26 @@ export default {
       name: 'virtual-tables-list',
       component: components['virtual-tables-list'],
       meta: {
-        title: 'virtual-tables-list'
+        title: 'virtual-tables-list',
+        activeMenu: 'virtual-tables',
+      }
+    },
+    {
+      path: '/virtual-tables/creation',
+      name: 'virtual-tables-create',
+      component: components['virtual-tables-detail'],
+      meta: {
+        title: '虚拟表创建',
+        activeMenu: 'virtual-tables',
+      }
+    },
+    {
+      path: '/virtual-tables/:id',
+      name: 'virtual-tables-editor',
+      component: components['virtual-tables-detail'],
+      meta: {
+        title: '虚拟表编辑',
+        activeMenu: 'virtual-tables',
       }
     }
   ]
