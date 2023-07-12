@@ -31,19 +31,19 @@ class DataSourceClientTest {
                 DATA_SOURCE_CLIENT.listAllDataSources().stream()
                         .anyMatch(
                                 dataSourcePluginInfo ->
-                                        StringUtils.equalsAnyIgnoreCase(
+                                        StringUtils.equalsIgnoreCase(
                                                 dataSourcePluginInfo.getName(), "jdbc-mysql")));
         Assertions.assertTrue(
                 DATA_SOURCE_CLIENT.listAllDataSources().stream()
                         .anyMatch(
                                 dataSourcePluginInfo ->
-                                        StringUtils.equalsAnyIgnoreCase(
+                                        StringUtils.equalsIgnoreCase(
                                                 dataSourcePluginInfo.getName(), "kafka")));
         Assertions.assertTrue(
                 DATA_SOURCE_CLIENT.listAllDataSources().stream()
                         .anyMatch(
                                 dataSourcePluginInfo ->
-                                        StringUtils.equalsAnyIgnoreCase(
+                                        StringUtils.equalsIgnoreCase(
                                                 dataSourcePluginInfo.getName(), "elasticsearch")));
     }
 }
