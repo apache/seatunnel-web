@@ -20,7 +20,7 @@ package org.apache.seatunnel.app.dal.dao;
 import org.apache.seatunnel.app.dal.entity.JobInstanceHistory;
 
 public interface IJobInstanceHistoryDao {
-    JobInstanceHistory getByInstanceId(Long jobInstanceId, Long projectCode);
+    JobInstanceHistory getByInstanceId(Long jobInstanceId);
 
     void insert(JobInstanceHistory jobInstanceHistory);
 }

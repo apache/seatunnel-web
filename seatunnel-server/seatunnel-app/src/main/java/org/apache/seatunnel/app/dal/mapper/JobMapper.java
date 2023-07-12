@@ -37,4 +37,6 @@ public interface JobMapper extends BaseMapper<JobDefinition> {
             @Param("jobMode") String jobMode);
 
     List<JobDefinition> queryJobList(@Param("searchName") String searchName);
+
+    JobDefinition queryJob(@Param("searchName") String searchName);
 }

@@ -17,35 +17,22 @@
 
 package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.app.domain.request.script.CreateScriptReq;
-import org.apache.seatunnel.app.domain.request.script.PublishScriptReq;
-import org.apache.seatunnel.app.domain.request.script.ScriptListReq;
-import org.apache.seatunnel.app.domain.request.script.UpdateScriptContentReq;
-import org.apache.seatunnel.app.domain.request.script.UpdateScriptParamReq;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.script.CreateScriptRes;
-import org.apache.seatunnel.app.domain.response.script.ScriptFullInfoRes;
-import org.apache.seatunnel.app.domain.response.script.ScriptParamRes;
-import org.apache.seatunnel.app.domain.response.script.ScriptSimpleInfoRes;
-
-import java.util.List;
-
-public interface IScriptService {
-    CreateScriptRes createScript(CreateScriptReq createScriptReq);
-
-    void updateScriptContent(UpdateScriptContentReq updateScriptContentReq);
-
-    void delete(Integer id);
-
-    PageInfo<ScriptSimpleInfoRes> list(ScriptListReq scriptListReq);
-
-    String fetchScriptContent(Integer id);
-
-    List<ScriptParamRes> fetchScriptParam(Integer id);
-
-    void updateScriptParam(UpdateScriptParamReq updateScriptParamReq);
-
-    void publishScript(PublishScriptReq req);
-
-    ScriptFullInfoRes detail(Integer scriptId);
-}
+// public interface IScriptService {
+//    CreateScriptRes createScript(CreateScriptReq createScriptReq);
+//
+//    void updateScriptContent(UpdateScriptContentReq updateScriptContentReq);
+//
+//    void delete(Integer id);
+//
+//    PageInfo<ScriptSimpleInfoRes> list(ScriptListReq scriptListReq);
+//
+//    String fetchScriptContent(Integer id);
+//
+//    List<ScriptParamRes> fetchScriptParam(Integer id);
+//
+//    void updateScriptParam(UpdateScriptParamReq updateScriptParamReq);
+//
+//    void publishScript(PublishScriptReq req);
+//
+//    ScriptFullInfoRes detail(Integer scriptId);
+// }

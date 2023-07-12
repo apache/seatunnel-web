@@ -29,7 +29,7 @@ public class Result<T> {
 
     private T data;
 
-    private Result() {
+    public Result() {
         this.data = null;
     }
 

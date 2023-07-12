@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.dal.entity.JobMetrics;
 
 import lombok.NonNull;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,4 +42,9 @@ public interface IEngineMetricsExtractor {
     List<Map<String, String>> getClusterHealthMetrics();
 
     String getJobStatus(@NonNull String jobEngineId);
+
+    /** Obtain all running task metrics in the engine cluster */
+    Map<Long, HashMap<Integer, JobMetrics>> getAllRunningJobMetrics();
+
+    Map<Integer, JobMetrics> getMetricsByJobEngineIdRTMap(@NonNull String jobEngineId);
 }
