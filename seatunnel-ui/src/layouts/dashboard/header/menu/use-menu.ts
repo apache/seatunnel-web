@@ -24,10 +24,6 @@ export function useMenu() {
 
   const menuOptions = [
     {
-      label: () => h(NEllipsis, null, { default: () => t('menu.data_pipes') }),
-      key: 'data-pipes'
-    },
-    {
       label: () => h(NEllipsis, null, { default: () => t('menu.tasks') }),
       key: 'tasks'
     },

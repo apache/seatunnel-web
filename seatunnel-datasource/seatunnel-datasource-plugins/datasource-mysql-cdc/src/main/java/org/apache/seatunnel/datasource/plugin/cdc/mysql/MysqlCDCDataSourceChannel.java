@@ -234,8 +234,7 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
 
     private boolean isNotSystemDatabase(String dbName) {
         return MYSQL_SYSTEM_DATABASES.stream()
-                .noneMatch(
-                        systemDatabase -> StringUtils.equalsAnyIgnoreCase(systemDatabase, dbName));
+                .noneMatch(systemDatabase -> StringUtils.equalsIgnoreCase(systemDatabase, dbName));
     }
 
     private boolean convertToBoolean(Object value) {

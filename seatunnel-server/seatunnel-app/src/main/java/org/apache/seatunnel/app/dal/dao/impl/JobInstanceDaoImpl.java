@@ -20,13 +20,19 @@ package org.apache.seatunnel.app.dal.dao.impl;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.mapper.JobInstanceMapper;
+import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 
 import org.springframework.stereotype.Repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.NonNull;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class JobInstanceDaoImpl implements IJobInstanceDao {
@@ -57,5 +63,29 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
     @Override
     public JobInstanceMapper getJobInstanceMapper() {
         return jobInstanceMapper;
+    }
+
+    @Override
+    public IPage<SeaTunnelJobInstanceDto> queryJobInstanceListPaging(
+            IPage<JobInstance> page,
+            Date startTime,
+            Date endTime,
+            Long jobDefineId,
+            String jobMode) {
+        IPage<SeaTunnelJobInstanceDto> jobInstanceIPage =
+                jobInstanceMapper.queryJobInstanceListPaging(
+                        page, startTime, endTime, jobDefineId, jobMode);
+        return jobInstanceIPage;
+    }
+
+    @Override
+    public List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList) {
+        ArrayList<JobInstance> jobInstances = new ArrayList<>();
+        for (long jobInstanceId : jobInstanceIdList) {
+            JobInstance jobInstance = jobInstanceMapper.selectById(jobInstanceId);
+            jobInstances.add(jobInstance);
+        }
+
+        return jobInstances;
     }
 }

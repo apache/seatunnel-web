@@ -1,0 +1,207 @@
+package org.apache.seatunnel.app.service.impl;
+
+import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
+import org.apache.seatunnel.app.dal.entity.JobInstance;
+import org.apache.seatunnel.app.domain.response.engine.Engine;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
+import org.apache.seatunnel.app.service.IJobExecutorService;
+import org.apache.seatunnel.app.service.IJobInstanceService;
+import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
+import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
+import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
+import org.apache.seatunnel.common.config.Common;
+import org.apache.seatunnel.common.config.DeployMode;
+import org.apache.seatunnel.engine.client.SeaTunnelClient;
+import org.apache.seatunnel.engine.client.job.ClientJobProxy;
+import org.apache.seatunnel.engine.client.job.JobExecutionEnvironment;
+import org.apache.seatunnel.engine.common.config.ConfigProvider;
+import org.apache.seatunnel.engine.common.config.JobConfig;
+import org.apache.seatunnel.engine.core.job.JobStatus;
+
+import org.springframework.stereotype.Service;
+
+import com.hazelcast.client.config.ClientConfig;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Resource;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/** @Description @ClassName JobExecutorServiceImpl @Author zhang @Date 2023/6/30 15:53 */
+@Slf4j
+@Service
+public class JobExecutorServiceImpl implements IJobExecutorService {
+    @Resource private IJobInstanceService jobInstanceService;
+    @Resource private IJobInstanceDao jobInstanceDao;
+
+    @Override
+    public Result jobExecute(Integer userId, Long jobDefineId) {
+
+        // 先获取JobExecutorRes
+        JobExecutorRes executeResource =
+                jobInstanceService.createExecuteResource(userId, jobDefineId);
+        String jobConfig = executeResource.getJobConfig();
+
+        /** 将jobConfig写进conf文件中 */
+        String configFile = writeJobConfigIntoConfFile(jobConfig, jobDefineId);
+
+        /** 调用 */
+        Long jobInstanceId =
+                executeJobBySeaTunnel(userId, configFile, executeResource.getJobInstanceId());
+        return Result.success(jobInstanceId);
+    }
+
+    public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
+        String projectRoot = System.getProperty("user.dir");
+        String filePath = projectRoot + "\\profile\\" + Long.toString(jobDefineId) + ".conf";
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs(); // 创建文件所在的文件夹
+            }
+
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            bufferedWriter.write(jobConfig);
+            bufferedWriter.close();
+
+            log.info("File created and content written successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return filePath;
+    }
+
+    public Long executeJobBySeaTunnel(Integer userId, String filePath, Long jobInstanceId) {
+        Common.setDeployMode(DeployMode.CLIENT);
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setName(jobInstanceId + "_job");
+        SeaTunnelClient seaTunnelClient = createSeaTunnelClient();
+        try {
+            JobExecutionEnvironment jobExecutionEnv =
+                    seaTunnelClient.createExecutionContext(filePath, jobConfig);
+            final ClientJobProxy clientJobProxy = jobExecutionEnv.execute();
+            JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+            jobInstance.setJobEngineId(Long.toString(clientJobProxy.getJobId()));
+            jobInstanceDao.update(jobInstance);
+
+            CompletableFuture.runAsync(
+                    () -> {
+                        waitJobFinish(
+                                clientJobProxy,
+                                userId,
+                                jobInstanceId,
+                                Long.toString(clientJobProxy.getJobId()),
+                                seaTunnelClient);
+                    });
+
+            //            CompletableFuture<JobStatus> objectCompletableFuture =
+            //                    CompletableFuture.supplyAsync(
+            //                            () -> {
+            //                                return clientJobProxy.waitForJobComplete();
+            //                            });
+            //
+            //            //异步测试任务执行是否成功
+            //            await().atMost(180000, TimeUnit.MILLISECONDS)
+            //                    .untilAsserted(
+            //                            () ->
+            //                                    Assertions.assertTrue(
+            //                                            objectCompletableFuture.isDone()
+            //                                                    && JobStatus.FINISHED.equals(
+            //                                                    objectCompletableFuture.get())));
+
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return jobInstanceId;
+    }
+
+    public void waitJobFinish(
+            ClientJobProxy clientJobProxy,
+            Integer userId,
+            Long jobInstanceId,
+            String jobEngineId,
+            SeaTunnelClient seaTunnelClient) {
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        CompletableFuture<JobStatus> future =
+                CompletableFuture.supplyAsync(
+                        () -> {
+                            // 执行耗时任务，返回结果
+                            return clientJobProxy.waitForJobComplete();
+                        },
+                        executor);
+        try {
+            JobStatus jobStatus = future.get();
+            if (JobStatus.FINISHED.equals(jobStatus)) {
+                // 调用complete方法
+                jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
+                executor.shutdown();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } finally {
+            seaTunnelClient.close();
+        }
+    }
+
+    private SeaTunnelClient createSeaTunnelClient() {
+        ClientConfig clientConfig = ConfigProvider.locateAndGetClientConfig();
+        clientConfig.setClusterName(getClusterName("seatunnel"));
+        return new SeaTunnelClient(clientConfig);
+    }
+
+    public static String getClusterName(String testClassName) {
+        //        return System.getProperty("user.name") + "_" + testClassName;
+        return testClassName;
+    }
+
+    @Override
+    public Result jobPause(Integer userId, Long jobInstanceId) {
+        // 先检查引擎上该任务是不是正在执行
+        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+        if (getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()) == "RUNNING") {
+            // 暂停
+            pauseJobInEngine(jobInstance.getJobEngineId());
+        }
+        return Result.success();
+    }
+
+    private String getJobStatusFromEngine(@NonNull JobInstance jobInstance, String jobEngineId) {
+
+        Engine engine = new Engine(jobInstance.getEngineName(), jobInstance.getEngineVersion());
+
+        IEngineMetricsExtractor engineMetricsExtractor =
+                (new EngineMetricsExtractorFactory(engine)).getEngineMetricsExtractor();
+
+        return engineMetricsExtractor.getJobStatus(jobEngineId);
+    }
+
+    private void pauseJobInEngine(@NonNull String jobEngineId) {
+        SeaTunnelEngineProxy.getInstance().pauseJob(jobEngineId);
+    }
+
+    @Override
+    public Result jobStore(Integer userId, Long jobInstanceId) {
+        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+
+        String projectRoot = System.getProperty("user.dir");
+        String filePath =
+                projectRoot + "\\profile\\" + Long.toString(jobInstance.getJobDefineId()) + ".conf";
+
+        SeaTunnelEngineProxy.getInstance()
+                .restoreJob(filePath, jobInstanceId, Long.valueOf(jobInstance.getJobEngineId()));
+        return Result.success();
+    }
+}

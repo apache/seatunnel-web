@@ -22,14 +22,14 @@ import {
   AlignLeftOutlined,
   CheckCircleOutlined,
   ClearOutlined,
-  DownloadOutlined
+  DownloadOutlined,
+  SyncOutlined,
+  PlayCircleOutlined,
+  PauseCircleOutlined,
+  DeleteOutlined
 } from '@vicons/antd'
 import { useI18n } from 'vue-i18n'
-import {
-  cleanState,
-  downloadLog,
-  forceSuccess
-} from '@/service/task-instances'
+import { cleanState, downloadLog, forceSuccess } from '@/service/task-instances'
 import {
   COLUMN_WIDTH_CONFIG,
   DefaultTableWidth,
@@ -39,21 +39,27 @@ import { useRoute, useRouter } from 'vue-router'
 import { ITaskState } from '@/common/types'
 import { tasksState } from '@/common/common'
 import { NIcon, NSpin, NTooltip } from 'naive-ui'
-import { querySyncTaskInstancePaging } from '@/service/sync-task-instance'
+import { useMessage } from 'naive-ui'
+import {
+  querySyncTaskInstancePaging,
+  hanldlePauseJob,
+  hanldleRecoverJob,
+  hanldleDelJob
+} from '@/service/sync-task-instance'
 import type { RowKey } from 'naive-ui/lib/data-table/src/interface'
 import type { Router } from 'vue-router'
 import {
   cleanStateByIds,
   forcedSuccessByIds
 } from '@/service/sync-task-instance'
-import { useProjectStore } from '@/store/project'
-// import { changeProject } from '../../utils/changeProject'
+import { getRemainTime } from '@/utils/time'
 
 export function useSyncTask(syncTaskType = 'BATCH') {
   const { t } = useI18n()
   const router: Router = useRouter()
-  const projectStore = useProjectStore()
+  // const projectStore = useProjectStore()
   const route = useRoute()
+  const message = useMessage()
 
   const variables = reactive({
     tableWidth: DefaultTableWidth,
@@ -70,16 +76,12 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     skipLineNum: ref(0),
     limit: ref(1000),
     taskName: ref(''),
-    workflowInstance: ref(''),
     executeUser: ref(''),
     host: ref(''),
     stateType: null as null | string,
     syncTaskType,
     checkedRowKeys: [] as Array<RowKey>,
     buttonList: [],
-    projectCodes:
-      route.query.searchProjectCode || projectStore.getCurrentProject,
-    globalProject: projectStore.getGlobalFlag,
     datePickerRange: [
       format(startOfToday(), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
@@ -98,62 +100,30 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       }
     ]
   }
-
+  //
   const createColumns = (variables: any) => {
     variables.columns = [
-      {
-        type: 'selection',
-        className: 'btn-selected',
-        ...COLUMN_WIDTH_CONFIG['selection']
-      },
       useTableLink(
         {
           title: t('project.synchronization_definition.task_name'),
-          key: 'name',
+          key: 'jobDefineName',
           ...COLUMN_WIDTH_CONFIG['link_name'],
           button: {
-            permission: 'project:seatunnel-task-instance:details',
-            disabled: (row: any) =>
-              !row.jobInstanceEngineId ||
-              !row.jobInstanceEngineId.includes('::'),
+            // disabled: (row: any) =>
+            //   !row.jobInstanceEngineId ||
+            //   !row.jobInstanceEngineId.includes('::'),
             onClick: (row: any) => {
               router.push({
-                path: `/projects/${row.projectCode}/task/synchronization-instance/${row.taskCode}`,
+                path: `/task/synchronization-instance/${row.jobDefineId}`,
                 query: {
-                  taskName: row.name,
-                  key: row.jobInstanceEngineId,
-                  seaTunnelJobId: row.seaTunnelJobId,
-                  project: route.query.project,
-                  global: route.query.global
+                  jobInstanceId: row.id,
+                  taskName: row.jobDefineName,
                 }
               })
             }
           }
-        },
-        // 'project'
-      ),
-      useTableLink({
-        title: t('project.project_name'),
-        key: 'projectName',
-        ...COLUMN_WIDTH_CONFIG['link_name'],
-        button: {
-          onClick: (row: any) => {
-            // changeProject(row.projectCode)
-            router.push({
-              path: route.path,
-              query: {
-                project: String(row.projectCode),
-                global: 'false'
-              }
-            })
-          }
         }
-      }),
-      {
-        title: t('project.synchronization_instance.workflow_instance'),
-        key: 'processInstanceName',
-        ...COLUMN_WIDTH_CONFIG['link_name']
-      },
+      ),
       {
         title: t('project.synchronization_instance.amount_of_data_read'),
         key: 'readRowCount',
@@ -166,28 +136,17 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       },
       {
         title: t('project.synchronization_instance.execute_user'),
-        key: 'executorName',
+        key: 'createUserId',
         ...COLUMN_WIDTH_CONFIG['state']
-      },
-      {
-        title: t('project.synchronization_instance.node_type'),
-        key: 'taskType',
-        ...COLUMN_WIDTH_CONFIG['userName']
       },
       {
         title: t('project.synchronization_instance.state'),
-        key: 'state',
-        render: (row: any) => renderStateCell(row.state, t),
+        key: 'jobStatus',
         ...COLUMN_WIDTH_CONFIG['state']
       },
       {
-        title: t('project.synchronization_instance.submit_time'),
-        key: 'submitTime',
-        ...COLUMN_WIDTH_CONFIG['time']
-      },
-      {
         title: t('project.synchronization_instance.start_time'),
-        key: 'startTime',
+        key: 'createTime',
         ...COLUMN_WIDTH_CONFIG['time']
       },
       {
@@ -197,64 +156,39 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       },
       {
         title: t('project.synchronization_instance.run_time'),
-        key: 'duration',
+        key: 'runningTime',
+        render: (row: any) => getRemainTime(row.runningTime),
         ...COLUMN_WIDTH_CONFIG['duration']
-      },
-      {
-        title: t('project.synchronization_instance.number_of_retries'),
-        key: 'retryTimes',
-        ...COLUMN_WIDTH_CONFIG['size']
-      },
-      {
-        title: t('project.synchronization_instance.rerun_mark'),
-        key: 'dryRun',
-        ...COLUMN_WIDTH_CONFIG['size']
-      },
-      {
-        title: t('project.synchronization_instance.host'),
-        key: 'host',
-        ...COLUMN_WIDTH_CONFIG['name']
       },
       useTableOperation(
         {
           title: t('project.synchronization_instance.operation'),
           key: 'operation',
+          itemNum: 3,
           buttons: [
             {
-              text: t('project.synchronization_instance.clean_state'),
-              permission: 'project:seatunnel-task-instance:clean-state',
-              icon: h(ClearOutlined),
-              onClick: (row: any) => void handleCleanState(row),
-              disabled: (row: any) => row.state === 'RUNNING_EXECUTION'
+              text: t('project.workflow.recovery_suspend'),
+              icon: h(PlayCircleOutlined),
+              onClick: (row) => void handleRecover(row.id)
             },
             {
-              text: t('project.synchronization_instance.forced_success'),
-              permission: 'project:seatunnel-task-instance:force-success',
-              icon: h(CheckCircleOutlined),
-              onClick: (row: any) => void handleForcedSuccess(row),
-              disabled: (row: any) =>
-                !(
-                  row.state === 'FAILURE' ||
-                  row.state === 'NEED_FAULT_TOLERANCE' ||
-                  row.state === 'KILL'
-                )
+              text: t('project.workflow.pause'),
+              icon: h(PauseCircleOutlined),
+              onClick: (row) => void handlePause(row.id)
             },
             {
-              text: t('project.synchronization_instance.view_log'),
-              permission: 'project:seatunnel-task-instance:log',
-              icon: h(AlignLeftOutlined),
-              onClick: (row) => void handleLog(row),
-              disabled: (row) => !row.host
-            },
-            {
-              text: t('project.synchronization_instance.download_log'),
-              permission: 'project:seatunnel-task-instance:download-log',
-              icon: h(DownloadOutlined),
-              onClick: (row) => void downloadLog(row.id)
+              isDelete: true,
+              text: t('project.synchronization_instance.delete'),
+              icon: h(DeleteOutlined),
+              onClick: (row) => void handleDel(row.id),
+              onPositiveClick: () => {
+                console.log('123')
+              },
+              positiveText: t('project.synchronization_instance.confirm'),
+              popTips: t('project.synchronization_instance.delete_confirm')
             }
           ]
-        },
-        // 'project'
+        }
       )
     ]
 
@@ -264,17 +198,10 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   }
 
   const getTableData = (params: any) => {
-    if (
-      variables.loadingRef ||
-      !variables.projectCodes ||
-      variables.projectCodes.length === 0 ||
-      variables.projectCodes[0] === undefined
-    )
-      return
+    if (variables.loadingRef) return
     variables.loadingRef = true
 
-    params['projectCodes'] = variables.projectCodes
-
+    variables.loadingRef = false
     querySyncTaskInstancePaging(params)
       .then((res: any) => {
         variables.tableData = res.totalList as any
@@ -283,7 +210,23 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       })
       .catch(() => {
         variables.loadingRef = false
+        variables.tableData = [] as any
       })
+  }
+  const handleRecover = (id: number) => {
+    hanldleRecoverJob(id).then(() => {
+      message.success(t('common.success_tips'))
+    })
+  }
+  const handlePause = (id: number) => {
+    hanldlePauseJob(id).then(() => {
+      message.success(t('common.success_tips'))
+    })
+  }
+  const handleDel = (id: number) => {
+    hanldleDelJob(id).then(() => {
+      message.success(t('common.success_tips'))
+    })
   }
 
   const handleLog = (row: any) => {
@@ -313,7 +256,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
           ? variables.page - 1
           : variables.page,
       taskName: variables.taskName,
-      processInstanceName: variables.workflowInstance,
       host: variables.host,
       stateType: variables.stateType,
       startDate: variables.datePickerRange ? variables.datePickerRange[0] : '',
@@ -325,7 +267,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
 
   const onReset = () => {
     variables.taskName = ''
-    variables.workflowInstance = ''
     variables.executeUser = ''
     variables.host = ''
     variables.stateType = null
@@ -333,7 +274,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       format(startOfToday(), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
     ]
-    variables.projectCodes = useProjectStore().getCurrentProject
   }
   const onBatchCleanState = (ids: any) => {
     cleanStateByIds(ids).then(() => {
