@@ -82,7 +82,6 @@ const SyncTask = defineComponent({
       getTableData({
         pageNo: variables.page,
         pageSize: variables.pageSize,
-        processInstanceName: variables.workflowInstance,
         taskName: variables.taskName,
         executorName: variables.executeUser,
         host: variables.host,
@@ -146,10 +145,6 @@ const SyncTask = defineComponent({
         query.taskName = variables.taskName
       }
 
-      if (variables.workflowInstance) {
-        query.workflowInstance = variables.workflowInstance
-      }
-
       if (variables.executeUser) {
         query.executeUser = variables.executeUser
       }
@@ -173,12 +168,10 @@ const SyncTask = defineComponent({
             ...route.query,
             ...query,
             syncTaskType: props.syncTaskType,
-            searchProjectCode: variables.projectCodes
             }
           : {
               ...route.query,
               syncTaskType: props.syncTaskType,
-              searchProjectCode: variables.projectCodes
             }
       })
       requestData()
@@ -196,8 +189,6 @@ const SyncTask = defineComponent({
         variables.datePickerRange = [startDate as string, endDate as string]
       }
       variables.taskName = (route.query.taskName as string) || ''
-      variables.workflowInstance =
-        (route.query.workflowInstance as string) || ''
       variables.executeUser = (route.query.executeUser as string) || ''
       variables.host = (route.query.host as string) || ''
       variables.stateType = (route.query.stateType as string) || null
@@ -327,7 +318,7 @@ const SyncTask = defineComponent({
                   tableColumns={this.columns}
                   onChangeOptions={this.handleChangeColumn}
                 ></ColumnSelector>
-                <NDropdown
+                {/* <NDropdown
                   options={this.buttonList}
                   trigger={'click'}
                   onSelect={this.batchBtnListClick}
@@ -339,7 +330,7 @@ const SyncTask = defineComponent({
                       <DownOutlined />
                     </NIcon>
                   </NButton>
-                </NDropdown>
+                </NDropdown> */}
               </NSpace>
             ),
             default: () => (
