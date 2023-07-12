@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源',
-  virtual_tables: '虚拟表',
-  sync_task_definition: '同步任务定义',
-  sync_task_instance: '同步任务实例',
-  synchronization_instance: '同步任务实例',
+import i18n from '@/locales'
+const { t } = i18n.global
+export const getRemainTime = (remain: number): any => {
+    if(!remain) return 
+    let h = parseInt(remain / 60 / 60 % 24 + '')
+    let m = parseInt(remain / 60 % 60 + '')
+    let s = parseInt(remain % 60 + '')
+    const hText = h > 0 ? `${h}${t('common.hour')}` : ''
+    const mText = m > 0 ? `${m}${t('common.min')}` : ''
+    const sText = s > 0 ? `${s}${t('common.second')}` : ''
+    return hText + mText + sText
+    
 }
+

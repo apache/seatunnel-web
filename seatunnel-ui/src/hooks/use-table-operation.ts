@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { h, withDirectives, VNode } from 'vue'
+import { h, VNode } from 'vue'
 import {
   NSpace,
   NTooltip,
@@ -26,11 +26,8 @@ import {
   NSwitch
 } from 'naive-ui'
 import { DeleteOutlined } from '@vicons/antd'
-import { permission } from '@/directives/permission'
-// import { usePermissionLength } from './use-permission-length'
 import { COLUMN_WIDTH_CONFIG } from '@/common/column-width-config'
-// import { IPermissionModule } from '@/store/user'
-// import { accessTypeKey } from '@/service/resources/types'
+
 
 export const useTableOperation = (
   params: {
@@ -50,7 +47,6 @@ export const useTableOperation = (
       positiveText?: string
       popTips?: string
       text: string | ((rowData: any) => string)
-      permission?: string
       icon?: VNode | ((rowData: any) => VNode)
       auth?: any
       // accessType?: accessTypeKey
@@ -62,30 +58,12 @@ export const useTableOperation = (
       onPositiveClick?: (rowData: any, index: number) => void
       onClick?: (rowData: any) => void
       onUpdateValue?: (value: any, rowData: any) => void
-      customFunc?: (rowData: any) => VNode
+      customFunc?: (rowData: any) => VNode,
+      show?: any
     }[]
   },
-  // module?: IPermissionModule
 ) => {
-  const buttonPermissions = [] as string[]
-  params.buttons.forEach((button) => {
-    button.permission && buttonPermissions.push(button.permission)
-  })
-  let permissionLength
-  if (params.noPermission) {
-    permissionLength = params.buttons.length
-  } else {
-    // permissionLength = usePermissionLength(
-    //   buttonPermissions,
-    //   module || 'common'
-    // )
-  }
 
-  const wrapDirective = (vNode: VNode, permissionKey?: string) => {
-    return permissionKey
-      ? withDirectives(vNode, [[permission, permissionKey]])
-      : vNode
-  }
   const getButtonVnodes = (rowData: any, index: number) => {
     // const showPopover = ref(false)
     return params.buttons
@@ -124,21 +102,18 @@ export const useTableOperation = (
                 },
                 {
                   trigger: () =>
-                    wrapDirective(
-                      h(
-                        NButton,
-                        {
-                          ...commonProps,
-                          type: 'error'
-                        },
-                        {
-                          default: () =>
-                            h(NIcon, null, {
-                              default: () => button.icon || h(DeleteOutlined)
-                            })
-                        }
-                      ),
-                      params.noPermission ? '' : button.permission
+                    h(
+                      NButton,
+                      {
+                        ...commonProps,
+                        type: 'error'
+                      },
+                      {
+                        default: () =>
+                          h(NIcon, null, {
+                            default: () => button.icon || h(DeleteOutlined)
+                          })
+                      }
                     ),
                   default: () => button.popTips
                 }
@@ -156,44 +131,41 @@ export const useTableOperation = (
         if (button.isSwitch) {
           return h(NTooltip, null, {
             trigger: () =>
-              wrapDirective(
-                h(NSwitch, {
-                  value: rowData.status,
-                  checkedValue: button.checkedValue,
-                  uncheckedValue: button.uncheckedValue,
-                  onUpdateValue: (value) =>
-                    button.onUpdateValue
-                      ? void button.onUpdateValue(value, rowData)
-                      : () => {}
-                }),
-                params.noPermission ? '' : button.permission
-              ),
+            h(NSwitch, {
+              value: rowData.status,
+              checkedValue: button.checkedValue,
+              uncheckedValue: button.uncheckedValue,
+              onUpdateValue: (value) =>
+                button.onUpdateValue
+                  ? void button.onUpdateValue(value, rowData)
+                  : () => {}
+            }),
             default: () => buttonText
           })
         }
         if (button.isCustom && button.customFunc) {
           const { customFunc } = button
-          return wrapDirective(customFunc(rowData), button.permission)
+          return customFunc(rowData)
         }
-        return h(NTooltip, null, {
+
+        // show btn
+        const show = typeof button.show === 'function' ? button.show.call(this, rowData) : button.show === undefined ? true : !!button.show
+        return  show ? h(NTooltip, null, {
           trigger: () =>
-            wrapDirective(
-              h(
-                NButton,
-                {
-                  ...commonProps,
-                  type: 'info',
-                  onClick: () =>
-                    button.onClick ? void button.onClick(rowData) : () => {}
-                },
-                {
-                  default: () => h(NIcon, null, { default: () => buttonIcon })
-                }
-              ),
-              params.noPermission ? '' : button.permission
-            ),
+          h(
+            NButton,
+            {
+              ...commonProps,
+              type: 'info',
+              onClick: () =>
+                button.onClick ? void button.onClick(rowData) : () => {}
+            },
+            {
+              default: () => h(NIcon, null, { default: () => buttonIcon })
+            }
+          ),
           default: () => buttonText
-        })
+        }) : h('')
       })
   }
 
@@ -201,7 +173,6 @@ export const useTableOperation = (
     title: params.title,
     key: params.key,
     ...COLUMN_WIDTH_CONFIG['operation'](params.itemNum as any),
-    // ...COLUMN_WIDTH_CONFIG['operation'](params.itemNum || permissionLength),
     render: (rowData: any, index: number) => {
       const buttonVnodes = getButtonVnodes(rowData, index)
       const result =
@@ -213,7 +184,4 @@ export const useTableOperation = (
         : result
     }
   }
-  // : {
-  //     width: 0
-  //   }
 }

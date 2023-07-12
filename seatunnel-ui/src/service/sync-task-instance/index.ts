@@ -46,7 +46,7 @@ export function querySyncTaskInstanceDag(params: any): any {
 
 export function querySyncTaskInstancePaging(params: any): any {
   return axios({
-    url: '/ws/seaTunnel/syncTaskInstancePaging',
+    url: '/task/jobMetrics',
     method: 'get',
     params,
     timeout: 60000
@@ -66,5 +66,26 @@ export function forcedSuccessByIds(taskInstanceIds: Array<any>) {
     url: 'ws/seaTunnel/batch-force-task-success',
     method: 'post',
     data: { taskInstanceIds }
+  })
+}
+
+export function hanldlePauseJob(id: number): any {
+  return axios({
+    url: `/job/executor/pause?jobInstanceId=${id}`,
+    method: 'get'
+  })
+}
+
+export function hanldleRecoverJob(id: number): any {
+  return axios({
+    url: `/job/executor/restore?jobInstanceId=${id}`,
+    method: 'get'
+  })
+}
+
+export function hanldleDelJob(id: number): any {
+  return axios({
+    url: `/job/executor/del?jobInstanceId=${id}`,
+    method: 'get'
   })
 }

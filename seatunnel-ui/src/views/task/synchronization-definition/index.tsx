@@ -29,8 +29,6 @@ import { useI18n } from 'vue-i18n'
 import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
 import { useTable } from './use-table'
 import { TaskModal } from './task-modal'
-import ProjectSelector from '@/views/projects/components/projectSelector'
-// import { useProjectStore } from '@/store/project'
 import { useRoute, useRouter } from 'vue-router'
 import _ from 'lodash'
 
@@ -81,11 +79,9 @@ const SynchronizationDefinition = defineComponent({
           ? {
               ...query,
               ...route.query,
-              // searchProjectCode: variables.projectCodes
             }
           : {
               ...route.query,
-              // searchProjectCode: variables.projectCodes
             }
       })
       requestData()
@@ -113,13 +109,6 @@ const SynchronizationDefinition = defineComponent({
     watch(useI18n().locale, () => {
       createColumns(variables)
     })
-    const getProjectCodeList = (codes: any) => {
-      if (!codes) {
-        // variables.projectCodes = useProjectStore().getGolbalProject
-      } else {
-        // variables.projectCodes = [codes]
-      }
-    }
 
     return {
       t,
@@ -130,7 +119,6 @@ const SynchronizationDefinition = defineComponent({
       onConfirmModal,
       handleModalChange,
       onSearch,
-      getProjectCodeList,
       handleKeyup,
     }
   },
