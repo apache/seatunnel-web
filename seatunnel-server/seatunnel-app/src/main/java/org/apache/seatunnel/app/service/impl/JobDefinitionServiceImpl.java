@@ -153,7 +153,7 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     public Map<Long, String> getJob(@NonNull String name) {
 
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_VIEW, 0);
-        List<JobDefinition> job = jobDefinitionDao.getJob(name);
+        List<JobDefinition> job = jobDefinitionDao.getJobList(name);
         if (CollectionUtils.isEmpty(job)) {
             return new HashMap<>();
         }

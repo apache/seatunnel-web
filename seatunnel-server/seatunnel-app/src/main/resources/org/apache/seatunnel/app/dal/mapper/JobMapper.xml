@@ -70,4 +70,15 @@
     </where>
     order by update_time desc
   </select>
+
+  <select id="queryJob" resultType="org.apache.seatunnel.app.dal.entity.JobDefinition">
+    select
+    <include refid="Base_Column_List"/>, create_time, update_time
+    from t_st_job_definition
+    <where>
+      <if test="searchName!=null and searchName != ''">
+        and name LIKE concat('%', #{searchName}, '%')
+      </if>
+    </where>
+  </select>
 </mapper>

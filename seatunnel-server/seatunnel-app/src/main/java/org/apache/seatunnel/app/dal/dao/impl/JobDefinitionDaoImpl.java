@@ -76,8 +76,13 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
     }
 
     @Override
-    public List<JobDefinition> getJob(@NonNull String name) {
+    public List<JobDefinition> getJobList(@NonNull String name) {
         return jobMapper.queryJobList(name);
+    }
+
+    @Override
+    public JobDefinition getJobByName(@NonNull String name) {
+        return jobMapper.queryJob(name);
     }
 
     public void delete(long id) {

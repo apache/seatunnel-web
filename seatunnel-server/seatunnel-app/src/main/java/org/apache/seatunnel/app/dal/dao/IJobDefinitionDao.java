@@ -34,7 +34,9 @@ public interface IJobDefinitionDao {
 
     PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
 
-    List<JobDefinition> getJob(@NonNull String name);
+    List<JobDefinition> getJobList(@NonNull String name);
+
+    JobDefinition getJobByName(@NonNull String name);
 
     void delete(long id);
 }

@@ -78,11 +78,13 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
             @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = getConnection(requestParams);
-                PreparedStatement statement = connection.prepareStatement("SHOW DATABASES;");
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                "SELECT name FROM sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb');");
                 ResultSet re = statement.executeQuery()) {
             // filter system databases
             while (re.next()) {
-                String dbName = re.getString("database");
+                String dbName = re.getString("name");
                 if (StringUtils.isNotBlank(dbName)
                         && !SqlServerDataSourceConfig.SQLSERVER_SYSTEM_DATABASES.contains(dbName)) {
                     dbNames.add(dbName);
@@ -111,7 +113,7 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
             @NonNull String database,
             @NonNull String table) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams, database)) {
+        try (Connection connection = getConnection(requestParams, null)) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, database, table);
             try (ResultSet resultSet = metaData.getColumns(database, null, table, null)) {

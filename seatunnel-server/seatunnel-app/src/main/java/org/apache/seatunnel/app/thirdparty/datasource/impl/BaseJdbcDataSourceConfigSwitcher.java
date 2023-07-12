@@ -96,7 +96,7 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
         if (pluginType.equals(PluginType.SINK)) {
             connectorConfig =
                     connectorConfig.withValue(
-                            GENERATE_SINK_SQL, ConfigValueFactory.fromAnyRef(false));
+                            GENERATE_SINK_SQL, ConfigValueFactory.fromAnyRef(true));
         }
         if (businessMode.equals(DATA_INTEGRATION)) {
 

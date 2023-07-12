@@ -34,9 +34,8 @@ public class JobMetricsDaoImpl implements IJobMetricsDao {
     @Resource private JobMetricsMapper jobMetricsMapper;
 
     @Override
-    public List<JobMetrics> getByInstanceId(
-            @NonNull Long projectCode, @NonNull Long jobInstanceId) {
-        return jobMetricsMapper.queryJobMetricsByInstanceId(projectCode, jobInstanceId);
+    public List<JobMetrics> getByInstanceId(@NonNull Long jobInstanceId) {
+        return jobMetricsMapper.queryJobMetricsByInstanceId(jobInstanceId);
     }
 
     @Override

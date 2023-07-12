@@ -125,12 +125,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public JobExecutorRes createExecuteResource(
-            @NonNull Integer userId, @NonNull Long projectCode, @NonNull Long jobDefineId) {
+            @NonNull Integer userId, @NonNull Long jobDefineId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_RESOURCE, userId);
         log.info(
-                "receive createExecuteResource request, userId:{}, projectCode:{}, jobDefineId:{}",
+                "receive createExecuteResource request, userId:{}, jobDefineId:{}",
                 userId,
-                projectCode,
                 jobDefineId);
         JobDefinition job = jobDefinitionDao.getJob(jobDefineId);
         JobVersion latestVersion = jobVersionDao.getLatestVersion(job.getId());
@@ -147,6 +146,9 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         jobInstance.setEngineVersion(latestVersion.getEngineVersion());
         jobInstance.setJobConfig(jobConfig);
         jobInstance.setCreateUserId(userId);
+        if (!latestVersion.getJobMode().isEmpty()) {
+            jobInstance.setJobType(latestVersion.getJobMode());
+        }
 
         jobInstanceDao.insert(jobInstance);
 
@@ -155,7 +157,8 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                 jobInstance.getJobConfig(),
                 jobInstance.getEngineName(),
                 null,
-                null);
+                null,
+                jobInstance.getJobType());
     }
 
     @Override
@@ -333,22 +336,19 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                 jobInstance.getJobConfig(),
                 jobInstance.getEngineName(),
                 null,
-                null);
+                null,
+                jobInstance.getJobType());
     }
 
     @Override
     public void complete(
-            @NonNull Integer userId,
-            @NonNull Long projectCode,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId) {
+            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_COMPLETE, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
-        jobMetricsService.syncJobDataToDb(jobInstance, userId, projectCode, jobEngineId);
+        jobMetricsService.syncJobDataToDb(jobInstance, userId, jobEngineId);
 
         List<JobPipelineSummaryMetricsRes> status =
-                jobMetricsService.getJobPipelineSummaryMetrics(
-                        userId, projectCode, jobInstanceId, jobEngineId);
+                jobMetricsService.getJobPipelineSummaryMetrics(userId, jobInstanceId);
 
         String jobStatus;
         Set<String> statusList =
