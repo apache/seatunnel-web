@@ -47,9 +47,7 @@ import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
 import { useAsyncState } from '@vueuse/core'
 import { queryLog } from '@/service/log'
 import { LogRes } from '@/service/log/types'
-import ColumnSelector from '../../projects/components/column-selector'
-import { useProjectStore } from '@/store/project'
-import ProjectSelector from '../../projects/components/projectSelector'
+import ColumnSelector from '@/components/column-selector'
 import { getRangeShortCuts } from '@/utils/timePickeroption'
 import { useRoute, useRouter } from 'vue-router'
 import _ from 'lodash'
@@ -84,7 +82,6 @@ const SyncTask = defineComponent({
       getTableData({
         pageNo: variables.page,
         pageSize: variables.pageSize,
-        processInstanceName: variables.workflowInstance,
         taskName: variables.taskName,
         executorName: variables.executeUser,
         host: variables.host,
@@ -148,10 +145,6 @@ const SyncTask = defineComponent({
         query.taskName = variables.taskName
       }
 
-      if (variables.workflowInstance) {
-        query.workflowInstance = variables.workflowInstance
-      }
-
       if (variables.executeUser) {
         query.executeUser = variables.executeUser
       }
@@ -175,12 +168,10 @@ const SyncTask = defineComponent({
             ...route.query,
             ...query,
             syncTaskType: props.syncTaskType,
-            searchProjectCode: variables.projectCodes
             }
           : {
               ...route.query,
               syncTaskType: props.syncTaskType,
-              searchProjectCode: variables.projectCodes
             }
       })
       requestData()
@@ -198,8 +189,6 @@ const SyncTask = defineComponent({
         variables.datePickerRange = [startDate as string, endDate as string]
       }
       variables.taskName = (route.query.taskName as string) || ''
-      variables.workflowInstance =
-        (route.query.workflowInstance as string) || ''
       variables.executeUser = (route.query.executeUser as string) || ''
       variables.host = (route.query.host as string) || ''
       variables.stateType = (route.query.stateType as string) || null
@@ -241,13 +230,6 @@ const SyncTask = defineComponent({
     const handleChangeColumn = (options: any) => {
       tableColumn.value = options
     }
-    const getProjectCodeList = (codes: any) => {
-      if (!codes) {
-        variables.projectCodes = useProjectStore().getGolbalProject
-      } else {
-        variables.projectCodes = [codes]
-      }
-    }
 
     return {
       t,
@@ -260,7 +242,6 @@ const SyncTask = defineComponent({
       handleKeyup,
       handleChangeColumn,
       batchBtnListClick,
-      getProjectCodeList,
       tableColumn,
       rangeShortCuts
     }
@@ -271,32 +252,12 @@ const SyncTask = defineComponent({
       <NSpace vertical>
         <NCard>
           <NGrid cols={26} yGap={10} xGap={5}>
-            {this.globalProject && (
-              <NGi span={5}>
-                <ProjectSelector
-                  initCode={
-                    this.projectCodes.length == 1 ? this.projectCodes[0] : null
-                  }
-                  onGetprojectList={this.getProjectCodeList}
-                  style={{ 'width': '100%' }}
-                ></ProjectSelector>
-              </NGi>
-            )}
             
             <NGi span={5}>
               <NInput
                 v-model={[this.taskName, 'value']}
                 placeholder={this.t(
                   'project.synchronization_instance.task_name'
-                )}
-                onKeyup={this.handleKeyup}
-              />
-            </NGi>
-            <NGi span={5}>
-              <NInput
-                v-model={[this.workflowInstance, 'value']}
-                placeholder={this.t(
-                  'project.synchronization_instance.workflow_instance'
                 )}
                 onKeyup={this.handleKeyup}
               />
@@ -311,13 +272,6 @@ const SyncTask = defineComponent({
               />
             </NGi>
             <NGi span={6}>
-              <NInput
-                v-model={[this.host, 'value']}
-                placeholder={this.t('project.synchronization_instance.host')}
-                onKeyup={this.handleKeyup}
-              />
-            </NGi>
-            <NGi span={6}>
               <NSelect
                 style={{ width: '100%' }}
                 v-model={[this.stateType, 'value']}
@@ -326,19 +280,21 @@ const SyncTask = defineComponent({
                 clearable
               />
             </NGi>
-            <NGi span={26}>
+            <NGi span={7}>
+              <NDatePicker
+                v-model={[this.datePickerRange, 'formattedValue']}
+                type='datetimerange'
+                start-placeholder={this.t(
+                  'project.synchronization_instance.start_time'
+                )}
+                end-placeholder={this.t(
+                  'project.synchronization_instance.end_time'
+                )}
+                shortcuts={this.rangeShortCuts.rangeOption}
+              />
+            </NGi>
+            <NGi span={4}>
               <NSpace justify='end'>
-                <NDatePicker
-                  v-model={[this.datePickerRange, 'formattedValue']}
-                  type='datetimerange'
-                  start-placeholder={this.t(
-                    'project.synchronization_instance.start_time'
-                  )}
-                  end-placeholder={this.t(
-                    'project.synchronization_instance.end_time'
-                  )}
-                  shortcuts={this.rangeShortCuts.rangeOption}
-                />
                 <NButton onClick={this.onReset}>
                   <NIcon>
                     <ReloadOutlined />
@@ -362,7 +318,7 @@ const SyncTask = defineComponent({
                   tableColumns={this.columns}
                   onChangeOptions={this.handleChangeColumn}
                 ></ColumnSelector>
-                <NDropdown
+                {/* <NDropdown
                   options={this.buttonList}
                   trigger={'click'}
                   onSelect={this.batchBtnListClick}
@@ -374,7 +330,7 @@ const SyncTask = defineComponent({
                       <DownOutlined />
                     </NIcon>
                   </NButton>
-                </NDropdown>
+                </NDropdown> */}
               </NSpace>
             ),
             default: () => (

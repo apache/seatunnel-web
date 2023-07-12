@@ -20,8 +20,6 @@ import { useI18n } from 'vue-i18n'
 import { NForm, NFormItem, NInput, NRadioGroup, NRadio, NSpace } from 'naive-ui'
 import { useTaskModal } from './use-task-modal'
 import Modal from '@/components/modal'
-import { useProjectStore } from '@/store/project'
-import ProjectSelector from '@/views/projects/components/projectSelector'
 
 const props = {
   showModalRef: {
@@ -41,11 +39,6 @@ const TaskModal = defineComponent({
   setup(props, ctx) {
     const { t } = useI18n()
     const { variables, handleValidate } = useTaskModal(props, ctx)
-    // const projectStore = useProjectStore()
-    // const projectCode = ref([])
-    // const globalFlag = projectStore.getGlobalFlag
-    // projectCode.value = globalFlag ? [] : projectStore.getCurrentProject[0]
-    // const showPre = ref(globalFlag ? true : false)
     const synchronizationForm: any = ref(null)
 
     const cancelModal = () => {
@@ -54,35 +47,20 @@ const TaskModal = defineComponent({
       ctx.emit('cancelModal', props.showModalRef)
     }
 
-    // const projectRule = {
-    //   projectCode: {
-    //     required: true,
-    //     validator() {
-    //       if (projectCode.value.length == 0) {
-    //         return new Error(t('project.dag.project_empty'))
-    //       }
-    //     },
-    //     trigger: 'blur'
-    //   }
-    // }
-
     const preCancle = () => {
       ctx.emit('cancelModal')
-      // projectCode.value = []
       variables.model.name = ''
       variables.model.description = ''
     }
 
     const confirmModal = () => {
       handleValidate()
-      // projectCode.value = []
     }
 
     const getNextStep = () => {
       if (synchronizationForm.value) {
         synchronizationForm.value.validate(async (valid: any) => {
           if (!valid) {
-            // showPre.value = false
             variables.model.name = ''
             variables.model.description = ''
           }
@@ -90,13 +68,6 @@ const TaskModal = defineComponent({
       }
     }
 
-    // const getProjectList = (projectListItem: any) => {
-    //   if (projectListItem) {
-    //     projectCode.value = [projectListItem] as any
-    //   } else {
-    //     projectCode.value = []
-    //   }
-    // }
     return {
       t,
       ...toRefs(variables),
@@ -105,53 +76,17 @@ const TaskModal = defineComponent({
       preCancle,
       getNextStep,
       synchronizationForm,
-      // projectCode,
-      // projectRule,
-      // showPre,
-      // getProjectList,
-      // globalFlag
     }
   },
   render() {
     const {
       t,
-      projectCode,
       getNextStep,
       showModalRef,
       preCancle,
-      // projectRule,
-      // showPre,
-      // globalFlag,
-      // getProjectList,
     } = this
     return (
       <template>
-        {/* {globalFlag && (
-          <Modal
-            show={showModalRef && showPre && globalFlag}
-            title={t('project.workflow.select_project')}
-            onCancel={preCancle}
-            onConfirm={getNextStep}
-            confirmText={t('project.next_step')}
-          >
-            <NForm
-              model={projectCode}
-              rules={projectRule}
-              ref='synchronizationForm'
-            >
-              <NFormItem
-                label={t('project.workflow.choose_project')}
-                path='projectCode'
-              >
-                <ProjectSelector
-                  initCode={projectCode.length == 1 ? projectCode[0] : null}
-                  style={{ width: '100%' }}
-                  onGetprojectList={getProjectList}
-                ></ProjectSelector>
-              </NFormItem>
-            </NForm>
-          </Modal>
-        )} */}
         <Modal
           title={this.t(
             'project.synchronization_definition.create_synchronization_task'

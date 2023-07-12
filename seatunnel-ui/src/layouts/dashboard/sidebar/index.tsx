@@ -18,20 +18,12 @@
 import { defineComponent, ref, PropType, onMounted, watch, h } from 'vue'
 import { NLayoutSider, NMenu, NIcon, NDropdown, NEllipsis } from 'naive-ui'
 import { useThemeStore } from '@/store/theme'
-// import { DashOutlined } from '@vicons/antd'
-// import { useMenuClick } from './use-menuClick'
 import styles from './index.module.scss'
 import { PartitionOutlined, ProjectOutlined, RightOutlined } from '@vicons/antd'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { MenuOption } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 
-const toOverview = [
-  'workflow-definition-detail',
-  'workflow-instance-detail',
-  'workflow-instance-gantt',
-  'synchronization-definition-dag'
-]
 const Sidebar = defineComponent({
   name: 'Sidebar',
   props: {
@@ -47,16 +39,7 @@ const Sidebar = defineComponent({
   setup() {
     const router = useRouter()
     const collapsedRef = ref(false)
-    const defaultExpandedKeys = [
-      'workflow',
-      'task',
-      'udf-manage',
-      'service-manage',
-      'statistical-manage',
-      'task-group-manage',
-      'file-manage',
-      'baseline'
-    ]
+    const defaultExpandedKeys = ['']
     const route = useRoute()
     const { t } = useI18n()
     // Determine if it is a project overview
@@ -96,10 +79,7 @@ const Sidebar = defineComponent({
       }
     ])
 
-    onMounted(() => {
-      console.log(route, 'route')
-    })
-   
+    onMounted(() => {})
 
     return {
       collapsedRef,
