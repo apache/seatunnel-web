@@ -1105,7 +1105,11 @@ export default {
     engine: '引擎',
     write: '写',
     read: '读',
-    line: '行'
+    line: '行',
+    confirm: '确定',
+    cancel: '取消',
+    delete: '删除',
+    delete_confirm: '确定删除吗?',
   },
   menu: {
     fav: '收藏组件',

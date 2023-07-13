@@ -21,13 +21,12 @@ import { useTableOperation } from '@/hooks'
 import { EditOutlined, PlayCircleOutlined } from '@vicons/antd'
 import {
   querySyncTaskDefinitionPaging,
-  deleteSyncTaskDefinition
+  deleteSyncTaskDefinition,
+  executeJob
 } from '@/service/sync-task-definition'
 import { useRoute, useRouter } from 'vue-router'
 import type { Router } from 'vue-router'
 import type { JobType } from './dag/types'
-// import { changeProject } from '../../utils/changeProject'
-// import { useProjectStore } from '@/store/project'
 import { COLUMN_WIDTH_CONFIG } from '@/common/column-width-config'
 import { useTableLink } from '@/hooks'
 
@@ -35,7 +34,6 @@ export function useTable() {
   const { t } = useI18n()
   const router: Router = useRouter()
   const route = useRoute()
-  // const projectStore = useProjectStore()
   const variables = reactive({
     columns: [],
     tableData: [],
@@ -47,11 +45,7 @@ export function useTable() {
     statusRef: ref(0),
     row: {},
     loadingRef: ref(false),
-    // projectCodes:
-    //   route.query.searchProjectCode || projectStore.getCurrentProject,
-    // globalProject: projectStore.getGlobalFlag
   })
-  // const globalFlag = useProjectStore().getGlobalFlag
 
   const JOB_TYPE = {
     DATA_REPLICA: 'whole_library_sync',
@@ -106,9 +100,10 @@ export function useTable() {
               },
               icon: h(EditOutlined)
             },
-
+            
             {
               text: t('project.synchronization_definition.start'),
+              onClick: (row: any) => void handleRun(row),
               icon: h(PlayCircleOutlined)
             },
             {
@@ -128,8 +123,6 @@ export function useTable() {
     if (variables.loadingRef) return
     variables.loadingRef = true
 
-    // params['projectCodes'] = variables.projectCodes
-
     querySyncTaskDefinitionPaging(params)
       .then((res: any) => {
         variables.tableData = res.data
@@ -139,6 +132,16 @@ export function useTable() {
       .catch(() => {
         variables.loadingRef = false
       })
+  }
+
+  const handleRun = (row: any) => {
+    executeJob(row.id).then(() => {
+      getTableData({
+        pageSize: variables.pageSize,
+        pageNo: variables.page,
+        searchName: variables.searchName
+      })
+    })
   }
 
   const handleDelete = (row: any) => {
@@ -162,6 +165,5 @@ export function useTable() {
     variables,
     createColumns,
     getTableData,
-    // globalFlag
   }
 }

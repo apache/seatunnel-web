@@ -177,7 +177,6 @@ export default defineComponent({
         onConfirm={this.confirmModal}
         style={{ width: '60%' }}
         confirmText={t('modal.close')}
-        headerLinks={this.headerLinks}
       >
         <NLog
           rows={30}
