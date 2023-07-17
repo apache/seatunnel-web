@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import light from './modules/light'
 import dark from './modules/dark'
+import darkBlue from './modules/dark-blue'
 
 const themeList = {
   light,
-  dark
+  dark,
+  'dark-blue': darkBlue
 }
 
 export default themeList

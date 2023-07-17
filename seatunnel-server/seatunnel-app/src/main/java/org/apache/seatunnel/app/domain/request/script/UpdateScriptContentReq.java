@@ -29,10 +29,15 @@ import javax.validation.constraints.NotNull;
 public class UpdateScriptContentReq {
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer", hidden = true)
     private Integer scriptId;
+
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer")
     @NotBlank
     private String content;
-    @ApiModelProperty(value = "script mender id", required = true, dataType = "Integer", hidden = true)
-    @NotNull
-    private Integer menderId;
+
+    @ApiModelProperty(
+            value = "script mender id",
+            required = true,
+            dataType = "Integer",
+            hidden = true)
+    @NotNull private Integer menderId;
 }

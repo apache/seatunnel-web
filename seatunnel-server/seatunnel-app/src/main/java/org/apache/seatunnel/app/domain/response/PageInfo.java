@@ -30,6 +30,19 @@ public class PageInfo<T> {
     private Integer totalPage = 0;
     private Integer pageNo = 1;
     private Integer pageSize = 20;
+    /** current page */
+    private Integer currentPage = 0;
+
+    public PageInfo() {};
+
+    public PageInfo(Integer currentPage, Integer pageSize) {
+        if (currentPage == null) {
+            currentPage = 1;
+        }
+        this.pageNo = (currentPage - 1) * pageSize;
+        this.pageSize = pageSize;
+        this.currentPage = currentPage;
+    }
 
     public List<T> getData() {
         return data;
@@ -50,7 +63,8 @@ public class PageInfo<T> {
             pageSize = 20;
         }
         if (this.totalCount % this.pageSize == 0) {
-            this.totalPage = this.totalCount / this.pageSize == 0 ? 1 : this.totalCount / this.pageSize;
+            this.totalPage =
+                    this.totalCount / this.pageSize == 0 ? 1 : this.totalCount / this.pageSize;
             return;
         }
         this.totalPage = this.totalCount / this.pageSize + 1;

@@ -41,5 +41,6 @@ header:
     - '**/.gitkeep'
     - '**/com/typesafe/config/**'
     - 'seatunnel-main-repository/**'
+    - 'seatunnel-web-dist/release-docs/**'
 
   comment: on-failure

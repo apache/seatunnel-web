@@ -15,54 +15,14 @@
  * limitations under the License.
  */
 
-import { reactive, h } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { NIcon } from 'naive-ui'
 import { userLogout } from '@/service/user'
 import { useUserStore } from '@/store/user'
-import {
-  LogoutOutlined,
-  QuestionCircleOutlined,
-  SettingOutlined
-} from '@vicons/antd'
 import type { Router } from 'vue-router'
-import type { Component } from 'vue'
 
 export function useUserDropdown() {
   const router: Router = useRouter()
-  const { t } = useI18n()
   const userStore = useUserStore()
-
-  const renderIcon = (icon: Component) => {
-    return () => {
-      return h(NIcon, null, {
-        default: () => h(icon)
-      })
-    }
-  }
-
-  const dropdownOptions = [
-    {
-      key: 'help',
-      label: t('menu.help'),
-      icon: renderIcon(QuestionCircleOutlined)
-    },
-    {
-      key: 'setting',
-      label: t('menu.setting'),
-      icon: renderIcon(SettingOutlined)
-    },
-    {
-      key: 'logout',
-      label: t('menu.logout'),
-      icon: renderIcon(LogoutOutlined)
-    }
-  ]
-
-  const state = reactive({
-    dropdownOptions
-  })
 
   const handleSelect = (key: string) => {
     if (key === 'help') {
@@ -77,5 +37,5 @@ export function useUserDropdown() {
     }
   }
 
-  return { state, handleSelect }
+  return { handleSelect }
 }

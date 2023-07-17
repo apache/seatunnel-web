@@ -18,11 +18,15 @@
 import mapping from './mapping'
 import trim from './trim'
 import log from './log'
+import clipboard from './clipboard'
+import downloadFile from './downloadFile'
 
 const utils = {
   mapping,
   trim,
-  log
+  log,
+  clipboard,
+  downloadFile
 }
 
 export default utils

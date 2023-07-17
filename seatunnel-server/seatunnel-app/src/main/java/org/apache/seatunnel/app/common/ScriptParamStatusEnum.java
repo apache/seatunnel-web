@@ -23,7 +23,7 @@ public enum ScriptParamStatusEnum {
     ;
 
     private final int code;
-    private final String  description;
+    private final String description;
 
     ScriptParamStatusEnum(int code, String description) {
         this.code = code;

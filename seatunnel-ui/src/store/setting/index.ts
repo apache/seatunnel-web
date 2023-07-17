@@ -16,7 +16,7 @@
  */
 
 import { defineStore } from 'pinia'
-import { SettingStore } from './types'
+import type { SettingStore, Locales } from './types'
 
 export const useSettingStore = defineStore({
   id: 'setting',
@@ -24,7 +24,8 @@ export const useSettingStore = defineStore({
     sequenceColumn: false,
     dataUniqueValue: false,
     fillet: 15,
-    requestTime: 6000
+    requestTime: 6000,
+    locales: 'en_US'
   }),
   persist: true,
   getters: {
@@ -39,6 +40,9 @@ export const useSettingStore = defineStore({
     },
     getRequestTimeValue(): number {
       return this.requestTime
+    },
+    getLocales(): Locales {
+      return this.locales
     }
   },
   actions: {
@@ -53,6 +57,9 @@ export const useSettingStore = defineStore({
     },
     setRequestTimeValue(status: number): void {
       this.requestTime = status
+    },
+    setLocales(lang: Locales): void {
+      this.locales = lang
     }
   }
 })

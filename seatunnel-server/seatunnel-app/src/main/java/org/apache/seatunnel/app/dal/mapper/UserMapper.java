@@ -19,10 +19,12 @@ package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.User;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+@Mapper
 public interface UserMapper {
     User selectByPrimaryKey(@Param("id") Integer id);
 
@@ -32,7 +34,8 @@ public interface UserMapper {
 
     void deleteByPrimaryKey(@Param("id") int id);
 
-    List<User> selectBySelectiveAndPage(@Param("user") User user, @Param("start") int start, @Param("offset") int offset);
+    List<User> selectBySelectiveAndPage(
+            @Param("user") User user, @Param("start") int start, @Param("offset") int offset);
 
     void updateStatus(@Param("id") int id, @Param("status") byte status);
 
@@ -40,5 +43,8 @@ public interface UserMapper {
 
     int countBySelective(@Param("user") User user);
 
-    User selectByNameAndPasswd(@Param("username") String username, @Param("password") String password);
+    User selectByNameAndPasswd(
+            @Param("username") String username, @Param("password") String password);
+
+    List<User> queryEnabledUsers();
 }

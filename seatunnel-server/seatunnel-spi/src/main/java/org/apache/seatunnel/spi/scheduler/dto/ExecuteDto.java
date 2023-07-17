@@ -28,5 +28,4 @@ public class ExecuteDto {
     private JobDto jobDto;
     private ExecuteTypeEnum executeTypeEnum;
     private ComplementDataDto complementDataDto;
-
 }

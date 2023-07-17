@@ -17,12 +17,12 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.dto;
 
-import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+
+import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
 
 @Data
 public class ProcessInstanceDto {
@@ -31,10 +31,13 @@ public class ProcessInstanceDto {
     private int processDefinitionVersion;
     private String state;
     private String recovery;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date startTime;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date endTime;
+
     private int runTimes;
     private String name;
     private String host;
@@ -46,8 +49,10 @@ public class ProcessInstanceDto {
     private String failureStrategy;
     private String warningType;
     private String warningGroupId;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date scheduleTime;
+
     private String commandStartTime;
     private String globalParams;
     private String dagData;
@@ -68,8 +73,10 @@ public class ProcessInstanceDto {
     private String varPool;
     private int nextProcessInstanceId;
     private int dryRun;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date restartTime;
+
     private String cmdTypeIfComplement;
     private boolean complementData;
     private boolean blocked;

@@ -17,8 +17,6 @@
 
 package org.apache.seatunnel.app.resolver;
 
-import static org.apache.seatunnel.server.common.Constants.USER_ID;
-
 import org.apache.seatunnel.app.aspect.UserId;
 
 import org.springframework.core.MethodParameter;
@@ -29,6 +27,8 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import static org.apache.seatunnel.server.common.Constants.USER_ID;
+
 @Component
 public class UserIdMethodArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
@@ -38,8 +38,12 @@ public class UserIdMethodArgumentResolver implements HandlerMethodArgumentResolv
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(
+            MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory)
+            throws Exception {
         return (Integer) webRequest.getAttribute(USER_ID, RequestAttributes.SCOPE_REQUEST);
     }
-
 }

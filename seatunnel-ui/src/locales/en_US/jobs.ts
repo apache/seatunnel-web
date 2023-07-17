@@ -22,7 +22,7 @@ export default {
   search: 'Search',
   data_pipe_name: 'Data Pipe Name',
   plan: 'Plan',
-  create_date: 'Create Date',
+  create_time: 'Create Time',
   publish: 'Publish',
   operation: 'Operation',
   execute: 'Execute',

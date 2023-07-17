@@ -23,10 +23,9 @@ import java.util.Map;
 
 public class DolphinschedulerConstants {
 
-    /**
-     * api url
-     */
+    /** api url */
     public static final String QUERY_PROJECT_LIST_PAGING = "/projects";
+
     public static final String QUERY_LIST_PAGING = "/projects/%s/process-definition";
     public static final String GEN_TASK_CODE_LIST = "/projects/%s/task-definition/gen-task-codes";
     public static final String VERIFY_RESOURCE_NAME = "/resources/verify-name";
@@ -35,8 +34,10 @@ public class DolphinschedulerConstants {
     public static final String UPDATE_CONTENT = "/resources/%s/update-content";
     public static final String LOG_DETAIL = "/log/detail";
     public static final String RELEASE = "/projects/%s/process-definition/%s/release";
-    public static final String START_PROCESS_INSTANCE = "/projects/%s/executors/start-process-instance";
-    public static final String QUERY_PROCESS_DEFINITION_BY_NAME = "/projects/%s/process-definition/query-by-name";
+    public static final String START_PROCESS_INSTANCE =
+            "/projects/%s/executors/start-process-instance";
+    public static final String QUERY_PROCESS_DEFINITION_BY_NAME =
+            "/projects/%s/process-definition/query-by-name";
     public static final String QUERY_TASK_LIST_PAGING = "/projects/%s/task-instances";
     public static final String CREATE_PROCESS_DEFINITION = "/projects/%s/process-definition/";
     public static final String CREATE_SCHEDULE = "/projects/%s/schedules/";
@@ -47,10 +48,9 @@ public class DolphinschedulerConstants {
     public static final String PROCESS_INSTANCE_LIST = "/projects/%s/process-instances";
     public static final String EXECUTE = "/projects/%s/executors/execute";
 
-    /**
-     * request param
-     */
+    /** request param */
     public static final String TOKEN = "token";
+
     public static final String SEARCH_VAL = "searchVal";
     public static final String PAGE_SIZE = "pageSize";
     public static final int PAGE_SIZE_DEFAULT = 10;
@@ -175,10 +175,9 @@ public class DolphinschedulerConstants {
     public static final int LOG_LIMIT_NUM_DEFAULT = Integer.MAX_VALUE;
     public static final String STATE_TYPE = "stateType";
 
-    /**
-     * response param
-     */
+    /** response param */
     public static final String DATA = "data";
+
     public static final String DATA_TOTAL_LIST = "totalList";
     public static final String DATA_TOTAL = "total";
     public static final String CODE = "code";

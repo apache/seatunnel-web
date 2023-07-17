@@ -27,9 +27,8 @@ import javax.validation.constraints.NotNull;
 @ApiModel(value = "publishScriptReq", description = "publish script")
 public class PublishScriptReq {
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer")
-    @NotNull
-    private int scriptId;
+    @NotNull private int scriptId;
+
     @ApiModelProperty(value = "operator id", required = true, dataType = "Integer")
-    @NotNull
-    private int operatorId;
+    @NotNull private int operatorId;
 }

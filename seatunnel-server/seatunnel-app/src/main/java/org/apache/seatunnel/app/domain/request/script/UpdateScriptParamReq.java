@@ -30,6 +30,7 @@ import java.util.Map;
 public class UpdateScriptParamReq {
     @ApiModelProperty(value = "script id", required = true, dataType = "Integer", hidden = true)
     private Integer scriptId;
+
     @ApiModelProperty(value = "script params", required = true, dataType = "Map")
     @NotEmpty
     private Map<String, String> params;

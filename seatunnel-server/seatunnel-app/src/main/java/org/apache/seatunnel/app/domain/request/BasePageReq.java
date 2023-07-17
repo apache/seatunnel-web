@@ -24,6 +24,7 @@ import lombok.Data;
 public class BasePageReq {
     @ApiModelProperty(value = "page number", required = true, dataType = "Integer")
     private Integer pageNo;
+
     @ApiModelProperty(value = "page size", required = true, dataType = "Integer")
     private Integer pageSize;
 
