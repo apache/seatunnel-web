@@ -33,7 +33,7 @@ public enum ReleaseStateEnum {
 
     public static ReleaseStateEnum parse(String name) {
         for (ReleaseStateEnum value : values()) {
-            if (value.name().equalsIgnoreCase(name)){
+            if (value.name().equalsIgnoreCase(name)) {
                 return value;
             }
         }

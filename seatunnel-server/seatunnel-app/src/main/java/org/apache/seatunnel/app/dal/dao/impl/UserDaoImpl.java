@@ -17,10 +17,6 @@
 
 package org.apache.seatunnel.app.dal.dao.impl;
 
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_USER;
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USER_ALREADY_EXISTS;
-import static com.google.common.base.Preconditions.checkState;
-
 import org.apache.seatunnel.app.common.UserStatusEnum;
 import org.apache.seatunnel.app.common.UserTokenStatusEnum;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
@@ -40,12 +36,14 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_USER;
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USER_ALREADY_EXISTS;
+
 @Repository
 public class UserDaoImpl implements IUserDao {
-    @Resource
-    private UserMapper userMapper;
-    @Resource
-    private UserLoginLogMapper userLoginLogMapper;
+    @Resource private UserMapper userMapper;
+    @Resource private UserLoginLogMapper userLoginLogMapper;
 
     @Override
     public int add(UpdateUserDto dto) {
@@ -62,7 +60,8 @@ public class UserDaoImpl implements IUserDao {
     @Override
     public void checkUserExists(String username) {
         User user = userMapper.selectByName(username);
-        checkState(Objects.isNull(user), String.format(USER_ALREADY_EXISTS.getTemplate(), username));
+        checkState(
+                Objects.isNull(user), String.format(USER_ALREADY_EXISTS.getTemplate(), username));
     }
 
     @Override
@@ -99,7 +98,8 @@ public class UserDaoImpl implements IUserDao {
         user.setUsername(dto.getName());
 
         int count = userMapper.countBySelective(user);
-        final List<User> userList = userMapper.selectBySelectiveAndPage(user, pageNo * pageSize, pageSize);
+        final List<User> userList =
+                userMapper.selectBySelectiveAndPage(user, pageNo * pageSize, pageSize);
         return new PageData<User>(count, userList);
     }
 
@@ -137,5 +137,10 @@ public class UserDaoImpl implements IUserDao {
     @Override
     public UserLoginLog getLastLoginLog(Integer userId) {
         return userLoginLogMapper.checkLastTokenEnable(userId);
+    }
+
+    @Override
+    public List<User> queryEnabledUsers() {
+        return userMapper.queryEnabledUsers();
     }
 }

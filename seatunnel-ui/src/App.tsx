@@ -19,6 +19,7 @@ import { defineComponent, computed, watch, ref } from 'vue'
 import {
   NConfigProvider,
   NMessageProvider,
+  NDialogProvider,
   darkTheme,
   dateZhCN,
   dateEnUS,
@@ -26,35 +27,45 @@ import {
   enUS
 } from 'naive-ui'
 import { useThemeStore } from '@/store/theme'
-import { useLocalesStore } from '@/store/locale'
 import { useSettingStore } from '@/store/setting'
+import { useI18n } from 'vue-i18n'
 import themeList from '@/themes'
 import type { GlobalThemeOverrides } from 'naive-ui'
 import type { Ref } from 'vue'
+import type { CustomThemeCommonVars, ThemeCommonVars } from 'naive-ui/es/config-provider/src/interface'
 
 const App = defineComponent({
   setup() {
     const themeStore = useThemeStore()
+    const settingStore = useSettingStore()
     const currentTheme = computed(() =>
-      themeStore.darkTheme ? darkTheme : undefined
+      themeStore.getDarkTheme ? darkTheme : undefined
     )
-    const localesStore = useLocalesStore()
-    const themeOverrides: Ref<GlobalThemeOverrides> = ref(
-      themeList[currentTheme.value ? 'dark' : 'light']
-    )
+    const themeOverrides = computed(() => themeList[currentTheme.value ? 'dark' : 'light'])
+    const setBorderRadius = (v: number) => {
+      (themeOverrides.value.common as Partial<ThemeCommonVars & CustomThemeCommonVars>).borderRadius =
+        v + 'px'
+    }
+
+    settingStore.getFilletValue && setBorderRadius(settingStore.getFilletValue)
+
+    if (settingStore.getLocales) {
+      const { locale } = useI18n()
+      locale.value = settingStore.getLocales
+    }
 
     watch(
-      () => useSettingStore().getFilletValue,
+      () => settingStore.getFilletValue,
       () => {
-        ;(themeOverrides.value.common as any).borderRadius =
-          useSettingStore().getFilletValue + 'px'
+        setBorderRadius(settingStore.getFilletValue)
       }
     )
 
     return {
+      settingStore,
       currentTheme,
-      localesStore,
-      themeOverrides
+      themeOverrides,
+      themeList
     }
   },
   render() {
@@ -63,12 +74,14 @@ const App = defineComponent({
         theme={this.currentTheme}
         theme-overrides={this.themeOverrides}
         date-locale={
-          String(this.localesStore.getLocales) === 'zh_CN' ? dateZhCN : dateEnUS
+          this.settingStore.getLocales === 'zh_CN' ? dateZhCN : dateEnUS
         }
-        locale={String(this.localesStore.getLocales) === 'zh_CN' ? zhCN : enUS}
+        locale={this.settingStore.getLocales === 'zh_CN' ? zhCN : enUS}
       >
         <NMessageProvider>
-          <router-view />
+          <NDialogProvider>
+            <router-view />
+          </NDialogProvider>
         </NMessageProvider>
       </NConfigProvider>
     )

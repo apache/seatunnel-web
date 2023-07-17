@@ -24,6 +24,8 @@ import org.apache.seatunnel.app.domain.dto.user.UpdateUserDto;
 import org.apache.seatunnel.app.domain.dto.user.UserLoginLogDto;
 import org.apache.seatunnel.server.common.PageData;
 
+import java.util.List;
+
 public interface IUserDao {
     int add(UpdateUserDto dto);
 
@@ -50,4 +52,11 @@ public interface IUserDao {
     void disableToken(int userId);
 
     UserLoginLog getLastLoginLog(Integer userId);
+
+    /**
+     * query enabled users
+     *
+     * @return
+     */
+    List<User> queryEnabledUsers();
 }

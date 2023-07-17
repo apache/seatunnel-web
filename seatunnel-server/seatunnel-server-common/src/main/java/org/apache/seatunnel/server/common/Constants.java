@@ -25,4 +25,6 @@ public class Constants {
     public static final String USER_ID = "id";
 
     public static final String OPTIONS = "OPTIONS";
+
+    public static final String METRICS_QUERY_KEY_SPLIT = "::";
 }

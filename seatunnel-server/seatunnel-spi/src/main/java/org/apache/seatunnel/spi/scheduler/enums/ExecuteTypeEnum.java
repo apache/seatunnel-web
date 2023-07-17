@@ -17,9 +17,9 @@
 
 package org.apache.seatunnel.spi.scheduler.enums;
 
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
-
 import org.apache.seatunnel.server.common.SeatunnelException;
+
+import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_ELEMENT;
 
 public enum ExecuteTypeEnum {
     TEMPORARY,

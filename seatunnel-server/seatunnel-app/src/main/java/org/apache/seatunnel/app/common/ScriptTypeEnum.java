@@ -23,7 +23,7 @@ public enum ScriptTypeEnum {
     ;
 
     private final int code;
-    private final String  description;
+    private final String description;
 
     ScriptTypeEnum(int code, String description) {
         this.code = code;

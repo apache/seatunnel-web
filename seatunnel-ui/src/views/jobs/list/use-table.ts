@@ -51,7 +51,7 @@ export function useTable() {
         key: 'jobPlan'
       },
       {
-        title: t('jobs.create_date'),
+        title: t('jobs.create_time'),
         key: 'createTime'
       },
       {
@@ -89,7 +89,7 @@ export function useTable() {
     state.loading = true
     taskJobList({ ...params }).then(
       (res: ResponseTable<Array<JobDetail> | []>) => {
-        state.tableData = res.data.data as any
+        state.tableData = res.data as any
         state.totalPage = res.data.totalPage
         state.loading = false
       }

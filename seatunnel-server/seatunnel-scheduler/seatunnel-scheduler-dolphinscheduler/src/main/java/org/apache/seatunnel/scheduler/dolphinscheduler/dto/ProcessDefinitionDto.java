@@ -17,13 +17,13 @@
 
 package org.apache.seatunnel.scheduler.dolphinscheduler.dto;
 
-import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
+
+import static org.apache.seatunnel.server.common.DateUtils.DEFAULT_DATETIME_FORMAT;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,10 +34,13 @@ public class ProcessDefinitionDto {
     private String releaseState;
     private long projectCode;
     private String description;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date createTime;
+
     @JsonFormat(pattern = DEFAULT_DATETIME_FORMAT)
     private Date updateTime;
+
     private String userName;
     private String projectName;
     private String locations;

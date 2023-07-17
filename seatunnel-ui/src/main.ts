@@ -23,6 +23,7 @@ import i18n from '@/locales'
 import router from './router'
 import utils from '@/utils'
 import './index.css'
+import './assets/styles/default.scss'
 
 const meta = document.createElement('meta')
 meta.name = 'naive-ui-style'

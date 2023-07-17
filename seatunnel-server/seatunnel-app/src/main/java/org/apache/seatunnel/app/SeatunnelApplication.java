@@ -25,12 +25,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = {"org.apache.seatunnel.app", "org.apache.seatunnel.scheduler"})
+@SpringBootApplication(
+        scanBasePackages = {"org.apache.seatunnel.app", "org.apache.seatunnel.scheduler"})
 @EnableTransactionManagement
 @EnableConfigurationProperties
 @EnableScheduling
 @EnableAsync(proxyTargetClass = true)
-@MapperScan({"org.apache.seatunnel.app.dal"})
+@MapperScan({"org.apache.seatunnel.app.dal.mapper"})
 public class SeatunnelApplication {
     public static void main(String[] args) {
         SpringApplication.run(SeatunnelApplication.class, args);

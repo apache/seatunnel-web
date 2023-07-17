@@ -26,12 +26,13 @@ import javax.validation.constraints.NotNull;
 public class BaseUserReq {
     @ApiModelProperty(value = "user name", required = true, dataType = "String")
     private String username;
+
     @ApiModelProperty(value = "user password", required = true, dataType = "String")
     private String password;
+
     @ApiModelProperty(value = "user status", required = true, dataType = "Integer")
-    @NotNull
-    private Byte status;
+    @NotNull private Byte status;
+
     @ApiModelProperty(value = "user type", required = true, dataType = "Integer")
-    @NotNull
-    private Byte type;
+    @NotNull private Byte type;
 }

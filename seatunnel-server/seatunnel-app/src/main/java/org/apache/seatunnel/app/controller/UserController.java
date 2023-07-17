@@ -27,8 +27,6 @@ import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 import org.apache.seatunnel.app.service.IUserService;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,6 +38,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
@@ -47,8 +48,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class UserController {
 
-    @Resource
-    private IUserService iUserService;
+    @Resource private IUserService iUserService;
 
     @PostMapping
     @ApiOperation(value = "add user", httpMethod = "POST")
@@ -58,8 +58,10 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @ApiOperation(value = "update user", httpMethod = "PUT")
-    public Result<Void> update(@ApiParam(value = "user id", required = true) @PathVariable(value = "userId") Integer userId,
-                               @RequestBody @NotNull UpdateUserReq updateReq) {
+    public Result<Void> update(
+            @ApiParam(value = "user id", required = true) @PathVariable(value = "userId")
+                    Integer userId,
+            @RequestBody @NotNull UpdateUserReq updateReq) {
         updateReq.setUserId(userId);
 
         iUserService.update(updateReq);
@@ -68,16 +70,19 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @ApiOperation(value = "delete user", httpMethod = "DELETE")
-    public Result<Void> delete(@ApiParam(value = "user id", required = true) @PathVariable(value = "userId") Integer userId) {
+    public Result<Void> delete(
+            @ApiParam(value = "user id", required = true) @PathVariable(value = "userId")
+                    Integer userId) {
         iUserService.delete(userId);
         return Result.success();
     }
 
     @GetMapping
     @ApiOperation(value = "user list", httpMethod = "GET")
-    public Result<PageInfo<UserSimpleInfoRes>> list(@ApiParam(value = "user name") @RequestParam(required = false) String name,
-                                                    @ApiParam(value = "page num", required = true) @RequestParam Integer pageNo,
-                                                    @ApiParam(value = "page size", required = true) @RequestParam Integer pageSize) {
+    public Result<PageInfo<UserSimpleInfoRes>> list(
+            @ApiParam(value = "user name") @RequestParam(required = false) String name,
+            @ApiParam(value = "page num", required = true) @RequestParam Integer pageNo,
+            @ApiParam(value = "page size", required = true) @RequestParam Integer pageSize) {
         final UserListReq req = new UserListReq();
         req.setName(name);
         req.setPageNo(pageNo);
@@ -88,14 +93,18 @@ public class UserController {
 
     @PatchMapping("/{userId}/enable")
     @ApiOperation(value = "enable a user", httpMethod = "PATCH")
-    public Result<Void> enable(@ApiParam(value = "user id", required = true) @PathVariable(value = "userId") Integer userId) {
+    public Result<Void> enable(
+            @ApiParam(value = "user id", required = true) @PathVariable(value = "userId")
+                    Integer userId) {
         iUserService.enable(userId);
         return Result.success();
     }
 
     @PutMapping("/{userId}/disable")
     @ApiOperation(value = "disable a user", httpMethod = "PUT")
-    public Result<Void> disable(@ApiParam(value = "user id", required = true) @PathVariable(value = "userId") Integer userId) {
+    public Result<Void> disable(
+            @ApiParam(value = "user id", required = true) @PathVariable(value = "userId")
+                    Integer userId) {
         iUserService.disable(userId);
         return Result.success();
     }

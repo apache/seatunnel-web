@@ -28,11 +28,10 @@ import javax.annotation.Resource;
 @Repository
 public class RoleDaoImpl implements IRoleDao {
 
-    @Resource
-    private RoleMapper roleMapper;
+    @Resource private RoleMapper roleMapper;
 
     @Override
-    public void add(Role role){
+    public void add(Role role) {
         roleMapper.insert(role);
     }
 
@@ -40,5 +39,4 @@ public class RoleDaoImpl implements IRoleDao {
     public Role getByRoleName(String roleName) {
         return roleMapper.selectByRole(roleName);
     }
-
 }
