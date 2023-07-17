@@ -54,7 +54,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
             String syncTaskType,
             Integer pageNo,
             Integer pageSize) {
-        /** 根据过滤条件查出所有的TaskTnstance（List） */
         JobDefinition jobDefinition = null;
         IPage<SeaTunnelJobInstanceDto> jobInstanceIPage = null;
         if (jobDefineName != null) {
