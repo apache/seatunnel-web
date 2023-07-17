@@ -188,8 +188,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
                     jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
-
-                    // TODO:将数据库中的jobInstance和jobMetrics的作业状态改为finished
                 }
             } else if (jobInstance.getJobStatus().equals("FINISHED")
                     || jobInstance.getJobStatus().equals("CANCELED")) {
@@ -684,7 +682,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             list.add(jobMetrics);
         }
         if (!list.isEmpty()) {
-            log.info("003list={}", list);
             jobMetricsDao.getJobMetricsMapper().insertBatchMetrics(list);
         }
     }
