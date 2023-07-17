@@ -24,13 +24,38 @@
 
     <artifactId>datasource-jdbc-tidb</artifactId>
 
-    <properties />
+    <properties>
+        <mysql-connector.version>8.0.28</mysql-connector.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
-            <artifactId>datasource-jdbc-mysql</artifactId>
-            <version>${project.version}</version>
+            <artifactId>datasource-plugins-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.auto.service/auto-service -->
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seatunnel</groupId>
+            <artifactId>seatunnel-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -433,6 +433,7 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-jdbc</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -580,6 +581,7 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-kafka</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
@@ -633,6 +635,7 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-jdbc</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
@@ -854,11 +857,13 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-mysql</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-sqlserver</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
@@ -880,11 +885,13 @@
             <groupId>org.apache.seatunnel</groupId>
             <artifactId>connector-cdc-sqlserver</artifactId>
             <version>${seatunnel-framework.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
             <artifactId>connector-cdc-mysql</artifactId>
             <version>${seatunnel-framework.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

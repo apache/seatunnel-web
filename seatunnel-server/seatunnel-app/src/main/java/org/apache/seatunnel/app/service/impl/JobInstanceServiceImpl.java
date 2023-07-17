@@ -435,14 +435,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             OptionRule optionRule)
             throws JsonProcessingException {
 
-        // 在这个地方mergeConfig
         Long datasourceInstanceId = task.getDataSourceId();
-        // datasourceInstanceId 获取pluginName;
         String pluginName =
                 datasourceService
                         .queryDatasourceDetailById(datasourceInstanceId.toString())
                         .getPluginName();
-        // 通过datasourceInstanceId 获取配置参数
         Config datasourceConf =
                 parseConfigWithOptionRule(
                         pluginType,
@@ -481,9 +478,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                 && dataSourceOption != null
                 && CollectionUtils.isNotEmpty(dataSourceOption.getTables())) {
             String tableName = dataSourceOption.getTables().get(0);
-            // 判断当前tableName是否为虚拟表
             if (virtualTableService.containsVirtualTableByTableName(tableName)) {
-                // 是虚拟表,获取虚拟表参数
                 virtualTableDetailRes = virtualTableService.queryVirtualTableByTableName(tableName);
             }
         }
