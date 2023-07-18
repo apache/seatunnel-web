@@ -71,7 +71,7 @@
         <guava.version>19.0</guava.version>
         <checker.qual.version>3.10.0</checker.qual.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <seatunnel-framework.version>2.4.7-WS-SNAPSHOT</seatunnel-framework.version>
+        <seatunnel-framework.version>2.3.2-SNAPSHOT</seatunnel-framework.version>
         <redshift.version>2.1.0.9</redshift.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>
         <aws-java-sdk-bundle.version>1.11.271</aws-java-sdk-bundle.version>
