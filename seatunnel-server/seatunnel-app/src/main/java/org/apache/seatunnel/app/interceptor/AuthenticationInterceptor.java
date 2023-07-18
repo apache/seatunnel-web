@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 import org.apache.seatunnel.app.security.JwtUtils;
 
 import org.apache.commons.lang3.StringUtils;
+
 import org.eclipse.jetty.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
