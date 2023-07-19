@@ -15,22 +15,33 @@
  * limitations under the License.
  */
 
-import { defineComponent, toRefs } from 'vue'
+import { Component, defineComponent, h } from 'vue'
 import { NSpace, NDropdown, NIcon, NButton } from 'naive-ui'
 import { useUserDropdown } from './use-user-dropdown'
 import { useUserStore } from '@/store/user'
-import { DownOutlined, UserOutlined } from '@vicons/antd'
+import { DownOutlined, LogoutOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@vicons/antd'
+import { useI18n } from 'vue-i18n'
 import type { UserDetail } from '@/service/user/types'
 
 const User = defineComponent({
   setup() {
-    const { state, handleSelect } = useUserDropdown()
+    const { handleSelect } = useUserDropdown()
+    const { t } = useI18n()
     const userDetail = useUserStore()
 
+    const renderIcon = (icon: Component) => {
+      return () => {
+        return h(NIcon, null, {
+          default: () => h(icon)
+        })
+      }
+    }
+
     return {
-      ...toRefs(state),
+      t,
       handleSelect,
-      userDetail
+      userDetail,
+      renderIcon
     }
   },
   render() {
@@ -43,7 +54,23 @@ const User = defineComponent({
       >
         <NDropdown
           trigger='click'
-          options={this.dropdownOptions}
+          options={[
+            {
+              key: 'help',
+              label: this.t('menu.help'),
+              icon: this.renderIcon(QuestionCircleOutlined)
+            },
+            {
+              key: 'setting',
+              label: this.t('menu.setting'),
+              icon: this.renderIcon(SettingOutlined)
+            },
+            {
+              key: 'logout',
+              label: this.t('menu.logout'),
+              icon: this.renderIcon(LogoutOutlined)
+            }
+          ]}
           onSelect={this.handleSelect}
         >
           <NButton text>

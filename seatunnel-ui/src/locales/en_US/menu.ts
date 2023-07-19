@@ -18,10 +18,14 @@
 export default {
   data_pipes: 'Data Pipes',
   jobs: 'Jobs',
-  manage: 'Manage',
   user_manage: 'User Manage',
   help: 'Help',
   setting: 'Setting',
   logout: 'Logout',
-  tasks: 'Tasks'
+  tasks: 'Tasks',
+  datasource: 'Datasource',
+  virtual_tables: 'Virtual Tables',
+  sync_task_definition: 'Syncing Task Definition',
+  sync_task_instance: 'Syncing Task Instance',
+  synchronization_instance: 'Syncing Task Instance',
 }

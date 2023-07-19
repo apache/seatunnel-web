@@ -26,6 +26,7 @@ export default {
   theme_setting: 'Theme Setting',
   theme: 'Theme',
   english: 'English',
+  chinese: 'Chinese',
   light: 'Light',
   model: 'Model',
   hue: 'Hue',

@@ -17,20 +17,19 @@
 
 package org.apache.seatunnel.app.interceptor;
 
-import static org.apache.seatunnel.server.common.Constants.OPTIONS;
-import static org.apache.seatunnel.server.common.Constants.TOKEN;
-import static org.apache.seatunnel.server.common.Constants.USER_ID;
-import static io.jsonwebtoken.Claims.EXPIRATION;
-
+import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
+import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 import org.apache.seatunnel.app.security.JwtUtils;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
 import org.eclipse.jetty.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,18 +38,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Objects;
 
+import static io.jsonwebtoken.Claims.EXPIRATION;
+import static org.apache.seatunnel.server.common.Constants.OPTIONS;
+import static org.apache.seatunnel.server.common.Constants.TOKEN;
+import static org.apache.seatunnel.server.common.Constants.USER_ID;
+
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    @Resource
-    private IUserDao userDaoImpl;
+    @Resource private IUserDao userDaoImpl;
 
-    @Resource
-    private JwtUtils jwtUtils;
+    @Resource private JwtUtils jwtUtils;
 
     @Override
     @SuppressWarnings("MagicNumber")
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         if (request.getMethod().equals(OPTIONS)) {
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Headers", "*");
@@ -89,17 +93,30 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         map.forEach(request::setAttribute);
-
+        User user = new User();
+        user.setUsername((String) map.get("name"));
+        user.setId((Integer) map.get("id"));
+        //        user.setStatus((Byte) map.get("status"));
+        //        user.setType((Byte) map.get("type"));
+        request.setAttribute(Constants.SESSION_USER, user);
+        request.setAttribute("userId", userId);
         return true;
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
+            ModelAndView modelAndView)
+            throws Exception {
         // do nothing
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(
+            HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
         // do nothing
     }
 }

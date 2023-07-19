@@ -145,7 +145,7 @@ const FormModal = defineComponent({
                   </NTooltip>
                 </NSpace>
               </NFormItem>
-              <NFormItem label={this.t('user_manage.status')} path='status'>
+              <NFormItem label={this.t('user_manage.state')} path='status'>
                 <NRadioGroup v-model={[this.model.status, 'value']}>
                   <NRadio value={0}>{this.t('user_manage.enable')}</NRadio>
                   <NRadio value={1}>{this.t('user_manage.disable')}</NRadio>

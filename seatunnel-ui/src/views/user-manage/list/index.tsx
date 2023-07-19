@@ -82,7 +82,7 @@ const UserManageList = defineComponent({
         <NCard title={this.t('user_manage.user_manage')}>
           {{
             'header-extra': () => (
-              <NButton onClick={this.handleFormModal} type='primary'>
+              <NButton onClick={this.handleFormModal} type='success'>
                 {this.t('user_manage.create')}
               </NButton>
             )

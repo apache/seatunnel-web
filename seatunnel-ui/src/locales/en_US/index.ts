@@ -24,8 +24,17 @@ import log from '@/locales/en_US/log'
 import jobs from '@/locales/en_US/jobs'
 import tasks from '@/locales/en_US/tasks'
 import setting from '@/locales/en_US/setting'
+import datasource from '@/locales/en_US/datasource'
+import virtual_tables from '@/locales/en_US/virtual-tables'
+import theme from '@/locales/en_US/theme'
+import project from '@/locales/en_US/project'
+import hook from '@/locales/en_US/hook'
+import common from '@/locales/en_US/common'
+import security from '@/locales/en_US/security'
 
 export default {
+  security,
+  common,
   login,
   menu,
   modal,
@@ -34,5 +43,10 @@ export default {
   log,
   jobs,
   tasks,
-  setting
+  setting,
+  datasource,
+  virtual_tables,
+  theme,
+  project,
+  hook
 }

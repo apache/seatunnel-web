@@ -26,16 +26,22 @@ import java.util.Date;
 public class BaseUserInfoRes {
     @ApiModelProperty(value = "user id", dataType = "int")
     private int id;
+
     @ApiModelProperty(value = "user name", dataType = "String")
     private String name;
+
     @ApiModelProperty(value = "user token", dataType = "String")
     private String token;
+
     @ApiModelProperty(value = "user status", dataType = "type")
     private byte status;
+
     @ApiModelProperty(value = "user type", dataType = "type")
     private byte type;
+
     @ApiModelProperty(value = "user create time", dataType = "Date")
     private Date createTime;
+
     @ApiModelProperty(value = "user update time", dataType = "Date")
     private Date updateTime;
 }

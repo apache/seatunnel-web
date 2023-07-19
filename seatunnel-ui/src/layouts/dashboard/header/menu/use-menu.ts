@@ -24,16 +24,16 @@ export function useMenu() {
 
   const menuOptions = [
     {
-      label: () => h(NEllipsis, null, { default: () => t('menu.data_pipes') }),
-      key: 'data-pipes'
-    },
-    {
-      label: () => h(NEllipsis, null, { default: () => t('menu.jobs') }),
-      key: 'jobs'
-    },
-    {
       label: () => h(NEllipsis, null, { default: () => t('menu.tasks') }),
       key: 'tasks'
+    },
+    {
+      label: () => h(NEllipsis, null, { default: () => t('menu.datasource') }),
+      key: 'datasource'
+    },
+    {
+      label: () => h(NEllipsis, null, { default: () => t('menu.virtual_tables') }),
+      key: 'virtual-tables'
     },
     {
       label: () => h(NEllipsis, null, { default: () => t('menu.user_manage') }),

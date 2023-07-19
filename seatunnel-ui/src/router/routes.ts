@@ -20,17 +20,26 @@ import dataPipes from '@/router/data-pipes'
 import jobs from '@/router/jobs'
 import tasks from '@/router/tasks'
 import userManage from '@/router/user-manage'
+import datasource from '@/router/datasource'
+import virtualTables from '@/router/virtual-tables'
 import type { RouteRecordRaw } from 'vue-router'
 import type { Component } from 'vue'
 
 const modules = import.meta.glob('/src/views/**/**.tsx')
 const components: { [key: string]: Component } = utils.mapping(modules)
 
-const basePage: RouteRecordRaw[] = [{
+const basePage: RouteRecordRaw[] = [
+  {
     path: '/',
-    redirect: { name: 'data-pipes' }
+    redirect: { name: 'login' }
   },
-  dataPipes, jobs, tasks, userManage]
+  dataPipes,
+  jobs,
+  tasks,
+  userManage,
+  datasource,
+  virtualTables
+]
 
 const loginPage: RouteRecordRaw[] = [
   {

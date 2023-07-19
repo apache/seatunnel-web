@@ -23,8 +23,9 @@ import org.apache.seatunnel.app.dal.entity.ScriptParam;
 import org.apache.seatunnel.app.dal.mapper.ScriptParamMapper;
 import org.apache.seatunnel.app.domain.dto.script.UpdateScriptParamDto;
 
-import com.google.common.collect.Lists;
 import org.springframework.stereotype.Repository;
+
+import com.google.common.collect.Lists;
 
 import javax.annotation.Resource;
 
@@ -33,8 +34,7 @@ import java.util.Map;
 
 @Repository
 public class ScriptParamDaoImpl implements IScriptParamDao {
-    @Resource
-    private ScriptParamMapper scriptParamMapper;
+    @Resource private ScriptParamMapper scriptParamMapper;
 
     @Override
     public List<ScriptParam> getParamsByScriptId(int id) {
@@ -50,14 +50,15 @@ public class ScriptParamDaoImpl implements IScriptParamDao {
     public void batchInsert(UpdateScriptParamDto dto) {
         final Map<String, String> keyAndValue = dto.getParams();
         final List<ScriptParam> scriptParams = Lists.newArrayListWithCapacity(keyAndValue.size());
-        keyAndValue.forEach((k, v) -> {
-            final ScriptParam scriptParam = new ScriptParam();
-            scriptParam.setStatus((byte) ScriptParamStatusEnum.NORMAL.getCode());
-            scriptParam.setKey(k);
-            scriptParam.setValue(v);
-            scriptParam.setScriptId(dto.getScriptId());
-            scriptParams.add(scriptParam);
-        });
+        keyAndValue.forEach(
+                (k, v) -> {
+                    final ScriptParam scriptParam = new ScriptParam();
+                    scriptParam.setStatus((byte) ScriptParamStatusEnum.NORMAL.getCode());
+                    scriptParam.setKey(k);
+                    scriptParam.setValue(v);
+                    scriptParam.setScriptId(dto.getScriptId());
+                    scriptParams.add(scriptParam);
+                });
 
         scriptParamMapper.batchInsert(scriptParams);
     }

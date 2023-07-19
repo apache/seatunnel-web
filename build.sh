@@ -29,7 +29,7 @@ DOCKER_VERSION=1.0.0-snapshot
 code() {
   /bin/sh $WORKDIR/mvnw clean package -DskipTests
   # mv release zip
-  mv $WORKDIR/seatunnel-server/seatunnel-app/target/apache-seatunnel-web-incubating-1.0.0-SNAPSHOT.zip $WORKDIR/
+  mv $WORKDIR/seatunnel-web-dist/target/apache-seatunnel-web-1.0.0-SNAPSHOT.zip $WORKDIR/
 }
 
 # build image
