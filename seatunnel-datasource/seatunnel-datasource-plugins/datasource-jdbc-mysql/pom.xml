@@ -57,7 +57,6 @@
             <version>${mysql-connector.version}</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 </project>

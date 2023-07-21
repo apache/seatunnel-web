@@ -363,6 +363,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
         try {
             String allJobMetricsContent = seaTunnelEngineProxy.getAllRunningJobMetricsContent();
+            log.info("allJobMetricsContent={}", allJobMetricsContent);
 
             if (StringUtils.isEmpty(allJobMetricsContent)) {
                 return new HashMap<>();
@@ -372,6 +373,8 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             while (iterator.hasNext()) {
                 LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap();
                 JsonNode next = iterator.next();
+
+                log.info("test0707--next={}", next);
 
                 JsonNode sourceReceivedCount = next.get("metrics").get("SourceReceivedCount");
                 Long jobEngineId = 0L;

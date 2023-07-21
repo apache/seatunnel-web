@@ -25,7 +25,6 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -263,9 +262,4 @@ public interface IDatasourceService {
      * @return List tableField
      */
     List<TableField> queryTableSchema(String datasourceName, String databaseName, String tableName);
-
-    default List<String> queryTableNames(
-            String datasourceName, String databaseName, String filterName, Integer size) {
-        return new ArrayList<>();
-    }
 }

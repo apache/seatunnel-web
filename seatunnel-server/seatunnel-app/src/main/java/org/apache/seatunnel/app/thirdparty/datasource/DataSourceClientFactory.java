@@ -21,18 +21,20 @@ import org.apache.seatunnel.datasource.DataSourceClient;
 
 public class DataSourceClientFactory {
 
-    private static volatile DataSourceClient instance;
+    private static DataSourceClient INSTANCE;
 
     private static final Object LOCK = new Object();
 
     public static DataSourceClient getDataSourceClient() {
-        if (null == instance) {
-            synchronized (LOCK) {
-                if (null == instance) {
-                    instance = new DataSourceClient();
-                }
-            }
+        if (null != INSTANCE) {
+            return INSTANCE;
         }
-        return instance;
+        synchronized (LOCK) {
+            if (null != INSTANCE) {
+                return INSTANCE;
+            }
+            INSTANCE = new DataSourceClient();
+            return INSTANCE;
+        }
     }
 }

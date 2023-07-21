@@ -58,10 +58,7 @@ public class KafkaDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> option) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         checkArgument(StringUtils.equalsIgnoreCase(database, DATABASE), "database must be default");
         try (AdminClient adminClient = createAdminClient(requestParams)) {
             Set<String> strings = adminClient.listTopics().names().get();

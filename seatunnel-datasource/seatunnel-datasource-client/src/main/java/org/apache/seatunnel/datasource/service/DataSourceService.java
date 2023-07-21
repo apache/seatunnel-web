@@ -21,9 +21,6 @@ import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -76,10 +73,8 @@ public interface DataSourceService {
      * @return table names
      */
     List<String> getTables(
-            String pluginName,
-            String databaseName,
-            Map<String, String> requestParams,
-            Map<String, String> options);
+            String pluginName, String databaseName, Map<String, String> requestParams);
+
     /**
      * get data source database names
      *
@@ -118,13 +113,4 @@ public interface DataSourceService {
             Map<String, String> requestParams,
             String databaseName,
             List<String> tableNames);
-
-    Pair<String, String> getTableSyncMaxValue(
-            String pluginName,
-            Map<String, String> requestParams,
-            String databaseName,
-            String tableName,
-            String updateFieldType);
-
-    Connection getConnection(String pluginName, Map<String, String> requestParams);
 }

@@ -45,10 +45,7 @@ public class S3DatasourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> options) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         throw new UnsupportedOperationException("getTables is not supported for S3 datasource");
     }
 

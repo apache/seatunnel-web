@@ -53,10 +53,7 @@ public class RedshiftDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> option) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         List<String> tableNames = new ArrayList<>();
         try (Connection connection = getConnection(requestParams, database);
                 ResultSet resultSet =

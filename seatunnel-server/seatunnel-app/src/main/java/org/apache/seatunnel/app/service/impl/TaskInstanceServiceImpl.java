@@ -104,10 +104,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
         }
         addJobDefineNameToResult(records);
         addRunningTimeToResult(records);
-
-        /*        //Waitting for ST 2.3.3
-        jobPipelineSummaryMetrics(records, syncTaskType, userId);*/
-
+        jobPipelineSummaryMetrics(records, syncTaskType, userId);
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
         pageInfo.setTotalList(records);
         result.setData(pageInfo);
