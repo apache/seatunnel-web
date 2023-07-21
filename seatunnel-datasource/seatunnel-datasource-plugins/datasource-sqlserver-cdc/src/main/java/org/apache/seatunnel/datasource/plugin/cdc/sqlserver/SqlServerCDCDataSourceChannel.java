@@ -65,10 +65,7 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> options) {
+            String pluginName, Map<String, String> requestParams, String database) {
         return this.getTableNames(requestParams, database);
     }
 

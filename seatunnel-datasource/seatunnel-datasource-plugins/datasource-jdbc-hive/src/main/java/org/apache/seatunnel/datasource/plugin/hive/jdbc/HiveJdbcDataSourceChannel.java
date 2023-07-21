@@ -57,11 +57,8 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> option) {
-        return getTables(pluginName, requestParams, database, option);
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
+        return getTables(pluginName, requestParams, database);
     }
 
     @Override

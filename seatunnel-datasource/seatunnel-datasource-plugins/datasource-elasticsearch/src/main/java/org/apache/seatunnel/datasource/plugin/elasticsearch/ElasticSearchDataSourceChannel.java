@@ -55,10 +55,7 @@ public class ElasticSearchDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> option) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         databaseCheck(database);
         try (EsRestClient client =
                 EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {

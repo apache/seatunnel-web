@@ -53,7 +53,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** @Description @ClassName JobExecutorServiceImpl @Author zhang @Date 2023/6/30 15:53 */
 @Slf4j
 @Service
 public class JobExecutorServiceImpl implements IJobExecutorService {
@@ -63,15 +62,12 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     @Override
     public Result jobExecute(Integer userId, Long jobDefineId) {
 
-        // 先获取JobExecutorRes
         JobExecutorRes executeResource =
                 jobInstanceService.createExecuteResource(userId, jobDefineId);
         String jobConfig = executeResource.getJobConfig();
 
-        /** 将jobConfig写进conf文件中 */
         String configFile = writeJobConfigIntoConfFile(jobConfig, jobDefineId);
 
-        /** 调用 */
         Long jobInstanceId =
                 executeJobBySeaTunnel(userId, configFile, executeResource.getJobInstanceId());
         return Result.success(jobInstanceId);
@@ -83,7 +79,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                file.getParentFile().mkdirs(); // 创建文件所在的文件夹
+                file.getParentFile().mkdirs();
             }
 
             FileWriter fileWriter = new FileWriter(file);
@@ -122,21 +118,6 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
                                 seaTunnelClient);
                     });
 
-            //            CompletableFuture<JobStatus> objectCompletableFuture =
-            //                    CompletableFuture.supplyAsync(
-            //                            () -> {
-            //                                return clientJobProxy.waitForJobComplete();
-            //                            });
-            //
-            //            //异步测试任务执行是否成功
-            //            await().atMost(180000, TimeUnit.MILLISECONDS)
-            //                    .untilAsserted(
-            //                            () ->
-            //                                    Assertions.assertTrue(
-            //                                            objectCompletableFuture.isDone()
-            //                                                    && JobStatus.FINISHED.equals(
-            //                                                    objectCompletableFuture.get())));
-
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -153,14 +134,12 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         CompletableFuture<JobStatus> future =
                 CompletableFuture.supplyAsync(
                         () -> {
-                            // 执行耗时任务，返回结果
                             return clientJobProxy.waitForJobComplete();
                         },
                         executor);
         try {
             JobStatus jobStatus = future.get();
             if (JobStatus.FINISHED.equals(jobStatus)) {
-                // 调用complete方法
                 jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
                 executor.shutdown();
             }
@@ -186,10 +165,8 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
     @Override
     public Result jobPause(Integer userId, Long jobInstanceId) {
-        // 先检查引擎上该任务是不是正在执行
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         if (getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()) == "RUNNING") {
-            // 暂停
             pauseJobInEngine(jobInstance.getJobEngineId());
         }
         return Result.success();

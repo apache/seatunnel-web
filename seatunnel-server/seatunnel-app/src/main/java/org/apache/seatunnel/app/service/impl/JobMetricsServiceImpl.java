@@ -304,33 +304,21 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 // Obtain monitoring information from the collection of running jobs returned from
                 // the engine
                 if (jobInstance.getJobStatus() == null
-                        || (jobInstance.getJobStatus().equals("RUNNING"))) {
-                    String jobStatusByJobEngineId =
-                            getJobStatusByJobEngineId(jobInstance.getJobEngineId());
-                    if (jobStatusByJobEngineId != null
-                            && jobStatusByJobEngineId.equals("RUNNING")) {
-                        modifyAndUpdateJobInstanceAndJobMetrics(
-                                jobInstance,
-                                allRunningJobMetricsFromEngine,
-                                jobInstanceIdAndJobEngineIdMap,
-                                userId);
-                        /** Return data from the front-end */
-                        JobSummaryMetricsRes jobMetricsFromEngineRes =
-                                getRunningJobMetricsFromEngine(
-                                        allRunningJobMetricsFromEngine,
-                                        jobInstanceIdAndJobEngineIdMap,
-                                        jobInstance);
-                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
-                    } else {
-                        JobSummaryMetricsRes jobSummaryMetricsResByDb =
-                                getJobSummaryMetricsResByDb(
-                                        jobInstance,
-                                        userId,
-                                        String.valueOf(
-                                                jobInstanceIdAndJobEngineIdMap.get(
-                                                        jobInstance.getId())));
-                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobSummaryMetricsResByDb);
-                    }
+                        || (jobInstance.getJobStatus().equals("RUNNING")
+                                && getJobStatusByJobEngineId(jobInstance.getJobEngineId())
+                                        .equals("RUNNING"))) {
+                    modifyAndUpdateJobInstanceAndJobMetrics(
+                            jobInstance,
+                            allRunningJobMetricsFromEngine,
+                            jobInstanceIdAndJobEngineIdMap,
+                            userId);
+                    /** Return data from the front-end */
+                    JobSummaryMetricsRes jobMetricsFromEngineRes =
+                            getRunningJobMetricsFromEngine(
+                                    allRunningJobMetricsFromEngine,
+                                    jobInstanceIdAndJobEngineIdMap,
+                                    jobInstance);
+                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
                 } else {
                     JobSummaryMetricsRes jobMetriceFromDb =
                             getJobSummaryMetricsResByDb(
@@ -386,20 +374,16 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     private JobSummaryMetricsRes getJobSummaryMetricsResByDb(
             JobInstance jobInstance, Integer userId, String jobEngineId) {
         List<JobMetrics> jobMetricsFromDb = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
-        if (!jobMetricsFromDb.isEmpty()) {
-            long readCount = jobMetricsFromDb.stream().mapToLong(JobMetrics::getReadRowCount).sum();
-            long writeCount =
-                    jobMetricsFromDb.stream().mapToLong(JobMetrics::getWriteRowCount).sum();
-            JobSummaryMetricsRes jobSummaryMetricsRes =
-                    new JobSummaryMetricsRes(
-                            jobInstance.getId(),
-                            Long.valueOf(jobInstance.getJobEngineId()),
-                            readCount,
-                            writeCount,
-                            jobInstance.getJobStatus());
-            return jobSummaryMetricsRes;
-        }
-        return null;
+        long readCount = jobMetricsFromDb.stream().mapToLong(JobMetrics::getReadRowCount).sum();
+        long writeCount = jobMetricsFromDb.stream().mapToLong(JobMetrics::getWriteRowCount).sum();
+        JobSummaryMetricsRes jobSummaryMetricsRes =
+                new JobSummaryMetricsRes(
+                        jobInstance.getId(),
+                        Long.valueOf(jobInstance.getJobEngineId()),
+                        readCount,
+                        writeCount,
+                        jobInstance.getJobStatus());
+        return jobSummaryMetricsRes;
     }
 
     private Map<Long, HashMap<Integer, JobMetrics>> getAllRunningJobMetricsFromEngine(
@@ -698,7 +682,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             list.add(jobMetrics);
         }
         if (!list.isEmpty()) {
-            log.info("003list={}", list);
             jobMetricsDao.getJobMetricsMapper().insertBatchMetrics(list);
         }
     }

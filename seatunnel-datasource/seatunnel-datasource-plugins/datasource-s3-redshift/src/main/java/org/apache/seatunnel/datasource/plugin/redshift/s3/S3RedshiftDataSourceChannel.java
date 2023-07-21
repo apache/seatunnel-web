@@ -60,10 +60,7 @@ public class S3RedshiftDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName,
-            Map<String, String> requestParams,
-            String database,
-            Map<String, String> option) {
+            @NonNull String pluginName, Map<String, String> requestParams, String database) {
         return getTableNames(requestParams, database);
     }
 
