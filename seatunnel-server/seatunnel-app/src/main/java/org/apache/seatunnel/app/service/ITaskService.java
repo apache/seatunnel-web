@@ -15,24 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.thirdparty.datasource;
+package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.datasource.DataSourceClient;
-
-public class DataSourceClientFactory {
-
-    private static volatile DataSourceClient instance;
-
-    private static final Object LOCK = new Object();
-
-    public static DataSourceClient getDataSourceClient() {
-        if (null == instance) {
-            synchronized (LOCK) {
-                if (null == instance) {
-                    instance = new DataSourceClient();
-                }
-            }
-        }
-        return instance;
-    }
-}
+// public interface ITaskService {
+//    Long pushScriptToScheduler(PushScriptDto pushScriptDto);
+//
+//    void recycleScriptFromScheduler(RecycleScriptReq req);
+//
+//    PageInfo<JobSimpleInfoRes> listJob(JobListReq req);
+//
+//    PageInfo<InstanceSimpleInfoRes> listInstance(InstanceListReq req);
+//
+//    InstanceSimpleInfoRes tmpExecute(ExecuteReq req);
+//
+//    InstanceLogRes queryInstanceLog(Long instanceId);
+//
+//    void kill(Long instanceId);
+// }

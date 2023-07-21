@@ -60,7 +60,10 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName,
+            Map<String, String> requestParams,
+            String database,
+            Map<String, String> option) {
         StarRocksCatalog catalog = getCatalog(requestParams);
         return catalog.listTables(database);
     }
