@@ -133,7 +133,6 @@ const CheckboxTree = defineComponent({
                       >
                         {t('resource.auth.public_resource')}
                         <NSwitch
-                          disabled={!userStore.isAdmin}
                           v-model={[globalResource.value, 'value']}
                         />
                       </NSpace>

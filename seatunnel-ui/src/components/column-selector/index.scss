@@ -15,17 +15,20 @@
  * limitations under the License.
  */
 
-export default {
-  data_pipes: '数据管道',
-  jobs: '工作',
-  user_manage: '用户管理',
-  help: '帮助',
-  setting: '设置',
-  logout: '登出',
-  tasks: '任务',
-  datasource: '数据源',
-  virtual_tables: '虚拟表',
-  sync_task_definition: '同步任务定义',
-  sync_task_instance: '同步任务实例',
-  synchronization_instance: '同步任务实例',
+.checkbox {
+  margin: 5px 5px 5px 15px;
+  width: 200px;
 }
+.project-style {
+  background-color: #eeeeee;
+  color: #000;
+}
+
+.column-style{
+  min-width: 70px;
+}
+
+.btnlist-style {
+  width: 70px;
+}
+

@@ -17,16 +17,56 @@
 
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
-import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.common.utils.SeaTunnelException;
 
-public class SqlServerDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
+import java.util.List;
+import java.util.Optional;
+
+public class SqlServerDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
 
     private static final SqlServerDataSourceConfigSwitcher INSTANCE =
             new SqlServerDataSourceConfigSwitcher();
+
+    public static final String CATALOG_NAME = "SqlServer";
+
+    protected boolean isSupportDefaultSchema() {
+        return true;
+    }
+
+    protected boolean isSupportPrefixOrSuffix() {
+        return true;
+    }
+
+    protected boolean isSupportToggleCase() {
+        return true;
+    }
+
+    protected Optional<String> getCatalogName() {
+        return Optional.of(CATALOG_NAME);
+    }
 
     public static final SqlServerDataSourceConfigSwitcher getInstance() {
         return INSTANCE;
     }
 
     private SqlServerDataSourceConfigSwitcher() {}
+
+    protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
+
+        String[] split = fullTable.split("\\.");
+        if (split.length != 2) {
+            throw new SeaTunnelException(
+                    "The tableName for sql server must be schemaName.tableName, but tableName is "
+                            + fullTable);
+        }
+
+        String schemaName = split[0];
+        String tableName = split[1];
+
+        return generateSql(tableFields, database, schemaName, tableName);
+    }
+
+    protected String quoteIdentifier(String identifier) {
+        return "[" + identifier + "]";
+    }
 }

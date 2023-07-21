@@ -17,7 +17,6 @@
 
 import { axios } from '@/service/service'
 import utils from '@/utils'
-import { ProjectCodeReq } from '../users/types'
 import {
   ResourceTypeReq,
   ResourceTypesReq,
@@ -43,7 +42,7 @@ import {
 } from './types'
 
 export function queryResourceListPaging(
-  params: ListReq & IdReq & ResourceTypeReq & ProjectCodeReq
+  params: ListReq & IdReq & ResourceTypeReq
 ): any {
   return axios({
     url: '/resources',
@@ -171,7 +170,7 @@ export function queryResourceByProgramType(
   })
 }
 
-export function queryUdfFuncListPaging(params: ListReq & ProjectCodeReq): any {
+export function queryUdfFuncListPaging(params: ListReq): any {
   return axios({
     url: '/resources/udf-func',
     method: 'get',
@@ -297,7 +296,7 @@ export function updateUdfFunc(
   })
 }
 
-export function queryGitListPaging(params: ListReq & ProjectCodeReq): any {
+export function queryGitListPaging(params: ListReq): any {
   return axios({
     url: '/git/file',
     method: 'get',
@@ -333,7 +332,7 @@ export function authResourceProject(data: AuthResourceReq): any {
   })
 }
 
-export function updateGitFile(data: GitReq & ProjectCodeReq): any {
+export function updateGitFile(data: GitReq): any {
   return axios({
     url: '/git/file/update',
     method: 'post',
