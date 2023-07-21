@@ -31,7 +31,7 @@
         <module>datasource-kafka</module>
         <module>datasource-elasticsearch</module>
         <module>datasource-jdbc-hive</module>
-        <module>datasource-s3-redshift</module>
+        <module>datasource-s3redshift</module>
         <module>datasource-starrocks</module>
         <module>datasource-jdbc-clickhouse</module>
         <module>datasource-jdbc-mysql</module>

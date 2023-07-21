@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** @Description @ClassName TaskInstanceService @Author zhang @Date 2023/7/4 14:00 */
 @Service
 @Slf4j
 public class TaskInstanceServiceImpl implements ITaskInstanceService {
@@ -54,7 +53,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
             String syncTaskType,
             Integer pageNo,
             Integer pageSize) {
-        /** 根据过滤条件查出所有的TaskTnstance（List） */
         JobDefinition jobDefinition = null;
         IPage<SeaTunnelJobInstanceDto> jobInstanceIPage = null;
         if (jobDefineName != null) {
@@ -89,7 +87,10 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
         }
         addJobDefineNameToResult(records);
         addRunningTimeToResult(records);
-        jobPipelineSummaryMetrics(records, syncTaskType, userId);
+
+        /*        //Waitting for ST 2.3.3
+        jobPipelineSummaryMetrics(records, syncTaskType, userId);*/
+
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
         pageInfo.setTotalList(records);
         result.setData(pageInfo);

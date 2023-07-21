@@ -92,7 +92,8 @@ public class SeaTunnelEngineProxy {
 
         SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
         try {
-            return seaTunnelClient.getJobClient().getRunningJobMetrics();
+            /*return seaTunnelClient.getJobClient().getRunningJobMetrics();*/
+            return "waitting ST 2.3.3";
         } finally {
             seaTunnelClient.close();
         }

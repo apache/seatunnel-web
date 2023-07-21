@@ -32,7 +32,13 @@
     <properties>
         <!-- disable mvn deploy to central maven repo by default -->
         <maven.deploy.skip>true</maven.deploy.skip>
-        <frontend.project.name>seatunnel-ui</frontend.project.name>
+        <!--        <frontend.project.name>seatunnel-ui</frontend.project.name>-->
+        <oracle-jdbc.version>21.5.0.0</oracle-jdbc.version>
+        <clickhouse.version>0.3.2-patch11</clickhouse.version>
+        <postgresql.version>42.4.3</postgresql.version>
+        <redshift.version>2.1.0.10</redshift.version>
+        <sqlserver.version>9.2.1.jre8</sqlserver.version>
+        <mysql-connector.version>8.0.28</mysql-connector.version>
     </properties>
 
     <build>
@@ -65,15 +71,15 @@
                             <arguments>install --ignore-scripts</arguments>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build:prod</arguments>
-                        </configuration>
-                    </execution>
+                    <!--                    <execution>-->
+                    <!--                        <id>build</id>-->
+                    <!--                        <goals>-->
+                    <!--                            <goal>npm</goal>-->
+                    <!--                        </goals>-->
+                    <!--                        <configuration>-->
+                    <!--                            <arguments>run build:prod</arguments>-->
+                    <!--                        </configuration>-->
+                    <!--                    </execution>-->
                 </executions>
             </plugin>
         </plugins>
@@ -292,7 +298,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>datasource-s3-redshift</artifactId>
+                    <artifactId>datasource-s3redshift</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                     <exclusions>
@@ -352,12 +358,53 @@
                 </dependency>
 
                 <!-- jdbc driver -->
+
+                <dependency>
+                    <groupId>com.oracle.database.jdbc</groupId>
+                    <artifactId>ojdbc8</artifactId>
+                    <version>${oracle-jdbc.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <!-- driver -->
+                <dependency>
+                    <groupId>com.clickhouse</groupId>
+                    <artifactId>clickhouse-jdbc</artifactId>
+                    <version>${clickhouse.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <!-- driver -->
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>${postgresql.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.amazon.redshift</groupId>
+                    <artifactId>redshift-jdbc42</artifactId>
+                    <version>${redshift.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <!-- driver -->
+                <dependency>
+                    <groupId>com.microsoft.sqlserver</groupId>
+                    <artifactId>mssql-jdbc</artifactId>
+                    <version>${sqlserver.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <!-- driver -->
                 <dependency>
                     <groupId>mysql</groupId>
                     <artifactId>mysql-connector-java</artifactId>
-                    <version>${mysql.version}</version>
+                    <version>${mysql-connector.version}</version>
                     <scope>provided</scope>
                 </dependency>
+
             </dependencies>
 
             <build>
