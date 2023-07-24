@@ -53,7 +53,10 @@ public class StarRocksJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public List<String> getTables(
-            @NonNull String pluginName, Map<String, String> requestParams, String database) {
+            @NonNull String pluginName,
+            Map<String, String> requestParams,
+            String database,
+            Map<String, String> option) {
         List<String> tableNames = new ArrayList<>();
         try (Connection connection = getConnection(requestParams);
                 ResultSet resultSet =

@@ -42,19 +42,19 @@ public class SeatunnelPermissionServiceImpl implements ISeatunnelPermissonServic
     public void funcAndResourcePermissionCheck(
             String permissionKey, String sourceType, List<Object> sourceCodes, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        LOGGER.warn("func and resource permission check in whaletunnel");
+        LOGGER.warn("func and resource permission check in seatunnel");
     }
 
     @Override
     public void resourcePostHandle(String sourceType, List<Object> sourceCodes, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        LOGGER.warn("resource post handle in whaletunnel");
+        LOGGER.warn("resource post handle in seatunnel");
     }
 
     @Override
     public List<Object> availableResourceRange(String sourceType, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        LOGGER.warn("query available resource range in whaletunnel");
+        LOGGER.warn("query available resource range in seatunnel");
         return availableResourceRangeService.queryAvailableResourceRangeBySourceType(
                 sourceType, userId);
     }

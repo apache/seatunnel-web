@@ -22,11 +22,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>datasource-jdbc-mysql</artifactId>
-
-    <properties>
-        <mysql-connector.version>8.0.28</mysql-connector.version>
-    </properties>
+    <artifactId>datasource-s3redshift</artifactId>
 
     <dependencies>
         <dependency>
@@ -36,28 +32,37 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.auto.service/auto-service -->
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.seatunnel</groupId>
-            <artifactId>seatunnel-api</artifactId>
-            <scope>provided</scope>
+            <artifactId>seatunnel-hadoop3-3.1.4-uber</artifactId>
+            <version>2.3.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
-        <!-- driver -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector.version}</version>
-            <scope>provided</scope>
+            <groupId>com.amazon.redshift</groupId>
+            <artifactId>redshift-jdbc42</artifactId>
+            <version>${redshift.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-aws</artifactId>
+            <version>${hadoop-aws.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jdk.tools</groupId>
+                    <artifactId>jdk.tools</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-bundle</artifactId>
+            <version>${aws-java-sdk-bundle.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
