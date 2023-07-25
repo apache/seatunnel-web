@@ -36,10 +36,11 @@ start() {
   fi
 
   echo "$WORKDIR"
-  $JAVA_HOME/bin/java $JAVA_OPTS \
+  nohup $JAVA_HOME/bin/java $JAVA_OPTS \
   -cp "$WORKDIR/../conf":"$WORKDIR/../libs/*":"$WORKDIR/../datasource/*" \
   $SPRING_OPTS \
   org.apache.seatunnel.app.SeatunnelApplication
+   > seatunnel.log 2>&1 &
   echo "seatunnel started"
 }
 # stop
