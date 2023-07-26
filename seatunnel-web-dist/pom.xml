@@ -34,7 +34,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <!--        <frontend.project.name>seatunnel-ui</frontend.project.name>-->
         <oracle-jdbc.version>21.5.0.0</oracle-jdbc.version>
-        <clickhouse.version>0.3.2-patch11</clickhouse.version>
+        <clickhouse.version>0.4.6</clickhouse.version>
         <postgresql.version>42.4.3</postgresql.version>
         <redshift.version>2.1.0.10</redshift.version>
         <sqlserver.version>9.2.1.jre8</sqlserver.version>
