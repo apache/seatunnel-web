@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class SplitTransformSwitcher implements TransformConfigSwitcher {
     @Override
     public Transform getTransform() {
-        return Transform.SPLIT;
+        return Transform.MULTIFIELDSPLIT;
     }
 
     @Override

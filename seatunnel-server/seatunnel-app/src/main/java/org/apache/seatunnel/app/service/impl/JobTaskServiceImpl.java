@@ -37,6 +37,7 @@ import org.apache.seatunnel.app.domain.request.job.transform.Copy;
 import org.apache.seatunnel.app.domain.request.job.transform.CopyTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.FieldMapperTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.RenameField;
+import org.apache.seatunnel.app.domain.request.job.transform.SQLTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.SplitTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.Transform;
 import org.apache.seatunnel.app.domain.request.job.transform.TransformOption;
@@ -342,6 +343,15 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                         fillTransformOptions(transformOptions, copyTransformOptions.getCopyList());
                     }
                     break;
+                case SQL:
+                    SQLTransformOptions sqlTransformOptions =
+                            getTransformOption(transform, transformOptionsStr);
+                    if (sqlTransformOptions != null) {
+                        fillTransformOptions(
+                                transformOptions,
+                                Collections.singletonList(sqlTransformOptions.getSql()));
+                    }
+                    break;
                 case FILTERROWKIND:
                 case REPLACE:
                 default:
@@ -491,6 +501,15 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                             copyTransformOptions.getCopyList().stream()
                                     .map(Copy::getTargetFieldName)
                                     .collect(Collectors.toList());
+                    checkTransformTargetFieldRepeat(fields);
+                }
+                break;
+            case SQL:
+                SQLTransformOptions sqlTransformOptions =
+                        getTransformOption(transform, transformOptionsStr);
+                if (sqlTransformOptions != null) {
+                    // TODO 调用接口返回目标字段
+                    List<String> fields = new ArrayList<>();
                     checkTransformTargetFieldRepeat(fields);
                 }
                 break;

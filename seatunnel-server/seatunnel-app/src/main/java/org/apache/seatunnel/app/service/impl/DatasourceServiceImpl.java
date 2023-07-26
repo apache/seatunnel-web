@@ -283,6 +283,28 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
+    public List<String> queryTableNames(
+            String datasourceName, String databaseName, String filterName, Integer size) {
+        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TABLE, 0);
+        Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
+        if (null == datasource) {
+            throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceName);
+        }
+        String config = datasource.getDatasourceConfig();
+        Map<String, String> datasourceConfig = JsonUtils.toMap(config, String.class, String.class);
+        Map<String, String> options = new HashMap<>();
+        options.put("size", size.toString());
+        options.put("filterName", filterName);
+        String pluginName = datasource.getPluginName();
+        if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            return DataSourceClientFactory.getDataSourceClient()
+                    .getTables(pluginName, databaseName, datasourceConfig, options);
+        }
+        long dataSourceId = datasource.getId();
+        return virtualTableDao.getVirtualTableNames(VIRTUAL_TABLE_DATABASE_NAME, dataSourceId);
+    }
+
+    @Override
     public List<String> queryTableNames(String datasourceName, String databaseName) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TABLE, 0);
         Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
@@ -291,10 +313,11 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         }
         String config = datasource.getDatasourceConfig();
         Map<String, String> datasourceConfig = JsonUtils.toMap(config, String.class, String.class);
+        Map<String, String> options = new HashMap<>();
         String pluginName = datasource.getPluginName();
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
             return DataSourceClientFactory.getDataSourceClient()
-                    .getTables(pluginName, databaseName, datasourceConfig);
+                    .getTables(pluginName, databaseName, datasourceConfig, options);
         }
         long dataSourceId = datasource.getId();
         return virtualTableDao.getVirtualTableNames(VIRTUAL_TABLE_DATABASE_NAME, dataSourceId);

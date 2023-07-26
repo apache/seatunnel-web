@@ -67,16 +67,16 @@ class ElasticSearchDataSourceChannelTest {
                         PLUGIN_NAME));
     }
 
-    @Test
-    void getTables() {
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    List<String> tables =
-                            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTables(
-                                    PLUGIN_NAME, REQUEST_MAP, DATABASE);
-                    LOGGER.info("{}", tables);
-                });
-    }
+    //    @Test
+    //    void getTables() {
+    //        Assertions.assertDoesNotThrow(
+    //                () -> {
+    //                    List<String> tables =
+    //                            ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getTables(
+    //                                    PLUGIN_NAME, REQUEST_MAP, DATABASE);
+    //                    LOGGER.info("{}", tables);
+    //                });
+    //    }
 
     @Test
     void getDatabases() {

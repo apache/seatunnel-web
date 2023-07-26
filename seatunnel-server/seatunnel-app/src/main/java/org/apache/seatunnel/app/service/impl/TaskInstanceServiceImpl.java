@@ -134,7 +134,9 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
         for (SeaTunnelJobInstanceDto jobInstanceDto : records) {
             JobDefinition jobDefinition =
                     jobDefinitionService.getJobDefinitionByJobId(jobInstanceDto.getJobDefineId());
-            jobInstanceDto.setJobDefineName(jobDefinition.getName());
+            if (jobDefinition != null) {
+                jobInstanceDto.setJobDefineName(jobDefinition.getName());
+            }
         }
     }
 

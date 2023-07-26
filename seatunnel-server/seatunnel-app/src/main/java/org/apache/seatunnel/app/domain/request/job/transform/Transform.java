@@ -23,5 +23,6 @@ public enum Transform {
     MULTIFIELDSPLIT,
     FIELDMAPPER,
     FILTERROWKIND,
-    SPLIT
+    SPLIT,
+    SQL
 }

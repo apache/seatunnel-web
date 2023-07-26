@@ -20,9 +20,12 @@ package org.apache.seatunnel.datasource.plugin.api;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.ImmutableList;
 import lombok.NonNull;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +50,10 @@ public interface DataSourceChannel {
     OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName);
 
     List<String> getTables(
-            @NonNull String pluginName, Map<String, String> requestParams, String database);
+            @NonNull String pluginName,
+            Map<String, String> requestParams,
+            String database,
+            Map<String, String> options);
 
     List<String> getDatabases(
             @NonNull String pluginName, @NonNull Map<String, String> requestParams);
@@ -79,5 +85,18 @@ public interface DataSourceChannel {
      */
     default Boolean checkMetadataFieldIsRight(Map<String, String> requestParams) {
         return true;
+    }
+
+    default Pair<String, String> getTableSyncMaxValue(
+            String pluginName,
+            Map<String, String> requestParams,
+            String databaseName,
+            String tableName,
+            String updateFieldType) {
+        return null;
+    }
+
+    default Connection getConnection(String pluginName, Map<String, String> requestParams) {
+        return null;
     }
 }

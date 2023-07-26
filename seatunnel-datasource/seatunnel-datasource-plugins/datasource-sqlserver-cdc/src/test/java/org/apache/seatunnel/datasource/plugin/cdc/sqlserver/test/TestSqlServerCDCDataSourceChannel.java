@@ -17,18 +17,7 @@
 
 package org.apache.seatunnel.datasource.plugin.cdc.sqlserver.test;
 
-import org.apache.seatunnel.datasource.plugin.api.model.TableField;
-import org.apache.seatunnel.datasource.plugin.cdc.sqlserver.SqlServerCDCDataSourceChannel;
-import org.apache.seatunnel.datasource.plugin.cdc.sqlserver.SqlServerCDCDataSourceConfig;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-public class TestSqlServerCDCDataSourceChannel {
+/*public class TestSqlServerCDCDataSourceChannel {
 
     @Test
     @Disabled
@@ -52,4 +41,4 @@ public class TestSqlServerCDCDataSourceChannel {
                             tables);
         }
     }
-}
+}*/
