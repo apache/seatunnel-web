@@ -35,7 +35,7 @@ public class SeatunnelPermissionServiceImpl implements ISeatunnelPermissonServic
     @Override
     public void funcPermissionCheck(String permissionKey, int userId) {
         // user id will be replaced by shiro in ws when user id == 0
-        LOGGER.warn("func permission check in whaletunnel");
+        LOGGER.warn("func permission check in seatunnel");
     }
 
     @Override

@@ -21,6 +21,8 @@ Click it if your want to know more about our design. 👉🏻[Design](https://gi
 
 ## How to start
 
+Notice: Some details please refer to the docs/QuickStart.md
+
 ### 1 Preparing the Apache SeaTunnel environment
 
 #### 1.1 Install Apache SeaTunnel

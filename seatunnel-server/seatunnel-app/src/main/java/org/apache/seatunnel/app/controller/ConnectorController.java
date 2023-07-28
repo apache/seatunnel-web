@@ -36,7 +36,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
-@RequestMapping("/whaletunnel/api/v1/connector")
+@RequestMapping("/seatunnel/api/v1/connector")
 @RestController
 public class ConnectorController {
 
