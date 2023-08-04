@@ -181,10 +181,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
                 }
             }
         } catch (Exception e) {
-            for (SeaTunnelJobInstanceDto taskInstance : records) {
-                log.error(
-                        "instance {} {} set instance and engine id error", taskInstance.getId(), e);
-            }
+            log.error("get job metrics error {}", e);
         }
     }
 }

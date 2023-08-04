@@ -113,7 +113,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
             @NonNull List<Long> jobInstanceIdList,
             @NonNull String syncTaskType) {
-        log.info("jobInstanceIdAndJobEngineIdMap={}", jobInstanceIdAndJobEngineIdMap);
 
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_METRICS_SUMMARY, userId);
         List<JobInstance> allJobInstance = jobInstanceDao.getAllJobInstance(jobInstanceIdList);
@@ -156,31 +155,46 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
         // Traverse all jobInstances in allJobInstance
         for (JobInstance jobInstance : allJobInstance) {
-            log.info("jobEngineId={}", jobInstance.getJobEngineId());
 
-            if (jobInstance.getJobStatus() == null
-                    || jobInstance.getJobStatus().equals("FAILED")
-                    || jobInstance.getJobStatus().equals("RUNNING")) {
-                // Obtain monitoring information from the collection of running jobs returned from
-                // the engine
-                if (!allRunningJobMetricsFromEngine.isEmpty()
-                        && allRunningJobMetricsFromEngine.containsKey(
-                                jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
-                    JobSummaryMetricsRes jobMetricsFromEngineRes =
-                            getRunningJobMetricsFromEngine(
-                                    allRunningJobMetricsFromEngine,
-                                    jobInstanceIdAndJobEngineIdMap,
-                                    jobInstance);
-                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
-                    modifyAndUpdateJobInstanceAndJobMetrics(
-                            jobInstance,
-                            allRunningJobMetricsFromEngine,
-                            jobInstanceIdAndJobEngineIdMap,
-                            userId);
+            try {
+                if (jobInstance.getJobStatus() == null
+                        || jobInstance.getJobStatus().equals("FAILED")
+                        || jobInstance.getJobStatus().equals("RUNNING")) {
+                    // Obtain monitoring information from the collection of running jobs returned
+                    // from the engine
+                    if (!allRunningJobMetricsFromEngine.isEmpty()
+                            && allRunningJobMetricsFromEngine.containsKey(
+                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                        JobSummaryMetricsRes jobMetricsFromEngineRes =
+                                getRunningJobMetricsFromEngine(
+                                        allRunningJobMetricsFromEngine,
+                                        jobInstanceIdAndJobEngineIdMap,
+                                        jobInstance);
+                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
+                        modifyAndUpdateJobInstanceAndJobMetrics(
+                                jobInstance,
+                                allRunningJobMetricsFromEngine,
+                                jobInstanceIdAndJobEngineIdMap,
+                                userId);
 
-                } else {
-                    log.info(
-                            "The job does not exist on the engine, it is directly returned from the database");
+                    } else {
+                        log.info(
+                                "The job does not exist on the engine, it is directly returned from the database");
+                        JobSummaryMetricsRes jobMetriceFromDb =
+                                getJobSummaryMetricsResByDb(
+                                        jobInstance,
+                                        userId,
+                                        Long.toString(
+                                                jobInstanceIdAndJobEngineIdMap.get(
+                                                        jobInstance.getId())));
+                        if (jobMetriceFromDb != null) {
+                            jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+                        }
+                        jobInstance.setJobStatus("FINISHED");
+                        jobInstanceDao.getJobInstanceMapper().updateById(jobInstance);
+                    }
+                } else if (jobInstance.getJobStatus().equals("FINISHED")
+                        || jobInstance.getJobStatus().equals("CANCELED")) {
                     JobSummaryMetricsRes jobMetriceFromDb =
                             getJobSummaryMetricsResByDb(
                                     jobInstance,
@@ -188,25 +202,10 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                                     Long.toString(
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
-                    if (jobMetriceFromDb != null) {
-                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
-                    }
-                    // 将数据库中的jobInstance和jobMetrics的作业状态改为finished
-                    jobInstance.setJobStatus("FINISHED");
-                    jobInstanceDao.getJobInstanceMapper().updateById(jobInstance);
+                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
                 }
-            } else if (jobInstance.getJobStatus().equals("FINISHED")
-                    || jobInstance.getJobStatus().equals("CANCELED")) {
-                // If the status of the job is finished or cancelled, the monitoring information is
-                // directly obtained from MySQL
-                JobSummaryMetricsRes jobMetriceFromDb =
-                        getJobSummaryMetricsResByDb(
-                                jobInstance,
-                                userId,
-                                Long.toString(
-                                        jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId())));
-                log.info("jobStatus=finish oe canceled,JobSummaryMetricsRes={}", jobMetriceFromDb);
-                jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -223,10 +222,8 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 allRunningJobMetricsFromEngine.get(
                         jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()));
         List<JobMetrics> jobMetricsFromDb = jobMetricsDao.getByInstanceId(jobInstance.getId());
-        log.info("001jobMetricsFromDb={}", jobMetricsFromDb);
 
         if (jobMetricsFromDb.isEmpty()) {
-            log.info("002jobMetricsFromDb == null");
             syncMetricsToDbRunning(jobInstance, userId, jobMetricsFromEngine);
             jobInstanceDao.update(jobInstance);
         } else {
@@ -261,43 +258,11 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         // Traverse all jobInstances in allJobInstance
         for (JobInstance jobInstance : allJobInstance) {
 
-            if (jobInstance.getJobStatus() != null
-                    && jobInstance.getJobStatus().equals("CANCELED")) {
-                // If the status of the job is finished or cancelled
-                // the monitoring information is directly obtained from MySQL
-                JobSummaryMetricsRes jobMetriceFromDb =
-                        getJobSummaryMetricsResByDb(
-                                jobInstance,
-                                userId,
-                                Long.toString(
-                                        jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId())));
-                jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
-
-            } else if (jobInstance.getJobStatus() != null
-                    && (jobInstance.getJobStatus().equals("FINISHED")
-                            || jobInstance.getJobStatus().equals("FAILED"))) {
-                // Obtain monitoring information from the collection of running jobs returned from
-                // the engine
-                if (!allRunningJobMetricsFromEngine.isEmpty()
-                        && allRunningJobMetricsFromEngine.containsKey(
-                                jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
-                    // If it can be found, update the information in MySQL and return it to the
-                    // front-end data
-                    modifyAndUpdateJobInstanceAndJobMetrics(
-                            jobInstance,
-                            allRunningJobMetricsFromEngine,
-                            jobInstanceIdAndJobEngineIdMap,
-                            userId);
-
-                    /** Return data from the front-end */
-                    JobSummaryMetricsRes jobMetricsFromEngineRes =
-                            getRunningJobMetricsFromEngine(
-                                    allRunningJobMetricsFromEngine,
-                                    jobInstanceIdAndJobEngineIdMap,
-                                    jobInstance);
-                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
-                } else {
-                    // If not found, obtain information from MySQL
+            try {
+                if (jobInstance.getJobStatus() != null
+                        && jobInstance.getJobStatus().equals("CANCELED")) {
+                    // If the status of the job is finished or cancelled
+                    // the monitoring information is directly obtained from MySQL
                     JobSummaryMetricsRes jobMetriceFromDb =
                             getJobSummaryMetricsResByDb(
                                     jobInstance,
@@ -306,60 +271,96 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
                     jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
-                }
-            } else {
-                // Obtain monitoring information from the collection of running jobs returned from
-                // the engine
-                if (!allRunningJobMetricsFromEngine.isEmpty()
-                        && allRunningJobMetricsFromEngine.containsKey(
-                                jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
-                    modifyAndUpdateJobInstanceAndJobMetrics(
-                            jobInstance,
-                            allRunningJobMetricsFromEngine,
-                            jobInstanceIdAndJobEngineIdMap,
-                            userId);
-                    /** Return data from the front-end */
-                    JobSummaryMetricsRes jobMetricsFromEngineRes =
-                            getRunningJobMetricsFromEngine(
-                                    allRunningJobMetricsFromEngine,
-                                    jobInstanceIdAndJobEngineIdMap,
-                                    jobInstance);
-                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
-                } else {
-                    String jobStatusByJobEngineId =
-                            getJobStatusByJobEngineId(
-                                    String.valueOf(
-                                            jobInstanceIdAndJobEngineIdMap.get(
-                                                    jobInstance.getId())));
-                    if (jobStatusByJobEngineId != null) {
-                        jobInstance.setJobStatus(jobStatusByJobEngineId);
-                        jobInstanceDao.update(jobInstance);
-                        JobSummaryMetricsRes jobSummaryMetricsResByDb =
+
+                } else if (jobInstance.getJobStatus() != null
+                        && (jobInstance.getJobStatus().equals("FINISHED")
+                                || jobInstance.getJobStatus().equals("FAILED"))) {
+                    if (!allRunningJobMetricsFromEngine.isEmpty()
+                            && allRunningJobMetricsFromEngine.containsKey(
+                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                        modifyAndUpdateJobInstanceAndJobMetrics(
+                                jobInstance,
+                                allRunningJobMetricsFromEngine,
+                                jobInstanceIdAndJobEngineIdMap,
+                                userId);
+
+                        /** Return data from the front-end */
+                        JobSummaryMetricsRes jobMetricsFromEngineRes =
+                                getRunningJobMetricsFromEngine(
+                                        allRunningJobMetricsFromEngine,
+                                        jobInstanceIdAndJobEngineIdMap,
+                                        jobInstance);
+                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
+                    } else {
+                        // If not found, obtain information from MySQL
+                        JobSummaryMetricsRes jobMetriceFromDb =
                                 getJobSummaryMetricsResByDb(
                                         jobInstance,
                                         userId,
+                                        Long.toString(
+                                                jobInstanceIdAndJobEngineIdMap.get(
+                                                        jobInstance.getId())));
+                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+                    }
+                } else {
+                    // Obtain monitoring information from the collection of running jobs returned
+                    // from
+                    // the engine
+                    if (!allRunningJobMetricsFromEngine.isEmpty()
+                            && allRunningJobMetricsFromEngine.containsKey(
+                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                        modifyAndUpdateJobInstanceAndJobMetrics(
+                                jobInstance,
+                                allRunningJobMetricsFromEngine,
+                                jobInstanceIdAndJobEngineIdMap,
+                                userId);
+                        /** Return data from the front-end */
+                        JobSummaryMetricsRes jobMetricsFromEngineRes =
+                                getRunningJobMetricsFromEngine(
+                                        allRunningJobMetricsFromEngine,
+                                        jobInstanceIdAndJobEngineIdMap,
+                                        jobInstance);
+                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
+                    } else {
+                        String jobStatusByJobEngineId =
+                                getJobStatusByJobEngineId(
                                         String.valueOf(
                                                 jobInstanceIdAndJobEngineIdMap.get(
                                                         jobInstance.getId())));
-                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobSummaryMetricsResByDb);
-                        List<JobMetrics> jobMetricsFromDb =
-                                getJobMetricsFromDb(
-                                        jobInstance,
-                                        userId,
-                                        String.valueOf(
-                                                jobInstanceIdAndJobEngineIdMap.get(
-                                                        jobInstance.getId())));
-                        if (!jobMetricsFromDb.isEmpty()) {
-                            jobMetricsFromDb.stream()
-                                    .forEach(
-                                            jobMetrics ->
-                                                    jobMetrics.setStatus(jobStatusByJobEngineId));
-                            for (JobMetrics jobMetrics : jobMetricsFromDb) {
-                                jobMetricsDao.getJobMetricsMapper().updateById(jobMetrics);
+                        if (jobStatusByJobEngineId != null) {
+                            jobInstance.setJobStatus(jobStatusByJobEngineId);
+                            jobInstanceDao.update(jobInstance);
+                            JobSummaryMetricsRes jobSummaryMetricsResByDb =
+                                    getJobSummaryMetricsResByDb(
+                                            jobInstance,
+                                            userId,
+                                            String.valueOf(
+                                                    jobInstanceIdAndJobEngineIdMap.get(
+                                                            jobInstance.getId())));
+                            jobSummaryMetricsResMap.put(
+                                    jobInstance.getId(), jobSummaryMetricsResByDb);
+                            List<JobMetrics> jobMetricsFromDb =
+                                    getJobMetricsFromDb(
+                                            jobInstance,
+                                            userId,
+                                            String.valueOf(
+                                                    jobInstanceIdAndJobEngineIdMap.get(
+                                                            jobInstance.getId())));
+                            if (!jobMetricsFromDb.isEmpty()) {
+                                jobMetricsFromDb.stream()
+                                        .forEach(
+                                                jobMetrics ->
+                                                        jobMetrics.setStatus(
+                                                                jobStatusByJobEngineId));
+                                for (JobMetrics jobMetrics : jobMetricsFromDb) {
+                                    jobMetricsDao.getJobMetricsMapper().updateById(jobMetrics);
+                                }
                             }
                         }
                     }
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
         return jobSummaryMetricsResMap;
@@ -374,7 +375,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         HashMap<Integer, JobMetrics> jobMetricsFromEngine =
                 allRunningJobMetricsFromEngine.get(
                         jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()));
-        log.info("0706jobMetricsFromEngine={}", jobMetricsFromEngine);
         long readCount = 0l;
         long writeCount = 0l;
 
@@ -389,8 +389,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 jobMetricsFromEngine.values().stream()
                         .mapToLong(JobMetrics::getWriteRowCount)
                         .sum();
-
-        log.info("jobInstance={}", jobInstance.toString());
 
         JobSummaryMetricsRes jobSummaryMetricsRes =
                 new JobSummaryMetricsRes(jobInstance.getId(), 1l, readCount, writeCount, "RUNNING");
