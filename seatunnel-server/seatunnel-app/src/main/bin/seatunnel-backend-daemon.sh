@@ -28,7 +28,7 @@ start() {
 
   JAVA_OPTS="${JAVA_OPTS} -server -Xms1g -Xmx1g -Xmn512m -XX:+PrintGCDetails -Xloggc:gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dump.hprof"
   SPRING_OPTS="${SPRING_OPTS} -Dspring.config.name=application.yml -Dspring.config.location=classpath:application.yml"
-
+  JAVA_OPTS="${JAVA_OPTS} -Dseatunnel-web.logs.path=${WORKDIR}/../logs"
   # check env JAVA_HOME
   if [ -z "$JAVA_HOME" ]; then
     echo "JAVA_HOME is not set"
@@ -39,14 +39,13 @@ start() {
   nohup $JAVA_HOME/bin/java $JAVA_OPTS \
   -cp "$WORKDIR/../conf":"$WORKDIR/../libs/*":"$WORKDIR/../datasource/*" \
   $SPRING_OPTS \
-  org.apache.seatunnel.app.SeatunnelApplication
-   > seatunnel.log 2>&1 &
+  org.apache.seatunnel.app.SeatunnelApplication 2>&1 &
   echo "seatunnel started"
 }
 # stop
 stop() {
   echo "stopping seatunnel..."
-  pid=$(jcmd | grep -i 'seatunnel-app-.*jar' | grep -v grep | awk '{print $1}')
+  pid=$(jcmd | grep -i 'org.apache.seatunnel.app.SeatunnelApplication' | grep -v grep | awk '{print $1}')
   if [ -n "$pid" ]; then
     kill -15 $pid
     echo "seatunnel stopped"

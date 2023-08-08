@@ -15,7 +15,7 @@
 -->
 <configuration scan="true" scanPeriod="10 seconds">
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
-    <property name="APP_LOG_PATH" value="./logs" />
+    <property name="APP_LOG_PATH" value="${seatunnel-web.logs.path}/" />
     <property name="HOST_NAME" value="${HOSTNAME:-UNKNOWN}"/>
     <property name="TRACE" value="[tr:%X{X-B3-TraceId:-},sp:%X{X-B3-SpanId:-}]"/>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
@@ -27,11 +27,11 @@
         </encoder>
     </appender>
 
-    <appender name="thirdPartyAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${APP_LOG_PATH}/thirdParty.${APP_NAME}.log</file>
+    <appender name="seatunnel-web" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${APP_LOG_PATH}/seatunnel-web.log</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <FileNamePattern>${APP_LOG_PATH}/thirdParty.${APP_NAME}.log.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <FileNamePattern>${APP_LOG_PATH}/seatunnel-web.log.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <MaxFileSize>100MB</MaxFileSize>
         </rollingPolicy>
@@ -41,16 +41,8 @@
         </encoder>
     </appender>
 
-    <logger name="org.apache.seatunnel.app.dal.mapper" level="DEBUG" additivity="false">
-        <appender-ref ref="console" />
-    </logger>
-
-    <logger name="org.springframework" level="INFO" additivity="false">
-        <appender-ref ref="thirdPartyAppender" />
-        <appender-ref ref="console" />
-    </logger>
-
     <root level="INFO">
+        <appender-ref ref="seatunnel-web" />
         <appender-ref ref="console" />
     </root>
 </configuration>
