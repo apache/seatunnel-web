@@ -450,4 +450,10 @@ CREATE TABLE `user_login_log`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 106 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of user_login_log
+-- ----------------------------
+
+INSERT INTO `seatunnel`.`user`(`username`,`password`,`status`,`type`) values ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);
+
 SET FOREIGN_KEY_CHECKS = 1;
