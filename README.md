@@ -25,28 +25,35 @@ Notice: Some details please refer to the docs/QuickStart.md
 
 ### 1 Preparing the Apache SeaTunnel environment
 
-#### 1.1 Install Apache SeaTunnel
+Because SeaTunnel Web uses the SeaTunnel Java Client to submit jobs, running SeaTunnel Web requires preparing a SeaTunnel Zeta Engine service first.
 
-If you already have Apache SeaTunnel environment, you can skip this step and go to [Install your SeaTunnel to your local maven repository](#1.2 Install your SeaTunnel to your local maven repository)
+Based on the usage requirements of SeaTunnel Zeta Engine, the SeaTunnel Client node that submits the job must have the same operating system and installation directory structure as the SeaTunnel Server node that runs the job. Therefore, if you want to run SeaTunnel Web in IDEA, you must install and run a SeaTunnel Zeta Engine Server on the same machine as the IDEA.
 
-Because running SeaTunnel Web must rely on the SeaTunnel, if you do not have a SeaTunnel environment, you need to first install and deploy a SeaTunnel (hereinafter referred to as ST). You need to use the dev branch in the ST repositories.
-
-Reference `https://github.com/apache/seatunnel` to deploy a ST
-
-#### 1.2 Install your SeaTunnel to your local maven repository
-
-If you already have a ST environment which is from ST github dev branch. Make sure the version is 2.3.2-SNAPSHOT in the pom file. then use command './mvnw clean install  '-Dmaven.test.skip=true' '-Dcheckstyle.skip=true'' to install ST package into your local maven repository
-
-
-#### 1.3 Run SeaTunnel in RDEA
-
-Reference `https://github.com/apache/seatunnel` 
+Don't worry, the next steps will tell you how to correctly install SeaTunnel Zeta Engine Server in different situations.
 
 ### 2 Run SeaTunnel Web in IDEA
 
 If you want to deploy and run SeaTunnel Web, Please turn to [3 Run SeaTunnel Web In Server](#3 Run SeaTunnel Web In Server)
 
-#### 2.1 Init database 
+#### 2.1 Install SeaTunnel Zeta Engine Server
+You have two ways to get the SeaTunnel installer package. Build from source code or download from the SeaTunnel website.
+
+**The SeaTunnel version used here is only for writing this document to show you the process used, and does not necessarily represent the correct version. SeaTunnel Web and SeaTunnel Engine have strict version dependencies, and you can confirm the specific version mapping through xxx**
+
+##### 2.1.1 Build from source code and deploy
+* Get the source package from https://seatunnel.apache.org/download or https://github.com/apache/seatunnel.git
+* Build installer package use maven command `./mvnw -U -T 1C clean install -DskipTests -D"maven.test.skip"=true -D"maven.javadoc.skip"=true -D"checkstyle.skip"=true -D"license.skipAddThirdParty" `
+* Then you can get the installer package in `${Your_code_dir}/seatunnel-dist/target`, For example:`apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz`
+* Run `tar -zxvf apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz` to unzip the installer package.
+* Run `cd apache-seatunnel-2.3.3-SNAPSHOT & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
+
+##### 2.1.2 Download installer package and deploy
+The other way to install SeaTunnel Zeta Engine Server is download the installer package from https://seatunnel.apache.org/download and deploy.
+
+* Download and install connector plugin(Some third-party dependency packages will also be automatically downloaded and installed during this process, such as hadoop jar). You can get the step from https://seatunnel.apache.org/docs/2.3.2/start-v2/locally/deployment.
+* Run `cd apache-seatunnel-2.3.2 & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
+
+#### 2.2 Init database 
 
 1. Edit `seatunnel-server/seatunnel-app/src/main/resources/script/seatunnel_server_env.sh` file, Complete the installed database address, port, username, and password. Here is an example:
 
@@ -58,12 +65,11 @@ If you want to deploy and run SeaTunnel Web, Please turn to [3 Run SeaTunnel Web
     ```
 2. Run init shell `sh seatunnel-server/seatunnel-app/src/main/resources/script/init_sql.sh` If there are no errors during operation, it indicates successful initialization.
 
-#### 2.2 Config application and Run SeaTunnel Web Backend Server
+#### 2.3 Config application and Run SeaTunnel Web Backend Server
 
 1. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml` Fill in the database connection information
 
 ![img.png](docs/images/application_config.png)
-
 
 2. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started.
 

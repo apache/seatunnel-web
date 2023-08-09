@@ -17,6 +17,8 @@
 
 -- CREATE DATABASE IF NOT EXISTS seatunnel;
 
+CREATE DATABASE IF NOT EXISTS seatunnel;
+use seatunnel;
 
 -- ----------------------------
 -- Table structure for role

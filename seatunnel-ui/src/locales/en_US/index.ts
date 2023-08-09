@@ -19,9 +19,7 @@ import login from '@/locales/en_US/login'
 import menu from '@/locales/en_US/menu'
 import modal from '@/locales/en_US/modal'
 import user_manage from '@/locales/en_US/user-manage'
-import data_pipes from '@/locales/en_US/data-pipes'
 import log from '@/locales/en_US/log'
-import jobs from '@/locales/en_US/jobs'
 import tasks from '@/locales/en_US/tasks'
 import setting from '@/locales/en_US/setting'
 import datasource from '@/locales/en_US/datasource'
@@ -39,9 +37,7 @@ export default {
   menu,
   modal,
   user_manage,
-  data_pipes,
   log,
-  jobs,
   tasks,
   setting,
   datasource,

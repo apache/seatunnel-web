@@ -16,8 +16,6 @@
  */
 
 import utils from '@/utils'
-import dataPipes from '@/router/data-pipes'
-import jobs from '@/router/jobs'
 import tasks from '@/router/tasks'
 import userManage from '@/router/user-manage'
 import datasource from '@/router/datasource'
@@ -33,8 +31,6 @@ const basePage: RouteRecordRaw[] = [
     path: '/',
     redirect: { name: 'login' }
   },
-  dataPipes,
-  jobs,
   tasks,
   userManage,
   datasource,
