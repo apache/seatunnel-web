@@ -31,16 +31,6 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-ds:
-  script:
-    dir: /dj
-  project:
-    default: seatunnel_test
-  tenant:
-    default: gaojun
-  api:
-    token: 6781b46bba1039c622d602beb25e880e
-    prefix: http://localhost:12345/dolphinscheduler
 
 jwt:
   expireTime: 86400

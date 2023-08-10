@@ -80,33 +80,6 @@ export function useColumns(onCallback: Function) {
       {
         title: t('datasource.update_time'),
         key: 'updateTime',
-      },
-      {
-        title: t('data_pipes.operation'),
-        key: 'operation',
-        render: (row: any) =>
-          h(NSpace, null, {
-            default: () => [
-              h(
-                NButton,
-          {
-                  text: true,
-                  onClick: () => void onCallback(row.id, 'edit')
-          },
-          {
-                  default: () => t('datasource.edit')
-                }
-              ),
-              h(
-                NButton,
-                {
-                  text: true,
-                  onClick: () => void onCallback(row.id, 'delete')
-          },
-                { default: () => t('datasource.delete') }
-              )
-        ]
-      })
       }
     ]
   }
