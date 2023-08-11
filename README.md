@@ -38,7 +38,7 @@ If you want to deploy and run SeaTunnel Web, Please turn to [3 Run SeaTunnel Web
 #### 2.1 Install SeaTunnel Zeta Engine Server
 You have two ways to get the SeaTunnel installer package. Build from source code or download from the SeaTunnel website.
 
-**The SeaTunnel version used here is only for writing this document to show you the process used, and does not necessarily represent the correct version. SeaTunnel Web and SeaTunnel Engine have strict version dependencies, and you can confirm the specific version mapping through xxx**
+**The SeaTunnel version used here is only for writing this document to show you the process used, and does not necessarily represent the correct version. SeaTunnel Web and SeaTunnel Engine have strict version dependencies, and you can confirm the specific version mapping through xxx. Now only support build SeaTunnel Web and Seatunnel Zeta Engine in local, Because it is necessary to ensure that the seatunnel-api in SeaTunnel Web and the version in SeaTunnel Zeta Engine are the same.**
 
 ##### 2.1.1 Build from source code and deploy
 * Get the source package from https://seatunnel.apache.org/download or https://github.com/apache/seatunnel.git
@@ -72,7 +72,10 @@ The other way to install SeaTunnel Zeta Engine Server is download the installer 
 
 ![img.png](docs/images/application_config.png)
 
-2. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started.
+2. Copy `apache-seatunnel-2.3.3-SNAPSHOT/connectors/plugin-mapping.properties` file to `seatunnel-web/seatunnel-server/seatunnel-app/src/main/resources` dir.
+3. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started. Notice that, you must set `-DSEATUNNEL_HOME=${your_seatunnel_install_path}` like this:
+
+![img.png](docs/images/idea_st_home.png)
 
 #### 2.3 Run SeaTunnel Web Front End
 
@@ -156,11 +159,12 @@ tar -zxvf apache-seatunnel-web-${project.version}.tar.gz
 
 #### 3.5 Config application and Run SeaTunnel Web Backend Server
 
-* Edit `apache-seatunnel-web-${project.version}/config/application.yml` Fill in the database connection information and DS interface related information in the file.
+* Edit `apache-seatunnel-web-${project.version}/conf/application.yml` Fill in the database connection information and DS interface related information in the file.
 
 ![image](docs/images/application_config.png)
 
-* Copy `$SEATUNNEL_HOME/config/hazelcast-client.yaml` to `apache-seatunnel-web-${project.version}/config/`
+* Copy `$SEATUNNEL_HOME/config/hazelcast-client.yaml` to `apache-seatunnel-web-${project.version}/conf/`
+* Copy `apache-seatunnel-2.3.3-SNAPSHOT/connectors/plugin-mapping.properties` file to `apache-seatunnel-web-${project.version}/conf/` dir.
 
 #### 3.6 Start SeaTunnel Web
 

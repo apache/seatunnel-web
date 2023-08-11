@@ -71,7 +71,7 @@
         </fileSet>
     </fileSets>
     <dependencySets>
-        <!-- =================== SeaTunnel App =========================  -->
+        <!-- =================== Third party dependency =========================  -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
@@ -82,23 +82,25 @@
             <excludes>
                 <exclude>org.apache.seatunnel:datasource-*:jar</exclude>
                 <exclude>org.apache.logging.log4j:*:jar</exclude>
+                <exclude>org.apache.seatunnel:seatunnel-*:jar</exclude>
             </excludes>
             <outputDirectory>/libs</outputDirectory>
             <scope>provided</scope>
         </dependencySet>
 
+        <!-- =================== SeaTunnel Web Jars =========================  -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <unpack>false</unpack>
             <includes>
-                <include>*:*:jar</include>
+                <include>org.apache.seatunnel:seatunnel-app:jar</include>
+                <include>org.apache.seatunnel:seatunnel-datasource-client:jar</include>
+                <include>org.apache.seatunnel:seatunnel-server-common:jar</include>
+                <include>org.apache.seatunnel:seatunnel-dynamicform:jar</include>
             </includes>
-            <excludes>
-                <exclude>org.apache.seatunnel:datasource-*:jar</exclude>
-                <exclude>org.apache.logging.log4j:*:jar</exclude>
-            </excludes>
             <outputDirectory>/libs</outputDirectory>
+            <scope>provided</scope>
         </dependencySet>
 
         <!-- ============ Logging Jars ============  -->
