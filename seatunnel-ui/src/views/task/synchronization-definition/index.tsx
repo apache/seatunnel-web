@@ -39,7 +39,7 @@ const SynchronizationDefinition = defineComponent({
     const route = useRoute()
     const router = useRouter()
     const { variables, createColumns, getTableData } = useTable()
-
+    console.log('SynchronizationDefinition')
     const requestData = () => {
       getTableData({
         pageSize: variables.pageSize,

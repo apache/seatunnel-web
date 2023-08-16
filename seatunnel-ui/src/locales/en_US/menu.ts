@@ -16,8 +16,6 @@
  */
 
 export default {
-  data_pipes: 'Data Pipes',
-  jobs: 'Jobs',
   user_manage: 'User Manage',
   help: 'Help',
   setting: 'Setting',

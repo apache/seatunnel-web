@@ -71,7 +71,7 @@
         </fileSet>
     </fileSets>
     <dependencySets>
-        <!-- =================== SeaTunnel App =========================  -->
+        <!-- =================== Third party dependency =========================  -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>

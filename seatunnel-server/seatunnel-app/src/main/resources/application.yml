@@ -27,20 +27,10 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/seatunnel?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: root@123
+    password: 123456
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-ds:
-  script:
-    dir: /dj
-  project:
-    default: seatunnel_test
-  tenant:
-    default: gaojun
-  api:
-    token: 6781b46bba1039c622d602beb25e880e
-    prefix: http://localhost:12345/dolphinscheduler
 
 jwt:
   expireTime: 86400

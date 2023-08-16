@@ -27,8 +27,6 @@
     <modules>
         <module>seatunnel-app</module>
         <module>seatunnel-dynamicform</module>
-        <module>seatunnel-spi</module>
-        <module>seatunnel-scheduler</module>
         <module>seatunnel-server-common</module>
     </modules>
 </project>
