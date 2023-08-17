@@ -34,7 +34,7 @@ spring:
 
 jwt:
   expireTime: 86400
-  secretKey: https://github.com/apache/incubator-seatunnel
+  secretKey: https://github.com/apache/seatunnel
   algorithm: HS256
 
 ---
