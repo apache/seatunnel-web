@@ -17,13 +17,17 @@
 
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
+
+import com.google.auto.service.AutoService;
+
+@AutoService(DataSourceConfigSwitcher.class)
 public class DamengDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-    private static final DamengDataSourceConfigSwitcher INSTANCE =
-            new DamengDataSourceConfigSwitcher();
 
-    public static final DamengDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
+    public DamengDataSourceConfigSwitcher() {}
+
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-DAMENG";
     }
-
-    private DamengDataSourceConfigSwitcher() {}
 }

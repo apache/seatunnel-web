@@ -26,16 +26,22 @@ import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
+
+import com.google.auto.service.AutoService;
 
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class S3RedshiftDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    private S3RedshiftDataSourceConfigSwitcher() {}
+    public S3RedshiftDataSourceConfigSwitcher() {}
 
-    private static final S3RedshiftDataSourceConfigSwitcher INSTANCE =
-            new S3RedshiftDataSourceConfigSwitcher();
+    @Override
+    public String getDataSourceName() {
+        return "S3-REDSHIFT";
+    }
 
     @Override
     public FormStructure filterOptionRule(
@@ -75,9 +81,5 @@ public class S3RedshiftDataSourceConfigSwitcher extends AbstractDataSourceConfig
                 businessMode,
                 pluginType,
                 connectorConfig);
-    }
-
-    public static S3RedshiftDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
     }
 }

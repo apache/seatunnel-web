@@ -17,13 +17,17 @@
 
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
+
+import com.google.auto.service.AutoService;
+
 import java.util.Optional;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class MysqlDatasourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-    public static MysqlDatasourceConfigSwitcher INSTANCE = new MysqlDatasourceConfigSwitcher();
     private static final String CATALOG_NAME = "MySQL";
 
-    private MysqlDatasourceConfigSwitcher() {}
+    public MysqlDatasourceConfigSwitcher() {}
 
     protected Optional<String> getCatalogName() {
         return Optional.of(CATALOG_NAME);
@@ -35,5 +39,10 @@ public class MysqlDatasourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitc
 
     protected boolean isSupportToggleCase() {
         return true;
+    }
+
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-MYSQL";
     }
 }

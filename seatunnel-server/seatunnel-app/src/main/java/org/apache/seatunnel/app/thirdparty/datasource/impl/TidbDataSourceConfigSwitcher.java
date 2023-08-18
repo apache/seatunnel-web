@@ -25,10 +25,13 @@ import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
 
+import com.google.auto.service.AutoService;
+
+@AutoService(DataSourceConfigSwitcher.class)
 public class TidbDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-    public static final TidbDataSourceConfigSwitcher INSTANCE = new TidbDataSourceConfigSwitcher();
 
     private static final String FACTORY = "factory";
 
@@ -41,7 +44,12 @@ public class TidbDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitch
 
     private static final String DATABASE_NAMES = "database-names";
 
-    private TidbDataSourceConfigSwitcher() {}
+    public TidbDataSourceConfigSwitcher() {}
+
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-TIDB";
+    }
 
     @Override
     public Config mergeDatasourceConfig(

@@ -17,18 +17,16 @@
 
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 
+import com.google.auto.service.AutoService;
+
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class RedshiftDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-    private static final RedshiftDataSourceConfigSwitcher INSTANCE =
-            new RedshiftDataSourceConfigSwitcher();
-
-    public static final RedshiftDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
-    }
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
 
@@ -53,5 +51,10 @@ public class RedshiftDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSw
         return JdbcUtils.replaceDatabase(url, databaseName);
     }
 
-    private RedshiftDataSourceConfigSwitcher() {}
+    public RedshiftDataSourceConfigSwitcher() {}
+
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-REDSHIFT";
+    }
 }
