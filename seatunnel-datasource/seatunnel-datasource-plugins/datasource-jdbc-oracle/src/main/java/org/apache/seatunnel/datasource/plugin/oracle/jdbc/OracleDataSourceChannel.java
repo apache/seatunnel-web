@@ -26,6 +26,7 @@ import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -33,12 +34,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@Slf4j
 public class OracleDataSourceChannel implements DataSourceChannel {
 
     @Override
@@ -56,18 +60,72 @@ public class OracleDataSourceChannel implements DataSourceChannel {
             @NonNull String pluginName,
             Map<String, String> requestParams,
             String database,
-            Map<String, String> option) {
+            Map<String, String> options) {
+        StringBuilder sqlWhere = new StringBuilder();
+        final String sql =
+                "SELECT * FROM ( SELECT OWNER, TABLE_NAME FROM ALL_TABLES\n"
+                        + "WHERE TABLE_NAME NOT LIKE 'MDRT_%'\n"
+                        + "  AND TABLE_NAME NOT LIKE 'MDRS_%'\n"
+                        + "  AND TABLE_NAME NOT LIKE 'MDXT_%'\n"
+                        + "  AND (TABLE_NAME NOT LIKE 'SYS_IOT_OVER_%' AND IOT_NAME IS NULL)"
+                        + "AND OWNER NOT IN ('APPQOSSYS', 'AUDSYS', 'CTXSYS', 'DVSYS', 'DBSFWUSER', 'DBSNMP',\n"
+                        + "                    'GSMADMIN_INTERNAL', 'LBACSYS', 'MDSYS', 'OJVMSYS', 'OLAPSYS',\n"
+                        + "                    'ORDDATA', 'ORDSYS', 'OUTLN', 'SYS', 'SYSTEM', 'WMSYS',\n"
+                        + "                    'XDB', 'EXFSYS', 'SYSMAN')";
+        sqlWhere.append(sql);
+        String filterName = options.get("filterName");
+        if (StringUtils.isNotEmpty(filterName)) {
+            String[] split = filterName.split("\\.");
+            if (split.length == 2) {
+                sqlWhere.append(" AND (TABLE_NAME LIKE '")
+                        .append(
+                                split[1].contains("%")
+                                        ? split[1].toUpperCase(Locale.ROOT)
+                                        : "%" + split[1].toUpperCase(Locale.ROOT) + "%")
+                        .append("'")
+                        .append(" AND OWNER LIKE '")
+                        .append(
+                                split[0].contains("%")
+                                        ? split[0].toUpperCase(Locale.ROOT)
+                                        : "%" + split[0].toUpperCase(Locale.ROOT) + "%")
+                        .append("')");
+            } else {
+                String filterNameRep =
+                        filterName.contains("%")
+                                ? filterName.toUpperCase(Locale.ROOT)
+                                : "%" + filterName.toUpperCase(Locale.ROOT) + "%";
+                sqlWhere.append(" AND (TABLE_NAME LIKE '%")
+                        .append(filterNameRep)
+                        .append("%'")
+                        .append(" OR OWNER LIKE '%")
+                        .append(filterNameRep)
+                        .append("%')");
+            }
+        }
+        sqlWhere.append(" ORDER BY OWNER, TABLE_NAME ) ");
+        String size = options.get("size");
+        if (StringUtils.isNotEmpty(size)) {
+            sqlWhere.append("WHERE ROWNUM <= ").append(size);
+        }
+        log.info("execute sql :{}", sqlWhere.toString());
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams);
-                ResultSet resultSet =
-                        connection
-                                .getMetaData()
-                                .getTables(database, null, null, new String[] {"TABLE"}); ) {
-            while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
-                if (StringUtils.isNotBlank(tableName)) {
-                    tableNames.add(tableName);
+        long start = System.currentTimeMillis();
+        try (Connection connection = getConnection(requestParams); ) {
+            long end = System.currentTimeMillis();
+            log.info("connection, cost {}ms for oracle", end - start);
+            start = System.currentTimeMillis();
+            try (Statement statement = connection.createStatement();
+                    ResultSet resultSet = statement.executeQuery(sqlWhere.toString())) {
+                end = System.currentTimeMillis();
+                log.info("statement execute sql, cost {}ms for oracle", end - start);
+                start = System.currentTimeMillis();
+                while (resultSet.next()) {
+                    String schemaName = resultSet.getString("OWNER");
+                    String tableName = resultSet.getString("TABLE_NAME");
+                    tableNames.add(schemaName + "." + tableName);
                 }
+                end = System.currentTimeMillis();
+                log.info("while result set, cost {}ms for oracle", end - start);
             }
             return tableNames;
         } catch (ClassNotFoundException | SQLException e) {
@@ -80,13 +138,12 @@ public class OracleDataSourceChannel implements DataSourceChannel {
             @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = getConnection(requestParams);
-                PreparedStatement statement = connection.prepareStatement("SHOW DATABASES;");
+                PreparedStatement statement =
+                        connection.prepareStatement("SELECT NAME FROM v$database");
                 ResultSet re = statement.executeQuery()) {
-            // filter system databases
             while (re.next()) {
-                String dbName = re.getString("database");
-                if (StringUtils.isNotBlank(dbName)
-                        && !OracleDataSourceConfig.ORACLE_SYSTEM_DATABASES.contains(dbName)) {
+                String dbName = re.getString("NAME");
+                if (StringUtils.isNotBlank(dbName)) {
                     dbNames.add(dbName);
                 }
             }

@@ -354,8 +354,11 @@ public class SeatunnelDatasourceController extends BaseController {
     Result<List<String>> getTableNames(
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestParam("datasourceName") String datasourceName,
-            @RequestParam("databaseName") String databaseName) {
-        return Result.success(datasourceService.queryTableNames(datasourceName, databaseName));
+            @RequestParam("databaseName") String databaseName,
+            @RequestParam("filterName") String filterName,
+            @RequestParam("size") Integer size) {
+        return Result.success(
+                datasourceService.queryTableNames(datasourceName, databaseName, filterName, size));
     }
 
     @GetMapping("/schema")

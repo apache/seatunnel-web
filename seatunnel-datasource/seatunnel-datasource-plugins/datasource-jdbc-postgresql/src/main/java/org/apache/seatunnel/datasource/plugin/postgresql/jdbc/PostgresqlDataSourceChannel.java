@@ -26,6 +26,7 @@ import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -40,6 +41,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@Slf4j
 public class PostgresqlDataSourceChannel implements DataSourceChannel {
 
     @Override
@@ -57,18 +59,52 @@ public class PostgresqlDataSourceChannel implements DataSourceChannel {
             @NonNull String pluginName,
             Map<String, String> requestParams,
             String database,
-            Map<String, String> option) {
+            Map<String, String> options) {
         List<String> tableNames = new ArrayList<>();
-        String query = "SELECT table_schema, table_name FROM information_schema.tables";
-        try (Connection connection = getConnection(requestParams, database)) {
+        StringBuilder queryWhere = new StringBuilder();
+        String query =
+                "SELECT table_schema, table_name FROM information_schema.tables\n"
+                        + "WHERE table_schema NOT IN ('information_schema', 'pg_catalog', 'root', 'pg_toast', 'pg_temp_1', 'pg_toast_temp_1', 'postgres', 'template0', 'template1')\n";
+        queryWhere.append(query);
+        String filterName = options.get("filterName");
+        if (StringUtils.isNotEmpty(filterName)) {
+            String[] split = filterName.split("\\.");
+            if (split.length == 2) {
+                queryWhere
+                        .append("AND (table_schema LIKE '")
+                        .append(split[0].contains("%") ? split[0] : "%" + split[0] + "%")
+                        .append("'")
+                        .append(" AND table_name LIKE '")
+                        .append(split[1].contains("%") ? split[1] : "%" + split[1] + "%")
+                        .append("')");
+            } else {
+                String filterNameRep =
+                        filterName.contains("%") ? filterName : "%" + filterName + "%";
+                queryWhere
+                        .append(" AND (table_schema LIKE '")
+                        .append(filterNameRep)
+                        .append("'")
+                        .append(" OR table_name LIKE '")
+                        .append(filterNameRep)
+                        .append("')");
+            }
+        }
+        String size = options.get("size");
+        if (StringUtils.isNotEmpty(size)) {
+            queryWhere.append(" LIMIT ").append(size);
+        }
+        log.info(queryWhere.toString());
+        requestParams.put(
+                PostgresqlOptionRule.URL.key(),
+                JdbcUtils.replaceDatabase(
+                        requestParams.get(PostgresqlOptionRule.URL.key()), database));
+        try (Connection connection = getConnection(requestParams)) {
             try (Statement statement = connection.createStatement();
-                    ResultSet resultSet = statement.executeQuery(query)) {
+                    ResultSet resultSet = statement.executeQuery(queryWhere.toString())) {
                 while (resultSet.next()) {
                     String schemaName = resultSet.getString("table_schema");
                     String tableName = resultSet.getString("table_name");
-                    if (StringUtils.isNotBlank(schemaName)
-                            && !PostgresqlDataSourceConfig.POSTGRESQL_SYSTEM_DATABASES.contains(
-                                    schemaName)) {
+                    if (StringUtils.isNotBlank(schemaName)) {
                         tableNames.add(schemaName + "." + tableName);
                     }
                 }
@@ -118,7 +154,11 @@ public class PostgresqlDataSourceChannel implements DataSourceChannel {
             @NonNull String database,
             @NonNull String table) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams, database); ) {
+        requestParams.put(
+                PostgresqlOptionRule.URL.key(),
+                JdbcUtils.replaceDatabase(
+                        requestParams.get(PostgresqlOptionRule.URL.key()), database));
+        try (Connection connection = getConnection(requestParams)) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, database, table);
             String[] split = table.split("\\.");
