@@ -29,7 +29,10 @@ import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableFieldRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
+
+import com.google.auto.service.AutoService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +41,10 @@ import java.util.Locale;
 import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DATA_INTEGRATION;
 import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DATA_REPLICA;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class MysqlCDCDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
-    private MysqlCDCDataSourceConfigSwitcher() {}
-
-    public static final MysqlCDCDataSourceConfigSwitcher INSTANCE =
-            new MysqlCDCDataSourceConfigSwitcher();
+    public MysqlCDCDataSourceConfigSwitcher() {}
 
     private static final String FACTORY = "factory";
 
@@ -60,6 +61,11 @@ public class MysqlCDCDataSourceConfigSwitcher extends AbstractDataSourceConfigSw
     private static final String DEFAULT_FORMAT = "DEFAULT";
 
     private static final String SCHEMA = "schema";
+
+    @Override
+    public String getDataSourceName() {
+        return "MYSQL-CDC";
+    }
 
     @Override
     public FormStructure filterOptionRule(

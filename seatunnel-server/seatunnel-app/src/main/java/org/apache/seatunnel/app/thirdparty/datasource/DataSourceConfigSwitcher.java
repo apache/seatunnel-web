@@ -31,6 +31,8 @@ import java.util.List;
 
 public interface DataSourceConfigSwitcher {
 
+    String getDataSourceName();
+
     /**
      * OptionRule OptionRule
      *

@@ -27,14 +27,15 @@ import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
+
+import com.google.auto.service.AutoService;
 
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class KafkaDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
-
-    private static final KafkaDataSourceConfigSwitcher INSTANCE =
-            new KafkaDataSourceConfigSwitcher();
 
     private static final String SCHEMA = "schema";
     private static final String TOPIC = "topic";
@@ -42,6 +43,11 @@ public class KafkaDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitc
     private static final String FORMAT = "format";
 
     private static final String DEBEZIUM_FORMAT = "COMPATIBLE_DEBEZIUM_JSON";
+
+    @Override
+    public String getDataSourceName() {
+        return "KAFKA";
+    }
 
     @Override
     public FormStructure filterOptionRule(
@@ -120,9 +126,5 @@ public class KafkaDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitc
                 connectorConfig);
     }
 
-    private KafkaDataSourceConfigSwitcher() {}
-
-    public static KafkaDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
-    }
+    public KafkaDataSourceConfigSwitcher() {}
 }

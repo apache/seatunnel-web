@@ -17,15 +17,16 @@
 
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
+
+import com.google.auto.service.AutoService;
 
 import java.util.List;
 import java.util.Optional;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class SqlServerDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-
-    private static final SqlServerDataSourceConfigSwitcher INSTANCE =
-            new SqlServerDataSourceConfigSwitcher();
 
     public static final String CATALOG_NAME = "SqlServer";
 
@@ -45,11 +46,7 @@ public class SqlServerDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigS
         return Optional.of(CATALOG_NAME);
     }
 
-    public static final SqlServerDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
-    }
-
-    private SqlServerDataSourceConfigSwitcher() {}
+    public SqlServerDataSourceConfigSwitcher() {}
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
 
@@ -68,5 +65,10 @@ public class SqlServerDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigS
 
     protected String quoteIdentifier(String identifier) {
         return "[" + identifier + "]";
+    }
+
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-SQLSERVER";
     }
 }

@@ -20,14 +20,14 @@ package org.apache.seatunnel.app.thirdparty.datasource.impl;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 
+import com.google.auto.service.AutoService;
+
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class KingBaseDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
 
-    private static final KingBaseDataSourceConfigSwitcher INSTANCE =
-            new KingBaseDataSourceConfigSwitcher();
-
-    private KingBaseDataSourceConfigSwitcher() {}
+    public KingBaseDataSourceConfigSwitcher() {}
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
 
@@ -48,7 +48,8 @@ public class KingBaseDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSw
         return "\"" + identifier + "\"";
     }
 
-    public static DataSourceConfigSwitcher getInstance() {
-        return (DataSourceConfigSwitcher) INSTANCE;
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-KINGBASE";
     }
 }
