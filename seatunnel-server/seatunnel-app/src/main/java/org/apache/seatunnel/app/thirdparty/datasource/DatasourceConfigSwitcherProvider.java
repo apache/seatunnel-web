@@ -15,34 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.thirdparty.datasource.impl;
+package org.apache.seatunnel.app.thirdparty.datasource;
 
-import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.auto.service.AutoService;
+public enum DatasourceConfigSwitcherProvider {
+    INSTANCE;
 
-import java.util.Optional;
+    private final Map<String, DataSourceConfigSwitcher> configSwitcherCache;
 
-@AutoService(DataSourceConfigSwitcher.class)
-public class MysqlDatasourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
-    private static final String CATALOG_NAME = "MySQL";
+    DatasourceConfigSwitcherProvider() {
+        ServiceLoader<DataSourceConfigSwitcher> loader =
+                ServiceLoader.load(DataSourceConfigSwitcher.class);
+        configSwitcherCache = new ConcurrentHashMap<>();
 
-    public MysqlDatasourceConfigSwitcher() {}
-
-    protected Optional<String> getCatalogName() {
-        return Optional.of(CATALOG_NAME);
+        for (DataSourceConfigSwitcher switcher : loader) {
+            configSwitcherCache.put(switcher.getDataSourceName().toUpperCase(), switcher);
+        }
     }
 
-    protected boolean isSupportPrefixOrSuffix() {
-        return true;
-    }
-
-    protected boolean isSupportToggleCase() {
-        return true;
-    }
-
-    @Override
-    public String getDataSourceName() {
-        return "JDBC-MYSQL";
+    public DataSourceConfigSwitcher getConfigSwitcher(String datasourceName) {
+        return configSwitcherCache.get(datasourceName);
     }
 }

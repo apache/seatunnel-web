@@ -27,18 +27,19 @@ import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.app.utils.JdbcUtils;
 import org.apache.seatunnel.common.constants.PluginType;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.Map;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class ClickhouseDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
-    private static final ClickhouseDataSourceConfigSwitcher INSTANCE =
-            new ClickhouseDataSourceConfigSwitcher();
 
     private static final String HOST = "host";
     private static final String URL = "url";
@@ -51,6 +52,11 @@ public class ClickhouseDataSourceConfigSwitcher extends AbstractDataSourceConfig
                     .put(PluginType.SOURCE, Lists.newArrayList(SQL, HOST))
                     .put(PluginType.SINK, Lists.newArrayList(HOST, DATABASE, TABLE))
                     .build();
+
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-CLICKHOUSE";
+    }
 
     @Override
     public FormStructure filterOptionRule(
@@ -143,9 +149,5 @@ public class ClickhouseDataSourceConfigSwitcher extends AbstractDataSourceConfig
                 connectorConfig);
     }
 
-    public static ClickhouseDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
-    }
-
-    private ClickhouseDataSourceConfigSwitcher() {}
+    public ClickhouseDataSourceConfigSwitcher() {}
 }

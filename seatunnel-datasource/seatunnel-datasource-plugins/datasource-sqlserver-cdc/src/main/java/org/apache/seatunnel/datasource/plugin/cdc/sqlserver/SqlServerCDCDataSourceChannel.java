@@ -69,7 +69,7 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
             Map<String, String> requestParams,
             String database,
             Map<String, String> options) {
-        return this.getTableNames(requestParams, database);
+        return this.getTableNames(requestParams, database, options);
     }
 
     @Override
@@ -146,20 +146,52 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
         }
     }
 
-    private List<String> getTableNames(Map<String, String> requestParams, String dbName) {
+    private List<String> getTableNames(
+            Map<String, String> requestParams, String dbName, Map<String, String> options) {
+        StringBuilder sqlWhere = new StringBuilder();
         final String sql =
                 String.format(
                         "SELECT SCHEMAS.NAME AS SCHEMA_NAME, TABLES.NAME AS TABLE_NAME"
-                                + "    FROM %s.SYS.SCHEMAS AS SCHEMAS"
-                                + "        JOIN %s.SYS.TABLES AS TABLES"
+                                + "    FROM %s.sys.schemas AS SCHEMAS"
+                                + "        JOIN %s.sys.tables AS TABLES"
                                 + "            ON SCHEMAS.SCHEMA_ID = TABLES.SCHEMA_ID"
                                 + "                   AND TABLES.IS_TRACKED_BY_CDC = 1",
                         dbName, dbName);
+        sqlWhere.append(sql);
+        String filterName = options.get("filterName");
+        if (StringUtils.isNotEmpty(filterName)) {
+            String[] split = filterName.split("\\.");
+            if (split.length == 2) {
+                String formatStr =
+                        " AND (TABLES.NAME LIKE '"
+                                + (split[1].contains("%") ? split[1] : "%" + split[1] + "%")
+                                + "' AND SCHEMAS.NAME LIKE '"
+                                + (split[0].contains("%") ? split[0] : "%" + split[0] + "%")
+                                + "')";
+                sqlWhere.append(formatStr);
+            } else {
+                String filterNameRep =
+                        filterName.contains("%") ? filterName : "%" + filterName + "%";
+                String formatStr =
+                        " AND (TABLES.NAME LIKE '"
+                                + filterNameRep
+                                + "' OR SCHEMAS.NAME LIKE '"
+                                + filterNameRep
+                                + "')";
+                sqlWhere.append(formatStr);
+            }
+        }
 
+        sqlWhere.append(" ORDER BY SCHEMAS.NAME, TABLES.NAME");
+        String size = options.get("size");
+        if (StringUtils.isNotEmpty(size)) {
+            sqlWhere.append(" OFFSET 0 ROWS FETCH NEXT ").append(size).append(" ROWS ONLY");
+        }
+        log.info("execute sql :{}", sqlWhere.toString());
         List<String> tableNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
+                ResultSet resultSet = statement.executeQuery(sqlWhere.toString())) {
             while (resultSet.next()) {
                 String schemaName = resultSet.getString("SCHEMA_NAME");
                 String tableName = resultSet.getString("TABLE_NAME");
@@ -177,21 +209,25 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
         try (Connection connection = init(requestParams); ) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, schemaName, tableName);
-            ResultSet resultSet = metaData.getColumns(dbName, schemaName, tableName, null);
-            while (resultSet.next()) {
-                TableField tableField = new TableField();
-                String columnName = resultSet.getString("COLUMN_NAME");
-                tableField.setPrimaryKey(false);
-                if (StringUtils.isNotBlank(primaryKey) && primaryKey.equals(columnName)) {
-                    tableField.setPrimaryKey(true);
+            try (ResultSet resultSet = metaData.getColumns(dbName, schemaName, tableName, null)) {
+                while (resultSet.next()) {
+                    TableField tableField = new TableField();
+                    String columnName = resultSet.getString("COLUMN_NAME");
+                    tableField.setPrimaryKey(false);
+                    if (StringUtils.isNotBlank(primaryKey) && primaryKey.equals(columnName)) {
+                        tableField.setPrimaryKey(true);
+                    }
+                    tableField.setName(columnName);
+                    String typeString = resultSet.getString("TYPE_NAME");
+                    String[] parts = typeString.split(" ");
+                    String baseType = parts.length > 0 ? parts[0] : "";
+                    tableField.setType(baseType);
+                    tableField.setComment(resultSet.getString("REMARKS"));
+                    Object nullable = resultSet.getObject("IS_NULLABLE");
+                    boolean isNullable = convertToBoolean(nullable);
+                    tableField.setNullable(isNullable);
+                    tableFields.add(tableField);
                 }
-                tableField.setName(columnName);
-                tableField.setType(resultSet.getString("TYPE_NAME"));
-                tableField.setComment(resultSet.getString("REMARKS"));
-                Object nullable = resultSet.getObject("IS_NULLABLE");
-                boolean isNullable = convertToBoolean(nullable);
-                tableField.setNullable(isNullable);
-                tableFields.add(tableField);
             }
         } catch (SQLException e) {
             throw new DataSourcePluginException("get table fields failed", e);
@@ -202,9 +238,10 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
     private String getPrimaryKey(
             DatabaseMetaData metaData, String dbName, String schemaName, String tableName)
             throws SQLException {
-        ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, schemaName, tableName);
-        while (primaryKeysInfo.next()) {
-            return primaryKeysInfo.getString("COLUMN_NAME");
+        try (ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, schemaName, tableName)) {
+            while (primaryKeysInfo.next()) {
+                return primaryKeysInfo.getString("COLUMN_NAME");
+            }
         }
         return null;
     }
