@@ -24,6 +24,7 @@ import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,18 +59,66 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
             @NonNull String pluginName,
             Map<String, String> requestParams,
             String database,
-            Map<String, String> option) {
+            Map<String, String> options) {
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams);
-                ResultSet resultSet =
-                        connection
-                                .getMetaData()
-                                .getTables(database, null, null, new String[] {"TABLE"})) {
-            while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
-                if (StringUtils.isNotBlank(tableName)) {
-                    tableNames.add(tableName);
+        StringBuilder queryWhere = new StringBuilder();
+        String query =
+                String.format(
+                        "SELECT SCHEMA_NAME(schema_id) AS schema_name, name AS table_name\n"
+                                + "FROM %s.sys.tables \n"
+                                + "WHERE type = 'U' AND is_ms_shipped = 0 \n",
+                        database);
+        queryWhere.append(query);
+        String filterName = options.get("filterName");
+        if (StringUtils.isNotEmpty(filterName)) {
+            String[] split = filterName.split("\\.");
+            if (split.length == 2) {
+                String formatStr =
+                        " AND (name LIKE '"
+                                + (split[1].contains("%") ? split[1] : "%" + split[1] + "%")
+                                + "' AND SCHEMA_NAME(schema_id) LIKE '"
+                                + (split[0].contains("%") ? split[0] : "%" + split[0] + "%")
+                                + "')";
+                queryWhere.append(formatStr);
+            } else {
+                String filterNameRep =
+                        filterName.contains("%") ? filterName : "%" + filterName + "%";
+                String formatStr =
+                        " AND (name LIKE '"
+                                + filterNameRep
+                                + "' OR SCHEMA_NAME(schema_id) LIKE '"
+                                + filterNameRep
+                                + "')";
+                queryWhere.append(formatStr);
+            }
+        }
+        queryWhere.append("ORDER BY schema_name, table_name");
+        String size = options.get("size");
+        if (StringUtils.isNotEmpty(size)) {
+            queryWhere.append(" OFFSET 0 ROWS FETCH NEXT ").append(size).append(" ROWS ONLY");
+        }
+        log.info("execute sql :{}", queryWhere.toString());
+        long start = System.currentTimeMillis();
+        try (Connection connection = getConnection(requestParams)) {
+            long end = System.currentTimeMillis();
+            log.info("connection, cost {}ms for sqlserver", end - start);
+            start = System.currentTimeMillis();
+            try (Statement statement = connection.createStatement();
+                    ResultSet resultSet = statement.executeQuery(queryWhere.toString())) {
+                end = System.currentTimeMillis();
+                log.info("execute sql, cost {}ms for sqlserver", end - start);
+                start = System.currentTimeMillis();
+                while (resultSet.next()) {
+                    String schemaName = resultSet.getString("SCHEMA_NAME");
+                    String tableName = resultSet.getString("table_name");
+                    if (StringUtils.isNotBlank(schemaName)
+                            && !SqlServerDataSourceConfig.SQLSERVER_SYSTEM_DATABASES.contains(
+                                    schemaName)) {
+                        tableNames.add(schemaName + "." + tableName);
+                    }
                 }
+                end = System.currentTimeMillis();
+                log.info("while result set, cost {}ms for sqlserver", end - start);
             }
             return tableNames;
         } catch (ClassNotFoundException | SQLException e) {
@@ -115,11 +165,17 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
             @NonNull Map<String, String> requestParams,
             @NonNull String database,
             @NonNull String table) {
+        Pair<String, String> pair = parseSchemaAndTable(table);
+        return getTableFields(requestParams, database, pair.getLeft(), pair.getRight());
+    }
+
+    private List<TableField> getTableFields(
+            Map<String, String> requestParams, String dbName, String schemaName, String tableName) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams, null)) {
+        try (Connection connection = getConnection(requestParams); ) {
             DatabaseMetaData metaData = connection.getMetaData();
-            String primaryKey = getPrimaryKey(metaData, database, table);
-            try (ResultSet resultSet = metaData.getColumns(database, null, table, null)) {
+            String primaryKey = getPrimaryKey(metaData, dbName, schemaName, tableName);
+            try (ResultSet resultSet = metaData.getColumns(dbName, schemaName, tableName, null)) {
                 while (resultSet.next()) {
                     TableField tableField = new TableField();
                     String columnName = resultSet.getString("COLUMN_NAME");
@@ -128,17 +184,31 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
                         tableField.setPrimaryKey(true);
                     }
                     tableField.setName(columnName);
-                    tableField.setType(resultSet.getString("TYPE_NAME"));
+                    String typeString = resultSet.getString("TYPE_NAME");
+                    String[] parts = typeString.split(" ");
+                    String baseType = parts.length > 0 ? parts[0] : "";
+                    tableField.setType(baseType);
                     tableField.setComment(resultSet.getString("REMARKS"));
                     Object nullable = resultSet.getObject("IS_NULLABLE");
-                    tableField.setNullable(Boolean.TRUE.toString().equals(nullable.toString()));
+                    boolean isNullable = convertToBoolean(nullable);
+                    tableField.setNullable(isNullable);
                     tableFields.add(tableField);
                 }
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             throw new DataSourcePluginException("get table fields failed", e);
         }
         return tableFields;
+    }
+
+    private boolean convertToBoolean(Object value) {
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        }
+        if (value instanceof String) {
+            return value.equals("TRUE");
+        }
+        return false;
     }
 
     @Override
@@ -150,11 +220,13 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
         return null;
     }
 
-    private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
+    private String getPrimaryKey(
+            DatabaseMetaData metaData, String dbName, String schemaName, String tableName)
             throws SQLException {
-        ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
-        while (primaryKeysInfo.next()) {
-            return primaryKeysInfo.getString("COLUMN_NAME");
+        try (ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, schemaName, tableName)) {
+            while (primaryKeysInfo.next()) {
+                return primaryKeysInfo.getString("COLUMN_NAME");
+            }
         }
         return null;
     }
@@ -177,5 +249,13 @@ public class SqlServerDataSourceChannel implements DataSourceChannel {
             return DriverManager.getConnection(url, username, password);
         }
         return DriverManager.getConnection(url);
+    }
+
+    private Pair<String, String> parseSchemaAndTable(String tableName) {
+        String[] schemaAndTable = tableName.split("\\.");
+        if (schemaAndTable.length != 2) {
+            throw new DataSourcePluginException("table name is invalid");
+        }
+        return Pair.of(schemaAndTable[0], schemaAndTable[1]);
     }
 }

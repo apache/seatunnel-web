@@ -27,21 +27,27 @@ import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
+
+import com.google.auto.service.AutoService;
 
 import java.util.Arrays;
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class StarRocksDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
 
     private static final String TABLE = "table";
 
     private static final String DATABASE = "database";
 
-    private StarRocksDataSourceConfigSwitcher() {}
+    public StarRocksDataSourceConfigSwitcher() {}
 
-    public static final StarRocksDataSourceConfigSwitcher INSTANCE =
-            new StarRocksDataSourceConfigSwitcher();
+    @Override
+    public String getDataSourceName() {
+        return "STARROCKS";
+    }
 
     @Override
     public FormStructure filterOptionRule(

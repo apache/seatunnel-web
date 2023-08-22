@@ -21,14 +21,14 @@ import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
 import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 
+import com.google.auto.service.AutoService;
+
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class PostgresqlDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
 
-    private static final PostgresqlDataSourceConfigSwitcher INSTANCE =
-            new PostgresqlDataSourceConfigSwitcher();
-
-    private PostgresqlDataSourceConfigSwitcher() {}
+    public PostgresqlDataSourceConfigSwitcher() {}
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
 
@@ -53,7 +53,8 @@ public class PostgresqlDataSourceConfigSwitcher extends BaseJdbcDataSourceConfig
         return JdbcUtils.replaceDatabase(url, databaseName);
     }
 
-    public static DataSourceConfigSwitcher getInstance() {
-        return (DataSourceConfigSwitcher) INSTANCE;
+    @Override
+    public String getDataSourceName() {
+        return "JDBC-POSTGRES";
     }
 }

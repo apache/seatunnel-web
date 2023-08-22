@@ -29,11 +29,13 @@ import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableFieldRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.auto.service.AutoService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -45,10 +47,8 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class KafkaKingbaseDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
-
-    private static final KafkaKingbaseDataSourceConfigSwitcher INSTANCE =
-            new KafkaKingbaseDataSourceConfigSwitcher();
 
     private static final String SCHEMA = "schema";
     private static final String TOPIC = "topic";
@@ -68,6 +68,11 @@ public class KafkaKingbaseDataSourceConfigSwitcher extends AbstractDataSourceCon
     private static final String PASSWORD = "password";
 
     private static final String DATABASE_NAMES = "database-names";
+
+    @Override
+    public String getDataSourceName() {
+        return "KAFKA-KINGBASE";
+    }
 
     @Override
     public FormStructure filterOptionRule(
@@ -168,11 +173,7 @@ public class KafkaKingbaseDataSourceConfigSwitcher extends AbstractDataSourceCon
         return String.format("%s.%s", database, table);
     }
 
-    private KafkaKingbaseDataSourceConfigSwitcher() {}
-
-    public static KafkaKingbaseDataSourceConfigSwitcher getInstance() {
-        return INSTANCE;
-    }
+    public KafkaKingbaseDataSourceConfigSwitcher() {}
 
     /*
      * Licensed to the Apache Software Foundation (ASF) under one or more

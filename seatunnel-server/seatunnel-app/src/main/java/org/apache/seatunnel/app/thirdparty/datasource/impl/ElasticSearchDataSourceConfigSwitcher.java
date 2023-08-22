@@ -27,22 +27,28 @@ import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
 import org.apache.seatunnel.common.constants.PluginType;
+
+import com.google.auto.service.AutoService;
 
 import java.util.Arrays;
 import java.util.List;
 
+@AutoService(DataSourceConfigSwitcher.class)
 public class ElasticSearchDataSourceConfigSwitcher extends AbstractDataSourceConfigSwitcher {
-
-    public static final ElasticSearchDataSourceConfigSwitcher INSTANCE =
-            new ElasticSearchDataSourceConfigSwitcher();
 
     private static final String SOURCE = "source";
     private static final String SCHEMA = "schema";
     private static final String PRIMARY_KEYS = "primary_keys";
     private static final String INDEX = "index";
 
-    private ElasticSearchDataSourceConfigSwitcher() {}
+    public ElasticSearchDataSourceConfigSwitcher() {}
+
+    @Override
+    public String getDataSourceName() {
+        return "ELASTICSEARCH";
+    }
 
     @Override
     public FormStructure filterOptionRule(
