@@ -52,7 +52,7 @@ const DatasourceList = defineComponent({
     const { getColumns } = useColumns((id: string, type: 'edit' | 'delete') => {
       if (type === 'edit') {
         router.push({ name: 'datasource-edit', params: { id } })
-      } else {
+      } else  if(type === 'delete'){
         deleteRecord(id)
       }
     })

@@ -35,6 +35,7 @@ export default {
   operation: 'Operation',
   click_to_view: 'Click to view',
   delete: 'Delete',
+  delete_confirm: 'Are you sure delete ?',
   confirm: 'Confirm',
   cancel: 'Cancel',
   create: 'Create',
