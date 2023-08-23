@@ -58,17 +58,28 @@ public class MysqlJdbcDataSourceChannel implements DataSourceChannel {
             @NonNull String pluginName,
             Map<String, String> requestParams,
             String database,
-            Map<String, String> option) {
+            Map<String, String> options) {
         List<String> tableNames = new ArrayList<>();
+        String filterName = options.get("filterName");
+        String size = options.get("size");
+        boolean isSize = StringUtils.isNotEmpty(size);
+        if (StringUtils.isNotEmpty(filterName) && !filterName.contains("%")) {
+            filterName = "%" + filterName + "%";
+        } else if (StringUtils.equals(filterName, "")) {
+            filterName = null;
+        }
         try (Connection connection = getConnection(requestParams);
                 ResultSet resultSet =
                         connection
                                 .getMetaData()
-                                .getTables(database, null, null, new String[] {"TABLE"})) {
+                                .getTables(database, null, filterName, new String[] {"TABLE"})) {
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
                     tableNames.add(tableName);
+                    if (isSize && tableNames.size() >= Integer.parseInt(size)) {
+                        break;
+                    }
                 }
             }
             return tableNames;
