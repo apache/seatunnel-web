@@ -19,6 +19,7 @@ import { h, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { EditOutlined } from '@vicons/antd'
 import { NButton, NSpace } from 'naive-ui'
+import {useTableOperation} from "@/hooks";
 //import type { TableColumns, VirtualTableRecord } from '../types'
 
 export function useColumns(onCallback: Function) {
@@ -70,33 +71,25 @@ export function useColumns(onCallback: Function) {
         //render: (rowData: VirtualTableRecord) =>
         //  renderTableTime(rowData.createTime)
       },
-      {
+      useTableOperation({
         title: t('virtual_tables.operation'),
         key: 'operation',
-        render: (row: any) =>
-          h(NSpace, null, {
-            default: () => [
-              h(
-                NButton,
-                {
-                  text: true,
-                  onClick: () => void onCallback(row.tableId, 'edit')
-                },
-                {
-                  default: () => t('virtual_tables.edit')
-                }
-              ),
-              h(
-                NButton,
-                {
-                  text: true,
-                  onClick: () => void onCallback(row.tableId, 'delete')
-                },
-                { default: () => t('virtual_tables.delete') }
-              )
-            ]
-          })
-      }
+        buttons: [
+          {
+            text: t('datasource.edit'),
+            icon: h(EditOutlined),
+            onClick: (rowData) => void onCallback(rowData.tableId, 'edit')
+          },
+          {
+            isDelete: true,
+            text: t('datasource.delete'),
+            onPositiveClick: (rowData) => void onCallback(rowData.tableId, 'delete'),
+            negativeText: t('datasource.cancel'),
+            positiveText: t('datasource.confirm'),
+            popTips: t('datasource.delete_confirm')
+          }
+        ]
+      })
     ]
     return columns
   }

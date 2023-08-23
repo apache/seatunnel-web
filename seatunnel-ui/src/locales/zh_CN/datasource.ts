@@ -35,6 +35,7 @@ export default {
   operation: '操作',
   click_to_view: '点击查看',
   delete: '删除',
+  delete_confirm: '确认删除？',
   confirm: '确定',
   cancel: '取消',
   create: '创建',

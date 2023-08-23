@@ -23,7 +23,6 @@ import { getTableColumn } from '@/common/table'
 
 import { useTableOperation } from '@/hooks'
 import { EditOutlined } from '@vicons/antd'
-import ResourceAuth from '@/components/resource-auth'
 
 export function useColumns(onCallback: Function) {
   const { t } = useI18n()
@@ -80,7 +79,26 @@ export function useColumns(onCallback: Function) {
       {
         title: t('datasource.update_time'),
         key: 'updateTime',
-      }
+      },
+      useTableOperation({
+        title: t('datasource.operation'),
+        key: 'operation',
+        buttons: [
+          {
+            text: t('datasource.edit'),
+            icon: h(EditOutlined),
+            onClick: (rowData) => void onCallback(rowData.id, 'edit')
+          },
+          {
+            isDelete: true,
+            text: t('datasource.delete'),
+            onPositiveClick: (rowData) => void onCallback(rowData.id, 'delete'),
+            negativeText: t('datasource.cancel'),
+            positiveText: t('datasource.confirm'),
+            popTips: t('datasource.delete_confirm')
+          }
+        ]
+      })
     ]
   }
 
