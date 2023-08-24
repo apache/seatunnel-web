@@ -27,8 +27,7 @@ import java.util.List;
 public interface ITableSchemaService {
     TableSchemaRes getSeaTunnelSchema(String pluginName, TableSchemaReq tableSchemaReq);
 
-    void getAddSeaTunnelSchema(
-            List<TableField> tableFields, String pluginName, Boolean isVirtualTable);
+    void getAddSeaTunnelSchema(List<TableField> tableFields, String pluginName);
 
     boolean getColumnProjection(String pluginName);
 

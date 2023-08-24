@@ -65,7 +65,6 @@ public class DatasourceClassLoader extends URLClassLoader {
 
     @Override
     public URL getResource(String name) {
-        log.info("getResource : " + name);
         // first, try and find it via the URLClassloader
         URL urlClassLoaderResource = findResource(name);
         if (urlClassLoaderResource != null) {
@@ -79,7 +78,6 @@ public class DatasourceClassLoader extends URLClassLoader {
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
         // first get resources from URLClassloader
-        log.info("getResources : " + name);
         Enumeration<URL> urlClassLoaderResources = findResources(name);
         final List<URL> result = new ArrayList<>();
 

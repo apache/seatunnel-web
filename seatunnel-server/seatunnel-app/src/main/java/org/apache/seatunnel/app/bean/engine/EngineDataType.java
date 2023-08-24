@@ -16,6 +16,8 @@
  */
 package org.apache.seatunnel.app.bean.engine;
 
+import org.apache.seatunnel.api.table.catalog.DataTypeConvertException;
+import org.apache.seatunnel.api.table.catalog.DataTypeConvertor;
 import org.apache.seatunnel.api.table.type.ArrayType;
 import org.apache.seatunnel.api.table.type.BasicType;
 import org.apache.seatunnel.api.table.type.DecimalType;
@@ -23,48 +25,87 @@ import org.apache.seatunnel.api.table.type.LocalTimeType;
 import org.apache.seatunnel.api.table.type.PrimitiveByteArrayType;
 import org.apache.seatunnel.api.table.type.SeaTunnelDataType;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class EngineDataType {
 
-    public static DataType T_STRING = new DataType("string", BasicType.STRING_TYPE);
-    public static DataType T_BOOLEAN = new DataType("boolean", BasicType.BOOLEAN_TYPE);
-    public static DataType T_BYTE = new DataType("tinyint", BasicType.BYTE_TYPE);
-    public static DataType T_SHORT = new DataType("smallint", BasicType.SHORT_TYPE);
-    public static DataType T_INT = new DataType("int", BasicType.INT_TYPE);
-    public static DataType T_LONG = new DataType("bigint", BasicType.LONG_TYPE);
-    public static DataType T_FLOAT = new DataType("float", BasicType.FLOAT_TYPE);
-    public static DataType T_DOUBLE = new DataType("double", BasicType.DOUBLE_TYPE);
-    public static DataType T_VOID = new DataType("null", BasicType.VOID_TYPE);
+    private static final Map<String, DataType> DATA_TYPE_MAP =
+            Arrays.stream(DataType.values())
+                    .collect(Collectors.toMap(DataType::getName, Function.identity()));
 
-    public static DataType T_DECIMAL = new DataType("decimal(38, 18)", new DecimalType(38, 18));
+    public static List<DataType> getAllDataType() {
+        return Arrays.asList(DataType.values());
+    }
 
-    public static DataType T_LOCAL_DATE = new DataType("date", LocalTimeType.LOCAL_DATE_TYPE);
-    public static DataType T_LOCAL_TIME = new DataType("time", LocalTimeType.LOCAL_TIME_TYPE);
-    public static DataType T_LOCAL_DATE_TIME =
-            new DataType("timestamp", LocalTimeType.LOCAL_DATE_TIME_TYPE);
+    public enum DataType {
+        T_STRING("string", BasicType.STRING_TYPE),
+        T_BOOLEAN("boolean", BasicType.BOOLEAN_TYPE),
+        T_BYTE("tinyint", BasicType.BYTE_TYPE),
+        T_SHORT("smallint", BasicType.SHORT_TYPE),
+        T_INT("int", BasicType.INT_TYPE),
+        T_LONG("bigint", BasicType.LONG_TYPE),
+        T_FLOAT("float", BasicType.FLOAT_TYPE),
+        T_DOUBLE("double", BasicType.DOUBLE_TYPE),
+        T_VOID("null", BasicType.VOID_TYPE),
 
-    public static DataType T_PRIMITIVE_BYTE_ARRAY =
-            new DataType("bytes", PrimitiveByteArrayType.INSTANCE);
+        T_DECIMAL("decimal(38, 18)", new DecimalType(38, 18)),
 
-    public static DataType T_STRING_ARRAY =
-            new DataType("array<string>", ArrayType.STRING_ARRAY_TYPE);
-    public static DataType T_BOOLEAN_ARRAY =
-            new DataType("array<boolean>", ArrayType.BOOLEAN_ARRAY_TYPE);
-    public static DataType T_BYTE_ARRAY = new DataType("array<tinyint>", ArrayType.BYTE_ARRAY_TYPE);
-    public static DataType T_SHORT_ARRAY =
-            new DataType("array<smallint>", ArrayType.SHORT_ARRAY_TYPE);
-    public static DataType T_INT_ARRAY = new DataType("array<int>", ArrayType.INT_ARRAY_TYPE);
-    public static DataType T_LONG_ARRAY = new DataType("array<bigint>", ArrayType.LONG_ARRAY_TYPE);
-    public static DataType T_FLOAT_ARRAY = new DataType("array<float>", ArrayType.FLOAT_ARRAY_TYPE);
-    public static DataType T_DOUBLE_ARRAY =
-            new DataType("array<double>", ArrayType.DOUBLE_ARRAY_TYPE);
+        T_LOCAL_DATE("date", LocalTimeType.LOCAL_DATE_TYPE),
+        T_LOCAL_TIME("time", LocalTimeType.LOCAL_TIME_TYPE),
+        T_LOCAL_DATE_TIME("timestamp", LocalTimeType.LOCAL_DATE_TIME_TYPE),
 
-    @Data
-    @AllArgsConstructor
-    public static class DataType {
-        String name;
-        SeaTunnelDataType<?> RawType;
+        T_PRIMITIVE_BYTE_ARRAY("bytes", PrimitiveByteArrayType.INSTANCE),
+
+        T_STRING_ARRAY("array<string>", ArrayType.STRING_ARRAY_TYPE),
+        T_BOOLEAN_ARRAY("array<boolean>", ArrayType.BOOLEAN_ARRAY_TYPE),
+        T_BYTE_ARRAY("array<tinyint>", ArrayType.BYTE_ARRAY_TYPE),
+        T_SHORT_ARRAY("array<smallint>", ArrayType.SHORT_ARRAY_TYPE),
+        T_INT_ARRAY("array<int>", ArrayType.INT_ARRAY_TYPE),
+        T_LONG_ARRAY("array<bigint>", ArrayType.LONG_ARRAY_TYPE),
+        T_FLOAT_ARRAY("array<float>", ArrayType.FLOAT_ARRAY_TYPE),
+        T_DOUBLE_ARRAY("array<double>", ArrayType.DOUBLE_ARRAY_TYPE);
+
+        @Getter private final String name;
+        @Getter private final SeaTunnelDataType<?> RawType;
+
+        DataType(String name, SeaTunnelDataType<?> rawType) {
+            this.name = name;
+            this.RawType = rawType;
+        }
+    }
+
+    /** This convertor is used to transform the data type from engine to connector. */
+    public static class SeaTunnelDataTypeConvertor
+            implements DataTypeConvertor<SeaTunnelDataType<?>> {
+
+        @Override
+        public SeaTunnelDataType<?> toSeaTunnelType(String engineDataType) {
+            return DATA_TYPE_MAP.get(engineDataType).getRawType();
+        }
+
+        @Override
+        public SeaTunnelDataType<?> toSeaTunnelType(
+                SeaTunnelDataType<?> seaTunnelDataType, Map<String, Object> map)
+                throws DataTypeConvertException {
+            return seaTunnelDataType;
+        }
+
+        @Override
+        public SeaTunnelDataType<?> toConnectorType(
+                SeaTunnelDataType<?> seaTunnelDataType, Map<String, Object> map)
+                throws DataTypeConvertException {
+            return seaTunnelDataType;
+        }
+
+        @Override
+        public String getIdentity() {
+            return "EngineDataTypeConvertor";
+        }
     }
 }

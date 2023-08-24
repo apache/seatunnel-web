@@ -29,7 +29,6 @@ import io.swagger.annotations.ApiOperation;
 
 import javax.annotation.Resource;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class EngineController {
     @ApiOperation(value = "list all supported Data Type", httpMethod = "GET")
     public Result<List<String>> listSupportDataTypes() {
         return Result.success(
-                Arrays.stream(engineService.listSupportDataTypes())
+                engineService.listSupportDataTypes().stream()
                         .map(EngineDataType.DataType::getName)
                         .collect(Collectors.toList()));
     }
