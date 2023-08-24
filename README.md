@@ -2,7 +2,7 @@
 
 <img src="https://seatunnel.apache.org/image/logo.png" alt="seatunnel logo" height="200px" align="right" />
 
-[![Backend Workflow](https://github.com/apache/incubator-seatunnel/actions/workflows/backend.yml/badge.svg?branch=dev)](https://github.com/apache/incubator-seatunnel/actions/workflows/backend.yml)
+[![Backend Workflow](https://github.com/apache/seatunnel/actions/workflows/backend.yml/badge.svg?branch=dev)](https://github.com/apache/seatunnel/actions/workflows/backend.yml)
 [![Slack](https://img.shields.io/badge/slack-%23seatunnel-4f8eba?logo=slack)](https://join.slack.com/t/apacheseatunnel/shared_invite/zt-123jmewxe-RjB_DW3M3gV~xL91pZ0oVQ)
 [![Twitter Follow](https://img.shields.io/twitter/follow/ASFSeaTunnel.svg?label=Follow&logo=twitter)](https://twitter.com/ASFSeaTunnel)
 
@@ -16,7 +16,7 @@ SeaTunnel was formerly named Waterdrop , and renamed SeaTunnel since October 12,
 So, What we are?
 
 An open-source web console to manage your seatunnel-script, and would push them to any scheduling-system easily.
-Click it if your want to know more about our design. 👉🏻[Design](https://github.com/apache/incubator-seatunnel/issues/1947)
+Click it if your want to know more about our design. 👉🏻[Design](https://github.com/apache/seatunnel/issues/1947)
 
 
 ## How to start
@@ -131,11 +131,11 @@ If you use SeaTunnel Web, you need deploy a SeaTunnel Zeta Client in the SeaTunn
 #### 3.2 Build SeaTunnel Web Install Package From Code
 
 ```
-cd incubator-seatunnel-web
+cd seatunnel-web
 sh build.sh code
 ```
 
-Then you can find the installer package in dir `incubator-seatunnel-web/seatunnel-web-dist/target/apache-seatunnel-web-${project.version}.tar.gz`.
+Then you can find the installer package in dir `seatunnel-web/seatunnel-web-dist/target/apache-seatunnel-web-${project.version}.tar.gz`.
 
 #### 3.3 Install
 

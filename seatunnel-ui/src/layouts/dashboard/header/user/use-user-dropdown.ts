@@ -26,7 +26,7 @@ export function useUserDropdown() {
 
   const handleSelect = (key: string) => {
     if (key === 'help') {
-      window.open('http://seatunnel.incubator.apache.org/versions/')
+      window.open('http://seatunnel.apache.org/versions/')
     } else if (key === 'setting') {
       router.push({ path: '/setting' })
     } else if (key === 'logout') {
