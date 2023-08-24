@@ -104,7 +104,8 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public void getAddSeaTunnelSchema(List<TableField> tableFields, String pluginName) {
+    public void getAddSeaTunnelSchema(
+            List<TableField> tableFields, String pluginName, Boolean isVirtualTable) {
         pluginName = pluginName.toUpperCase();
         if (pluginName.endsWith("-CDC")) {
             pluginName = pluginName.replace("-CDC", "");
@@ -113,19 +114,25 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
         } else if (pluginName.startsWith("JDBC-")) {
             pluginName = pluginName.replace("JDBC-", "");
         }
-        DataTypeConvertor<?> convertor = factory.getDataTypeConvertor(pluginName);
-        for (TableField field : tableFields) {
-            try {
-                SeaTunnelDataType<?> dataType = convertor.toSeaTunnelType(field.getType());
-                field.setUnSupport(false);
-                field.setOutputDataType(dataType.toString());
-            } catch (Exception exception) {
-                field.setUnSupport(true);
-                log.warn(
-                        "Database {} , field {} is unSupport",
-                        pluginName,
-                        field.getType(),
-                        exception);
+        try {
+            DataTypeConvertor<?> convertor = factory.getDataTypeConvertor(pluginName);
+            for (TableField field : tableFields) {
+                try {
+                    SeaTunnelDataType<?> dataType = convertor.toSeaTunnelType(field.getType());
+                    field.setUnSupport(false);
+                    field.setOutputDataType(dataType.toString());
+                } catch (Exception exception) {
+                    field.setUnSupport(true);
+                    log.warn(
+                            "Database {} , field {} is unSupport",
+                            pluginName,
+                            field.getType(),
+                            exception);
+                }
+            }
+        } catch (Exception e) {
+            if (!isVirtualTable) {
+                throw e;
             }
         }
     }

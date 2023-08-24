@@ -341,7 +341,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                     DataSourceClientFactory.getDataSourceClient()
                             .getTableFields(pluginName, datasourceConfig, databaseName, tableName);
 
-            tableSchemaService.getAddSeaTunnelSchema(tableFields, pluginName);
+            tableSchemaService.getAddSeaTunnelSchema(tableFields, pluginName, false);
             return tableFields;
         }
         VirtualTable virtualTable = virtualTableDao.selectVirtualTableByTableName(tableName);
@@ -352,7 +352,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         // convert virtual table to table field
         // virtualTable.getTableFields()
         List<TableField> tableFields = convertTableSchema(virtualTable.getTableFields());
-        tableSchemaService.getAddSeaTunnelSchema(tableFields, pluginName);
+        tableSchemaService.getAddSeaTunnelSchema(tableFields, pluginName, true);
         return tableFields;
     }
 
