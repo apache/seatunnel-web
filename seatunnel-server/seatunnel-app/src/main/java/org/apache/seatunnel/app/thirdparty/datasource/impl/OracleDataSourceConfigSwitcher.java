@@ -23,9 +23,12 @@ import org.apache.seatunnel.common.utils.SeaTunnelException;
 import com.google.auto.service.AutoService;
 
 import java.util.List;
+import java.util.Optional;
 
 @AutoService(DataSourceConfigSwitcher.class)
 public class OracleDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
+
+    public static final String CATALOG_NAME = "Oracle";
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
         String[] split = fullTable.split("\\.");
@@ -66,5 +69,13 @@ public class OracleDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwit
     @Override
     public String getDataSourceName() {
         return "JDBC-ORACLE";
+    }
+
+    protected boolean isSupportDefaultSchema() {
+        return true;
+    }
+
+    protected Optional<String> getCatalogName() {
+        return Optional.of(CATALOG_NAME);
     }
 }

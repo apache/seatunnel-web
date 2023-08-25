@@ -21,6 +21,8 @@ import org.apache.seatunnel.shade.com.typesafe.config.Config;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigValue;
 
 import org.apache.seatunnel.api.configuration.Option;
+import org.apache.seatunnel.api.configuration.util.Condition;
+import org.apache.seatunnel.api.configuration.util.Expression;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.configuration.util.RequiredOption;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
@@ -47,6 +49,8 @@ public abstract class AbstractDataSourceConfigSwitcher implements DataSourceConf
             BusinessMode businessMode,
             PluginType pluginType,
             OptionRule connectorOptionRule,
+            List<RequiredOption> addRequiredOptions,
+            List<Option<?>> addOptionalOptions,
             List<String> excludedKeys) {
 
         List<String> dataSourceRequiredAllKey =
@@ -57,6 +61,15 @@ public abstract class AbstractDataSourceConfigSwitcher implements DataSourceConf
                         .collect(Collectors.toList());
 
         dataSourceRequiredAllKey.addAll(excludedKeys);
+
+        List<String> dataSourceOptionAllKey =
+                Stream.concat(
+                                dataSourceOptionRule.getOptionalOptions().stream(),
+                                virtualTableOptionRule.getOptionalOptions().stream())
+                        .map(Option::key)
+                        .collect(Collectors.toList());
+
+        dataSourceOptionAllKey.addAll(excludedKeys);
 
         List<RequiredOption> requiredOptions =
                 connectorOptionRule.getRequiredOptions().stream()
@@ -73,7 +86,13 @@ public abstract class AbstractDataSourceConfigSwitcher implements DataSourceConf
                                                         .filter(
                                                                 op -> {
                                                                     return !dataSourceRequiredAllKey
-                                                                            .contains(op.key());
+                                                                                    .contains(
+                                                                                            op
+                                                                                                    .key())
+                                                                            & !dataSourceOptionAllKey
+                                                                                    .contains(
+                                                                                            op
+                                                                                                    .key());
                                                                 })
                                                         .collect(Collectors.toList());
                                         return requiredOpList.isEmpty()
@@ -117,13 +136,31 @@ public abstract class AbstractDataSourceConfigSwitcher implements DataSourceConf
                                             instanceof RequiredOption.ConditionalRequiredOptions) {
                                         List<Option<?>> conditionalRequiredOptions =
                                                 requiredOption.getOptions();
-                                        return conditionalRequiredOptions.stream()
-                                                        .anyMatch(
-                                                                op ->
-                                                                        dataSourceRequiredAllKey
-                                                                                .contains(op.key()))
-                                                ? null
-                                                : requiredOption;
+                                        RequiredOption.ConditionalRequiredOptions
+                                                conditionalRequired =
+                                                        (RequiredOption.ConditionalRequiredOptions)
+                                                                requiredOption;
+                                        Expression expression = conditionalRequired.getExpression();
+                                        Condition<?> condition = expression.getCondition();
+                                        List<Option<?>> requiredOptionList =
+                                                conditionalRequired.getRequiredOption();
+                                        List<Option<?>> requiredOpList =
+                                                requiredOptionList.stream()
+                                                        .filter(
+                                                                op -> {
+                                                                    return !dataSourceRequiredAllKey
+                                                                                    .contains(
+                                                                                            op
+                                                                                                    .key())
+                                                                            & !dataSourceOptionAllKey
+                                                                                    .contains(
+                                                                                            op
+                                                                                                    .key());
+                                                                })
+                                                        .collect(Collectors.toList());
+                                        Expression expressionNew = Expression.of(condition);
+                                        return RequiredOption.ConditionalRequiredOptions.of(
+                                                expressionNew, requiredOpList);
                                     }
 
                                     throw new UnSupportWrapperException(
@@ -132,20 +169,13 @@ public abstract class AbstractDataSourceConfigSwitcher implements DataSourceConf
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
 
-        List<String> dataSourceOptionAllKey =
-                Stream.concat(
-                                dataSourceOptionRule.getOptionalOptions().stream(),
-                                virtualTableOptionRule.getOptionalOptions().stream())
-                        .map(Option::key)
-                        .collect(Collectors.toList());
-
-        dataSourceOptionAllKey.addAll(excludedKeys);
-
         List<Option<?>> optionList =
                 connectorOptionRule.getOptionalOptions().stream()
                         .filter(option -> !dataSourceOptionAllKey.contains(option.key()))
                         .collect(Collectors.toList());
 
+        requiredOptions.addAll(addRequiredOptions);
+        optionList.addAll(addOptionalOptions);
         return SeaTunnelOptionRuleWrapper.wrapper(
                 optionList, requiredOptions, connectorName, pluginType);
     }

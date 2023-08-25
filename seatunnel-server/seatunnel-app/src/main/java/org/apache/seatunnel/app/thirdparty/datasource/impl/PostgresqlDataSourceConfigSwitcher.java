@@ -24,11 +24,18 @@ import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 import com.google.auto.service.AutoService;
 
 import java.util.List;
+import java.util.Optional;
 
 @AutoService(DataSourceConfigSwitcher.class)
 public class PostgresqlDataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
 
+    public static final String CATALOG_NAME = "Postgres";
+
     public PostgresqlDataSourceConfigSwitcher() {}
+
+    protected Optional<String> getCatalogName() {
+        return Optional.of(CATALOG_NAME);
+    }
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String fullTable) {
 
@@ -56,5 +63,9 @@ public class PostgresqlDataSourceConfigSwitcher extends BaseJdbcDataSourceConfig
     @Override
     public String getDataSourceName() {
         return "JDBC-POSTGRES";
+    }
+
+    protected boolean isSupportDefaultSchema() {
+        return true;
     }
 }
