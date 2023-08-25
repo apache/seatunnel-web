@@ -15,163 +15,210 @@
  * limitations under the License.
 */
 
--- CREATE DATABASE IF NOT EXISTS seatunnel;
-
-CREATE DATABASE IF NOT EXISTS seatunnel;
-use seatunnel;
+DROP TABLE IF EXISTS "user_login_log";
+CREATE TABLE "user_login_log" (
+                                  id BIGINT NOT NULL AUTO_INCREMENT,
+                                  user_id INT NOT NULL,
+                                  token CLOB NOT NULL,
+                                  token_status TINYINT NOT NULL,
+                                  create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                  PRIMARY KEY (id)
+);
 
 -- ----------------------------
 -- Table structure for role
 -- ----------------------------
-DROP TABLE IF EXISTS `role` CASCADE;;
-CREATE TABLE `role` (
-    `id` int(20) NOT NULL AUTO_INCREMENT,
-    `type` int(2) NOT NULL,
-    `role_name` varchar(255) NOT NULL,
-    `description` varchar(255) DEFAULT NULL,
-    `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+DROP TABLE IF EXISTS role;
+CREATE TABLE role (
+                      id INT AUTO_INCREMENT PRIMARY KEY,
+                      type INT NOT NULL,
+                      role_name VARCHAR(255) NOT NULL,
+                      description VARCHAR(255),
+                      create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
--- ----------------------------
--- Records of role
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for role_user_relation
 -- ----------------------------
-DROP TABLE IF EXISTS `role_user_relation` CASCADE;
-CREATE TABLE `role_user_relation` (
-    `id` int(20) NOT NULL AUTO_INCREMENT,
-    `role_id` int(20) NOT NULL,
-    `user_id` int(20) NOT NULL,
-    `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+DROP TABLE IF EXISTS role_user_relation;
+CREATE TABLE role_user_relation (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    role_id INT NOT NULL,
+                                    user_id INT NOT NULL,
+                                    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- ----------------------------
--- Records of role_user_relation
--- ----------------------------
-
--- ----------------------------
--- Table structure for scheduler_config
--- ----------------------------
-DROP TABLE IF EXISTS `scheduler_config` CASCADE;
-CREATE TABLE `scheduler_config` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `script_id` int(11) DEFAULT NULL,
-    `trigger_expression` varchar(255) DEFAULT NULL,
-    `retry_times` int(11) NOT NULL DEFAULT '0',
-    `retry_interval` int(11) NOT NULL DEFAULT '0',
-    `active_start_time` datetime(3) NOT NULL,
-    `active_end_time` datetime(3) NOT NULL,
-    `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    `creator_id` int(11) NOT NULL,
-    `update_id` int(11) NOT NULL,
-    PRIMARY KEY (`id`)
-);
--- ----------------------------
--- Records of scheduler_config
--- ----------------------------
-
--- ----------------------------
--- Table structure for script
--- ----------------------------
-DROP TABLE IF EXISTS `script` CASCADE;
-CREATE TABLE `script` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL,
-    `type` tinyint(4) NOT NULL,
-    `status` tinyint(4) NOT NULL,
-    `content` mediumtext,
-    `content_md5` varchar(255) DEFAULT NULL,
-    `creator_id` int(11) NOT NULL,
-    `mender_id` int(11) NOT NULL,
-    `create_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+-- Table structure for t_st_datasource
+DROP TABLE IF EXISTS t_st_datasource;
+CREATE TABLE t_st_datasource (
+                                 id BIGINT NOT NULL,
+                                 datasource_name VARCHAR(63) NOT NULL,
+                                 plugin_name VARCHAR(63) NOT NULL,
+                                 plugin_version VARCHAR(63) DEFAULT '1.0.0',
+                                 datasource_config VARCHAR(1023) NOT NULL,
+                                 description VARCHAR(63) DEFAULT NULL,
+                                 create_user_id INT NOT NULL,
+                                 update_user_id INT NOT NULL,
+                                 create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                 update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                 PRIMARY KEY (id),
+                                 UNIQUE (datasource_name)
 );
 
--- ----------------------------
--- Records of script
--- ----------------------------
-
--- ----------------------------
--- Table structure for script_job_apply
--- ----------------------------
-DROP TABLE IF EXISTS `script_job_apply` CASCADE;
-CREATE TABLE `script_job_apply` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `script_id` int(11) NOT NULL,
-    `scheduler_config_id` int(11) NOT NULL,
-    `job_id` bigint(20) DEFAULT NULL,
-    `operator_id` int(11) NOT NULL,
-    `create_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+-- Table structure for t_st_job_definition
+DROP TABLE IF EXISTS t_st_job_definition;
+CREATE TABLE t_st_job_definition (
+                                     id BIGINT NOT NULL,
+                                     name VARCHAR(50) NOT NULL,
+                                     description VARCHAR(255) DEFAULT NULL,
+                                     job_type VARCHAR(50) DEFAULT NULL,
+                                     create_user_id INT NOT NULL,
+                                     update_user_id INT NOT NULL,
+                                     create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                     update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                     PRIMARY KEY (id),
+                                     UNIQUE (name)
 );
 
--- ----------------------------
--- Records of script_job_apply
--- ----------------------------
-
--- ----------------------------
--- Table structure for script_param
--- ----------------------------
-DROP TABLE IF EXISTS `script_param` CASCADE;
-CREATE TABLE `script_param` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `script_id` int(11) DEFAULT NULL,
-    `key` varchar(255) NOT NULL,
-    `value` varchar(255) DEFAULT NULL,
-    `status` tinyint(4) DEFAULT NULL,
-    `create_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+-- Table structure for t_st_job_instance
+DROP TABLE IF EXISTS t_st_job_instance;
+CREATE TABLE t_st_job_instance (
+                                   id BIGINT NOT NULL,
+                                   job_define_id BIGINT NOT NULL,
+                                   job_status VARCHAR(50) DEFAULT NULL,
+                                   job_config CLOB NOT NULL,
+                                   engine_name VARCHAR(50) NOT NULL,
+                                   engine_version VARCHAR(50) NOT NULL,
+                                   job_engine_id VARCHAR(200) DEFAULT NULL,
+                                   create_user_id INT NOT NULL,
+                                   update_user_id INT DEFAULT NULL,
+                                   create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                   update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                   end_time TIMESTAMP(3) DEFAULT NULL,
+                                   job_type VARCHAR(50) NOT NULL,
+                                   PRIMARY KEY (id)
 );
 
--- ----------------------------
--- Records of script_param
--- ----------------------------
+-- Table structure for t_st_job_instance_history
+DROP TABLE IF EXISTS t_st_job_instance_history;
+CREATE TABLE t_st_job_instance_history (
+                                           id BIGINT NOT NULL,
+                                           dag CLOB NOT NULL,
+                                           create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                           update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                           PRIMARY KEY (id)
+);
 
--- ----------------------------
+-- Table structure for t_st_job_line
+DROP TABLE IF EXISTS t_st_job_line;
+CREATE TABLE t_st_job_line (
+                               id BIGINT NOT NULL,
+                               version_id BIGINT NOT NULL,
+                               input_plugin_id VARCHAR(50) NOT NULL,
+                               target_plugin_id VARCHAR(50) NOT NULL,
+                               create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                               update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                               PRIMARY KEY (id),
+                               INDEX job_line_version_index (version_id)
+);
+
+-- Table structure for t_st_job_metrics
+DROP TABLE IF EXISTS t_st_job_metrics;
+CREATE TABLE t_st_job_metrics (
+                                  id BIGINT NOT NULL,
+                                  job_instance_id BIGINT NOT NULL,
+                                  pipeline_id INT NOT NULL,
+                                  read_row_count BIGINT NOT NULL,
+                                  write_row_count BIGINT NOT NULL,
+                                  source_table_names VARCHAR(200) DEFAULT NULL,
+                                  sink_table_names VARCHAR(200) DEFAULT NULL,
+                                  read_qps BIGINT DEFAULT NULL,
+                                  write_qps BIGINT DEFAULT NULL,
+                                  record_delay BIGINT DEFAULT NULL,
+                                  status VARCHAR(20) DEFAULT NULL,
+                                  create_user_id INT NOT NULL,
+                                  update_user_id INT DEFAULT NULL,
+                                  create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                  update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                  PRIMARY KEY (id)
+);
+
+-- Table structure for t_st_job_task
+DROP TABLE IF EXISTS t_st_job_task;
+CREATE TABLE t_st_job_task (
+                               id BIGINT NOT NULL,
+                               version_id BIGINT NOT NULL,
+                               plugin_id VARCHAR(50) NOT NULL,
+                               name VARCHAR(50) NOT NULL,
+                               config CLOB DEFAULT NULL,
+                               transform_options VARCHAR(5000) DEFAULT NULL,
+                               output_schema CLOB DEFAULT NULL,
+                               connector_type VARCHAR(50) NOT NULL,
+                               datasource_id BIGINT DEFAULT NULL,
+                               datasource_option VARCHAR(5000) DEFAULT NULL,
+                               select_table_fields VARCHAR(5000) DEFAULT NULL,
+                               scene_mode VARCHAR(50) DEFAULT NULL,
+                               type VARCHAR(50) NOT NULL,
+                               create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                               update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                               PRIMARY KEY (id),
+                               INDEX job_task_plugin_id_index (plugin_id)
+);
+
+-- Table structure for t_st_job_version
+DROP TABLE IF EXISTS t_st_job_version;
+CREATE TABLE t_st_job_version (
+                                  id BIGINT NOT NULL,
+                                  job_id BIGINT NOT NULL,
+                                  name VARCHAR(255) NOT NULL,
+                                  job_mode VARCHAR(10) NOT NULL,
+                                  env CLOB DEFAULT NULL,
+                                  engine_name VARCHAR(50) NOT NULL,
+                                  engine_version VARCHAR(50) NOT NULL,
+                                  create_user_id INT NOT NULL,
+                                  update_user_id INT NOT NULL,
+                                  create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                  update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                  PRIMARY KEY (id)
+);
+
+-- Table structure for t_st_virtual_table
+DROP TABLE IF EXISTS t_st_virtual_table;
+CREATE TABLE t_st_virtual_table (
+                                    id BIGINT NOT NULL,
+                                    datasource_id BIGINT NOT NULL,
+                                    virtual_database_name VARCHAR(63) NOT NULL,
+                                    virtual_table_name VARCHAR(63) NOT NULL,
+                                    table_fields VARCHAR(1023) NOT NULL,
+                                    virtual_table_config VARCHAR(1023) NOT NULL,
+                                    description VARCHAR(63) DEFAULT NULL,
+                                    create_user_id INT NOT NULL,
+                                    update_user_id INT NOT NULL,
+                                    create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                    update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                    PRIMARY KEY (id)
+);
+
 -- Table structure for user
--- ----------------------------
-DROP TABLE IF EXISTS `user` CASCADE;
-CREATE TABLE `user` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `username` varchar(255) NOT NULL,
-    `password` varchar(255) NOT NULL,
-    `status` tinyint(4) NOT NULL,
-    `type` tinyint(4) NOT NULL,
-    `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
+DROP TABLE IF EXISTS "user";
+CREATE TABLE "user" (
+                      id INT NOT NULL AUTO_INCREMENT,
+                      username VARCHAR(255) NOT NULL,
+                      password VARCHAR(255) NOT NULL,
+                      status TINYINT NOT NULL,
+                      type TINYINT NOT NULL,
+                      create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                      update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                      PRIMARY KEY (id)
 );
 
--- ----------------------------
 -- Records of user
--- ----------------------------
+INSERT INTO "user" ("username", "password", "status", "type") VALUES ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);
 
--- ----------------------------
--- Table structure for user_login_log
--- ----------------------------
-DROP TABLE IF EXISTS `user_login_log` CASCADE;
-CREATE TABLE `user_login_log` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `user_id` int(11) NOT NULL,
-    `token` mediumtext NOT NULL,
-    `token_status` tinyint(1) NOT NULL,
-    `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    PRIMARY KEY (`id`)
-);
-
--- ----------------------------
 -- Records of user_login_log
--- ----------------------------
-
-INSERT INTO `seatunnel`.`user`(`username`,`password`,`status`,`type`) values ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);
+-- No equivalent records provided for the user_login_log table in the provided SQL script.
+-- You can insert records into this table using similar INSERT INTO statements.
+-- However, you would need to provide the values for columns like "user_id", "token", "token_status", etc.

@@ -44,6 +44,7 @@
         <profile>
             <id>release</id>
             <activation>
+                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>release</name>
                     <value>true</value>
@@ -129,7 +130,7 @@
         <profile>
             <id>ci</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
                 <property>
                     <name>release</name>
                     <value>true</value>
@@ -363,7 +364,6 @@
                 </dependency>
 
                 <!-- jdbc driver -->
-
                 <dependency>
                     <groupId>com.oracle.database.jdbc</groupId>
                     <artifactId>ojdbc8</artifactId>
@@ -371,7 +371,6 @@
                     <scope>provided</scope>
                 </dependency>
 
-                <!-- driver -->
                 <dependency>
                     <groupId>com.clickhouse</groupId>
                     <artifactId>clickhouse-jdbc</artifactId>
@@ -379,7 +378,6 @@
                     <scope>provided</scope>
                 </dependency>
 
-                <!-- driver -->
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
@@ -394,7 +392,6 @@
                     <scope>provided</scope>
                 </dependency>
 
-                <!-- driver -->
                 <dependency>
                     <groupId>com.microsoft.sqlserver</groupId>
                     <artifactId>mssql-jdbc</artifactId>
@@ -402,13 +399,14 @@
                     <scope>provided</scope>
                 </dependency>
 
-                <!-- driver -->
                 <dependency>
                     <groupId>mysql</groupId>
                     <artifactId>mysql-connector-java</artifactId>
                     <version>${mysql-connector.version}</version>
                     <scope>provided</scope>
                 </dependency>
+
+                <!-- driver end -->
 
             </dependencies>
 
