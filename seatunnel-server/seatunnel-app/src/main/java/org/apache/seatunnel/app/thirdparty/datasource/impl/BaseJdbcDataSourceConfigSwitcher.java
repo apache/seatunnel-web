@@ -18,9 +18,13 @@
 package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
 
+import org.apache.seatunnel.api.configuration.Option;
+import org.apache.seatunnel.api.configuration.Options;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
+import org.apache.seatunnel.api.configuration.util.RequiredOption;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
@@ -34,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DATA_INTEGRATION;
 import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DATA_REPLICA;
@@ -48,6 +53,20 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
 
     private static final String URL_KEY = "url";
 
+    // for catalog
+    private static final String CATALOG = "catalog";
+    private static final String FACTORY = "factory";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String BASE_URL = "base-url";
+    private static final String CATALOG_SCHEMA = "schema";
+
+    private static final Option<String> DATABASE_SCHEMA =
+            Options.key("database_schema")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("the default database used during automated table creation.");
+
     @Override
     public FormStructure filterOptionRule(
             String connectorName,
@@ -56,6 +75,8 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
             BusinessMode businessMode,
             PluginType pluginType,
             OptionRule connectorOptionRule,
+            List<RequiredOption> addRequiredOptions,
+            List<Option<?>> addOptionalOptions,
             List<String> excludedKeys) {
         Map<PluginType, List<String>> filterFieldMap = new HashMap<>();
 
@@ -63,7 +84,11 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
                 PluginType.SINK,
                 Arrays.asList(QUERY_KEY, TABLE_KEY, DATABASE_KEY, GENERATE_SINK_SQL));
         filterFieldMap.put(PluginType.SOURCE, Collections.singletonList(QUERY_KEY));
-
+        if (isSupportDefaultSchema()
+                && businessMode.equals(DATA_REPLICA)
+                && pluginType.equals(PluginType.SINK)) {
+            addOptionalOptions.add(DATABASE_SCHEMA);
+        }
         return super.filterOptionRule(
                 connectorName,
                 dataSourceOptionRule,
@@ -71,6 +96,8 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
                 businessMode,
                 pluginType,
                 connectorOptionRule,
+                addRequiredOptions,
+                addOptionalOptions,
                 filterFieldMap.get(pluginType));
     }
 
@@ -135,6 +162,37 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
         } else if (businessMode.equals(DATA_REPLICA)) {
             String databaseName = dataSourceOption.getDatabases().get(0);
             if (pluginType.equals(PluginType.SINK)) {
+                if (getCatalogName().isPresent()) {
+                    Config config = ConfigFactory.empty();
+                    config =
+                            config.withValue(
+                                    FACTORY, ConfigValueFactory.fromAnyRef(getCatalogName().get()));
+                    config =
+                            config.withValue(
+                                    USERNAME,
+                                    ConfigValueFactory.fromAnyRef(
+                                            dataSourceInstanceConfig.getString("user")));
+                    config =
+                            config.withValue(
+                                    PASSWORD,
+                                    ConfigValueFactory.fromAnyRef(
+                                            dataSourceInstanceConfig.getString(PASSWORD)));
+                    config =
+                            config.withValue(
+                                    BASE_URL,
+                                    ConfigValueFactory.fromAnyRef(
+                                            dataSourceInstanceConfig.getString(URL_KEY)));
+                    if (isSupportDefaultSchema()
+                            && connectorConfig.hasPath(DATABASE_SCHEMA.key())) {
+                        config =
+                                config.withValue(
+                                        CATALOG_SCHEMA,
+                                        ConfigValueFactory.fromAnyRef(
+                                                connectorConfig.getString(DATABASE_SCHEMA.key())));
+                    }
+
+                    connectorConfig = connectorConfig.withValue(CATALOG, config.root());
+                }
                 connectorConfig =
                         connectorConfig.withValue(
                                 DATABASE_KEY, ConfigValueFactory.fromAnyRef(databaseName));
@@ -173,6 +231,14 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
         sb.append(".").append(quoteIdentifier(table));
 
         return sb.toString();
+    }
+
+    protected boolean isSupportDefaultSchema() {
+        return false;
+    }
+
+    protected Optional<String> getCatalogName() {
+        return Optional.empty();
     }
 
     protected String tableFieldsToSql(List<String> tableFields, String database, String table) {

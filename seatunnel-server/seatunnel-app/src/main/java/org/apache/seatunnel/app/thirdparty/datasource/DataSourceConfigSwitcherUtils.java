@@ -51,6 +51,8 @@ public class DataSourceConfigSwitcherUtils {
                 businessMode,
                 pluginType,
                 connectorOptionRule,
+                new ArrayList<>(),
+                new ArrayList<>(),
                 new ArrayList<>());
     }
 

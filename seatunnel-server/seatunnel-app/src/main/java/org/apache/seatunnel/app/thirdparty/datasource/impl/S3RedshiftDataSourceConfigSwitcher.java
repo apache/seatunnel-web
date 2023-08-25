@@ -19,7 +19,9 @@ package org.apache.seatunnel.app.thirdparty.datasource.impl;
 
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
+import org.apache.seatunnel.api.configuration.Option;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
+import org.apache.seatunnel.api.configuration.util.RequiredOption;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
@@ -51,6 +53,8 @@ public class S3RedshiftDataSourceConfigSwitcher extends AbstractDataSourceConfig
             BusinessMode businessMode,
             PluginType pluginType,
             OptionRule connectorOptionRule,
+            List<RequiredOption> addRequiredOptions,
+            List<Option<?>> addOptionalOptions,
             List<String> excludedKeys) {
         excludedKeys.add("access_key");
         excludedKeys.add("secret_key");
@@ -61,6 +65,8 @@ public class S3RedshiftDataSourceConfigSwitcher extends AbstractDataSourceConfig
                 businessMode,
                 pluginType,
                 connectorOptionRule,
+                addRequiredOptions,
+                addOptionalOptions,
                 excludedKeys);
     }
 

@@ -57,8 +57,7 @@ public class DatasourceLoadConfig {
                 "JDBC-CLICKHOUSE",
                 "org.apache.seatunnel.datasource.plugin.clickhouse.jdbc.ClickhouseJdbcDataSourceFactory");
         classLoaderFactoryName.put(
-                "HIVE",
-                "org.apache.seatunnel.datasource.plugin.hive.jdbc.HiveJdbcDataSourceFactory");
+                "HIVE", "com.whaleops.datasource.datasource.plugin.hive.HiveDataSourceFactory");
         classLoaderFactoryName.put(
                 "JDBC-ORACLE",
                 "org.apache.seatunnel.datasource.plugin.oracle.jdbc.OracleJdbcDataSourceFactory");
@@ -107,7 +106,7 @@ public class DatasourceLoadConfig {
 
         classLoaderJarName.put("ELASTICSEARCH", "datasource-elasticsearch-");
         classLoaderJarName.put("S3", "datasource-s3-");
-        classLoaderJarName.put("HIVE", "datasource-jdbc-hive-");
+        classLoaderJarName.put("HIVE", "datasource-hive-");
         classLoaderJarName.put("KAFKA", "datasource-kafka-");
         classLoaderJarName.put("STARROCKS", "datasource-starrocks-");
         classLoaderJarName.put("S3-REDSHIFT", "datasource-s3redshift-");
@@ -122,13 +121,11 @@ public class DatasourceLoadConfig {
                     "Hive",
                     "JDBC-Oracle",
                     "JDBC-Postgres",
-                    "JDBC-Redshift",
                     "JDBC-SQLServer",
                     "JDBC-TiDB",
                     "Kafka",
                     "MySQL-CDC",
                     "S3",
-                    "S3-Redshift",
                     "SqlServer-CDC",
                     "JDBC-StarRocks",
                     "StarRocks");

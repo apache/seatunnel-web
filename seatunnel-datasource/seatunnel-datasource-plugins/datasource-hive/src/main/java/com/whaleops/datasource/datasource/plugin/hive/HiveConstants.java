@@ -15,22 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.service;
+package com.whaleops.datasource.datasource.plugin.hive;
 
-import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
-import org.apache.seatunnel.app.domain.request.job.TableSchemaReq;
-import org.apache.seatunnel.app.domain.response.job.TableSchemaRes;
-import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+import com.google.common.collect.Sets;
 
-import java.util.List;
+import java.util.Set;
 
-public interface ITableSchemaService {
-    TableSchemaRes getSeaTunnelSchema(String pluginName, TableSchemaReq tableSchemaReq);
+public class HiveConstants {
 
-    void getAddSeaTunnelSchema(List<TableField> tableFields, String pluginName);
-
-    boolean getColumnProjection(String pluginName);
-
-    DataSourceOption checkDatabaseAndTable(
-            String datasourceName, DataSourceOption dataSourceOption);
+    public static final Set<String> HIVE_SYSTEM_DATABASES =
+            Sets.newHashSet(
+                    "information_schema", "mysql", "performance_schema", "sys", "test", "hivedb");
 }

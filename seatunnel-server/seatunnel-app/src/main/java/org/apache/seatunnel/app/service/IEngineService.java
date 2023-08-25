@@ -25,5 +25,5 @@ public interface IEngineService {
 
     List<Engine> listSupportEngines();
 
-    EngineDataType.DataType[] listSupportDataTypes();
+    List<EngineDataType.DataType> listSupportDataTypes();
 }

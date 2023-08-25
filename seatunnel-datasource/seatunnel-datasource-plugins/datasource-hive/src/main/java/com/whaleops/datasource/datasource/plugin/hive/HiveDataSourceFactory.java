@@ -15,22 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.service;
+package com.whaleops.datasource.datasource.plugin.hive;
 
-import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
-import org.apache.seatunnel.app.domain.request.job.TableSchemaReq;
-import org.apache.seatunnel.app.domain.response.job.TableSchemaRes;
-import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
+import org.apache.seatunnel.datasource.plugin.api.DataSourceFactory;
+import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 
-import java.util.List;
+import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 
-public interface ITableSchemaService {
-    TableSchemaRes getSeaTunnelSchema(String pluginName, TableSchemaReq tableSchemaReq);
+import java.util.Set;
 
-    void getAddSeaTunnelSchema(List<TableField> tableFields, String pluginName);
+@Slf4j
+public class HiveDataSourceFactory implements DataSourceFactory {
+    @Override
+    public String factoryIdentifier() {
+        return "Hive";
+    }
 
-    boolean getColumnProjection(String pluginName);
+    @Override
+    public Set<DataSourcePluginInfo> supportedDataSources() {
+        return Sets.newHashSet(HiveConfig.HIVE_DATASOURCE_PLUGIN_INFO);
+    }
 
-    DataSourceOption checkDatabaseAndTable(
-            String datasourceName, DataSourceOption dataSourceOption);
+    @Override
+    public DataSourceChannel createChannel() {
+        return new HiveDataSourceChannel();
+    }
 }

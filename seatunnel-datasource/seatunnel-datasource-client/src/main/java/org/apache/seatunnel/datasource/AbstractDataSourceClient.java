@@ -67,11 +67,11 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
         for (String pluginName : DatasourceLoadConfig.pluginSet) {
             log.info("plugin set : " + pluginName);
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(getCustomClassloader(pluginName));
             if (DatasourceLoadConfig.classLoaderChannel.get(pluginName.toUpperCase()) != null) {
                 log.info(pluginName + " is exist");
                 continue;
             }
+            Thread.currentThread().setContextClassLoader(getCustomClassloader(pluginName));
             try {
                 Class<?> clazz =
                         Class.forName(
@@ -249,7 +249,11 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
                         });
 
         log.info("jar file length :" + (jarFiles == null ? 0 : jarFiles.length));
-        log.info("jar file length :" + (jarFiles == null ? 0 : jarFiles[0].getName()));
+        log.info(
+                "jar file name :"
+                        + (jarFiles == null
+                                ? 0
+                                : jarFiles.length == 0 ? "no jar" : jarFiles[0].getName()));
         DatasourceClassLoader customClassLoader =
                 DatasourceLoadConfig.datasourceClassLoaders.get(pluginName.toUpperCase());
         try {
