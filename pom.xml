@@ -61,7 +61,7 @@
         <maven-shade-plugin.version>3.3.0</maven-shade-plugin.version>
         <skipUT>false</skipUT>
         <!-- dependency -->
-        <jackson-databind.version>2.12.7.1</jackson-databind.version>
+        <jackson-databind.version>2.12.6</jackson-databind.version>
         <jackson.version>2.12.7</jackson.version>
         <mysql.version>8.0.16</mysql.version>
         <h2.version>2.1.214</h2.version>
@@ -73,9 +73,7 @@
         <awaitility.version>4.2.0</awaitility.version>
         <seatunnel-framework.version>2.3.3</seatunnel-framework.version>
         <oracle-jdbc.version>21.5.0.0</oracle-jdbc.version>
-        <clickhouse.version>0.3.2-patch11</clickhouse.version>
         <postgresql.version>42.4.3</postgresql.version>
-        <redshift.version>2.1.0.10</redshift.version>
         <sqlserver.version>9.2.1.jre8</sqlserver.version>
         <mysql-connector.version>8.0.28</mysql-connector.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>
@@ -256,6 +254,12 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>seatunnel-common</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -275,6 +279,12 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>seatunnel-api</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -294,6 +304,12 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>seatunnel-plugin-discovery</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -412,12 +428,31 @@
                 <version>${jsoup.version}</version>
             </dependency>
 
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.8.16</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+
             <!-- seatunnel connector test -->
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-common</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -438,7 +473,7 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-jdbc</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <!--                <scope>test</scope>-->
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -483,16 +518,10 @@
             </dependency>
 
             <dependency>
-                <groupId>org.awaitility</groupId>
-                <artifactId>awaitility</artifactId>
-                <version>${awaitility.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>seatunnel-hadoop3-3.1.4-uber</artifactId>
                 <version>${hadoop-uber.version}</version>
+                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.avro</groupId>
@@ -545,7 +574,7 @@
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>datasource-s3</artifactId>
                 <version>${project.version}</version>
-                <scope>provided</scope>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -556,10 +585,23 @@
 
             <!-- seatunnel connector test -->
             <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-common</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -573,6 +615,12 @@
                 <artifactId>connector-console</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -580,300 +628,602 @@
                 <artifactId>connector-fake</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-kafka</artifactId>
                 <version>${seatunnel-framework.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-base</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-feishu</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-wechat</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-myhours</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-lemlist</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-klaviyo</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-onesignal</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-notion</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-jdbc</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <!--                <scope>test</scope>-->
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-socket</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-clickhouse</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-pulsar</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-hive</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-hadoop</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-local</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-oss</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-oss-jindo</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-ftp</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-sftp</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-hudi</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-dingtalk</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-kudu</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-email</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-elasticsearch</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-iotdb</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
+
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-neo4j</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-redis</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-google-sheets</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-datahub</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-sentry</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-mongodb</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-iceberg</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-influxdb</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cassandra</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-file-s3</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-amazondynamodb</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-starrocks</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-tablestore</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-slack</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-gitlab</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-http-jira</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-rabbitmq</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-openmldb</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-doris</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-maxcompute</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-mysql</artifactId>
                 <version>${seatunnel-framework.version}</version>
-                <!--                <scope>test</scope>-->
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-sqlserver</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.seatunnel</groupId>
                 <artifactId>connector-cdc-oracle</artifactId>
                 <version>${seatunnel-framework.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
 
@@ -884,18 +1234,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.seatunnel</groupId>
-            <artifactId>connector-cdc-sqlserver</artifactId>
-            <version>${seatunnel-framework.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.seatunnel</groupId>
-            <artifactId>connector-cdc-mysql</artifactId>
-            <version>${seatunnel-framework.version}</version>
-            <!--            <scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

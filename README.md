@@ -67,7 +67,13 @@ The other way to install SeaTunnel Zeta Engine Server is download the installer 
     ```
 2. Run init shell `sh seatunnel-server/seatunnel-app/src/main/resources/script/init_sql.sh` If there are no errors during operation, it indicates successful initialization.
 
-#### 2.3 Config application and Run SeaTunnel Web Backend Server
+#### 2.3 Build the project
+
+```shell
+sh build.sh code
+```
+
+#### 2.4 Config application and Run SeaTunnel Web Backend Server
 
 1. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml` Fill in the database connection information
 
@@ -77,6 +83,10 @@ The other way to install SeaTunnel Zeta Engine Server is download the installer 
 3. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started. Notice that, you must set `-DSEATUNNEL_HOME=${your_seatunnel_install_path}` like this:
 
 ![img.png](docs/images/idea_st_home.png)
+
+Because the data source plugin is dynamically loaded, it is necessary to set relevant environment variables:
+
+![img.png](docs/images/st_web_basedir_path.png)
 
 #### 2.3 Run SeaTunnel Web Front End
 

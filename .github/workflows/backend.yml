@@ -131,7 +131,7 @@ jobs:
           cache: 'maven'
       - name: Install
         run: >-
-          ./mvnw -B -q install -DskipTests -P release
+          ./mvnw -B -q install -DskipTests -Prelease
           -D"maven.test.skip"=true
           -D"maven.javadoc.skip"=true
           -D"checkstyle.skip"=true
