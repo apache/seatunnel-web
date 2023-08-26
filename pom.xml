@@ -61,7 +61,7 @@
         <maven-shade-plugin.version>3.3.0</maven-shade-plugin.version>
         <skipUT>false</skipUT>
         <!-- dependency -->
-        <jackson-databind.version>2.12.7.1</jackson-databind.version>
+        <jackson-databind.version>2.12.6</jackson-databind.version>
         <jackson.version>2.12.7</jackson.version>
         <mysql.version>8.0.16</mysql.version>
         <h2.version>2.1.214</h2.version>
@@ -73,9 +73,7 @@
         <awaitility.version>4.2.0</awaitility.version>
         <seatunnel-framework.version>2.3.3</seatunnel-framework.version>
         <oracle-jdbc.version>21.5.0.0</oracle-jdbc.version>
-        <clickhouse.version>0.3.2-patch11</clickhouse.version>
         <postgresql.version>42.4.3</postgresql.version>
-        <redshift.version>2.1.0.10</redshift.version>
         <sqlserver.version>9.2.1.jre8</sqlserver.version>
         <mysql-connector.version>8.0.28</mysql-connector.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>

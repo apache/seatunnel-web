@@ -33,9 +33,7 @@
         <!-- disable mvn deploy to central maven repo by default -->
         <maven.deploy.skip>true</maven.deploy.skip>
         <oracle-jdbc.version>21.5.0.0</oracle-jdbc.version>
-        <clickhouse.version>0.3.2-patch11</clickhouse.version>
         <postgresql.version>42.4.3</postgresql.version>
-        <redshift.version>2.1.0.10</redshift.version>
         <sqlserver.version>9.2.1.jre8</sqlserver.version>
         <mysql-connector.version>8.0.28</mysql-connector.version>
     </properties>
@@ -242,18 +240,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>datasource-jdbc-redshift</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>*</groupId>
-                            <artifactId>*</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
                     <artifactId>datasource-jdbc-sqlserver</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
@@ -293,18 +279,6 @@
                 <dependency>
                     <groupId>org.apache.seatunnel</groupId>
                     <artifactId>datasource-elasticsearch</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>*</groupId>
-                            <artifactId>*</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.seatunnel</groupId>
-                    <artifactId>datasource-s3redshift</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                     <exclusions>
@@ -372,23 +346,9 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>com.clickhouse</groupId>
-                    <artifactId>clickhouse-jdbc</artifactId>
-                    <version>${clickhouse.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
                     <version>${postgresql.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.amazon.redshift</groupId>
-                    <artifactId>redshift-jdbc42</artifactId>
-                    <version>${redshift.version}</version>
                     <scope>provided</scope>
                 </dependency>
 
