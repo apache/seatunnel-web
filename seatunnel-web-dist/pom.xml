@@ -42,7 +42,7 @@
         <profile>
             <id>release</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
                 <property>
                     <name>release</name>
                     <value>true</value>
@@ -128,7 +128,7 @@
         <profile>
             <id>ci</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>release</name>
                     <value>true</value>
