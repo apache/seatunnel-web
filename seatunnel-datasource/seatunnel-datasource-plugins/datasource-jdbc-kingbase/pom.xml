@@ -22,10 +22,10 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>datasource-kafka</artifactId>
+    <artifactId>datasource-jdbc-kingbase</artifactId>
 
     <properties>
-        <kafka.client.version>3.4.0</kafka.client.version>
+        <kingbase8.version>8.2.0</kingbase8.version>
     </properties>
 
     <dependencies>
@@ -34,12 +34,6 @@
             <artifactId>datasource-plugins-api</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>common-lang3</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -55,13 +49,17 @@
             <artifactId>seatunnel-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- driver -->
+
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>${kafka.client.version}</version>
+            <groupId>com.kingbase8</groupId>
+            <artifactId>kingbase8</artifactId>
+            <version>8.2.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/kingbase/kingbase8-8.2.0.jar</systemPath>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -79,5 +77,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

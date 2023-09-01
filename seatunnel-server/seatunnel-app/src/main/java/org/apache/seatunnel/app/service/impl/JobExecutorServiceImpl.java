@@ -138,17 +138,18 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
                         },
                         executor);
         try {
+            log.info("future.get before");
             JobStatus jobStatus = future.get();
-            if (JobStatus.FINISHED.equals(jobStatus)) {
-                jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
-                executor.shutdown();
-            }
+
+            executor.shutdown();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } finally {
             seaTunnelClient.close();
+            log.info("and jobInstanceService.complete begin");
+            jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
         }
     }
 
