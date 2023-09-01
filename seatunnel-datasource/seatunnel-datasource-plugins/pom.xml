@@ -40,7 +40,6 @@
         <module>datasource-jdbc-redshift</module>
         <module>datasource-jdbc-sqlserver</module>
         <module>datasource-jdbc-starrocks</module>
-        <module>datasource-jdbc-kingbase</module>
         <module>datasource-mysql-cdc</module>
         <module>datasource-s3</module>
         <module>datasource-sqlserver-cdc</module>

@@ -117,20 +117,6 @@
                 <include>ch.qos.logback:logback-core:jar</include>
             </includes>
         </dependencySet>
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <unpack>false</unpack>
-            <includes>
-                <include>*:*:jar</include>
-            </includes>
-            <excludes>
-                <exclude>org.apache.seatunnel:datasource-*:jar</exclude>
-                <exclude>org.apache.logging.log4j:*:jar</exclude>
-            </excludes>
-            <outputDirectory>/libs</outputDirectory>
-            <scope>system</scope>
-        </dependencySet>
         <!-- =================== SeaTunnel Datasource  ===================  -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>

@@ -92,9 +92,6 @@ public class DatasourceLoadConfig {
         classLoaderFactoryName.put(
                 "JDBC-STARROCKS",
                 "org.apache.seatunnel.datasource.plugin.starrocks.jdbc.StarRocksJdbcDataSourceFactory");
-        classLoaderFactoryName.put(
-                "JDBC-KINGBASE",
-                "com.apache.datasource.datasource.plugin.kingbase.jdbc.KingBaseDataSourceFactory");
 
         classLoaderJarName.put("JDBC-ORACLE", "datasource-jdbc-oracle-");
         classLoaderJarName.put("JDBC-CLICKHOUSE", "datasource-jdbc-clickhouse-");
@@ -103,7 +100,6 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("JDBC-REDSHIFT", "datasource-jdbc-redshift-");
         classLoaderJarName.put("JDBC-MYSQL", "datasource-jdbc-mysql-");
         classLoaderJarName.put("JDBC-SQLSERVER", "datasource-jdbc-sqlserver-");
-        classLoaderJarName.put("JDBC-KINGBASE", "datasource-jdbc-kingbase-");
 
         classLoaderJarName.put("SQLSERVER-CDC", "datasource-sqlserver-cdc-");
         classLoaderJarName.put("MYSQL-CDC", "datasource-mysql-cdc-");
@@ -131,7 +127,6 @@ public class DatasourceLoadConfig {
                     "MySQL-CDC",
                     "S3",
                     "SqlServer-CDC",
-                    "JDBC-KingBase",
                     "StarRocks");
 
     public static Map<String, DatasourceClassLoader> datasourceClassLoaders = new HashMap<>();
