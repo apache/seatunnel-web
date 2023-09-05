@@ -616,7 +616,13 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
         jobHistoryFromEngine.setId(jobInstance.getId());
 
-        jobInstanceHistoryDao.insert(jobHistoryFromEngine);
+        JobInstanceHistory byInstanceId =
+                jobInstanceHistoryDao.getByInstanceId(jobInstance.getId());
+        if (byInstanceId == null) {
+            jobInstanceHistoryDao.insert(jobHistoryFromEngine);
+        } else {
+            jobInstanceHistoryDao.updateJobInstanceHistory(jobHistoryFromEngine);
+        }
     }
 
     private void syncCompleteJobInfoToDb(@NonNull JobInstance jobInstance) {

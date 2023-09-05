@@ -43,4 +43,9 @@ public class JobInstanceHistoryDaoImpl implements IJobInstanceHistoryDao {
     public void insert(JobInstanceHistory jobInstanceHistory) {
         jobInstanceHistoryMapper.insert(jobInstanceHistory);
     }
+
+    @Override
+    public void updateJobInstanceHistory(JobInstanceHistory jobInstanceHistory) {
+        jobInstanceHistoryMapper.updateById(jobInstanceHistory);
+    }
 }

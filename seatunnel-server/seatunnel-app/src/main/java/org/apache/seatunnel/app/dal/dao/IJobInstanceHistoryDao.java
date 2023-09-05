@@ -23,4 +23,6 @@ public interface IJobInstanceHistoryDao {
     JobInstanceHistory getByInstanceId(Long jobInstanceId);
 
     void insert(JobInstanceHistory jobInstanceHistory);
+
+    void updateJobInstanceHistory(JobInstanceHistory jobInstanceHistory);
 }
