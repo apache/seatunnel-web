@@ -71,11 +71,7 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
-    JDBC-KingBase:
-      businessMode:
-        - DATA_INTEGRATION
-      sceneMode:
-        - SINGLE_TABLE
+
     JDBC-Oracle:
       businessMode:
         - DATA_INTEGRATION
