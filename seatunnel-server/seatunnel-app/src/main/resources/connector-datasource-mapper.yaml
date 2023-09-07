@@ -21,7 +21,6 @@ connector-datasource-mapper:
       dataSources:
         - JDBC-Mysql
         - JDBC-Postgres
-        - JDBC-TiDB
         - JDBC-SQLServer
         - JDBC-KingBase
         - JDBC-Oracle
@@ -65,11 +64,7 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
-    JDBC-TiDB:
-      businessMode:
-        - DATA_INTEGRATION
-      sceneMode:
-        - SINGLE_TABLE
+
     JDBC-SQLServer:
       businessMode:
         - DATA_INTEGRATION
@@ -148,14 +143,7 @@ connector-datasource-mapper:
       sceneMode:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
-    JDBC-TiDB:
-      businessMode:
-        - DATA_INTEGRATION
-        - DATA_REPLICA
-      sceneMode:
-        - SINGLE_TABLE
-        - MULTIPLE_TABLE
-        - SPLIT_TABLE
+
     JDBC-SQLServer:
       businessMode:
         - DATA_INTEGRATION
