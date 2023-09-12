@@ -127,7 +127,6 @@ public class DatasourceLoadConfig {
                     "MySQL-CDC",
                     "S3",
                     "SqlServer-CDC",
-                    "JDBC-StarRocks",
                     "StarRocks");
 
     public static Map<String, DatasourceClassLoader> datasourceClassLoaders = new HashMap<>();
