@@ -554,6 +554,12 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
         jobTaskDao.deleteTask(jobVersionId, pluginId);
     }
 
+    @Override
+    public void deleteTaskByVersionId(long id) {
+        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.SINGLE_TASK_DELETE, 0);
+        jobTaskDao.deleteTaskByVersionId(id);
+    }
+
     private String getConnectorTypeFromDataSource(long datasourceId) {
         String pluginName =
                 datasourceService

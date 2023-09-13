@@ -87,4 +87,9 @@ public class JobTaskDaoImpl implements IJobTaskDao {
                         .eq(JobTask::getVersionId, jobVersionId)
                         .and(i -> i.eq(JobTask::getPluginId, pluginId)));
     }
+
+    @Override
+    public void deleteTaskByVersionId(long id) {
+        jobTaskMapper.delete(Wrappers.lambdaQuery(new JobTask()).eq(JobTask::getVersionId, id));
+    }
 }

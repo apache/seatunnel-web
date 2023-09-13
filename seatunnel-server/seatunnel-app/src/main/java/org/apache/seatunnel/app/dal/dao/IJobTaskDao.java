@@ -38,4 +38,6 @@ public interface IJobTaskDao {
     void deleteTasks(List<Long> jobTaskIds);
 
     void deleteTask(long jobVersionId, String pluginId);
+
+    void deleteTaskByVersionId(long id);
 }
