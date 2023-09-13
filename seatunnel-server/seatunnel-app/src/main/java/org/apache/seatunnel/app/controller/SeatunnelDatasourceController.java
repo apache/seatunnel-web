@@ -20,8 +20,6 @@ package org.apache.seatunnel.app.controller;
 import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
-import org.apache.seatunnel.app.dal.dao.TaskDefinitionDao;
-import org.apache.seatunnel.app.dal.entity.TaskMainInfo;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.datasource.DatabaseTableFields;
 import org.apache.seatunnel.app.domain.dto.datasource.DatabaseTables;
@@ -76,8 +74,6 @@ import static org.apache.seatunnel.app.common.Constants.SESSION_USER;
 public class SeatunnelDatasourceController extends BaseController {
 
     @Autowired private IDatasourceService datasourceService;
-
-    @Autowired private TaskDefinitionDao taskDefinitionDao;
 
     @Resource(name = "userDaoImpl")
     private IUserDao userMapper;
@@ -203,19 +199,6 @@ public class SeatunnelDatasourceController extends BaseController {
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @PathVariable("id") String id) {
         Long datasourceId = Long.parseLong(id);
-        List<TaskMainInfo> taskMainInfos = taskDefinitionDao.queryByDataSourceId(datasourceId);
-        if (taskMainInfos.size() > 0) {
-            throw new SeatunnelException(
-                    SeatunnelErrorEnum.DATA_SOURCE_HAD_USED,
-                    taskMainInfos.stream()
-                            .map(
-                                    info ->
-                                            String.format(
-                                                    "%s - %s",
-                                                    info.getProcessDefinitionName(),
-                                                    info.getTaskName()))
-                            .collect(Collectors.toList()));
-        }
         return Result.success(datasourceService.deleteDatasource(loginUser.getId(), datasourceId));
     }
 
