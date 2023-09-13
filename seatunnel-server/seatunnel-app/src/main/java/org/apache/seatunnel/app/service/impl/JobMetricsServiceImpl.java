@@ -183,17 +183,17 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 } else {
                     log.info(
                             "The job does not exist on the engine, it is directly returned from the database");
-                    JobSummaryMetricsRes jobMetriceFromDb =
+                    JobSummaryMetricsRes jobMetricsFromDb =
                             getJobSummaryMetricsResByDb(
                                     jobInstance,
                                     userId,
                                     Long.toString(
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
-                    if (jobMetriceFromDb != null) {
-                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+                    if (jobMetricsFromDb != null) {
+                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromDb);
                     }
-                    if (jobInstance.getJobStatus().equals("RUNNING")) {
+                    if ("RUNNING".equals(jobInstance.getJobStatus())) {
                         // Set the job status of jobInstance and jobMetrics in the database to
                         // finished
                         jobInstance.setJobStatus("FINISHED");
@@ -204,14 +204,14 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                     || jobInstance.getJobStatus().equals("CANCELED")) {
                 // If the status of the job is finished or cancelled, the monitoring information is
                 // directly obtained from MySQL
-                JobSummaryMetricsRes jobMetriceFromDb =
+                JobSummaryMetricsRes jobMetricsFromDb =
                         getJobSummaryMetricsResByDb(
                                 jobInstance,
                                 userId,
                                 Long.toString(
                                         jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId())));
-                log.info("jobStatus=finish oe canceled,JobSummaryMetricsRes={}", jobMetriceFromDb);
-                jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+                log.info("jobStatus=finish oe canceled,JobSummaryMetricsRes={}", jobMetricsFromDb);
+                jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromDb);
             }
         }
 
@@ -269,14 +269,14 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         && jobInstance.getJobStatus().equals("CANCELED")) {
                     // If the status of the job is finished or cancelled
                     // the monitoring information is directly obtained from MySQL
-                    JobSummaryMetricsRes jobMetriceFromDb =
+                    JobSummaryMetricsRes jobMetricsFromDb =
                             getJobSummaryMetricsResByDb(
                                     jobInstance,
                                     userId,
                                     Long.toString(
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
-                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+                    jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromDb);
 
                 } else if (jobInstance.getJobStatus() != null
                         && (jobInstance.getJobStatus().equals("FINISHED")
@@ -304,14 +304,14 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromEngineRes);
                     } else {
                         // If not found, obtain information from MySQL
-                        JobSummaryMetricsRes jobMetriceFromDb =
+                        JobSummaryMetricsRes jobMetricsFromDb =
                                 getJobSummaryMetricsResByDb(
                                         jobInstance,
                                         userId,
                                         Long.toString(
                                                 jobInstanceIdAndJobEngineIdMap.get(
                                                         jobInstance.getId())));
-                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetriceFromDb);
+                        jobSummaryMetricsResMap.put(jobInstance.getId(), jobMetricsFromDb);
                     }
                 } else {
                     // Obtain monitoring information from the collection of running jobs returned
@@ -342,7 +342,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                                                             jobInstance.getId())));
                         } catch (Exception e) {
                             log.warn(
-                                    "getMatricsListIfTaskTypeIsStreaming getJobStatusByJobEngineId is exception jobInstanceId is : {}",
+                                    "getMetricsListIfTaskTypeIsStreaming getJobStatusByJobEngineId is exception jobInstanceId is : {}",
                                     jobInstance.getId());
                         }
 
@@ -467,7 +467,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             @NonNull IEngineMetricsExtractor engineMetricsExtractor) {
 
         // If job is not end state, get metrics from engine.
-        List<JobMetrics> jobMetrics = new ArrayList<>();
+        List<JobMetrics> jobMetrics;
         if (jobStatus == null) {
             jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
         } else if (engineMetricsExtractor.isJobEndStatus(jobStatus)) {
