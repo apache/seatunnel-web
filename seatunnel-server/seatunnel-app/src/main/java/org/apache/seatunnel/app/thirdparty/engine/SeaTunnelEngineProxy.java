@@ -24,10 +24,12 @@ import org.apache.seatunnel.engine.core.job.JobDAGInfo;
 
 import com.hazelcast.client.config.ClientConfig;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 public class SeaTunnelEngineProxy {
     ClientConfig clientConfig = null;
 
@@ -70,6 +72,9 @@ public class SeaTunnelEngineProxy {
         SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
         try {
             return seaTunnelClient.getJobStatus(Long.valueOf(jobEngineId));
+        } catch (Exception e) {
+            log.warn("Can not get job from engine.", e);
+            return null;
         } finally {
             seaTunnelClient.close();
         }

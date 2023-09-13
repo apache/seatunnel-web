@@ -463,12 +463,14 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             @NonNull JobInstance jobInstance,
             @NonNull Integer userId,
             @NonNull String jobEngineId,
-            @NonNull String jobStatus,
+            String jobStatus,
             @NonNull IEngineMetricsExtractor engineMetricsExtractor) {
 
         // If job is not end state, get metrics from engine.
         List<JobMetrics> jobMetrics = new ArrayList<>();
-        if (engineMetricsExtractor.isJobEndStatus(jobStatus)) {
+        if (jobStatus == null) {
+            jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
+        } else if (engineMetricsExtractor.isJobEndStatus(jobStatus)) {
             jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
             if (CollectionUtils.isEmpty(jobMetrics)) {
                 syncMetricsToDb(jobInstance, userId, jobEngineId);
