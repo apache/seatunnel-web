@@ -47,7 +47,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class TaskInstanceServiceImpl implements ITaskInstanceService {
+public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJobInstanceDto> {
 
     @Autowired IJobInstanceDao jobInstanceDao;
 
@@ -60,7 +60,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
     @Autowired IJobDefinitionDao jobDefinitionDao;
 
     @Override
-    public Result getSyncTaskInstancePaging(
+    public Result<PageInfo<SeaTunnelJobInstanceDto>> getSyncTaskInstancePaging(
             Integer userId,
             String jobDefineName,
             String executorName,
@@ -71,7 +71,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
             Integer pageNo,
             Integer pageSize) {
         JobDefinition jobDefinition = null;
-        IPage<SeaTunnelJobInstanceDto> jobInstanceIPage = null;
+        IPage<SeaTunnelJobInstanceDto> jobInstanceIPage;
         if (jobDefineName != null) {
             jobDefinition = jobDefinitionDao.getJobByName(jobDefineName);
         }
@@ -144,8 +144,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         try {
-            Date date = dateFormat.parse(time);
-            return date;
+            return dateFormat.parse(time);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

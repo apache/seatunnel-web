@@ -18,10 +18,11 @@
 package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.app.utils.PageInfo;
 
-public interface ITaskInstanceService {
+public interface ITaskInstanceService<T> {
 
-    Result getSyncTaskInstancePaging(
+    Result<PageInfo<T>> getSyncTaskInstancePaging(
             Integer userId,
             String jobDefineName,
             String executorName,
