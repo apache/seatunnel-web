@@ -93,7 +93,16 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
         } else if (pluginName.startsWith("JDBC-")) {
             pluginName = pluginName.replace("JDBC-", "");
         }
-        DataTypeConvertor<?> convertor = factory.getDataTypeConvertor(pluginName);
+        // if the convertor is not exist in the plugin, will use the input type as the output type
+        DataTypeConvertor<?> convertor;
+        try {
+            convertor = factory.getDataTypeConvertor(pluginName);
+        } catch (Exception e) {
+            convertor = new EngineDataType.SeaTunnelDataTypeConvertor();
+            log.warn(
+                    "The convertor of plugin: {} is not exist, will use EngineDataType.SeaTunnelDataTypeConvertor",
+                    pluginName);
+        }
 
         for (TableField field : tableSchemaReq.getFields()) {
             SeaTunnelDataType<?> dataType = convertor.toSeaTunnelType(field.getType());

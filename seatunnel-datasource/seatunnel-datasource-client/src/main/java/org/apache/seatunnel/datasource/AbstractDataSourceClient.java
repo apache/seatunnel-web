@@ -81,7 +81,7 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
                                 Thread.currentThread().getContextClassLoader());
                 DataSourceFactory factory =
                         (DataSourceFactory) clazz.getDeclaredConstructor().newInstance();
-                log.info("factory : " + String.valueOf(factory));
+                log.info("factory : " + factory);
                 Set<DataSourcePluginInfo> dataSourcePluginInfos = factory.supportedDataSources();
                 dataSourcePluginInfos.forEach(
                         dataSourceInfo -> {
@@ -126,11 +126,7 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
 
     protected DataSourceChannel getDataSourceChannel(String pluginName) {
         checkNotNull(pluginName, "pluginName cannot be null");
-        //        Integer index = supportedDataSourceIndex.get(pluginName.toUpperCase());
-        //        if (index == null) {
-        //            throw new DataSourceSDKException(
-        //                    "The %s plugin is not supported or plugin not exist.", pluginName);
-        //        }
+
         return DatasourceLoadConfig.classLoaderChannel.get(pluginName.toUpperCase());
     }
 
@@ -229,7 +225,6 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
         log.info("ST_WEB_BASEDIR_PATH is : " + getenv);
         String libPath = StringUtils.isEmpty(getenv) ? "/datasource" : (getenv + "/datasource");
 
-        //        String libPath = "/root/apache-seatunnel-web-2.4.7-WS-SNAPSHOT/datasource/";
         File jarDirectory = new File(libPath);
         File[] jarFiles =
                 jarDirectory.listFiles(
@@ -276,7 +271,7 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("custom loader is:" + String.valueOf(customClassLoader));
+        log.info("custom loader is:" + customClassLoader);
         return customClassLoader;
     }
 
