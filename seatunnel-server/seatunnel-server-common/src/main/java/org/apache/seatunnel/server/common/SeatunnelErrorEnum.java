@@ -122,8 +122,8 @@ public enum SeatunnelErrorEnum {
             "can not found connector for datasource [%s]"),
     DATA_SOURCE_HAD_USED(
             1600000,
-            "data source already used ( workflowName - taskName):{0}",
-            "datasource is using:{0}"),
+            "datasource can not be delete because it used by task",
+            "datasource can not be delete because it used by task"),
     INVALID_DATASOURCE(-70001, "Datasource [{0}] invalid", "datasource [{0}] invalid"),
     MISSING_PARAM(1777000, "param miss [{0}]", "param miss [{0}]"),
     ;

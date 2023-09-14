@@ -20,8 +20,10 @@ package org.apache.seatunnel.app.service.impl;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
 import org.apache.seatunnel.app.dal.dao.IDatasourceDao;
+import org.apache.seatunnel.app.dal.dao.IJobTaskDao;
 import org.apache.seatunnel.app.dal.dao.IVirtualTableDao;
 import org.apache.seatunnel.app.dal.entity.Datasource;
+import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.dal.entity.VirtualTable;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
@@ -80,6 +82,9 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     private ApplicationContext applicationContext;
 
     @Resource private IJobDefinitionService jobDefinitionService;
+
+    @Resource(name = "jobTaskDaoImpl")
+    private IJobTaskDao jobTaskDao;
 
     @Autowired
     @Qualifier("virtualTableDaoImpl") private IVirtualTableDao virtualTableDao;
@@ -180,6 +185,11 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                 SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
                 Collections.singletonList(datasourceId),
                 userId);
+        // check has job task has used this datasource
+        List<JobTask> jobTaskList = jobTaskDao.getJobTaskByDataSourceId(datasourceId);
+        if (!CollectionUtils.isEmpty(jobTaskList)) {
+            throw new SeatunnelException(SeatunnelErrorEnum.DATA_SOURCE_HAD_USED);
+        }
         // check has virtual table has used this datasource
         List<String> virtualDatabaseNames = virtualTableDao.getVirtualDatabaseNames(datasourceId);
         if (!CollectionUtils.isEmpty(virtualDatabaseNames)) {
