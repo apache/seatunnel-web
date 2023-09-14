@@ -36,4 +36,6 @@ public interface IJobTaskService {
     <T extends TransformOptions> T getTransformOptions(long jobVersionId, String pluginId);
 
     void deleteSingleTask(long jobVersionId, String pluginId);
+
+    void deleteTaskByVersionId(long id);
 }
