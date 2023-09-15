@@ -48,6 +48,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -60,7 +61,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     @Resource private IJobInstanceDao jobInstanceDao;
 
     @Override
-    public Result jobExecute(Integer userId, Long jobDefineId) {
+    public Result<Long> jobExecute(Integer userId, Long jobDefineId) {
 
         JobExecutorRes executeResource =
                 jobInstanceService.createExecuteResource(userId, jobDefineId);
@@ -75,7 +76,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
     public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
         String projectRoot = System.getProperty("user.dir");
-        String filePath = projectRoot + "\\profile\\" + Long.toString(jobDefineId) + ".conf";
+        String filePath = projectRoot + "\\profile\\" + jobDefineId + ".conf";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -90,7 +91,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
             log.info("File created and content written successfully.");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return filePath;
     }
@@ -132,11 +133,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             SeaTunnelClient seaTunnelClient) {
         ExecutorService executor = Executors.newFixedThreadPool(1);
         CompletableFuture<JobStatus> future =
-                CompletableFuture.supplyAsync(
-                        () -> {
-                            return clientJobProxy.waitForJobComplete();
-                        },
-                        executor);
+                CompletableFuture.supplyAsync(clientJobProxy::waitForJobComplete, executor);
         try {
             log.info("future.get before");
             JobStatus jobStatus = future.get();
@@ -160,14 +157,14 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     public static String getClusterName(String testClassName) {
-        //        return System.getProperty("user.name") + "_" + testClassName;
         return testClassName;
     }
 
     @Override
-    public Result jobPause(Integer userId, Long jobInstanceId) {
+    public Result<Void> jobPause(Integer userId, Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        if (getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()) == "RUNNING") {
+        if (Objects.equals(
+                getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()), "RUNNING")) {
             pauseJobInEngine(jobInstance.getJobEngineId());
         }
         return Result.success();
@@ -188,12 +185,11 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     @Override
-    public Result jobStore(Integer userId, Long jobInstanceId) {
+    public Result<Void> jobStore(Integer userId, Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
 
         String projectRoot = System.getProperty("user.dir");
-        String filePath =
-                projectRoot + "\\profile\\" + Long.toString(jobInstance.getJobDefineId()) + ".conf";
+        String filePath = projectRoot + "\\profile\\" + jobInstance.getJobDefineId() + ".conf";
 
         SeaTunnelEngineProxy.getInstance()
                 .restoreJob(filePath, jobInstanceId, Long.valueOf(jobInstance.getJobEngineId()));
