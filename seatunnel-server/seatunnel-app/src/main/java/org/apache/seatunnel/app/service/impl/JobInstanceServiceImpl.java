@@ -421,8 +421,6 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
         } catch (JsonProcessingException e) {
             throw new SeatunnelException(SeatunnelErrorEnum.ILLEGAL_STATE, e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

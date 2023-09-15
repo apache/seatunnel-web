@@ -508,7 +508,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                 SQLTransformOptions sqlTransformOptions =
                         getTransformOption(transform, transformOptionsStr);
                 if (sqlTransformOptions != null) {
-                    // TODO 调用接口返回目标字段
+                    // TODO The call interface returns the target field
                     List<String> fields = new ArrayList<>();
                     checkTransformTargetFieldRepeat(fields);
                 }

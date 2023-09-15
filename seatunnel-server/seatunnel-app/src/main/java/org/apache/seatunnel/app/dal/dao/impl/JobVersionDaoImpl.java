@@ -55,7 +55,7 @@ public class JobVersionDaoImpl implements IJobVersionDao {
 
     @Override
     public List<JobVersion> getLatestVersionByJobIds(List<Long> jobIds) {
-        QueryWrapper wrapper = new QueryWrapper<JobVersion>();
+        QueryWrapper<JobVersion> wrapper = new QueryWrapper<>();
         wrapper.in("job_id", jobIds);
         return jobVersionMapper.selectList(wrapper);
     }
