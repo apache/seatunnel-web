@@ -38,7 +38,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
+      'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js',
+      '@intlify/shared': '@intlify/shared/dist/shared.cjs.js'
     }
   },
   server: {
