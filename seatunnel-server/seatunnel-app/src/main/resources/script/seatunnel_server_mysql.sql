@@ -35,6 +35,12 @@ CREATE TABLE `role`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of role
+-- ----------------------------
+INSERT INTO `seatunnel`.`role`(`type`,`role_name`,`description`) values (0, 'ADMIN_ROLE', 'Admin User');
+INSERT INTO `seatunnel`.`role`(`type`,`role_name`,`description`) values (1, 'NORMAL_ROLE', 'Normal User');
+
+-- ----------------------------
 -- Table structure for role_user_relation
 -- ----------------------------
 DROP TABLE IF EXISTS `role_user_relation`;
