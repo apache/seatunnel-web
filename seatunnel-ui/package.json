@@ -24,7 +24,7 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.0.32",
     "pinia-plugin-persistedstate": "^3.1.0",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.31",
     "screenfull": "6.0.1",
     "tailwindcss": "^3.2.7",
     "vue": "^3.2.47",
