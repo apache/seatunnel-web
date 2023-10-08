@@ -30,10 +30,11 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.app.utils.PageInfo;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -99,7 +100,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         }
 
         List<SeaTunnelJobInstanceDto> records = jobInstanceIPage.getRecords();
-        if (CollUtil.isEmpty(records)) {
+        if (CollectionUtils.isEmpty(records)) {
             return result;
         }
         addJobDefineNameToResult(records);

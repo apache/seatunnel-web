@@ -4,6 +4,21 @@ Copyright 2021-2022 The Apache Software Foundation
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
+===============================================================================
+
+ClassMate NOTICE
+
+===============================================================================
+Java ClassMate library was originally written by Tatu Saloranta (tatu.saloranta@iki.fi)
+
+Other developers who have contributed code are:
+
+* Brian Langel
+
+## Copyright
+
+Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
+
 
 ===============================================================================
 
@@ -33,7 +48,6 @@ Copyright (c) 2008 Alexander Beider & Stephen P. Morse.
 Apache Commons Collections NOTICE
 
 ===============================================================================
-
 Apache Commons Collections
 Copyright 2001-2019 The Apache Software Foundation
 
@@ -42,14 +56,89 @@ The Apache Software Foundation (http://www.apache.org/).
 
 ===============================================================================
 
+Apache Commons Compress NOTICE
+
+===============================================================================
+Apache Commons Compress
+Copyright 2002-2020 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (https://www.apache.org/).
+
+---
+
+The files in the package org.apache.commons.compress.archivers.sevenz
+were derived from the LZMA SDK, version 9.20 (C/ and CPP/7zip/),
+which has been placed in the public domain:
+
+"LZMA SDK is placed in the public domain." (http://www.7-zip.org/sdk.html)
+
+---
+
+The test file lbzip2_32767.bz2 has been copied from libbzip2's source
+repository:
+
+This program, "bzip2", the associated library "libbzip2", and all
+documentation, are copyright (C) 1996-2019 Julian R Seward.  All
+rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. The origin of this software must not be misrepresented; you must
+   not claim that you wrote the original software.  If you use this
+   software in a product, an acknowledgment in the product
+   documentation would be appreciated but is not required.
+
+3. Altered source versions must be plainly marked as such, and must
+   not be misrepresented as being the original software.
+
+4. The name of the author may not be used to endorse or promote
+   products derived from this software without specific prior written
+   permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Julian Seward, jseward@acm.org
+
+===============================================================================
+
+Apache Commons IO NOTICE
+
+===============================================================================
+Apache Commons IO
+Copyright 2002-2021 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (https://www.apache.org/).
+
+===============================================================================
+
 Apache Commons Lang NOTICE
 
 ===============================================================================
 Apache Commons Lang
-Copyright 2001-2021 The Apache Software Foundation
+Copyright 2001-2015 The Apache Software Foundation
 
 This product includes software developed at
-The Apache Software Foundation (https://www.apache.org/).
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software from the Spring Framework,
+under the Apache License 2.0 (see: StringUtils.containsWhitespace())
 
 ===============================================================================
 
@@ -124,46 +213,43 @@ Test dependencies:
  * [SnakeYAML](https://bitbucket.org/asomov/snakeyaml/src) - Apache License 2.0
 ===============================================================================
 
-Notices for Eclipse Jetty
+ Jetty Web Container
+ Copyright 1995-2018 Mort Bay Consulting Pty Ltd.
+===============================================================================
 
-=========================
-This content is produced and maintained by the Eclipse Jetty project.
+The Jetty Web Container is Copyright Mort Bay Consulting Pty Ltd
+unless otherwise noted.
 
-Project home: https://www.eclipse.org/jetty/
+Jetty is dual licensed under both
 
-Trademarks
-----------
-Eclipse Jetty, and Jetty are trademarks of the Eclipse Foundation.
+  * The Apache 2.0 License
+    http://www.apache.org/licenses/LICENSE-2.0.html
 
-Copyright
----------
-All contributions are the property of the respective authors or of
-entities to which copyright has been assigned by the authors (eg. employer).
+      and
 
-Declared Project Licenses
--------------------------
-This artifacts of this project are made available under the terms of:
-
-  * the Eclipse Public License v. 1.0
+  * The Eclipse Public 1.0 License
     http://www.eclipse.org/legal/epl-v10.html
-    SPDX-License-Identifier: EPL-1.0
 
-  or
+Jetty may be distributed under either license.
 
-  * the Apache License, Version 2.0
-    https://www.apache.org/licenses/LICENSE-2.0.
-    SPDX-License-Identifier: Apache-2.0
+------
+Eclipse
 
-The following dependencies are EPL.
+The following artifacts are EPL.
  * org.eclipse.jetty.orbit:org.eclipse.jdt.core
 
-The following dependencies are EPL and ASL2.
+The following artifacts are EPL and ASL2.
  * org.eclipse.jetty.orbit:javax.security.auth.message
 
-The following dependencies are EPL and CDDL 1.0.
+
+The following artifacts are EPL and CDDL 1.0.
  * org.eclipse.jetty.orbit:javax.mail.glassfish
 
-The following dependencies are CDDL + GPLv2 with classpath exception.
+
+------
+Oracle
+
+The following artifacts are CDDL + GPLv2 with classpath exception.
 https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html
 
  * javax.servlet:javax.servlet-api
@@ -171,55 +257,72 @@ https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html
  * javax.transaction:javax.transaction-api
  * javax.websocket:javax.websocket-api
 
+------
+Oracle OpenJDK
+
 If ALPN is used to negotiate HTTP/2 connections, then the following
-distribution may be included in the distribution or downloaded when ALPN
-module is selected. These artifacts replace/modify OpenJDK classes.
-The modifications are hosted at github and both modified and original
-are under GPL v2 with classpath exceptions.
-http://openjdk.java.net/legal/gplv2+ce.html
+artifacts may be included in the distribution or downloaded when ALPN
+module is selected.
 
  * java.sun.security.ssl
 
-The following dependencies are licensed by the OW2 Foundation according to the
+These artifacts replace/modify OpenJDK classes.  The modififications
+are hosted at github and both modified and original are under GPL v2 with
+classpath exceptions.
+http://openjdk.java.net/legal/gplv2+ce.html
+
+
+------
+OW2
+
+The following artifacts are licensed by the OW2 Foundation according to the
 terms of http://asm.ow2.org/license.html
 
- * org.ow2.asm:asm-commons
- * org.ow2.asm:asm
+org.ow2.asm:asm-commons
+org.ow2.asm:asm
 
-The following dependencies are ASL2 licensed.
 
- * org.apache.taglibs:taglibs-standard-spec
- * org.apache.taglibs:taglibs-standard-impl
+------
+Apache
 
-The following dependencies are ASL2 licensed.  Based on selected classes from
+The following artifacts are ASL2 licensed.
+
+org.apache.taglibs:taglibs-standard-spec
+org.apache.taglibs:taglibs-standard-impl
+
+
+------
+MortBay
+
+The following artifacts are ASL2 licensed.  Based on selected classes from
 following Apache Tomcat jars, all ASL2 licensed.
 
- * org.mortbay.jasper:apache-jsp
- * org.apache.tomcat:tomcat-jasper
- * org.apache.tomcat:tomcat-juli
- * org.apache.tomcat:tomcat-jsp-api
- * org.apache.tomcat:tomcat-el-api
- * org.apache.tomcat:tomcat-jasper-el
- * org.apache.tomcat:tomcat-api
- * org.apache.tomcat:tomcat-util-scan
- * org.apache.tomcat:tomcat-util
- * org.mortbay.jasper:apache-el
- * org.apache.tomcat:tomcat-jasper-el
- * org.apache.tomcat:tomcat-el-api
+org.mortbay.jasper:apache-jsp
+  org.apache.tomcat:tomcat-jasper
+  org.apache.tomcat:tomcat-juli
+  org.apache.tomcat:tomcat-jsp-api
+  org.apache.tomcat:tomcat-el-api
+  org.apache.tomcat:tomcat-jasper-el
+  org.apache.tomcat:tomcat-api
+  org.apache.tomcat:tomcat-util-scan
+  org.apache.tomcat:tomcat-util
+
+org.mortbay.jasper:apache-el
+  org.apache.tomcat:tomcat-jasper-el
+  org.apache.tomcat:tomcat-el-api
+
+
+------
+Mortbay
 
 The following artifacts are CDDL + GPLv2 with classpath exception.
+
 https://glassfish.dev.java.net/nonav/public/CDDL+GPL.html
 
- * org.eclipse.jetty.toolchain:jetty-schemas
+org.eclipse.jetty.toolchain:jetty-schemas
 
-Cryptography
-------------
-Content may contain encryption software. The country in which you are currently
-may have restrictions on the import, possession, and use, and/or re-export to
-another country, of encryption software. BEFORE using any encryption software,
-please check the country's laws, regulations and policies concerning the import,
-possession, or use, and re-export of encryption software, to see if this is
-permitted.
+------
+Assorted
 
 The UnixCrypt.java code implements the one way cryptography used by
 Unix systems for simple password protection.  Copyright 1996 Aki Yoshida,
@@ -398,6 +501,46 @@ Spring Framework
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+===============================================================================
+
+Spring Boot 2.6.8
+
+===============================================================================
+Spring Boot 2.6.8
+Copyright (c) 2012-2022 Pivotal, Inc.
+
+This product is licensed to you under the Apache License, Version 2.0
+(the "License"). You may not use this product except in compliance with
+the License.
+
+===============================================================================
+
+Spring Framework 5.3.20
+
+===============================================================================
+Spring Framework 5.3.20
+Copyright (c) 2002-2022 Pivotal, Inc.
+
+This product is licensed to you under the Apache License, Version 2.0
+(the "License"). You may not use this product except in compliance with
+the License.
+
+This product may include a number of subcomponents with separate
+copyright notices and license terms. Your use of the source code for
+these subcomponents is subject to the terms and conditions of the
+subcomponent's license, as noted in the license.txt file.
+
+===============================================================================
+
+Swagger Core - ${pom.name}
+
+===============================================================================
+Swagger Core - ${pom.name}
+Copyright (c) 2015. SmartBear Software Inc.
+Swagger Core - ${pom.name}  is licensed under Apache 2.0 license.
+Copy of the Apache 2.0 license can be found in `LICENSE` file.
+
 ===============================================================================
 
 Apache Tomcat NOTICE
@@ -455,4 +598,56 @@ limitations under the License.
 This software includes projects with other licenses -- see `doc/LICENSE.md`.
 
 ===============================================================================
+
+hazelcast NOTICE
+
+=========================================================================
+The packages:
+
+com.hazelcast.internal.util.collection
+com.hazelcast.internal.util.concurrent
+
+and the classes:
+
+com.hazelcast.internal.util.QuickMath
+com.hazelcast.client.impl.protocol.util.UnsafeBuffer
+com.hazelcast.client.impl.protocol.util.BufferBuilder
+
+contain code originating from the Agrona project
+(https://github.com/real-logic/Agrona).
+
+The class com.hazelcast.internal.util.HashUtil contains code originating
+from the Koloboke project (https://github.com/OpenHFT/Koloboke).
+
+The class classloading.ThreadLocalLeakTestUtils contains code originating
+from the Tomcat project (https://github.com/apache/tomcat).
+
+com.hazelcast.internal.cluster.fd.PhiAccrualFailureDetector contains code originating
+from the Akka project (https://github.com/akka/akka/).
+
+The package com.hazelcast.internal.json contains code originating
+from minimal-json project (https://github.com/ralfstx/minimal-json).
+
+The class com.hazelcast.instance.impl.MobyNames contains code originating
+from The Moby Project (https://github.com/moby/moby).
+
+The class com.hazelcast.internal.util.graph.BronKerboschCliqueFinder contains code
+originating from The JGraphT Project (https://github.com/jgrapht/jgrapht).
+
+The packages:
+com.hazelcast.sql
+com.hazelcast.jet.sql
+
+contain code originating from the Apache Calcite (https://github.com/apache/calcite)
+
+The class com.hazelcast.jet.kafka.impl.ResumeTransactionUtil contains
+code derived from the Apache Flink project.
+
+The class com.hazelcast.internal.util.ConcurrentReferenceHashMap contains code written by Doug Lea
+and updated within the WildFly project (https://github.com/wildfly/wildfly).
+
+The class org.apache.calcite.linq4j.tree.ConstantExpression contains code
+originating from the Calcite project (https://github.com/apache/calcite).
+
+=========================================================================
 
