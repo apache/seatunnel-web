@@ -456,27 +456,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.seatunnel</groupId>
-                <artifactId>connector-console</artifactId>
-                <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.seatunnel</groupId>
-                <artifactId>connector-fake</artifactId>
-                <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.seatunnel</groupId>
-                <artifactId>connector-jdbc</artifactId>
-                <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
@@ -589,25 +568,6 @@
                 <artifactId>awaitility</artifactId>
                 <version>${awaitility.version}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.seatunnel</groupId>
-                <artifactId>connector-common</artifactId>
-                <version>${seatunnel-framework.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.logging.log4j</groupId>
-                        <artifactId>log4j-slf4j-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.seatunnel</groupId>
-                <artifactId>seatunnel-transforms-v2</artifactId>
-                <version>${seatunnel-framework.version}</version>
             </dependency>
 
             <dependency>
@@ -1555,7 +1515,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>2.5.3</version>
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>@{project.version}</tagNameFormat>
@@ -1576,11 +1536,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
             </plugin>
@@ -1592,7 +1547,7 @@
         </plugins>
     </build>
 
-    <url>https://github.com/apache/seatunnel</url>
+    <url>https://github.com/apache/seatunnel-web</url>
 
     <licenses>
         <license>
@@ -1617,9 +1572,9 @@
     </mailingLists>
 
     <scm>
-        <connection>scm:git:https://github.com/apache/seatunnel.git</connection>
-        <developerConnection>scm:git:https://github.com/apache/seatunnel.git</developerConnection>
-        <url>https://github.com/apache/seatunnel</url>
+        <connection>scm:git:https://github.com/apache/seatunnel-web.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/seatunnel-web.git</developerConnection>
+        <url>https://github.com/apache/seatunnel-web</url>
         <tag>HEAD</tag>
     </scm>
 
