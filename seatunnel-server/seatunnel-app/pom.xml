@@ -173,10 +173,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
-            <artifactId>connector-cdc-sqlserver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.seatunnel</groupId>
             <artifactId>connector-clickhouse</artifactId>
         </dependency>
 
@@ -483,10 +479,6 @@
                     <artifactId>log4j-slf4j-impl</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
