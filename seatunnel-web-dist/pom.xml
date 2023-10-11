@@ -108,7 +108,7 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>seatunnel-web</id>
+                                <id>bin</id>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
@@ -117,7 +117,20 @@
                                     <descriptors>
                                         <descriptor>src/main/assembly/seatunnel-web.xml</descriptor>
                                     </descriptors>
-                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <appendAssemblyId>true</appendAssemblyId>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>src</id>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/assembly-src.xml</descriptor>
+                                    </descriptors>
+                                    <appendAssemblyId>true</appendAssemblyId>
                                 </configuration>
                             </execution>
                         </executions>

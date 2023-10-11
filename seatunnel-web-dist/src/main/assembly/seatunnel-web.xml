@@ -25,6 +25,7 @@
         <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
+    <baseDirectory>${project.build.finalName}-bin</baseDirectory>
     <fileSets>
         <fileSet>
             <directory>../seatunnel-server/seatunnel-app/src/main/resources</directory>

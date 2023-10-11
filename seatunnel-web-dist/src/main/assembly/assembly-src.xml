@@ -50,6 +50,12 @@
                 <exclude>release.properties</exclude>
                 <exclude>**/pom.xml.releaseBackup</exclude>
                 <exclude>*.gpg</exclude>
+
+                <!-- node ignore -->
+                <exclude>**/seatunnel-ui/dist/**</exclude>
+                <exclude>**/seatunnel-ui/node/**</exclude>
+                <exclude>**/seatunnel-ui/node_modules/**</exclude>
+
                 <!--github ignore-->
                 <exclude>**/.github/**</exclude>
                 <exclude>**/.dlc.json</exclude>
