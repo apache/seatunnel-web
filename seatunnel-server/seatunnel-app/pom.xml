@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.apache.seatunnel</groupId>
         <artifactId>seatunnel-server</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>seatunnel-app</artifactId>
@@ -531,9 +531,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-  <scm>
-    <tag>1.0.0</tag>
-  </scm>
 </project>
