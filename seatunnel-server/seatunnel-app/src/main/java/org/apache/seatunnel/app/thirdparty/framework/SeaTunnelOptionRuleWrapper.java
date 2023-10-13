@@ -22,6 +22,7 @@ import org.apache.seatunnel.api.configuration.util.Expression;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.configuration.util.RequiredOption;
 import org.apache.seatunnel.app.dynamicforms.AbstractFormOption;
+import org.apache.seatunnel.app.dynamicforms.Constants;
 import org.apache.seatunnel.app.dynamicforms.FormLocale;
 import org.apache.seatunnel.app.dynamicforms.FormOptionBuilder;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
@@ -77,18 +78,18 @@ public class SeaTunnelOptionRuleWrapper {
         FormLocale locale = new FormLocale();
         List<AbstractFormOption> optionFormOptions = wrapperOptionOptions(name, optionList, locale);
         List<AbstractFormOption> requiredFormOptions =
-            wrapperRequiredOptions(name, requiredList, locale);
+                wrapperRequiredOptions(name, requiredList, locale);
 
         FormStructureBuilder formStructureBuilder = FormStructure.builder().name(name);
 
         if (!CollectionUtils.isEmpty(requiredFormOptions)) {
             formStructureBuilder.addFormOption(
-                requiredFormOptions.toArray(new AbstractFormOption[1]));
+                    requiredFormOptions.toArray(new AbstractFormOption[1]));
         }
 
         if (!CollectionUtils.isEmpty(optionFormOptions)) {
             formStructureBuilder.addFormOption(
-                optionFormOptions.toArray(new AbstractFormOption[1]));
+                    optionFormOptions.toArray(new AbstractFormOption[1]));
         }
 
         formStructureBuilder.withLocale(locale);
@@ -107,175 +108,175 @@ public class SeaTunnelOptionRuleWrapper {
     }
 
     private static List<AbstractFormOption> wrapperRequiredOptions(
-        @NonNull String connectorName,
-        @NonNull List<RequiredOption> requiredList,
-        FormLocale locale) {
+            @NonNull String connectorName,
+            @NonNull List<RequiredOption> requiredList,
+            FormLocale locale) {
         List<AbstractFormOption> result = new ArrayList<>();
         requiredList.forEach(
-            requiredOptions -> {
-                if (requiredOptions instanceof RequiredOption.AbsolutelyRequiredOptions) {
-                    RequiredOption.AbsolutelyRequiredOptions absolutelyRequiredOptions =
-                        (RequiredOption.AbsolutelyRequiredOptions) requiredOptions;
-                    absolutelyRequiredOptions
-                        .getRequiredOption()
-                        .forEach(
-                            option -> {
-                                AbstractFormOption requiredFormItem = null;
-                                for (AbstractFormOption formItem : result) {
-                                    if (formItem.getField().equals(option.key())) {
-                                        requiredFormItem = formItem;
-                                        break;
+                requiredOptions -> {
+                    if (requiredOptions instanceof RequiredOption.AbsolutelyRequiredOptions) {
+                        RequiredOption.AbsolutelyRequiredOptions absolutelyRequiredOptions =
+                                (RequiredOption.AbsolutelyRequiredOptions) requiredOptions;
+                        absolutelyRequiredOptions
+                                .getRequiredOption()
+                                .forEach(
+                                        option -> {
+                                            AbstractFormOption requiredFormItem = null;
+                                            for (AbstractFormOption formItem : result) {
+                                                if (formItem.getField().equals(option.key())) {
+                                                    requiredFormItem = formItem;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (requiredFormItem == null) {
+                                                requiredFormItem =
+                                                        wrapperToFormOption(
+                                                                connectorName, option, locale);
+                                                result.add(requiredFormItem);
+                                            }
+
+                                            if (requiredFormItem.getValidate() == null) {
+                                                requiredFormItem.withValidate(
+                                                        ValidateBuilder.builder()
+                                                                .nonEmptyValidateBuilder()
+                                                                .nonEmptyValidate());
+                                            }
+                                        });
+                    } else if (requiredOptions instanceof RequiredOption.BundledRequiredOptions) {
+                        List<Option<?>> bundledRequiredOptions =
+                                ((RequiredOption.BundledRequiredOptions) requiredOptions)
+                                        .getRequiredOption();
+                        List<String> bundledFields =
+                                bundledRequiredOptions.stream()
+                                        .map(requiredOption -> requiredOption.key())
+                                        .collect(Collectors.toList());
+
+                        bundledRequiredOptions.forEach(
+                                option -> {
+                                    AbstractFormOption bundledRequiredFormOption = null;
+                                    for (AbstractFormOption formItem : result) {
+                                        if (formItem.getField().equals(option.key())) {
+                                            bundledRequiredFormOption = formItem;
+                                            break;
+                                        }
                                     }
-                                }
 
-                                if (requiredFormItem == null) {
-                                    requiredFormItem =
-                                        wrapperToFormOption(
-                                            connectorName, option, locale);
-                                    result.add(requiredFormItem);
-                                }
+                                    if (bundledRequiredFormOption == null) {
+                                        bundledRequiredFormOption =
+                                                wrapperToFormOption(connectorName, option, locale);
+                                        result.add(bundledRequiredFormOption);
+                                    }
 
-                                if (requiredFormItem.getValidate() == null) {
-                                    requiredFormItem.withValidate(
-                                        ValidateBuilder.builder()
-                                            .nonEmptyValidateBuilder()
-                                            .nonEmptyValidate());
-                                }
-                            });
-                } else if (requiredOptions instanceof RequiredOption.BundledRequiredOptions) {
-                    List<Option<?>> bundledRequiredOptions =
-                        ((RequiredOption.BundledRequiredOptions) requiredOptions)
-                            .getRequiredOption();
-                    List<String> bundledFields =
-                        bundledRequiredOptions.stream()
-                            .map(requiredOption -> requiredOption.key())
-                            .collect(Collectors.toList());
+                                    bundledRequiredFormOption.withValidate(
+                                            ValidateBuilder.builder()
+                                                    .unionNonEmptyValidateBuilder()
+                                                    .fields(bundledFields.toArray(new String[1]))
+                                                    .unionNonEmptyValidate());
+                                });
+                    } else if (requiredOptions instanceof RequiredOption.ExclusiveRequiredOptions) {
+                        List<Option<?>> exclusiveOptions =
+                                ((RequiredOption.ExclusiveRequiredOptions) requiredOptions)
+                                        .getExclusiveOptions();
+                        List<String> exclusiveFields =
+                                exclusiveOptions.stream()
+                                        .map(requiredOption -> requiredOption.key())
+                                        .collect(Collectors.toList());
 
-                    bundledRequiredOptions.forEach(
-                        option -> {
-                            AbstractFormOption bundledRequiredFormOption = null;
-                            for (AbstractFormOption formItem : result) {
-                                if (formItem.getField().equals(option.key())) {
-                                    bundledRequiredFormOption = formItem;
-                                    break;
-                                }
-                            }
+                        exclusiveOptions.forEach(
+                                option -> {
+                                    AbstractFormOption exclusiveRequiredFormOption = null;
+                                    for (AbstractFormOption formItem : result) {
+                                        if (formItem.getField().equals(option.key())) {
+                                            exclusiveRequiredFormOption = formItem;
+                                            break;
+                                        }
+                                    }
+                                    if (exclusiveRequiredFormOption == null) {
+                                        exclusiveRequiredFormOption =
+                                                wrapperToFormOption(connectorName, option, locale);
 
-                            if (bundledRequiredFormOption == null) {
-                                bundledRequiredFormOption =
-                                    wrapperToFormOption(connectorName, option, locale);
-                                result.add(bundledRequiredFormOption);
-                            }
+                                        result.add(exclusiveRequiredFormOption);
+                                    }
 
-                            bundledRequiredFormOption.withValidate(
-                                ValidateBuilder.builder()
-                                    .unionNonEmptyValidateBuilder()
-                                    .fields(bundledFields.toArray(new String[1]))
-                                    .unionNonEmptyValidate());
-                        });
-                } else if (requiredOptions instanceof RequiredOption.ExclusiveRequiredOptions) {
-                    List<Option<?>> exclusiveOptions =
-                        ((RequiredOption.ExclusiveRequiredOptions) requiredOptions)
-                            .getExclusiveOptions();
-                    List<String> exclusiveFields =
-                        exclusiveOptions.stream()
-                            .map(requiredOption -> requiredOption.key())
-                            .collect(Collectors.toList());
+                                    exclusiveRequiredFormOption.withValidate(
+                                            ValidateBuilder.builder()
+                                                    .mutuallyExclusiveValidateBuilder()
+                                                    .fields(exclusiveFields.toArray(new String[1]))
+                                                    .mutuallyExclusiveValidate());
+                                });
+                    } else if (requiredOptions
+                            instanceof RequiredOption.ConditionalRequiredOptions) {
+                        RequiredOption.ConditionalRequiredOptions conditionalRequiredOptions =
+                                (RequiredOption.ConditionalRequiredOptions) requiredOptions;
 
-                    exclusiveOptions.forEach(
-                        option -> {
-                            AbstractFormOption exclusiveRequiredFormOption = null;
-                            for (AbstractFormOption formItem : result) {
-                                if (formItem.getField().equals(option.key())) {
-                                    exclusiveRequiredFormOption = formItem;
-                                    break;
-                                }
-                            }
-                            if (exclusiveRequiredFormOption == null) {
-                                exclusiveRequiredFormOption =
-                                    wrapperToFormOption(connectorName, option, locale);
+                        // we only support one field to control a form option, so we
+                        // only need get condition key from the
+                        // first expression. And all expression is 'or' and every
+                        // condition have the same key.
+                        String conditionKey =
+                                conditionalRequiredOptions
+                                        .getExpression()
+                                        .getCondition()
+                                        .getOption()
+                                        .key();
+                        List<Object> expectValueList = new ArrayList<>();
+                        Expression expression = conditionalRequiredOptions.getExpression();
+                        expectValueList.add(expression.getCondition().getExpectValue().toString());
+                        while (expression.hasNext()) {
+                            expression = expression.getNext();
+                            expectValueList.add(
+                                    expression.getCondition().getExpectValue().toString());
+                        }
 
-                                result.add(exclusiveRequiredFormOption);
-                            }
-
-                            exclusiveRequiredFormOption.withValidate(
-                                ValidateBuilder.builder()
-                                    .mutuallyExclusiveValidateBuilder()
-                                    .fields(exclusiveFields.toArray(new String[1]))
-                                    .mutuallyExclusiveValidate());
-                        });
-                } else if (requiredOptions
-                    instanceof RequiredOption.ConditionalRequiredOptions) {
-                    RequiredOption.ConditionalRequiredOptions conditionalRequiredOptions =
-                        (RequiredOption.ConditionalRequiredOptions) requiredOptions;
-
-                    // we only support one field to control a form option, so we
-                    // only need get condition key from the
-                    // first expression. And all expression is 'or' and every
-                    // condition have the same key.
-                    String conditionKey =
                         conditionalRequiredOptions
-                            .getExpression()
-                            .getCondition()
-                            .getOption()
-                            .key();
-                    List<Object> expectValueList = new ArrayList<>();
-                    Expression expression = conditionalRequiredOptions.getExpression();
-                    expectValueList.add(expression.getCondition().getExpectValue().toString());
-                    while (expression.hasNext()) {
-                        expression = expression.getNext();
-                        expectValueList.add(
-                            expression.getCondition().getExpectValue().toString());
+                                .getRequiredOption()
+                                .forEach(
+                                        option -> {
+                                            AbstractFormOption conditionalRequiredFormItem = null;
+                                            for (AbstractFormOption formItem : result) {
+                                                if (formItem.getField().equals(option.key())) {
+                                                    conditionalRequiredFormItem = formItem;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (conditionalRequiredFormItem == null) {
+                                                conditionalRequiredFormItem =
+                                                        wrapperToFormOption(
+                                                                connectorName, option, locale);
+                                                result.add(conditionalRequiredFormItem);
+                                            }
+
+                                            if (conditionalRequiredFormItem.getShow() == null) {
+                                                conditionalRequiredFormItem.withShow(
+                                                        conditionKey, expectValueList);
+                                            } else {
+                                                Map<String, Object> show =
+                                                        conditionalRequiredFormItem.getShow();
+                                                String field =
+                                                        show.get(Constants.SHOW_FIELD).toString();
+                                                if (field.equals(conditionKey)) {
+                                                    Set values =
+                                                            (Set) show.get(Constants.SHOW_VALUE);
+                                                    values.addAll(expectValueList);
+                                                } else {
+                                                    throw new UnSupportWrapperException(
+                                                            connectorName,
+                                                            conditionalRequiredFormItem.getLabel(),
+                                                            "Only support show by one field");
+                                                }
+                                            }
+
+                                            if (conditionalRequiredFormItem.getValidate() == null) {
+                                                conditionalRequiredFormItem.withValidate(
+                                                        ValidateBuilder.builder()
+                                                                .nonEmptyValidateBuilder()
+                                                                .nonEmptyValidate());
+                                            }
+                                        });
                     }
-
-                    conditionalRequiredOptions
-                        .getRequiredOption()
-                        .forEach(
-                            option -> {
-                                AbstractFormOption conditionalRequiredFormItem = null;
-                                for (AbstractFormOption formItem : result) {
-                                    if (formItem.getField().equals(option.key())) {
-                                        conditionalRequiredFormItem = formItem;
-                                        break;
-                                    }
-                                }
-
-                                if (conditionalRequiredFormItem == null) {
-                                    conditionalRequiredFormItem =
-                                        wrapperToFormOption(
-                                            connectorName, option, locale);
-                                    result.add(conditionalRequiredFormItem);
-                                }
-
-                                if (conditionalRequiredFormItem.getShow() == null) {
-                                    conditionalRequiredFormItem.withShow(
-                                        conditionKey, expectValueList);
-                                } else {
-                                    Map<String, Object> show =
-                                        conditionalRequiredFormItem.getShow();
-                                    String field =
-                                        show.get(Constants.SHOW_FIELD).toString();
-                                    if (field.equals(conditionKey)) {
-                                        Set values =
-                                            (Set) show.get(Constants.SHOW_VALUE);
-                                        values.addAll(expectValueList);
-                                    } else {
-                                        throw new UnSupportWrapperException(
-                                            connectorName,
-                                            conditionalRequiredFormItem.getLabel(),
-                                            "Only support show by one field");
-                                    }
-                                }
-
-                                if (conditionalRequiredFormItem.getValidate() == null) {
-                                    conditionalRequiredFormItem.withValidate(
-                                        ValidateBuilder.builder()
-                                            .nonEmptyValidateBuilder()
-                                            .nonEmptyValidate());
-                                }
-                            });
-                }
-            });
+                });
         return result;
     }
 
