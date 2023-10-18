@@ -42,11 +42,13 @@ public class FormStructureValidate {
         List<String> showErrorList = validateShow(formStructure);
         List<String> unionNonErrorList = validateUnionNonEmpty(formStructure);
         List<String> exclusiveErrorList = validateMutuallyExclusive(formStructure);
+        List<String> duplicateFormItemErrorList = validateDuplicateFormItem(formStructure);
 
         apiErrorList.addAll(localeErrorList);
         apiErrorList.addAll(showErrorList);
         apiErrorList.addAll(unionNonErrorList);
         apiErrorList.addAll(exclusiveErrorList);
+        apiErrorList.addAll(duplicateFormItemErrorList);
 
         if (apiErrorList.size() > 0) {
             throw new FormStructureValidateException(formStructure.getName(), apiErrorList);
@@ -266,5 +268,29 @@ public class FormStructureValidate {
                 });
 
         return errorMessageList;
+    }
+
+    public static List<String> validateDuplicateFormItem(@NonNull FormStructure formStructure) {
+        List fieldList = new ArrayList();
+        List errorFieldList = new ArrayList();
+        List errorMessage = new ArrayList();
+        formStructure
+                .getForms()
+                .forEach(
+                        form -> {
+                            if (fieldList.contains(form.getField())) {
+                                errorFieldList.add(form.getField());
+                            } else {
+                                fieldList.add(form.getField());
+                            }
+                        });
+        if (errorFieldList.size() > 0) {
+            errorMessage.add(
+                    String.format(
+                            "DuplicateFormItemValidate failed, Duplicate form items %s",
+                            errorFieldList));
+        }
+
+        return errorMessage;
     }
 }

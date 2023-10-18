@@ -27,8 +27,10 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 public abstract class AbstractFormOption<T extends AbstractFormOption, V extends AbstractValidate> {
@@ -75,8 +77,9 @@ public abstract class AbstractFormOption<T extends AbstractFormOption, V extends
             this.show = new HashMap<>();
         }
 
+        Set<Object> valueSet = new HashSet<>(values);
         this.show.put(Constants.SHOW_FIELD, field);
-        this.show.put(Constants.SHOW_VALUE, values);
+        this.show.put(Constants.SHOW_VALUE, valueSet);
         return (T) this;
     }
 
