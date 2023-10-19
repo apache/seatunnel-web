@@ -23,18 +23,22 @@ WORKDIR=$(
   pwd
 )
 
-DOCKER_VERSION=1.0.0-snapshot
+if [ -z "$2" ]; then
+  VERSION="latest"
+else
+  VERSION=$2
+fi
 
 # build code
 code() {
   /bin/sh $WORKDIR/mvnw clean package -DskipTests -Pci
   # mv release zip
-  mv $WORKDIR/seatunnel-web-dist/target/apache-seatunnel-web-1.0.0-SNAPSHOT.zip $WORKDIR/
+  mv $WORKDIR/seatunnel-web-dist/target/apache-seatunnel-web-*.zip $WORKDIR/
 }
 
 # build image
 image() {
-  docker buildx build --load --no-cache -t apache/seatunnel-web:$DOCKER_VERSION -t apache/seatunnel-web:latest -f $WORKDIR/docker/backend.dockerfile .
+  docker buildx build --load --no-cache -t apache/seatunnel-web:$VERSION -t apache/seatunnel-web:latest -f $WORKDIR/docker/backend.dockerfile .
 }
 
 # main
@@ -46,7 +50,7 @@ case "$1" in
   image
   ;;
 *)
-  echo "Usage: seatunnel-daemon.sh {start|stop|status}"
+  echo "Usage: build.sh {code|image}"
   exit 1
   ;;
 esac
