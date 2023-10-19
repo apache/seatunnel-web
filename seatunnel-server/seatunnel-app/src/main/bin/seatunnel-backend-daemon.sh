@@ -22,9 +22,22 @@ set -
 
 WORKDIR=$(cd "$(dirname "$0")" || exit; pwd)
 
+# check
+check() {
+  # check whether the SEATUNNEL_HOME exists or not.
+  if [ "${SEATUNNEL_HOME}" ];then
+  	echo "Load connectors from ${SEATUNNEL_HOME}"
+  else
+  	echo "SEATUNNEL_HOME is not be set. Please check it."
+  	exit 1
+  fi
+}
+
 # start
 start() {
   echo "starting seatunnel..."
+
+  check
 
   JAVA_OPTS="${JAVA_OPTS} -server -Xms1g -Xmx1g -Xmn512m -XX:+PrintGCDetails -Xloggc:gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dump.hprof"
   SPRING_OPTS="${SPRING_OPTS} -Dspring.config.name=application.yml -Dspring.config.location=classpath:application.yml"
