@@ -92,6 +92,14 @@ public class DatasourceLoadConfig {
         classLoaderFactoryName.put(
                 "JDBC-STARROCKS",
                 "org.apache.seatunnel.datasource.plugin.starrocks.jdbc.StarRocksJdbcDataSourceFactory");
+        classLoaderFactoryName.put(
+                "DORIS",
+                "com.apache.seatunnel.datasource.plugin.doris.jdbc.DorisJdbcDataSourceFactory");
+        classLoaderFactoryName.put(
+                "MONGODB", "com.apache.seatunnel.datasource.plugin.mongodb.MongoDataSourceFactory");
+        classLoaderFactoryName.put(
+                "MONGODB-CDC",
+                "com.apache.seatunnel.datasource.plugin.mongodbcdc.MongodbCDCDataSourceFactory");
 
         classLoaderJarName.put("JDBC-ORACLE", "datasource-jdbc-oracle-");
         classLoaderJarName.put("JDBC-CLICKHOUSE", "datasource-jdbc-clickhouse-");
@@ -111,6 +119,9 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("STARROCKS", "datasource-starrocks-");
         classLoaderJarName.put("S3-REDSHIFT", "datasource-s3redshift-");
         classLoaderJarName.put("JDBC-STARROCKS", "datasource-jdbc-starrocks-");
+        classLoaderJarName.put("DORIS", "datasource-jdbc-doris-");
+        classLoaderJarName.put("MONGODB", "datasource-mongodb-");
+        classLoaderJarName.put("MONGODB-CDC", "datasource-mongodbcdc-");
     }
 
     public static final Set<String> pluginSet =
@@ -127,7 +138,10 @@ public class DatasourceLoadConfig {
                     "MySQL-CDC",
                     "S3",
                     "SqlServer-CDC",
-                    "StarRocks");
+                    "Doris",
+                    "StarRocks",
+                    "MongoDB",
+                    "MongoDB-CDC");
 
     public static Map<String, DatasourceClassLoader> datasourceClassLoaders = new HashMap<>();
 

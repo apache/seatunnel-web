@@ -54,6 +54,18 @@ connector-datasource-mapper:
       dataSources:
         - Postgres-CDC
 
+    Doris:
+      dataSources:
+        - Doris
+
+    MongoDB:
+      dataSources:
+        - MongoDB
+
+    MongoDB-CDC:
+      dataSources:
+        - MongoDB-CDC
+
   sourceDatasourceFeatures:
     JDBC-Mysql:
       businessMode:
@@ -122,6 +134,22 @@ connector-datasource-mapper:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
         - SPLIT_TABLE
+
+    MongoDB:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+      jobMode:
+        - BATCH
+
+    MongoDB-CDC:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+      jobMode:
+        - STREAMING
 
 
 
@@ -196,3 +224,17 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+
+    Doris:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+
+    MongoDB:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
