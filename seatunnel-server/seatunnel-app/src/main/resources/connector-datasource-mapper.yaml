@@ -25,6 +25,7 @@ connector-datasource-mapper:
         - JDBC-SQLServer
         - JDBC-KingBase
         - JDBC-Oracle
+        - JDBC-Hive
 
     MySQL-CDC:
       dataSources:
@@ -54,12 +55,19 @@ connector-datasource-mapper:
       dataSources:
         - Postgres-CDC
 
+    Hive:
+      dataSources:
+        - Hive
+
   sourceDatasourceFeatures:
     JDBC-Mysql:
       businessMode:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+        - MULTIPLE_TABLE
+        - SPLIT_TABLE
+
     JDBC-Postgres:
       businessMode:
         - DATA_INTEGRATION
@@ -77,6 +85,15 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+
+    JDBC-Hive:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
+        - SPLIT_TABLE
+
     MySQL-CDC:
       businessMode:
         - DATA_INTEGRATION
@@ -123,7 +140,14 @@ connector-datasource-mapper:
         - MULTIPLE_TABLE
         - SPLIT_TABLE
 
-
+    Hive:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
+        - SPLIT_TABLE
 
   sinkDatasourceFeatures:
     JDBC-Mysql:
@@ -168,6 +192,13 @@ connector-datasource-mapper:
       sceneMode:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
+    JDBC-Hive:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
+        - SPLIT_TABLE
     Kafka:
       businessMode:
         - DATA_REPLICA
@@ -196,3 +227,12 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+
+    Hive:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
+        - SPLIT_TABLE
