@@ -59,7 +59,7 @@ public class SqlServerCDCDataSourceChannel implements DataSourceChannel {
     }
 
     @Override
-    public OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName) {
+    public OptionRule getVirtualTableOptions(@NonNull String pluginName) {
         return SqlServerCDCOptionRule.metadataRule();
     }
 

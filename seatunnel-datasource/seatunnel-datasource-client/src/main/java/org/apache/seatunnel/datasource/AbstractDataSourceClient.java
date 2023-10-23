@@ -143,8 +143,7 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
     public OptionRule queryMetadataFieldByName(String pluginName) {
         updateClassLoader(pluginName);
         OptionRule datasourceMetadataFieldsByDataSourceName =
-                getDataSourceChannel(pluginName)
-                        .getDatasourceMetadataFieldsByDataSourceName(pluginName);
+                getDataSourceChannel(pluginName).getVirtualTableOptions(pluginName);
         classLoaderRestore();
         return datasourceMetadataFieldsByDataSourceName;
     }

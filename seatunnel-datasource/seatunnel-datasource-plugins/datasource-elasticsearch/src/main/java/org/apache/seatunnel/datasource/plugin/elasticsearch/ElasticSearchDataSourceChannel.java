@@ -49,7 +49,7 @@ public class ElasticSearchDataSourceChannel implements DataSourceChannel {
     }
 
     @Override
-    public OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName) {
+    public OptionRule getVirtualTableOptions(@NonNull String pluginName) {
         return ElasticSearchOptionRule.metadataRule();
     }
 

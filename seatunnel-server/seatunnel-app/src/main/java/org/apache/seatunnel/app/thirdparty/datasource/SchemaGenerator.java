@@ -1,0 +1,123 @@
+package org.whaleops.whaletunnel.web.app.thirdpart.datasource;
+
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
+import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
+
+import org.apache.seatunnel.app.domain.request.job.DatabaseTableSchemaReq;
+import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
+import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
+import org.apache.seatunnel.app.domain.response.datasource.VirtualTableFieldRes;
+import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+
+import org.apache.commons.collections4.CollectionUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+@Slf4j
+public class SchemaGenerator {
+
+    private SchemaGenerator() {}
+
+    /**
+     * Generate the schema of the table.
+     *
+     * <pre>
+     * fields {
+     *        name = "string"
+     *        age = "int"
+     *       }
+     * </pre>
+     *
+     * @param virtualTableDetailRes virtual table detail.
+     * @param selectTableFields select table fields which need to be placed in the schema.
+     * @return schema.
+     */
+    public static Config generateSchemaBySelectTableFields(
+            VirtualTableDetailRes virtualTableDetailRes, SelectTableFields selectTableFields) {
+        checkNotNull(selectTableFields, "selectTableFields cannot be null");
+        checkArgument(
+                CollectionUtils.isNotEmpty(selectTableFields.getTableFields()),
+                "selectTableFields.tableFields cannot be empty");
+
+        checkNotNull(virtualTableDetailRes, "virtualTableDetailRes cannot be null");
+        checkArgument(
+                CollectionUtils.isNotEmpty(virtualTableDetailRes.getFields()),
+                "virtualTableDetailRes.fields cannot be empty");
+
+        Map<String, VirtualTableFieldRes> fieldTypeMap =
+                virtualTableDetailRes.getFields().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        VirtualTableFieldRes::getFieldName, Function.identity()));
+
+        Config schema = ConfigFactory.empty();
+        for (String fieldName : selectTableFields.getTableFields()) {
+            VirtualTableFieldRes virtualTableFieldRes =
+                    checkNotNull(
+                            fieldTypeMap.get(fieldName),
+                            String.format(
+                                    "Cannot find the field: %s from virtual table", fieldName));
+            schema =
+                    schema.withValue(
+                            fieldName,
+                            ConfigValueFactory.fromAnyRef(virtualTableFieldRes.getFieldType()));
+        }
+        return schema.atKey("fields");
+    }
+
+    // todo: how to deal with multiple table has the same field?
+    /**
+     * Generate the schema of the table.
+     *
+     * <pre>
+     * fields {
+     *        name = "string"
+     *        age = "int"
+     *       }
+     * </pre>
+     *
+     * @param outputSchemas schema in the ui.
+     * @param selectTableFields select table fields which need to be placed in the schema.
+     * @return schema.
+     */
+    public static Config generateSchemaBySelectTableFields(
+            List<DatabaseTableSchemaReq> outputSchemas, SelectTableFields selectTableFields) {
+        checkNotNull(selectTableFields, "selectTableFields cannot be null");
+        checkArgument(
+                CollectionUtils.isNotEmpty(selectTableFields.getTableFields()),
+                "selectTableFields.tableFields cannot be empty");
+
+        checkArgument(
+                CollectionUtils.isNotEmpty(outputSchemas),
+                "selectTableFields.tableFields cannot be empty");
+        Config schema = ConfigFactory.empty();
+
+        Map<String, TableField> tableFieldMap =
+                outputSchemas.stream()
+                        .flatMap(
+                                databaseTableSchemaReq ->
+                                        databaseTableSchemaReq.getFields().stream())
+                        .collect(Collectors.toMap(TableField::getName, Function.identity()));
+        for (String fieldName : selectTableFields.getTableFields()) {
+            TableField tableField =
+                    checkNotNull(
+                            tableFieldMap.get(fieldName),
+                            String.format(
+                                    "Cannot find the field: %s from virtual table", fieldName));
+            schema =
+                    schema.withValue(
+                            fieldName,
+                            ConfigValueFactory.fromAnyRef(tableField.getOutputDataType()));
+        }
+        return schema.atKey("fields");
+    }
+}

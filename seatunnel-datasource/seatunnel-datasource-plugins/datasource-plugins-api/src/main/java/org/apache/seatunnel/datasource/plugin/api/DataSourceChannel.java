@@ -28,13 +28,15 @@ import lombok.NonNull;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface DataSourceChannel {
 
     List<String> DEFAULT_DATABASES = ImmutableList.of("default");
 
     /**
-     * get datasource metadata fields by datasource name
+     * This method is used to define the datasource options which is used to create a datasource.
      *
      * @param pluginName plugin name
      * @return datasource metadata fields
@@ -42,12 +44,13 @@ public interface DataSourceChannel {
     OptionRule getDataSourceOptions(@NonNull String pluginName);
 
     /**
-     * get datasource metadata fields by datasource name
+     * This method is used to define the datasource options which is used to create the virtual
+     * table.
      *
      * @param pluginName plugin name
      * @return datasource metadata fields
      */
-    OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName);
+    OptionRule getVirtualTableOptions(@NonNull String pluginName);
 
     List<String> getTables(
             @NonNull String pluginName,
@@ -71,11 +74,19 @@ public interface DataSourceChannel {
             @NonNull String database,
             @NonNull String table);
 
-    Map<String, List<TableField>> getTableFields(
+    default Map<String, List<TableField>> getTableFields(
             @NonNull String pluginName,
             @NonNull Map<String, String> requestParams,
             @NonNull String database,
-            @NonNull List<String> tables);
+            @NonNull List<String> tables) {
+        return tables.parallelStream()
+                .collect(
+                        Collectors.toMap(
+                                Function.identity(),
+                                table ->
+                                        getTableFields(
+                                                pluginName, requestParams, database, table)));
+    }
 
     /**
      * just check metadata field is right and used by virtual table
@@ -87,6 +98,16 @@ public interface DataSourceChannel {
         return true;
     }
 
+    /**
+     * Gets the maximum value of synchronization at the time of synchronization
+     *
+     * @param pluginName pluginName
+     * @param requestParams Map<String,String> connector params include url, driver, updateType ……
+     * @param databaseName database name
+     * @param tableName table name
+     * @param updateFieldType table updateValue type
+     * @return return str
+     */
     default Pair<String, String> getTableSyncMaxValue(
             String pluginName,
             Map<String, String> requestParams,
