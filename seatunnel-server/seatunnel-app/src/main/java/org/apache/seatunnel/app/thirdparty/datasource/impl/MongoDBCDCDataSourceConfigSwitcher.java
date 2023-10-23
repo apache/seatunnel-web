@@ -30,9 +30,8 @@ import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.datasource.AbstractDataSourceConfigSwitcher;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcher;
+import org.apache.seatunnel.app.thirdparty.datasource.SchemaGenerator;
 import org.apache.seatunnel.common.constants.PluginType;
-
-import org.whaleops.whaletunnel.web.app.thirdpart.datasource.SchemaGenerator;
 
 import com.google.auto.service.AutoService;
 import lombok.extern.slf4j.Slf4j;
