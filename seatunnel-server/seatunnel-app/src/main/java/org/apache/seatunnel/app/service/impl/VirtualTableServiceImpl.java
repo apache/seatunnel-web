@@ -154,7 +154,7 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
         VirtualTable virtualTable =
                 VirtualTable.builder()
                         .id(Long.valueOf(tableId))
-                        .datasourceId(originalTable.getDatasourceId())
+                        .datasourceId(Long.parseLong(req.getDatasourceId()))
                         .virtualDatabaseName(req.getDatabaseName())
                         .virtualTableName(req.getTableName())
                         .description(req.getDescription())
