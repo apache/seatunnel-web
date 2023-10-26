@@ -29,6 +29,7 @@ import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
+import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
 import org.apache.seatunnel.engine.client.job.ClientJobProxy;
 import org.apache.seatunnel.engine.client.job.JobExecutionEnvironment;
@@ -121,7 +122,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
                     });
 
         } catch (ExecutionException | InterruptedException e) {
-            log.error("executeJobBySeaTunnel error:{}", e.getMessage());
+            ExceptionUtils.getMessage(e);
             throw new RuntimeException(e);
         }
         return jobInstanceId;
