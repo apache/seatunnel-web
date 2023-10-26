@@ -43,6 +43,7 @@ datasource_list=(
   "datasource-s3"
   "datasource-sqlserver-cdc"
   "datasource-starrocks"
+  "datasource-mongodbcdc"
 )
 
 # the datasource default version is 1.0.0, you can also choose a custom version. eg: 1.1.2:  sh install-datasource.sh 2.1.2
