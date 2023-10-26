@@ -46,8 +46,6 @@
         <module>datasource-jdbc-tidb</module>
         <module>datasource-jdbc-common</module>
         <module>datasource-jdbc-doris</module>
-        <module>datasource-mongodb</module>
-        <module>datasource-mongodbcdc</module>
     </modules>
 
 </project>
