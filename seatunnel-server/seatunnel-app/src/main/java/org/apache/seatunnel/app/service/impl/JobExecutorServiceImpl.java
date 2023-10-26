@@ -76,7 +76,8 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
     public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
         String projectRoot = System.getProperty("user.dir");
-        String filePath = projectRoot + "\\profile\\" + jobDefineId + ".conf";
+        String filePath =
+                projectRoot + File.separator + "profile" + File.separator + jobDefineId + ".conf";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -120,6 +121,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
                     });
 
         } catch (ExecutionException | InterruptedException e) {
+            log.error("executeJobBySeaTunnel error:{}", e.getMessage());
             throw new RuntimeException(e);
         }
         return jobInstanceId;
@@ -189,8 +191,14 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
 
         String projectRoot = System.getProperty("user.dir");
-        String filePath = projectRoot + "\\profile\\" + jobInstance.getJobDefineId() + ".conf";
-
+        String filePath =
+                projectRoot
+                        + File.separator
+                        + "profile"
+                        + File.separator
+                        + jobInstance.getJobDefineId()
+                        + ".conf";
+        log.info("jobStore filePath:{}", filePath);
         SeaTunnelEngineProxy.getInstance()
                 .restoreJob(filePath, jobInstanceId, Long.valueOf(jobInstance.getJobEngineId()));
         return Result.success();
