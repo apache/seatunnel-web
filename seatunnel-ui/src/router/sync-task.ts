@@ -35,7 +35,7 @@ export default {
       name: 'synchronization-definition',
       component: components['projects-task-synchronization-definition'],
       meta: {
-        title: '同步任务定义',
+        title: 'synchronization-definition',
         activeMenu: 'projects',
         showSide: true
         // auth: 'project:seatunnel-task:view'
@@ -46,7 +46,7 @@ export default {
       name: 'synchronization-definition-dag',
       component: components['projects-task-synchronization-definition-dag'],
       meta: {
-        title: '同步任务定义画布',
+        title: 'synchronization-definition-dag',
         activeMenu: 'projects',
         activeSide: '/task/synchronization-definition',
         showSide: true,
@@ -58,7 +58,7 @@ export default {
       name: 'synchronization-instance',
       component: components['projects-task-synchronization-instance'],
       meta: {
-        title: '同步任务实例',
+        title: 'synchronization-instance',
         activeMenu: 'projects',
         showSide: true
         // auth: 'project:seatunnel-task-instance:view'
@@ -69,7 +69,7 @@ export default {
       name: 'synchronization-instance-detail',
       component: components['projects-task-synchronization-instance-detail'],
       meta: {
-        title: '同步任务实例详情',
+        title: 'synchronization-instance-detail',
         activeMenu: 'projects',
         activeSide: '/task/synchronization-instance',
         showSide: true,
