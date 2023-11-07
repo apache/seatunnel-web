@@ -28,6 +28,8 @@ import lombok.NonNull;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface DataSourceChannel {
 
@@ -71,11 +73,19 @@ public interface DataSourceChannel {
             @NonNull String database,
             @NonNull String table);
 
-    Map<String, List<TableField>> getTableFields(
+    default Map<String, List<TableField>> getTableFields(
             @NonNull String pluginName,
             @NonNull Map<String, String> requestParams,
             @NonNull String database,
-            @NonNull List<String> tables);
+            @NonNull List<String> tables) {
+        return tables.parallelStream()
+                .collect(
+                        Collectors.toMap(
+                                Function.identity(),
+                                table ->
+                                        getTableFields(
+                                                pluginName, requestParams, database, table)));
+    }
 
     /**
      * just check metadata field is right and used by virtual table
