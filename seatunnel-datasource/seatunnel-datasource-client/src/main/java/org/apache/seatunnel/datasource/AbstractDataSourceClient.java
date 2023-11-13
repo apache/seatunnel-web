@@ -133,11 +133,6 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
 
     protected DataSourceChannel getDataSourceChannel(String pluginName) {
         checkNotNull(pluginName, "pluginName cannot be null");
-        //        Integer index = supportedDataSourceIndex.get(pluginName.toUpperCase());
-        //        if (index == null) {
-        //            throw new DataSourceSDKException(
-        //                    "The %s plugin is not supported or plugin not exist.", pluginName);
-        //        }
         return DatasourceLoadConfig.classLoaderChannel.get(pluginName.toUpperCase());
     }
 
