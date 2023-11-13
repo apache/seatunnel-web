@@ -145,7 +145,6 @@ export function queryTaskDetail(jobCode: string, taskCode: string): any {
   })
 }
 
-// source类型，获取源名称
 export function listSourceName(
   jobId: string,
   sceneMode: string,
@@ -161,7 +160,7 @@ export function listSourceName(
     }
   })
 }
-// sink类型，获取源名称
+
 export function findSink(
   jobId: string,
   status: 'DOWNLOADED' | 'NOT_DOWNLOAD' | 'ALL' = 'DOWNLOADED'

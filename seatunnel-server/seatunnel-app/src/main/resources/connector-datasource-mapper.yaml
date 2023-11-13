@@ -228,6 +228,7 @@ connector-datasource-mapper:
     Doris:
       businessMode:
         - DATA_INTEGRATION
+        - DATA_REPLICA
       sceneMode:
         - SINGLE_TABLE
 
