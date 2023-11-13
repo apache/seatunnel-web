@@ -54,6 +54,10 @@ connector-datasource-mapper:
       dataSources:
         - Postgres-CDC
 
+    MongoDB:
+      dataSources:
+        - MongoDB
+
   sourceDatasourceFeatures:
     JDBC-Mysql:
       businessMode:
@@ -123,6 +127,13 @@ connector-datasource-mapper:
         - MULTIPLE_TABLE
         - SPLIT_TABLE
 
+    MongoDB:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+      jobMode:
+        - BATCH
 
 
   sinkDatasourceFeatures:
@@ -196,3 +207,11 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+
+    MongoDB:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
