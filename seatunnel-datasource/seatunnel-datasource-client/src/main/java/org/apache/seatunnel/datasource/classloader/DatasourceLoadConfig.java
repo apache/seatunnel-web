@@ -93,6 +93,8 @@ public class DatasourceLoadConfig {
                 "JDBC-STARROCKS",
                 "org.apache.seatunnel.datasource.plugin.starrocks.jdbc.StarRocksJdbcDataSourceFactory");
         classLoaderFactoryName.put(
+                "MONGODB", "com.apache.seatunnel.datasource.plugin.mongodb.MongoDataSourceFactory");
+        classLoaderFactoryName.put(
                 "DORIS",
                 "com.apache.seatunnel.datasource.plugin.doris.jdbc.DorisJdbcDataSourceFactory");
 
@@ -114,6 +116,7 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("STARROCKS", "datasource-starrocks-");
         classLoaderJarName.put("S3-REDSHIFT", "datasource-s3redshift-");
         classLoaderJarName.put("JDBC-STARROCKS", "datasource-jdbc-starrocks-");
+        classLoaderJarName.put("MONGODB", "datasource-mongodb-");
         classLoaderJarName.put("DORIS", "datasource-jdbc-doris-");
     }
 
@@ -132,7 +135,8 @@ public class DatasourceLoadConfig {
                     "S3",
                     "SqlServer-CDC",
                     "Doris",
-                    "StarRocks");
+                    "StarRocks",
+                    "MongoDB");
 
     public static Map<String, DatasourceClassLoader> datasourceClassLoaders = new HashMap<>();
 

@@ -59,6 +59,10 @@ connector-datasource-mapper:
         - Doris
 
 
+    MongoDB:
+      dataSources:
+        - MongoDB
+
   sourceDatasourceFeatures:
     JDBC-Mysql:
       businessMode:
@@ -128,8 +132,13 @@ connector-datasource-mapper:
         - MULTIPLE_TABLE
         - SPLIT_TABLE
 
-
-
+    MongoDB:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+      jobMode:
+        - BATCH
 
 
   sinkDatasourceFeatures:
@@ -210,3 +219,10 @@ connector-datasource-mapper:
       sceneMode:
         - SINGLE_TABLE
 
+    MongoDB:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
