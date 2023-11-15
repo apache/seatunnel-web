@@ -39,6 +39,7 @@ public class DatasourceLoadConfig {
                 "org.slf4j",
                 "org.apache.log4j",
                 "org.apache.seatunnel.api",
+                "org.apache.seatunnel.datasource",
                 "org.apache.logging",
                 "org.apache.commons",
                 "com.fasterxml.jackson"
@@ -76,6 +77,8 @@ public class DatasourceLoadConfig {
         classLoaderFactoryName.put(
                 "KAFKA", "org.apache.seatunnel.datasource.plugin.kafka.KafkaDataSourceFactory");
         classLoaderFactoryName.put(
+                "PULSAR", "org.apache.seatunnel.datasource.plugin.pulsar.PulsarDataSourceFactory");
+        classLoaderFactoryName.put(
                 "MYSQL-CDC",
                 "org.apache.seatunnel.datasource.plugin.cdc.mysql.MysqlCDCDataSourceFactory");
         classLoaderFactoryName.put(
@@ -108,6 +111,7 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("S3", "datasource-s3-");
         classLoaderJarName.put("HIVE", "datasource-hive-");
         classLoaderJarName.put("KAFKA", "datasource-kafka-");
+        classLoaderJarName.put("PULSAR", "datasource-pulsar-");
         classLoaderJarName.put("STARROCKS", "datasource-starrocks-");
         classLoaderJarName.put("S3-REDSHIFT", "datasource-s3redshift-");
         classLoaderJarName.put("JDBC-STARROCKS", "datasource-jdbc-starrocks-");
@@ -124,6 +128,7 @@ public class DatasourceLoadConfig {
                     "JDBC-SQLServer",
                     "JDBC-TiDB",
                     "Kafka",
+                    "Pulsar",
                     "MySQL-CDC",
                     "S3",
                     "SqlServer-CDC",

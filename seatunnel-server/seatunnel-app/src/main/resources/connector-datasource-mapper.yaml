@@ -34,6 +34,10 @@ connector-datasource-mapper:
       dataSources:
         - Kafka
 
+    Pulsar:
+      dataSources:
+        - Pulsar
+
     StarRocks:
       dataSources:
         - StarRocks
@@ -96,6 +100,12 @@ connector-datasource-mapper:
         - SPLIT_TABLE
 
     Kafka:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+
+    Pulsar:
       businessMode:
         - DATA_INTEGRATION
       sceneMode:
@@ -169,6 +179,13 @@ connector-datasource-mapper:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
     Kafka:
+      businessMode:
+        - DATA_REPLICA
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
+    Pulsar:
       businessMode:
         - DATA_REPLICA
         - DATA_INTEGRATION

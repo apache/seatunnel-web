@@ -99,7 +99,7 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
                                 .get(pluginName.toUpperCase())
                                 .toString());
             } catch (Exception e) {
-                log.warn("datasource " + pluginName + "is error" + ExceptionUtils.getMessage(e));
+                log.warn("datasource " + pluginName + " is error" + ExceptionUtils.getMessage(e));
             }
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
