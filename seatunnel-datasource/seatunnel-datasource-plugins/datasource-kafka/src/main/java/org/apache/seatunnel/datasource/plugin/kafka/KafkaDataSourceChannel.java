@@ -52,7 +52,7 @@ public class KafkaDataSourceChannel implements DataSourceChannel {
     }
 
     @Override
-    public OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName) {
+    public OptionRule getVirtualTableOptions(@NonNull String pluginName) {
         return KafkaOptionRule.metadataRule();
     }
 

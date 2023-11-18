@@ -54,6 +54,11 @@ connector-datasource-mapper:
       dataSources:
         - Postgres-CDC
 
+    Doris:
+      dataSources:
+        - Doris
+
+
     MongoDB:
       dataSources:
         - MongoDB
@@ -203,6 +208,12 @@ connector-datasource-mapper:
         - SINGLE_TABLE
 
     S3:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+
+    Doris:
       businessMode:
         - DATA_INTEGRATION
       sceneMode:

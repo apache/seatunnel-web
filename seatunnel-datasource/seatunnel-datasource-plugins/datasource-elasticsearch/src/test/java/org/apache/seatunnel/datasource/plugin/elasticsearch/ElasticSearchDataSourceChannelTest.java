@@ -63,8 +63,7 @@ class ElasticSearchDataSourceChannelTest {
     @Test
     void getDatasourceMetadataFieldsByDataSourceName() {
         Assertions.assertNotNull(
-                ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getDatasourceMetadataFieldsByDataSourceName(
-                        PLUGIN_NAME));
+                ELASTIC_SEARCH_DATA_SOURCE_CHANNEL.getVirtualTableOptions(PLUGIN_NAME));
     }
 
     //    @Test
