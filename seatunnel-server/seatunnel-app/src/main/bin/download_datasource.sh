@@ -43,6 +43,7 @@ datasource_list=(
   "datasource-s3"
   "datasource-sqlserver-cdc"
   "datasource-starrocks"
+  "datasource-mongodbcdc"
   "datasource-mongodb"
 )
 

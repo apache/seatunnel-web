@@ -58,8 +58,7 @@ public class KafkaDataSourceChannelTest {
     @Test
     public void getDatasourceMetadataFieldsByDataSourceName() {
         OptionRule datasourceMetadataFieldsByDataSourceName =
-                KAFKA_DATA_SOURCE_CHANNEL.getDatasourceMetadataFieldsByDataSourceName(
-                        KAFKA_PLUGIN_NAME);
+                KAFKA_DATA_SOURCE_CHANNEL.getVirtualTableOptions(KAFKA_PLUGIN_NAME);
         Assertions.assertEquals(
                 2, datasourceMetadataFieldsByDataSourceName.getOptionalOptions().size());
     }

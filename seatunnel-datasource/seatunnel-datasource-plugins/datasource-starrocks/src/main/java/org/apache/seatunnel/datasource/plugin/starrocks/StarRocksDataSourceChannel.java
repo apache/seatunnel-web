@@ -54,7 +54,7 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
     }
 
     @Override
-    public OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName) {
+    public OptionRule getVirtualTableOptions(@NonNull String pluginName) {
         return StarRocksOptionRule.metadataRule();
     }
 

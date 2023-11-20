@@ -51,7 +51,7 @@ public class OracleDataSourceChannel implements DataSourceChannel {
     }
 
     @Override
-    public OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName) {
+    public OptionRule getVirtualTableOptions(@NonNull String pluginName) {
         return OracleDataSourceConfig.METADATA_RULE;
     }
 
