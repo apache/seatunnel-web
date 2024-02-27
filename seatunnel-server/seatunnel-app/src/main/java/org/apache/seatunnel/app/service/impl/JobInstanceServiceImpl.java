@@ -141,6 +141,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         } catch (CodeGenerateUtils.CodeGenerateException e) {
             throw new SeatunnelException(SeatunnelErrorEnum.JOB_RUN_GENERATE_UUID_ERROR);
         }
+        log.info("Job instance {}, submitted config is \n{}", jobInstance.getId(), jobConfig);
         jobInstance.setJobDefineId(job.getId());
         jobInstance.setEngineName(latestVersion.getEngineName());
         jobInstance.setEngineVersion(latestVersion.getEngineVersion());
