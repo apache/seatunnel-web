@@ -76,9 +76,9 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
-        String projectRoot = System.getProperty("SEATUNNEL_HOME");
+        String projectRoot = System.getProperty("user.dir");
         String filePath =
-                projectRoot + File.separator + "json" + File.separator + jobDefineId + ".conf";
+                projectRoot + File.separator + "profile" + File.separator + jobDefineId + ".conf";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
