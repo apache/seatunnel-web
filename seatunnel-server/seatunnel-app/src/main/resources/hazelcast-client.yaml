@@ -1,5 +1,3 @@
-#!/bin/sh
-
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,41 +15,10 @@
 # limitations under the License.
 #
 
-set -
-WORKDIR=$(
-  cd "$(dirname "$0")" || exit
-  pwd
-)
-
-if [ -z "$2" ]; then
-  VERSION="latest"
-else
-  VERSION=$2
-fi
-
-# build code
-code() {
-  mvn clean install -DskipTests -Pci
-  # mv release zip
-  mv $WORKDIR/seatunnel-web-dist/target/apache-seatunnel-web-*.zip $WORKDIR/
-}
-
-# build image
-image() {
-  docker buildx build --load --no-cache -t apache/seatunnel-web:$VERSION -t apache/seatunnel-web:latest -f $WORKDIR/docker/backend.dockerfile .
-}
-
-# main
-case "$1" in
-"code")
-  code
-  ;;
-"image")
-  image
-  ;;
-*)
-  echo "Usage: build.sh {code|image}"
-  exit 1
-  ;;
-esac
-set +
+hazelcast-client:
+  cluster-name: seatunnel
+  properties:
+    hazelcast.logging.type: log4j2
+  network:
+    cluster-members:
+      - 106.15.250.130:5801
