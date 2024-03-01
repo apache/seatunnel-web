@@ -31,7 +31,7 @@ fi
 
 # build code
 code() {
-  mvn clean install -DskipTests -Pci
+  /bin/sh $WORKDIR/mvnw clean package -DskipTests -Pci
   # mv release zip
   mv $WORKDIR/seatunnel-web-dist/target/apache-seatunnel-web-*.zip $WORKDIR/
 }
