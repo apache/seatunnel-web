@@ -97,6 +97,11 @@
             <artifactId>datasource-sqlserver-cdc</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.seatunnel</groupId>
+            <artifactId>datasource-jdbc-db2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
