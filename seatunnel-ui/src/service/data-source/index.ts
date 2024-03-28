@@ -16,11 +16,7 @@
  */
 
 import { axios } from '@/service/service'
-import {
-  DatasourceListParameters,
-  DataSourceDetail,
-  DatasourceTestConnectParameters
-} from './types'
+import { DatasourceListParameters, DataSourceDetail } from './types'
 
 const DATASOURCE_BASE_URL = '/datasource'
 
@@ -90,7 +86,10 @@ export function getDynamicFormItems(pluginName: string): any {
   })
 }
 
-export function getDatasourceTablesById(datasourceId: string, database: string): any {
+export function getDatasourceTablesById(
+  datasourceId: string,
+  database: string
+): any {
   return axios({
     url: `/data-quality/tables/${datasourceId}`,
     method: 'get',

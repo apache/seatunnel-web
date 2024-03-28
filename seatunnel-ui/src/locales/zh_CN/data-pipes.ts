@@ -38,8 +38,7 @@ export default {
   key: '键',
   value: '值',
   name_tips: '必填字段，数字，字母大小写，100个字符',
-  data_pipes_delete_tips:
-    '是否删除数据管道，删除后无法恢复',
+  data_pipes_delete_tips: '是否删除数据管道，删除后无法恢复',
   data_pipes_publish_tips: '是否发布数据管道',
   model_validate_tips: '必填字段'
 }

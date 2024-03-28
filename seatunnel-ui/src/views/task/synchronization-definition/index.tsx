@@ -26,7 +26,7 @@ import {
   NPagination
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
-import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
+import { SearchOutlined } from '@vicons/antd'
 import { useTable } from './use-table'
 import { TaskModal } from './task-modal'
 import { useRoute, useRouter } from 'vue-router'
@@ -39,7 +39,6 @@ const SynchronizationDefinition = defineComponent({
     const route = useRoute()
     const router = useRouter()
     const { variables, createColumns, getTableData } = useTable()
-    console.log('SynchronizationDefinition')
     const requestData = () => {
       getTableData({
         pageSize: variables.pageSize,
@@ -78,10 +77,10 @@ const SynchronizationDefinition = defineComponent({
         query: !_.isEmpty(query)
           ? {
               ...query,
-              ...route.query,
+              ...route.query
             }
           : {
-              ...route.query,
+              ...route.query
             }
       })
       requestData()
@@ -119,7 +118,7 @@ const SynchronizationDefinition = defineComponent({
       onConfirmModal,
       handleModalChange,
       onSearch,
-      handleKeyup,
+      handleKeyup
     }
   },
   render() {
@@ -127,10 +126,7 @@ const SynchronizationDefinition = defineComponent({
       <NSpace vertical>
         <NCard>
           <NSpace justify='space-between' itemStyle={{ flexGrow: 1 }}>
-            <NButton
-              type='info'
-              onClick={this.handleModalChange}
-            >
+            <NButton type='info' onClick={this.handleModalChange}>
               {this.t(
                 'project.synchronization_definition.create_synchronization_task'
               )}

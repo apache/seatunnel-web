@@ -36,7 +36,6 @@ export interface DatasourceTestConnectParameters {
   datasourceConfig?: string
 }
 
-
 export interface DatasourceTypeList {
   name: string
   icon: string

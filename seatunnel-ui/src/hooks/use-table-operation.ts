@@ -28,42 +28,38 @@ import {
 import { DeleteOutlined } from '@vicons/antd'
 import { COLUMN_WIDTH_CONFIG } from '@/common/column-width-config'
 
-
-export const useTableOperation = (
-  params: {
-    title: string
-    key: string
-    preRender?: (rowData: any, buttonVnodes: VNode[], index: number) => any
-    width?: number
-    noPermission?: boolean
-    itemNum?: number
-    buttons: {
-      isDelete?: boolean
-      isAuth?: boolean
-      isSwitch?: boolean
-      isCustom?: boolean
-      isHidden?: (rowData: any) => boolean
-      negativeText?: string
-      positiveText?: string
-      popTips?: string
-      text: string | ((rowData: any) => string)
-      icon?: VNode | ((rowData: any) => VNode)
-      auth?: any
-      // accessType?: accessTypeKey
-      disabled?: boolean | ((rowData: any) => boolean)
-      class?: string
-      value?: string | number | boolean | undefined
-      checkedValue?: string | boolean | number
-      uncheckedValue?: string | boolean | number
-      onPositiveClick?: (rowData: any, index: number) => void
-      onClick?: (rowData: any) => void
-      onUpdateValue?: (value: any, rowData: any) => void
-      customFunc?: (rowData: any) => VNode,
-      show?: any
-    }[]
-  },
-) => {
-
+export const useTableOperation = (params: {
+  title: string
+  key: string
+  preRender?: (rowData: any, buttonVnodes: VNode[], index: number) => any
+  width?: number
+  noPermission?: boolean
+  itemNum?: number
+  buttons: {
+    isDelete?: boolean
+    isAuth?: boolean
+    isSwitch?: boolean
+    isCustom?: boolean
+    isHidden?: (rowData: any) => boolean
+    negativeText?: string
+    positiveText?: string
+    popTips?: string
+    text: string | ((rowData: any) => string)
+    icon?: VNode | ((rowData: any) => VNode)
+    auth?: any
+    // accessType?: accessTypeKey
+    disabled?: boolean | ((rowData: any) => boolean)
+    class?: string
+    value?: string | number | boolean | undefined
+    checkedValue?: string | boolean | number
+    uncheckedValue?: string | boolean | number
+    onPositiveClick?: (rowData: any, index: number) => void
+    onClick?: (rowData: any) => void
+    onUpdateValue?: (value: any, rowData: any) => void
+    customFunc?: (rowData: any) => VNode
+    show?: any
+  }[]
+}) => {
   const getButtonVnodes = (rowData: any, index: number) => {
     // const showPopover = ref(false)
     return params.buttons
@@ -124,22 +120,22 @@ export const useTableOperation = (
         if (button.isAuth) {
           return h(button.auth, {
             ...commonProps,
-            row: rowData,
+            row: rowData
             // accessType: button.accessType
           })
         }
         if (button.isSwitch) {
           return h(NTooltip, null, {
             trigger: () =>
-            h(NSwitch, {
-              value: rowData.status,
-              checkedValue: button.checkedValue,
-              uncheckedValue: button.uncheckedValue,
-              onUpdateValue: (value) =>
-                button.onUpdateValue
-                  ? void button.onUpdateValue(value, rowData)
-                  : () => {}
-            }),
+              h(NSwitch, {
+                value: rowData.status,
+                checkedValue: button.checkedValue,
+                uncheckedValue: button.uncheckedValue,
+                onUpdateValue: (value) =>
+                  button.onUpdateValue
+                    ? void button.onUpdateValue(value, rowData)
+                    : () => {}
+              }),
             default: () => buttonText
           })
         }
@@ -149,23 +145,30 @@ export const useTableOperation = (
         }
 
         // show btn
-        const show = typeof button.show === 'function' ? button.show.call(this, rowData) : button.show === undefined ? true : !!button.show
-        return  show ? h(NTooltip, null, {
-          trigger: () =>
-          h(
-            NButton,
-            {
-              ...commonProps,
-              type: 'info',
-              onClick: () =>
-                button.onClick ? void button.onClick(rowData) : () => {}
-            },
-            {
-              default: () => h(NIcon, null, { default: () => buttonIcon })
-            }
-          ),
-          default: () => buttonText
-        }) : h('')
+        const show =
+          typeof button.show === 'function'
+            ? button.show.call(this, rowData)
+            : button.show === undefined
+              ? true
+              : !!button.show
+        return show
+          ? h(NTooltip, null, {
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    ...commonProps,
+                    type: 'info',
+                    onClick: () =>
+                      button.onClick ? void button.onClick(rowData) : () => {}
+                  },
+                  {
+                    default: () => h(NIcon, null, { default: () => buttonIcon })
+                  }
+                ),
+              default: () => buttonText
+            })
+          : h('')
       })
   }
 

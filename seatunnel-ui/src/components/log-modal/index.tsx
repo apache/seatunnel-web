@@ -119,7 +119,7 @@ export default defineComponent({
       screenfull.on('change', change)
     })
 
-    const headerLinks:any = ref([
+    const headerLinks: any = ref([
       {
         text: t('project.workflow.download_log'),
         show: props.showDownloadLog,
@@ -158,16 +158,7 @@ export default defineComponent({
     }
   },
   render() {
-    const {
-      t,
-      renderIcon,
-      refreshLogs,
-      downloadLogs,
-      isFullscreen,
-      handleFullScreen,
-      showDownloadLog,
-      setLogPosition
-    } = this
+    const { t, setLogPosition, isFullscreen } = this
     return (
       <Modal
         class='logModalRef'

@@ -18,14 +18,9 @@
 import { Graph, Edge } from '@antv/x6'
 import { DagEdgeName } from './dag-setting'
 
-export function useDagGraph(
-  graph: any,
-  dagContainer: HTMLElement,
-  minimapContainer: HTMLElement
-) {
+export function useDagGraph(graph: any, dagContainer: HTMLElement) {
   return new Graph({
     container: dagContainer,
-    scroller: true,
     grid: {
       size: 10,
       visible: true
@@ -45,11 +40,17 @@ export function useDagGraph(
         if (targetCell?.getData().type === 'sink') {
           return graph.value?.getConnectedEdges(targetCell).length < 1
         }
-        
+
         if (targetCell?.getData().type === 'transform') {
           // The same 'Copy' transform node cannot be connected
-          const srcData = sourceCell?.getData(), tgtData = targetCell?.getData()
-          if (srcData.type === 'transform' && srcData.connectorType === 'Copy' && tgtData.connectorType === 'Copy') return false
+          const srcData = sourceCell?.getData(),
+            tgtData = targetCell?.getData()
+          if (
+            srcData.type === 'transform' &&
+            srcData.connectorType === 'Copy' &&
+            tgtData.connectorType === 'Copy'
+          )
+            return false
 
           // don't connect self
           const edges = graph.value?.getConnectedEdges(targetCell)
@@ -60,20 +61,6 @@ export function useDagGraph(
 
         return true
       }
-    },
-    snapline: true,
-    minimap: {
-      enabled: true,
-      width: 200,
-      height: 120,
-      container: minimapContainer
-    },
-    selecting: {
-      enabled: true,
-      rubberband: false,
-      movable: true,
-      showNodeSelectionBox: true,
-      showEdgeSelectionBox: true
     }
   })
 }

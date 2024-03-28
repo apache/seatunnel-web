@@ -15,50 +15,37 @@
  * limitations under the License.
  */
 
-import { h, reactive, ref } from 'vue'
-import { endOfToday, format, startOfToday } from 'date-fns'
-import { useTableLink, useTableOperation } from '@/hooks'
-import {
-  AlignLeftOutlined,
-  CheckCircleOutlined,
-  ClearOutlined,
-  DownloadOutlined,
-  SyncOutlined,
-  PlayCircleOutlined,
-  PauseCircleOutlined,
-  DeleteOutlined
-} from '@vicons/antd'
-import { useI18n } from 'vue-i18n'
-import { cleanState, downloadLog, forceSuccess } from '@/service/task-instances'
 import {
   COLUMN_WIDTH_CONFIG,
   DefaultTableWidth,
   calculateTableWidth
 } from '@/common/column-width-config'
-import { useRoute, useRouter } from 'vue-router'
-import { ITaskState } from '@/common/types'
-import { tasksState } from '@/common/common'
-import { NIcon, NSpin, NTooltip } from 'naive-ui'
-import { useMessage } from 'naive-ui'
-import {
-  querySyncTaskInstancePaging,
-  hanldlePauseJob,
-  hanldleRecoverJob,
-  hanldleDelJob
-} from '@/service/sync-task-instance'
-import type { RowKey } from 'naive-ui/lib/data-table/src/interface'
-import type { Router } from 'vue-router'
+import { useTableLink, useTableOperation } from '@/hooks'
 import {
   cleanStateByIds,
-  forcedSuccessByIds
+  forcedSuccessByIds,
+  hanldleDelJob,
+  hanldlePauseJob,
+  hanldleRecoverJob,
+  querySyncTaskInstancePaging
 } from '@/service/sync-task-instance'
 import { getRemainTime } from '@/utils/time'
+import {
+  DeleteOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined
+} from '@vicons/antd'
+import { endOfToday, format, startOfToday } from 'date-fns'
+import { useMessage } from 'naive-ui'
+import type { RowKey } from 'naive-ui/lib/data-table/src/interface'
+import { h, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import type { Router } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 export function useSyncTask(syncTaskType = 'BATCH') {
   const { t } = useI18n()
   const router: Router = useRouter()
-  // const projectStore = useProjectStore()
-  const route = useRoute()
   const message = useMessage()
 
   const variables = reactive({
@@ -103,27 +90,25 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   //
   const createColumns = (variables: any) => {
     variables.columns = [
-      useTableLink(
-        {
-          title: t('project.synchronization_definition.task_name'),
-          key: 'jobDefineName',
-          ...COLUMN_WIDTH_CONFIG['link_name'],
-          button: {
-            // disabled: (row: any) =>
-            //   !row.jobInstanceEngineId ||
-            //   !row.jobInstanceEngineId.includes('::'),
-            onClick: (row: any) => {
-              router.push({
-                path: `/task/synchronization-instance/${row.jobDefineId}`,
-                query: {
-                  jobInstanceId: row.id,
-                  taskName: row.jobDefineName,
-                }
-              })
-            }
+      useTableLink({
+        title: t('project.synchronization_definition.task_name'),
+        key: 'jobDefineName',
+        ...COLUMN_WIDTH_CONFIG['link_name'],
+        button: {
+          // disabled: (row: any) =>
+          //   !row.jobInstanceEngineId ||
+          //   !row.jobInstanceEngineId.includes('::'),
+          onClick: (row: any) => {
+            router.push({
+              path: `/task/synchronization-instance/${row.jobDefineId}`,
+              query: {
+                jobInstanceId: row.id,
+                taskName: row.jobDefineName
+              }
+            })
           }
         }
-      ),
+      }),
       {
         title: t('project.synchronization_instance.amount_of_data_read'),
         key: 'readRowCount',
@@ -160,36 +145,32 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         render: (row: any) => getRemainTime(row.runningTime),
         ...COLUMN_WIDTH_CONFIG['duration']
       },
-      useTableOperation(
-        {
-          title: t('project.synchronization_instance.operation'),
-          key: 'operation',
-          itemNum: 3,
-          buttons: [
-            {
-              text: t('project.workflow.recovery_suspend'),
-              icon: h(PlayCircleOutlined),
-              onClick: (row) => void handleRecover(row.id)
-            },
-            {
-              text: t('project.workflow.pause'),
-              icon: h(PauseCircleOutlined),
-              onClick: (row) => void handlePause(row.id)
-            },
-            {
-              isDelete: true,
-              text: t('project.synchronization_instance.delete'),
-              icon: h(DeleteOutlined),
-              onClick: (row) => void handleDel(row.id),
-              onPositiveClick: () => {
-                console.log('123')
-              },
-              positiveText: t('project.synchronization_instance.confirm'),
-              popTips: t('project.synchronization_instance.delete_confirm')
-            }
-          ]
-        }
-      )
+      useTableOperation({
+        title: t('project.synchronization_instance.operation'),
+        key: 'operation',
+        itemNum: 3,
+        buttons: [
+          {
+            text: t('project.workflow.recovery_suspend'),
+            icon: h(PlayCircleOutlined),
+            onClick: (row) => void handleRecover(row.id)
+          },
+          {
+            text: t('project.workflow.pause'),
+            icon: h(PauseCircleOutlined),
+            onClick: (row) => void handlePause(row.id)
+          },
+          {
+            isDelete: true,
+            text: t('project.synchronization_instance.delete'),
+            icon: h(DeleteOutlined),
+            onClick: (row) => void handleDel(row.id),
+            onPositiveClick: () => {},
+            positiveText: t('project.synchronization_instance.confirm'),
+            popTips: t('project.synchronization_instance.delete_confirm')
+          }
+        ]
+      })
     ]
 
     if (variables.tableWidth) {
@@ -227,25 +208,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     hanldleDelJob(id).then(() => {
       message.success(t('common.success_tips'))
     })
-  }
-
-  const handleLog = (row: any) => {
-    variables.showModalRef = true
-    variables.row = row
-  }
-
-  const handleCleanState = (row: any) => {
-    cleanState(Number(row.projectCode), [row.id]).then(() => {
-      getList()
-    })
-  }
-
-  const handleForcedSuccess = (row: any) => {
-    forceSuccess({ id: row.id }, { projectCode: Number(row.projectCode) }).then(
-      () => {
-        getList()
-      }
-    )
   }
 
   const getList = () => {
@@ -314,30 +276,4 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     batchBtnListClick,
     creatInstanceButtons
   }
-}
-
-const renderStateCell = (state: ITaskState, t: Function) => {
-  if (!state) return ''
-
-  const stateOption = tasksState(t)[state]
-  if (!stateOption) return ''
-  const Icon = h(
-    NIcon,
-    {
-      color: stateOption.color,
-      class: stateOption.classNames,
-      style: {
-        display: 'flex'
-      },
-      size: 20
-    },
-    () => h(stateOption.icon)
-  )
-  return h(NTooltip, null, {
-    trigger: () => {
-      if (!stateOption.isSpin) return Icon
-      return h(NSpin, { size: 20 }, { icon: () => Icon })
-    },
-    default: () => stateOption.desc
-  })
 }

@@ -16,11 +16,7 @@
  */
 
 import { defineComponent, onMounted, toRefs, watch } from 'vue'
-import {
-  NSpace,
-  NCard,
-  NDataTable
-} from 'naive-ui'
+import { NSpace, NCard, NDataTable } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useRunningInstance } from './use-running-instance'
 

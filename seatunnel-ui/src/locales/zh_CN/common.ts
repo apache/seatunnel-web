@@ -19,5 +19,5 @@ export default {
   success_tips: '操作成功',
   hour: '时',
   min: '分',
-  second: '秒',
+  second: '秒'
 }

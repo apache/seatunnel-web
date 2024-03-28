@@ -33,6 +33,11 @@ import { getDagData } from './dag-data'
 import styles from './index.module.scss'
 import type { Ref } from 'vue'
 import type { InputEdge, InputPlugin, NodeInfo } from '../types'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { Selection } from '@antv/x6-plugin-selection'
+import { History } from '@antv/x6-plugin-history'
+import { MiniMap } from '@antv/x6-plugin-minimap'
+import { Scroller } from '@antv/x6-plugin-scroller'
 
 const DagCanvas = defineComponent({
   name: 'DagCanvas',
@@ -66,11 +71,27 @@ const DagCanvas = defineComponent({
     }
 
     const initGraph = () => {
-      graph.value = useDagGraph(
-        graph,
-        dagContainer.value,
-        minimapContainer.value
-      )
+      graph.value = useDagGraph(graph, dagContainer.value)
+      graph.value
+        .use(new Keyboard())
+        .use(
+          new Selection({
+            enabled: true,
+            rubberband: false,
+            movable: true,
+            showNodeSelectionBox: true,
+            showEdgeSelectionBox: true
+          })
+        )
+        .use(new History())
+        .use(
+          new MiniMap({
+            width: 200,
+            height: 120,
+            container: minimapContainer.value
+          })
+        )
+        .use(new Scroller())
     }
 
     const registerNode = () => {
@@ -100,7 +121,10 @@ const DagCanvas = defineComponent({
               ...cell.getData(),
               type: cell.getData().type.toLowerCase(),
               sourceFields: fields,
-              predecessorsNodeId: (graph.value?.getPredecessors(cell) as Cell[]).length > 0 ? graph.value?.getPredecessors(cell)[0].id : ''
+              predecessorsNodeId:
+                (graph.value?.getPredecessors(cell) as Cell[]).length > 0
+                  ? graph.value?.getPredecessors(cell)[0].id
+                  : ''
             }
             currentNodeId = cell.id
             state.show = true

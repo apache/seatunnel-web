@@ -21,10 +21,7 @@ import { defineComponent, PropType, h, withDirectives, ref } from 'vue'
 import { permission } from '@/directives/permission'
 import { UserOutlined } from '@vicons/antd'
 import { TreeOption } from 'naive-ui'
-import {
-  authResourceProject,
-  getResourceProject
-} from '@/service/resources'
+import { authResourceProject, getResourceProject } from '@/service/resources'
 import { accessTypeKey } from '@/service/resources/types'
 import CheckboxTree from '../checkbox-tree'
 import { useRouter } from 'vue-router'

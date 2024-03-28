@@ -225,10 +225,7 @@ const StepTwoTable = defineComponent({
                 row={row}
                 plain={props.plain}
                 fieldTypes={props.fieldTypes}
-                onUpdateValue={(
-                  field: keyof any,
-                  value: any
-                ) => {
+                onUpdateValue={(field: keyof any, value: any) => {
                   // @ts-ignore
                   listRef.value[index][field] = value
                 }}
@@ -300,7 +297,8 @@ const StepTwoTable = defineComponent({
                                     </NIcon>
                                   </NButton>
                                 ),
-                                default: () => t('virtual_tables.delete_confirm')
+                                default: () =>
+                                  t('virtual_tables.delete_confirm')
                               }}
                             </NPopconfirm>
                           ),

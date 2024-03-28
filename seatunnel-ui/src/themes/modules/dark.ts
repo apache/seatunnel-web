@@ -28,11 +28,11 @@ const dark = {
     primaryColorSuppl: '#177ddc',
 
     /**************** Function of color */
-    infoColor: '#177ddc',
+    infoColor: '#177ddc'
     // successColor: '#49aa19',
     // warningColor: '#d89614',
     // errorColor: '#a61d24'
-  },
+  }
   // Layout: {
   //   headerColor: '#141414'
   // },

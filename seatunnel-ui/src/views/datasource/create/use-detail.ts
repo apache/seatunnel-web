@@ -63,7 +63,8 @@ export function useDetail(
         description: result.description,
         ...result.datasourceConfig
       })
-    } finally {}
+    } finally {
+    }
   }
 
   const testConnect = async () => {
@@ -74,7 +75,11 @@ export function useDetail(
     try {
       const result = await checkConnect({
         pluginName: values.pluginName,
-        datasourceConfig: omit(values, ['pluginName', 'datasourceName', 'description'])
+        datasourceConfig: omit(values, [
+          'pluginName',
+          'datasourceName',
+          'description'
+        ])
       })
       window.$message.success(
         result.msg ? result.msg : `${t('datasource.test_connect_success')}`

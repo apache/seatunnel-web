@@ -52,7 +52,6 @@ export const useSource = (showVirtualDataSource = false) => {
         Key: { code: number; name: string; chineseName: string }[]
       }
 
-      console.log(res, 'ers')
       const locales = {
         zh_CN: {} as { [key: string]: string },
         en_US: {} as { [key: string]: string }

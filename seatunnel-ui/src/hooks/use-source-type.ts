@@ -19,7 +19,7 @@ import { getDatasourceType } from '@/service/data-source'
 import { useI18n } from 'vue-i18n'
 import type { SelectOption } from 'naive-ui'
 
-type Key = '1' | '2' | '3' | '4' | '5'
+// type Key = '1' | '2' | '3' | '4' | '5'
 type IType = {
   type: string
   label: string

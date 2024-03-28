@@ -57,7 +57,6 @@ export function useForm() {
   const handleLogin = () => {
     userLogin({ ...state.loginForm }).then((res: any) => {
       userStore.setUserInfo(res)
-      console.log('login-jumps')
       router.push({ path: '/tasks' })
     })
   }

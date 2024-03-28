@@ -27,6 +27,11 @@ import { useDagEdge } from './dag/use-dag-edge'
 import { useTaskDefinition } from './use-task-definition'
 import styles from './task-definition.module.scss'
 import { useDagNode } from './dag/use-dag-node'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { Selection } from '@antv/x6-plugin-selection'
+import { History } from '@antv/x6-plugin-history'
+import { MiniMap } from '@antv/x6-plugin-minimap'
+import { Scroller } from '@antv/x6-plugin-scroller'
 
 interface IJobConfig {
   name: string
@@ -47,11 +52,27 @@ const TaskDefinition = defineComponent({
     const { getJobConfig, getJobDag } = useTaskDefinition(t)
 
     const initGraph = () => {
-      graph.value = useDagGraph(
-        graph,
-        dagContainer.value,
-        minimapContainer.value
-      )
+      graph.value = useDagGraph(graph, dagContainer.value)
+      graph.value
+        .use(new Keyboard())
+        .use(
+          new Selection({
+            enabled: true,
+            rubberband: false,
+            movable: true,
+            showNodeSelectionBox: true,
+            showEdgeSelectionBox: true
+          })
+        )
+        .use(new History())
+        .use(
+          new MiniMap({
+            width: 200,
+            height: 120,
+            container: minimapContainer.value
+          })
+        )
+        .use(new Scroller())
     }
 
     useDagResize(container, graph as Ref<Graph>)

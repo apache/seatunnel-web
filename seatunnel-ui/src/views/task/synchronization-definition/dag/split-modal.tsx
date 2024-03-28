@@ -66,7 +66,13 @@ const SplitModal = defineComponent({
         <NFormItem
           label={t('project.synchronization_definition.segmented_fields')}
         >
-          <NInput type='text' v-model={[fieldsRef.value, 'value']} placeholder={t('project.synchronization_definition.segmented_fields_placeholder')}/>
+          <NInput
+            type='text'
+            v-model={[fieldsRef.value, 'value']}
+            placeholder={t(
+              'project.synchronization_definition.segmented_fields_placeholder'
+            )}
+          />
         </NFormItem>
       </NForm>
     )

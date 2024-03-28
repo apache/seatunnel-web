@@ -17,7 +17,7 @@
 
 import { h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NPopover, NButton, NSpace } from 'naive-ui'
+import { NPopover, NButton } from 'naive-ui'
 import JsonHighlight from '../components/json-highlight'
 import { getTableColumn } from '@/common/table'
 
@@ -53,14 +53,16 @@ export function useColumns(onCallback: Function) {
                 { trigger: 'click' },
                 {
                   trigger: () =>
-                    h(NButton, { text: true }, {
-                      default: () => t('datasource.click_to_view')
-                    }),
+                    h(
+                      NButton,
+                      { text: true },
+                      {
+                        default: () => t('datasource.click_to_view')
+                      }
+                    ),
                   default: () =>
                     h(JsonHighlight, {
-                      params: JSON.stringify(
-                        row.datasourceConfig
-                      ) as string
+                      params: JSON.stringify(row.datasourceConfig) as string
                     })
                 }
               )
@@ -74,11 +76,11 @@ export function useColumns(onCallback: Function) {
       },
       {
         title: t('datasource.create_time'),
-        key: 'createTime',
+        key: 'createTime'
       },
       {
         title: t('datasource.update_time'),
-        key: 'updateTime',
+        key: 'updateTime'
       },
       useTableOperation({
         title: t('datasource.operation'),

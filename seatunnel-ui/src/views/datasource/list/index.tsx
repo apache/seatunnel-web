@@ -19,13 +19,11 @@ import { defineComponent, onMounted, ref, toRefs, watch } from 'vue'
 import {
   NButton,
   NInput,
-  NIcon,
   NDataTable,
   NPagination,
   NSpace,
   NCard
 } from 'naive-ui'
-import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useColumns } from './use-columns'
@@ -36,7 +34,7 @@ import type { Ref } from 'vue'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 
 const DatasourceList = defineComponent({
-  setup: function() {
+  setup: function () {
     const { t } = useI18n()
     const showSourceModal = ref(false)
     const columns: Ref<TableColumns> = ref([])
@@ -52,7 +50,7 @@ const DatasourceList = defineComponent({
     const { getColumns } = useColumns((id: string, type: 'edit' | 'delete') => {
       if (type === 'edit') {
         router.push({ name: 'datasource-edit', params: { id } })
-      } else  if(type === 'delete'){
+      } else if (type === 'delete') {
         deleteRecord(id)
       }
     })
@@ -132,10 +130,7 @@ const DatasourceList = defineComponent({
                 <NButton onClick={this.handleSearch} type='primary'>
                   {this.t('datasource.search')}
                 </NButton>
-                <NButton
-                  onClick={onCreate}
-                  type='success'
-                >
+                <NButton onClick={onCreate} type='success'>
                   {t('datasource.create')}
                 </NButton>
               </NSpace>
