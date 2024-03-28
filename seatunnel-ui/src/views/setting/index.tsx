@@ -106,7 +106,7 @@ const Setting = defineComponent({
               <NSpace justify='space-between' align='center'>
                 <span>{t('setting.model')}</span>
                 <div class='w-56'>
-                  <Theme/>
+                  <Theme />
                   {/* <NSelect
                     value={'light'}
                     options={[

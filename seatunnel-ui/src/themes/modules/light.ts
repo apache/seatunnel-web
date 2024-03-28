@@ -52,10 +52,9 @@ const light: GlobalThemeOverrides = {
     // textColor2: '#313377',
     // textColor3: '#9096b8',
 
-    
     // borderRadius: '15px',
     // tableHeaderColor: '#614bdd'
-  },
+  }
   // Layout: {
   //   headerColor: '#fff'
   // },

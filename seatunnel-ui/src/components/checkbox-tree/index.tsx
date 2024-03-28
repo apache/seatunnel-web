@@ -29,7 +29,6 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { TreeOption } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import styles from './index.module.scss'
-import { useUserStore } from '@/store/user'
 import { SearchOutlined } from '@vicons/antd'
 
 const props = {
@@ -65,7 +64,6 @@ const CheckboxTree = defineComponent({
   emits: ['cancel', 'confirm'],
   setup(props, ctx) {
     const { t } = useI18n()
-    const userStore = useUserStore()
 
     const pattern = ref('')
     const checkedValue = ref(props.defaultChecked)
@@ -132,9 +130,7 @@ const CheckboxTree = defineComponent({
                         style={{ marginTop: '10px', marginBottom: '10px' }}
                       >
                         {t('resource.auth.public_resource')}
-                        <NSwitch
-                          v-model={[globalResource.value, 'value']}
-                        />
+                        <NSwitch v-model={[globalResource.value, 'value']} />
                       </NSpace>
                     )}
                   </div>

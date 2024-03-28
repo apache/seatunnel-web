@@ -52,7 +52,6 @@ const VirtualTablesDetail = defineComponent({
       onChangeStep,
       createOrUpdate
     } = useDetail(route.params.id as string)
-    console.log('create')
     const onClose = () => {
       dialog.warning({
         title: t('virtual_tables.warning'),

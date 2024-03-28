@@ -20,7 +20,7 @@ export default {
   datasource: '数据源',
   create_datasource: '创建源',
   choose_datasource_type: '选择源类型',
-  search:'搜索',
+  search: '搜索',
   search_input_tips: '请输入关键字',
   select: '更改',
   datasource_name: '源名称',

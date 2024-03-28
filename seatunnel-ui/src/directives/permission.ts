@@ -17,30 +17,4 @@
 // import { IPermissionModule, usePermissionStore } from '@/store/user'
 import type { Directive } from 'vue'
 
-export const permission: Directive = {
-  mounted(el, binding) {
-    // const code = binding.value
-    // if (!code) return
-    // let module = 'common' as IPermissionModule
-
-    // const codeItems = code.split(':')
-    // if (codeItems.length > 2 && codeItems[0] === 'project') {
-    //   module = 'project'
-    // }
-
-    // const functionPermissions = usePermissionStore().getPermissions(
-    //   module,
-    //   'function'
-    // )
-
-    // const hasPermission = functionPermissions.has(code)
-
-    // if (hasPermission) return
-
-    // if (el.parentElement?.children.length === 1) {
-    //   el.parentElement.style = 'display: none'
-    // }
-
-    // el.parentElement.removeChild(el)
-  }
-}
+export const permission: Directive = {}

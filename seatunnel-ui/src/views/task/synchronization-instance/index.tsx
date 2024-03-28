@@ -16,7 +16,7 @@
  */
 
 import { defineComponent, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { NSpace, NTabs, NTabPane } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { SyncTask } from './sync-task'
@@ -25,10 +25,9 @@ const SynchronizationInstance = defineComponent({
   name: 'SynchronizationInstance',
   setup() {
     const route = useRoute()
-    const router = useRouter()
     const { t } = useI18n()
-    let syncTaskType = ref(route.query.syncTaskType || 'BATCH')
-   
+    const syncTaskType = ref(route.query.syncTaskType || 'BATCH')
+
     return { t, syncTaskType }
   },
   render() {

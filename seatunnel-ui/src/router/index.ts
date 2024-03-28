@@ -22,7 +22,7 @@ import 'nprogress/nprogress.css'
 
 const router = createRouter({
   history: createWebHashHistory(
-      import.meta.env.MODE === 'production' ? '/ui/' : '/'
+    import.meta.env.MODE === 'production' ? '/ui/' : '/'
   ),
   routes
 })

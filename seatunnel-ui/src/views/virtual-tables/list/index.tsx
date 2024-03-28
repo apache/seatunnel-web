@@ -20,7 +20,6 @@ import {
   NButton,
   NInput,
   NSelect,
-  NIcon,
   NSpace,
   NDataTable,
   NPagination,
@@ -40,54 +39,49 @@ const VirtualTablesList = defineComponent({
     const { t } = useI18n()
     const router = useRouter()
     const { state: sourceState } = useSource(true)
-    const { columns } = useColumns(
-      (id: string, type: 'edit' | 'delete') => {
-        if (type === 'edit') {
-          router.push({ name: 'virtual-tables-editor', params: { id: id } })
-        } else {
-          onDelete(id)
-        }
+    const { columns } = useColumns((id: string, type: 'edit' | 'delete') => {
+      if (type === 'edit') {
+        router.push({ name: 'virtual-tables-editor', params: { id: id } })
+      } else {
+        onDelete(id)
       }
-    )
-    const {
-      state,
-      onSearch,
-      onDelete,
-      onPageChange,
-      onPageSizeChange
-    } = useTable()
+    })
+    const { state, onSearch, onDelete, onPageChange, onPageSizeChange } =
+      useTable()
 
     return () => (
       <NSpace vertical>
         <NCard title={t('virtual_tables.virtual_tables')}>
           {{
-            'header-extra': () => <NSpace>
-              <NSelect
-                v-model:value={state.params.pluginName}
-                clearable
-                placeholder={t('virtual_tables.source_type_tips')}
-                options={
-                 sourceState.types as Array<SelectGroupOption | SelectOption>
-                }
-                class={styles['type-width']}
-              />
-              <NInput
-                v-model:value={state.params.datasourceName}
-                clearable
-                placeholder={t('virtual_tables.source_name_tips')}
-              />
-              <NButton type='primary' onClick={onSearch}>
-                {t('virtual_tables.search')}
-              </NButton>
-              <NButton
-                onClick={() => {
-                  router.push({ name: 'virtual-tables-create' })
-                }}
-                type='success'
-              >
-                {t('virtual_tables.create')}
-              </NButton>
-            </NSpace>
+            'header-extra': () => (
+              <NSpace>
+                <NSelect
+                  v-model:value={state.params.pluginName}
+                  clearable
+                  placeholder={t('virtual_tables.source_type_tips')}
+                  options={
+                    sourceState.types as Array<SelectGroupOption | SelectOption>
+                  }
+                  class={styles['type-width']}
+                />
+                <NInput
+                  v-model:value={state.params.datasourceName}
+                  clearable
+                  placeholder={t('virtual_tables.source_name_tips')}
+                />
+                <NButton type='primary' onClick={onSearch}>
+                  {t('virtual_tables.search')}
+                </NButton>
+                <NButton
+                  onClick={() => {
+                    router.push({ name: 'virtual-tables-create' })
+                  }}
+                  type='success'
+                >
+                  {t('virtual_tables.create')}
+                </NButton>
+              </NSpace>
+            )
           }}
         </NCard>
         <NCard>

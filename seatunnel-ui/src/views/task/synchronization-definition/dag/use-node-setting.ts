@@ -83,14 +83,14 @@ export function useNodeSettingModal(
         typeof values.database === 'string'
           ? [values.database]
           : Array.isArray(values.database)
-          ? values.database
-          : []
+            ? values.database
+            : []
       params.tableOption.tables =
         typeof values.tableName === 'string'
           ? [values.tableName]
           : Array.isArray(values.tableName)
-          ? values.tableName
-          : []
+            ? values.tableName
+            : []
     }
 
     if (modelRef.value) {
@@ -116,13 +116,15 @@ export function useNodeSettingModal(
 
   const onSave = async (): Promise<boolean> => {
     if (state.saving) return false
-    
+
     // Determine whether the current node type is Transform or Sink and there is no previous node.
     if (
       (props.nodeInfo.type === 'transform' || props.nodeInfo.type === 'sink') &&
       !props.nodeInfo.predecessorsNodeId
     ) {
-      window.$message.warning(t('project.synchronization_definition.node_prev_check_tips'))
+      window.$message.warning(
+        t('project.synchronization_definition.node_prev_check_tips')
+      )
       return false
     }
 
@@ -162,17 +164,25 @@ export function useNodeSettingModal(
               }
               modelOutputTableData = formatOutputSchema(result)
             } else {
-              modelOutputTableData = formatOutputSchema(resultSchema.allTableData)
+              modelOutputTableData = formatOutputSchema(
+                resultSchema.allTableData
+              )
             }
           } else {
-            window.$message.warning(t('project.synchronization_definition.check_model'), { duration: 0, closable: true })
+            window.$message.warning(
+              t('project.synchronization_definition.check_model'),
+              { duration: 0, closable: true }
+            )
             state.saving = false
             return false
           }
         }
       }
 
-      if (props.nodeInfo.type === 'transform' && props.nodeInfo.predecessorsNodeId) {
+      if (
+        props.nodeInfo.type === 'transform' &&
+        props.nodeInfo.predecessorsNodeId
+      ) {
         const resultSchema = modelRef.value.getOutputSchema()
         if (resultSchema.allTableData.length) {
           if (
@@ -189,7 +199,10 @@ export function useNodeSettingModal(
             modelOutputTableData = formatOutputSchema(resultSchema.allTableData)
           }
         } else {
-          window.$message.warning(t('project.synchronization_definition.check_model'), { duration: 0, closable: true })
+          window.$message.warning(
+            t('project.synchronization_definition.check_model'),
+            { duration: 0, closable: true }
+          )
           state.saving = false
           return false
         }
@@ -199,67 +212,84 @@ export function useNodeSettingModal(
 
       if (props.nodeInfo.connectorType === 'FieldMapper') {
         const resultSchema = modelRef.value.getOutputSchema()
-        transformOptions.changeOrders = resultSchema.outputTableData.map((o: any, i: number) => {
-          return {
-            sourceFieldName: o.original_field,
-            index: i
+        transformOptions.changeOrders = resultSchema.outputTableData.map(
+          (o: any, i: number) => {
+            return {
+              sourceFieldName: o.original_field,
+              index: i
+            }
           }
-        })
-        transformOptions.renameFields = resultSchema.outputTableData.filter((o: any) => o.name !== o.original_field).map((o: any) => ({
-          sourceFieldName: o.original_field,
-          targetName: o.name
-        }))
-        const outputTableDataNames = resultSchema.outputTableData.map((o: any) => ({sourceFieldName: o.original_field}))
-        const inputTableDataNames = resultSchema.inputTableData.map((o: any) => ({sourceFieldName: o.name}))
-        transformOptions.deleteFields = _.xorWith(outputTableDataNames, inputTableDataNames, _.isEqual)
+        )
+        transformOptions.renameFields = resultSchema.outputTableData
+          .filter((o: any) => o.name !== o.original_field)
+          .map((o: any) => ({
+            sourceFieldName: o.original_field,
+            targetName: o.name
+          }))
+        const outputTableDataNames = resultSchema.outputTableData.map(
+          (o: any) => ({ sourceFieldName: o.original_field })
+        )
+        const inputTableDataNames = resultSchema.inputTableData.map(
+          (o: any) => ({ sourceFieldName: o.name })
+        )
+        transformOptions.deleteFields = _.xorWith(
+          outputTableDataNames,
+          inputTableDataNames,
+          _.isEqual
+        )
       } else if (props.nodeInfo.connectorType === 'MultiFieldSplit') {
         const resultSchema = modelRef.value.getOutputSchema()
-        const hasSeparator = resultSchema.outputTableData.filter((o: any) => o.separator)
-        transformOptions.splits = _.uniqWith(hasSeparator.map((o: any) => {
-          return {
-            sourceFieldName: o.original_field,
-            separator: o.separator,
-            outputFields: _.groupBy(hasSeparator, 'separator')[o.separator].map((h: any) => h.name)
-          }
-        }), _.isEqual)
+        const hasSeparator = resultSchema.outputTableData.filter(
+          (o: any) => o.separator
+        )
+        transformOptions.splits = _.uniqWith(
+          hasSeparator.map((o: any) => {
+            return {
+              sourceFieldName: o.original_field,
+              separator: o.separator,
+              outputFields: _.groupBy(hasSeparator, 'separator')[
+                o.separator
+              ].map((h: any) => h.name)
+            }
+          }),
+          _.isEqual
+        )
       } else if (props.nodeInfo.connectorType === 'Copy') {
         const resultSchema = modelRef.value.getOutputSchema()
-        const hasCopyColumn = resultSchema.outputTableData.filter((o: any) => o.copyTimes === -1)
+        const hasCopyColumn = resultSchema.outputTableData.filter(
+          (o: any) => o.copyTimes === -1
+        )
         transformOptions.copyList = hasCopyColumn.map((h: any) => ({
           sourceFieldName: h.original_field,
           targetFieldName: h.name
         }))
-      } else if(props.nodeInfo.connectorType === 'Sql') {
+      } else if (props.nodeInfo.connectorType === 'Sql') {
         const resultSchema = modelRef.value.getOutputSchema()
         const tableInfo = resultSchema.allTableData[0].tableInfos
         transformOptions.sql = {
-          "sourceFieldName": resultSchema.outputTableData[0]?.name || null,
-          "query": values.query
+          sourceFieldName: resultSchema.outputTableData[0]?.name || null,
+          query: values.query
         }
-        modelOutputTableData = [{
-          database: tableInfo[0].database,
-          tableName: tableInfo[0].tableName,
-          fields: resultSchema.outputTableData
-        }]
+        modelOutputTableData = [
+          {
+            database: tableInfo[0].database,
+            tableName: tableInfo[0].tableName,
+            fields: resultSchema.outputTableData
+          }
+        ]
       }
 
-      await saveTaskDefinitionItem(
-        route.params.jobDefinitionCode as string,
-        {
-          ...formatParams(values),
-          outputSchema: modelOutputTableData,
-          transformOptions
-        }
-      )
+      await saveTaskDefinitionItem(route.params.jobDefinitionCode as string, {
+        ...formatParams(values),
+        outputSchema: modelOutputTableData,
+        transformOptions
+      })
 
-      ctx.emit(
-        'confirmModal',
-        {
-          ...formatParams(values),
-          outputSchema: modelOutputTableData,
-          transformOptions
-        }
-      )
+      ctx.emit('confirmModal', {
+        ...formatParams(values),
+        outputSchema: modelOutputTableData,
+        transformOptions
+      })
 
       state.saving = false
       state.tab = 'configuration'

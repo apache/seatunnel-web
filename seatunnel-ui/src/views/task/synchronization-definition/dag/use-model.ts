@@ -68,28 +68,34 @@ export function useNodeModel(
     // the input table structure will be rendered according to the upstream node
     // id to obtain the output table structure.
     if (type === 'sink' || type === 'transform') {
-
       // if sql-transform, request when sql is not empty
-      if(transformType === 'Sql' && !refForm.value.getValues()?.query) return 
+      if (transformType === 'Sql' && !refForm.value.getValues()?.query) return
       // Request the data of the previous node.
-      predecessorsNodeId && queryTaskDetail(
-        route.params.jobDefinitionCode as string,
-        predecessorsNodeId
-      ).then((res: any) => {
-        state.tables = res.outputSchema.map((o: any) => o.tableName)
-        state.currentTable = res.outputSchema[0].tableName
-        state.allTableData = [{ database: res.outputSchema[0].database, tableInfos: res.outputSchema }] as any
-        if (res.transformOptions) {
-          state.transformOptions = res.transformOptions
-        }
-        onSwitchTable(state.currentTable)
-      })
-
+      predecessorsNodeId &&
+        queryTaskDetail(
+          route.params.jobDefinitionCode as string,
+          predecessorsNodeId
+        ).then((res: any) => {
+          state.tables = res.outputSchema.map((o: any) => o.tableName)
+          state.currentTable = res.outputSchema[0].tableName
+          state.allTableData = [
+            {
+              database: res.outputSchema[0].database,
+              tableInfos: res.outputSchema
+            }
+          ] as any
+          if (res.transformOptions) {
+            state.transformOptions = res.transformOptions
+          }
+          onSwitchTable(state.currentTable)
+        })
     } else {
-      modelInfo(state.datasourceInstanceId, [{
-        database: state.database,
-        tables: state.tables
-      }]).then((res: any) => {
+      modelInfo(state.datasourceInstanceId, [
+        {
+          database: state.database,
+          tables: state.tables
+        }
+      ]).then((res: any) => {
         state.allTableData = res
         onSwitchTable(state.currentTable)
       })
@@ -117,33 +123,47 @@ export function useNodeModel(
   }
 
   const getSqlTransformOutputData = () => {
-    let sqlQuery = refForm.value.getValues()?.query as string
-    return sqlModelInfo(route.params.jobDefinitionCode as string, predecessorsNodeId, {
-      "sourceFieldName": null,
-      "query": sqlQuery
-    }).then((res: any) => res.fields)
+    const sqlQuery = refForm.value.getValues()?.query as string
+    return sqlModelInfo(
+      route.params.jobDefinitionCode as string,
+      predecessorsNodeId,
+      {
+        sourceFieldName: null,
+        query: sqlQuery
+      }
+    ).then((res: any) => res.fields)
   }
 
   // Model indicates list click events.
   const onSwitchTable = (table: string) => {
     state.currentTable = table
     if (state.format === 'COMPATIBLE_DEBEZIUM_JSON') return
-
-    (state.allTableData[0] as any).tableInfos.forEach(async (t: any) => {
+    ;(state.allTableData[0] as any).tableInfos.forEach(async (t: any) => {
       if (t.tableName === state.currentTable) {
         tempOutputTables = t.fields
         state.inputTableData = t.fields.filter((f: any) => !f.isSplit)
         if (state.columnSelectable) {
-          if (state.optionsOutputTableData && (state.optionsOutputTableData[0] as any).tableName === state.currentTable) {
+          if (
+            state.optionsOutputTableData &&
+            (state.optionsOutputTableData[0] as any).tableName ===
+              state.currentTable
+          ) {
             // The default assignment of the source node output table structure.
-            const result = state.optionsOutputTableData ? (state.optionsOutputTableData[0] as any).fields : tempOutputTables.filter((row: ModelRecord) =>
-              state.selectedKeys.includes(row.name))
+            const result = state.optionsOutputTableData
+              ? (state.optionsOutputTableData[0] as any).fields
+              : tempOutputTables.filter((row: ModelRecord) =>
+                  state.selectedKeys.includes(row.name)
+                )
             state.outputTableData = result.filter((r: any) => !r.unSupport)
           } else {
-            state.outputTableData = tempOutputTables.filter((t: any) => !t.unSupport)
+            state.outputTableData = tempOutputTables.filter(
+              (t: any) => !t.unSupport
+            )
           }
           // Assign default values to the optional input table structure of the source node.
-          state.selectedKeys = state.outputTableData.filter((o: any) => !o.unSupport).map((o: any) => o.name)
+          state.selectedKeys = state.outputTableData
+            .filter((o: any) => !o.unSupport)
+            .map((o: any) => o.name)
         } else {
           if (transformType === 'FieldMapper') {
             // When the transform is empty, the data of the input model is directly copied to the output model.
@@ -155,115 +175,135 @@ export function useNodeModel(
               return false
             }
 
-            const transformOptions = state.transformOptions.changeOrders ? state.transformOptions : state.secondTransformOptions
-            state.outputTableData = state.optionsOutputTableData ?
-              (state.optionsOutputTableData[0] as any).fields :
-              t.fields.map((f: any, i: number) => {
-                return {
-                  ...f,
-                  original_field: (transformOptions && Object.keys(transformOptions).length > 0) ?
-                    transformOptions.changeOrders[i].sourceFieldName :
-                    f.name
+            const transformOptions = state.transformOptions.changeOrders
+              ? state.transformOptions
+              : state.secondTransformOptions
+            state.outputTableData = state.optionsOutputTableData
+              ? (state.optionsOutputTableData[0] as any).fields
+              : t.fields.map((f: any, i: number) => {
+                  return {
+                    ...f,
+                    original_field:
+                      transformOptions &&
+                      Object.keys(transformOptions).length > 0
+                        ? transformOptions.changeOrders[i].sourceFieldName
+                        : f.name
+                  }
+                })
+            state.outputTableData = state.outputTableData.map(
+              (o: any, i: number) => {
+                if (!o.original_field) {
+                  o.original_field =
+                    transformOptions.changeOrders[i].sourceFieldName
                 }
-              })
-            state.outputTableData = state.outputTableData.map((o: any, i: number) => {
-              if (!o.original_field) {
-                o.original_field = transformOptions.changeOrders[i].sourceFieldName
+                return o
               }
-              return o
-            })
+            )
             state.outputTableData.forEach((o: any) => {
               o.isError = o.original_field === state.schemaError.fieldName
             })
           } else if (transformType === 'MultiFieldSplit') {
-            state.outputTableData = state.optionsOutputTableData ? (state.optionsOutputTableData[0] as any).fields.map((f: any) => {
-              if (
-                state.transformOptions.splits ||
-                (
-                  state.secondTransformOptions &&
-                  state.secondTransformOptions.splits
-                )
-              ) {
-                // When the data is echoed, it is judged whether the original
-                // field has a split field, and if so, the split button of the
-                // original field is disabled.
-                const transformOptions = state.transformOptions.splits ? state.transformOptions : state.secondTransformOptions
-                const needSplitDisabled = transformOptions.splits.map((t: any) => t.sourceFieldName)
-                f.splitDisabled = needSplitDisabled.includes(f.name)
+            state.outputTableData = state.optionsOutputTableData
+              ? (state.optionsOutputTableData[0] as any).fields.map(
+                  (f: any) => {
+                    if (
+                      state.transformOptions.splits ||
+                      (state.secondTransformOptions &&
+                        state.secondTransformOptions.splits)
+                    ) {
+                      // When the data is echoed, it is judged whether the original
+                      // field has a split field, and if so, the split button of the
+                      // original field is disabled.
+                      const transformOptions = state.transformOptions.splits
+                        ? state.transformOptions
+                        : state.secondTransformOptions
+                      const needSplitDisabled = transformOptions.splits.map(
+                        (t: any) => t.sourceFieldName
+                      )
+                      f.splitDisabled = needSplitDisabled.includes(f.name)
 
-                // Add the split field to the original field value.
-                transformOptions.splits.forEach((t: any) => {
-                  if (t.outputFields.includes(f.name)) {
-                    f.original_field = t.sourceFieldName
-                    f.separator = t.separator
-                    f.isSplit = true
-                  }
-                })
+                      // Add the split field to the original field value.
+                      transformOptions.splits.forEach((t: any) => {
+                        if (t.outputFields.includes(f.name)) {
+                          f.original_field = t.sourceFieldName
+                          f.separator = t.separator
+                          f.isSplit = true
+                        }
+                      })
 
-                if (!f.original_field) {
-                  f.original_field = f.name
-                }
-              }
-
-              return f
-            }) : t.fields.map((f: any) => {
-              return {
-                ...f,
-                original_field: f.name
-              }
-            })
-          } else if (transformType === 'Copy') {
-            state.outputTableData = state.optionsOutputTableData ?
-              (state.optionsOutputTableData[0] as any).fields.map((f: any) => {
-                if (
-                  state.transformOptions.copyList ||
-                  (
-                    state.secondTransformOptions &&
-                    state.secondTransformOptions.copyList
-                  )
-                ) {
-                  const transformOptions = state.transformOptions.copyList ? state.transformOptions : state.secondTransformOptions
-                  // Echo and judge the delete button of the copied data. and add the copied field to the original field value.
-                  transformOptions.copyList.forEach((t: any) => {
-                    const inputTableData = state.inputTableData.map((i: any) => i.name)
-
-                    if (!inputTableData.includes(f.name)) {
-                      f.copyTimes = -1
-                      if (t.targetFieldName === f.name) {
-                        f.original_field = t.sourceFieldName
-                      } else {
-                        // Request the data of the current node.
-                        currentNodeId && queryTaskDetail(
-                          route.params.jobDefinitionCode as string,
-                          currentNodeId
-                        ).then((res: any) => {
-                          res.transformOptions && res.transformOptions.copyList.forEach((t: any) => {
-                            if (t.targetFieldName === f.name) {
-                              f.original_field = t.sourceFieldName
-                            }
-                          })
-                        })
+                      if (!f.original_field) {
+                        f.original_field = f.name
                       }
                     }
-                  })
 
-                  if (f.copyTimes !== -1) {
-                    f.original_field = f.name
+                    return f
                   }
-                }
+                )
+              : t.fields.map((f: any) => {
+                  return {
+                    ...f,
+                    original_field: f.name
+                  }
+                })
+          } else if (transformType === 'Copy') {
+            state.outputTableData = state.optionsOutputTableData
+              ? (state.optionsOutputTableData[0] as any).fields.map(
+                  (f: any) => {
+                    if (
+                      state.transformOptions.copyList ||
+                      (state.secondTransformOptions &&
+                        state.secondTransformOptions.copyList)
+                    ) {
+                      const transformOptions = state.transformOptions.copyList
+                        ? state.transformOptions
+                        : state.secondTransformOptions
+                      // Echo and judge the delete button of the copied data. and add the copied field to the original field value.
+                      transformOptions.copyList.forEach((t: any) => {
+                        const inputTableData = state.inputTableData.map(
+                          (i: any) => i.name
+                        )
 
-                return f
-              }) :
-              t.fields.map((f: any) => {
-                return {
-                  ...f,
-                  original_field: f.name
-                }
-              })
-          } else if(transformType === 'Sql'){
-            let table = await getSqlTransformOutputData()
+                        if (!inputTableData.includes(f.name)) {
+                          f.copyTimes = -1
+                          if (t.targetFieldName === f.name) {
+                            f.original_field = t.sourceFieldName
+                          } else {
+                            // Request the data of the current node.
+                            currentNodeId &&
+                              queryTaskDetail(
+                                route.params.jobDefinitionCode as string,
+                                currentNodeId
+                              ).then((res: any) => {
+                                res.transformOptions &&
+                                  res.transformOptions.copyList.forEach(
+                                    (t: any) => {
+                                      if (t.targetFieldName === f.name) {
+                                        f.original_field = t.sourceFieldName
+                                      }
+                                    }
+                                  )
+                              })
+                          }
+                        }
+                      })
+
+                      if (f.copyTimes !== -1) {
+                        f.original_field = f.name
+                      }
+                    }
+
+                    return f
+                  }
+                )
+              : t.fields.map((f: any) => {
+                  return {
+                    ...f,
+                    original_field: f.name
+                  }
+                })
+          } else if (transformType === 'Sql') {
+            const table = await getSqlTransformOutputData()
             state.outputTableData = table
-           
           } else {
             state.outputTableData = t.fields
           }
@@ -294,9 +334,9 @@ export function useNodeModel(
 
     if (
       (info.sceneMode && info.sceneMode === 'SINGLE_TABLE') ||
-        transformType === 'FieldMapper' ||
-        transformType === 'MultiFieldSplit' ||
-        transformType === 'Copy'
+      transformType === 'FieldMapper' ||
+      transformType === 'MultiFieldSplit' ||
+      transformType === 'Copy'
     ) {
       state.optionsOutputTableData = info.outputSchema
     }
@@ -314,10 +354,10 @@ export function useNodeModel(
         { name: 'value', type: 'string' }
       ] as any
     } else {
-      (type === 'transform' || state.datasourceInstanceId) &&
-      (type === 'transform' || state.database) &&
-      ((type === 'sink' || type === 'transform') || state.tables.length) &&
-      getModelData()
+      ;(type === 'transform' || state.datasourceInstanceId) &&
+        (type === 'transform' || state.database) &&
+        (type === 'sink' || type === 'transform' || state.tables.length) &&
+        getModelData()
     }
 
     getColumns()

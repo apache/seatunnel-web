@@ -19,7 +19,7 @@ import {
   getVirtualTableList,
   deleteVirtualTable
 } from '@/service/virtual-table'
-import { stringifyQuery, useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export function useTable() {
   const state = reactive({
@@ -41,7 +41,7 @@ export function useTable() {
       pageNo: state.page,
       pageSize: state.pageSize,
       pluginName: state.params.pluginName || '',
-      datasourceName: state.params.datasourceName || '',
+      datasourceName: state.params.datasourceName || ''
     })
     state.list = result?.data
     state.itemCount = result?.total

@@ -15,24 +15,25 @@
  * limitations under the License.
  */
 
-import { defineComponent, computed, watch, ref } from 'vue'
+import { useSettingStore } from '@/store/setting'
+import { useThemeStore } from '@/store/theme'
+import themeList from '@/themes'
 import {
   NConfigProvider,
-  NMessageProvider,
   NDialogProvider,
+  NMessageProvider,
   darkTheme,
-  dateZhCN,
   dateEnUS,
-  zhCN,
-  enUS
+  dateZhCN,
+  enUS,
+  zhCN
 } from 'naive-ui'
-import { useThemeStore } from '@/store/theme'
-import { useSettingStore } from '@/store/setting'
+import type {
+  CustomThemeCommonVars,
+  ThemeCommonVars
+} from 'naive-ui/es/config-provider/src/interface'
+import { computed, defineComponent, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import themeList from '@/themes'
-import type { GlobalThemeOverrides } from 'naive-ui'
-import type { Ref } from 'vue'
-import type { CustomThemeCommonVars, ThemeCommonVars } from 'naive-ui/es/config-provider/src/interface'
 
 const App = defineComponent({
   setup() {
@@ -41,10 +42,15 @@ const App = defineComponent({
     const currentTheme = computed(() =>
       themeStore.getDarkTheme ? darkTheme : undefined
     )
-    const themeOverrides = computed(() => themeList[currentTheme.value ? 'dark' : 'light'])
+    const themeOverrides = computed(
+      () => themeList[currentTheme.value ? 'dark' : 'light']
+    )
     const setBorderRadius = (v: number) => {
-      (themeOverrides.value.common as Partial<ThemeCommonVars & CustomThemeCommonVars>).borderRadius =
-        v + 'px'
+      ;(
+        themeOverrides.value.common as Partial<
+          ThemeCommonVars & CustomThemeCommonVars
+        >
+      ).borderRadius = v + 'px'
     }
 
     settingStore.getFilletValue && setBorderRadius(settingStore.getFilletValue)

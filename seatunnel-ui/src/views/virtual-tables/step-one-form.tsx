@@ -94,7 +94,7 @@ const StepOneForm = defineComponent({
             filterable
             placeholder={t('virtual_tables.source_type_tips')}
             options={
-             sourceState.types as Array<SelectGroupOption | SelectOption>
+              sourceState.types as Array<SelectGroupOption | SelectOption>
             }
             loading={sourceState.loading}
             class={styles['type-width']}

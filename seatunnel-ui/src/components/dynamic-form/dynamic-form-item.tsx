@@ -119,14 +119,12 @@ const DynamicFormItem = defineComponent({
                       )}`}
                       placeholder={f.placeholder ? this.t(f.placeholder) : ''}
                       v-model={[(this.model as any)[f.field], 'value']}
-                      options={
-                        f.options.map((o: SelectOption) => {
-                          return {
-                            label: this.t(o.label as string),
-                            value: o.value
-                          }
-                        })
-                      }
+                      options={f.options.map((o: SelectOption) => {
+                        return {
+                          label: this.t(o.label as string),
+                          value: o.value
+                        }
+                      })}
                     />
                   )}
                 {f.type === 'checkbox' &&
