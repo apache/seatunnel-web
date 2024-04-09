@@ -97,6 +97,9 @@ public class DatasourceLoadConfig {
         classLoaderFactoryName.put(
                 "JDBC-DB2",
                 "org.apache.seatunnel.datasource.plugin.db2.jdbc.Db2JdbcDataSourceFactory");
+        classLoaderFactoryName.put(
+                "JDBC-SNOWFLAKE",
+                "org.apache.seatunnel.datasource.plugin.snowflake.jdbc.SnowFlakeJdbcDataSourceFactory");
 
         classLoaderJarName.put("JDBC-ORACLE", "datasource-jdbc-oracle-");
         classLoaderJarName.put("JDBC-CLICKHOUSE", "datasource-jdbc-clickhouse-");
@@ -118,6 +121,7 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("JDBC-STARROCKS", "datasource-jdbc-starrocks-");
         classLoaderJarName.put("MONGODB", "datasource-mongodb-");
         classLoaderJarName.put("JDBC-DB2", "datasource-jdbc-db2-");
+        classLoaderJarName.put("JDBC-SNOWFLAKE", "datasource-jdbc-snowflake-");
     }
 
     public static final Set<String> pluginSet =
@@ -136,7 +140,8 @@ public class DatasourceLoadConfig {
                     "SqlServer-CDC",
                     "StarRocks",
                     "MongoDB",
-                    "JDBC-Db2");
+                    "JDBC-Db2",
+                    "JDBC-Snowflake");
 
     public static Map<String, DatasourceClassLoader> datasourceClassLoaders = new HashMap<>();
 
