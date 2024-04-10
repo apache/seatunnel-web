@@ -84,4 +84,11 @@ public class JobExecutorController {
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
         return jobExecutorService.jobStore(userId, jobInstanceId);
     }
+
+    @GetMapping("/delete")
+    public Result<Void> jobCancel(
+            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
+            @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
+        return jobExecutorService.jobDelete(userId, jobInstanceId);
+    }
 }

@@ -29,13 +29,15 @@ import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
-import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
 import org.apache.seatunnel.engine.client.job.ClientJobProxy;
 import org.apache.seatunnel.engine.client.job.JobExecutionEnvironment;
 import org.apache.seatunnel.engine.common.config.ConfigProvider;
 import org.apache.seatunnel.engine.common.config.JobConfig;
 import org.apache.seatunnel.engine.core.job.JobStatus;
+
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Service;
 
@@ -49,11 +51,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -76,9 +80,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
-        String projectRoot = System.getProperty("user.dir");
-        String filePath =
-                projectRoot + File.separator + "profile" + File.separator + jobDefineId + ".conf";
+        String filePath = jobStorePath(jobDefineId);
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -122,7 +124,6 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
                     });
 
         } catch (ExecutionException | InterruptedException e) {
-            ExceptionUtils.getMessage(e);
             throw new RuntimeException(e);
         }
         return jobInstanceId;
@@ -137,19 +138,21 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         ExecutorService executor = Executors.newFixedThreadPool(1);
         CompletableFuture<JobStatus> future =
                 CompletableFuture.supplyAsync(clientJobProxy::waitForJobComplete, executor);
+        JobStatus jobStatus = null;
         try {
-            log.info("future.get before");
-            JobStatus jobStatus = future.get();
+            jobStatus = future.get();
 
-            executor.shutdown();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         } finally {
+            executor.shutdown();
             seaTunnelClient.close();
-            log.info("and jobInstanceService.complete begin");
-            jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
+            boolean isComplete = Objects.nonNull(jobStatus) && jobStatus.isEndState();
+            if (Objects.nonNull(jobInstanceId) && isComplete) {
+                jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
+            } else {
+                log.warn("JobInstance {} has been deleted Or Got Exception", jobEngineId);
+            }
         }
     }
 
@@ -163,11 +166,31 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         return testClassName;
     }
 
+    public static boolean isComplete(String JobStatus) {
+        return EnumUtils.getEnumList(JobStatus.class).stream()
+                        .filter(org.apache.seatunnel.engine.core.job.JobStatus::isEndState)
+                        .map(Enum::name)
+                        .map(String::toUpperCase)
+                        .collect(Collectors.toSet())
+                        .contains(JobStatus.toUpperCase())
+                || "UNKNOWABLE".equalsIgnoreCase(JobStatus);
+    }
+
+    public static String jobStorePath(Long jobDefinitionId) {
+        String projectRoot = System.getProperty("user.dir");
+        return StringUtils.join(
+                projectRoot,
+                File.separator,
+                "profile",
+                File.separator,
+                String.valueOf(jobDefinitionId),
+                ".conf");
+    }
+
     @Override
     public Result<Void> jobPause(Integer userId, Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        if (Objects.equals(
-                getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()), "RUNNING")) {
+        if (!isComplete(getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()))) {
             pauseJobInEngine(jobInstance.getJobEngineId());
         }
         return Result.success();
@@ -190,18 +213,39 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     @Override
     public Result<Void> jobStore(Integer userId, Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-
-        String projectRoot = System.getProperty("user.dir");
-        String filePath =
-                projectRoot
-                        + File.separator
-                        + "profile"
-                        + File.separator
-                        + jobInstance.getJobDefineId()
-                        + ".conf";
-        log.info("jobStore filePath:{}", filePath);
+        String filePath = jobStorePath(jobInstance.getJobDefineId());
         SeaTunnelEngineProxy.getInstance()
                 .restoreJob(filePath, jobInstanceId, Long.valueOf(jobInstance.getJobEngineId()));
         return Result.success();
+    }
+
+    /**
+     * Delete Job. If the Job haven't been completed, cancel it in the engine, and then delete the
+     * restored conf file if it existed. Then delete it in the db.
+     *
+     * @param userId user's ID
+     * @param jobInstanceId job instance that should be deleted.
+     * @return void
+     */
+    @Override
+    public Result<Void> jobDelete(Integer userId, Long jobInstanceId) {
+        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+        String jobEngineId = jobInstance.getJobEngineId();
+        if (!isComplete(getJobStatusFromEngine(jobInstance, jobEngineId))) {
+            deleteJobInEngine(jobEngineId);
+            log.info("Canceling {}.", jobInstanceId);
+        }
+        File jobConf = new File(jobStorePath(jobInstance.getJobDefineId()));
+        try {
+            Files.deleteIfExists(jobConf.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        jobInstanceService.delete(userId, jobInstanceId, jobEngineId);
+        return Result.success();
+    }
+
+    private void deleteJobInEngine(@NonNull String jobEngineId) {
+        SeaTunnelEngineProxy.getInstance().deleteJob(jobEngineId);
     }
 }

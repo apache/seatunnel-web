@@ -122,4 +122,10 @@ public class SeaTunnelEngineProxy {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteJob(String jobEngineId) {
+        SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
+        JobClient jobClient = seaTunnelClient.getJobClient();
+        jobClient.cancelJob(Long.valueOf(jobEngineId));
+    }
 }

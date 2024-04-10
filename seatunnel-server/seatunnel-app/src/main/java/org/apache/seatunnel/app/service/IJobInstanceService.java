@@ -34,4 +34,6 @@ public interface IJobInstanceService {
 
     void complete(
             @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
+
+    void delete(@NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
 }

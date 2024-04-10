@@ -135,6 +135,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         JobVersion latestVersion = jobVersionDao.getLatestVersion(job.getId());
         JobInstance jobInstance = new JobInstance();
         String jobConfig = createJobConfig(latestVersion);
+        log.debug("job config: {}", jobConfig);
 
         try {
             jobInstance.setId(CodeGenerateUtils.getInstance().genCode());
@@ -272,6 +273,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                             targetLines.get(pluginId),
                                             config);
                             if (!sinkMap.containsKey(task.getConnectorType())) {
+                                // 这里对于clichouse需要替换JDBC到 Clickhouse
                                 sinkMap.put(task.getConnectorType(), new ArrayList<>());
                             }
                             Config mergeConfig =
@@ -283,7 +285,14 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                             config,
                                             optionRule);
 
-                            sinkMap.get(task.getConnectorType()).add(filterEmptyValue(mergeConfig));
+                            if ("true".equals(mergeConfig.getString("Clickhouse"))) {
+                                sinkMap.remove(task.getConnectorType());
+                                sinkMap.put("Clickhouse", new ArrayList<>());
+                                sinkMap.get("Clickhouse").add(filterEmptyValue(mergeConfig));
+                            } else {
+                                sinkMap.get(task.getConnectorType())
+                                        .add(filterEmptyValue(mergeConfig));
+                            }
                         }
                         break;
                     default:
@@ -345,8 +354,6 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_COMPLETE, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
-        jobMetricsService.syncJobDataToDb(jobInstance, userId, jobEngineId);
-
         List<JobPipelineSummaryMetricsRes> status =
                 jobMetricsService.getJobPipelineSummaryMetrics(userId, jobInstanceId);
 
@@ -364,13 +371,41 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             jobStatus = JobStatus.CANCELED.name();
         } else if (statusList.contains("CANCELLING")) {
             jobStatus = JobStatus.CANCELLING.name();
-        } else {
+        } else if (!statusList.isEmpty()) {
             jobStatus = JobStatus.RUNNING.name();
+        } else {
+            jobStatus = "UNKNOWABLE";
         }
         jobInstance.setJobStatus(jobStatus);
         jobInstance.setJobEngineId(jobEngineId);
         jobInstance.setUpdateUserId(userId);
-        jobInstanceDao.update(jobInstance);
+
+        jobMetricsService.syncJobDataToDb(jobInstance, userId, jobEngineId);
+    }
+
+    @Override
+    public void delete(
+            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
+        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_DELETE, userId);
+        JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
+        List<JobPipelineSummaryMetricsRes> status =
+                jobMetricsService.getJobPipelineSummaryMetrics(userId, jobInstanceId);
+
+        List<String> statusList =
+                status.stream()
+                        .map(JobPipelineSummaryMetricsRes::getStatus)
+                        .map(String::toUpperCase)
+                        .collect(Collectors.toList());
+
+        String jobStatus =
+                statusList.size() == 1 && JobExecutorServiceImpl.isComplete(statusList.get(0))
+                        ? statusList.get(0)
+                        : JobStatus.CANCELED.name();
+
+        jobInstance.setJobStatus(jobStatus);
+        jobInstance.setJobEngineId(jobEngineId);
+        jobInstance.setUpdateUserId(userId);
+        jobMetricsService.deleteJobDataToDb(jobInstance, userId, jobEngineId);
     }
 
     private Config buildTransformConfig(

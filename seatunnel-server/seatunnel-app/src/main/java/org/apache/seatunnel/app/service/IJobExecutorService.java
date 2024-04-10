@@ -26,4 +26,6 @@ public interface IJobExecutorService {
     Result<Void> jobPause(Integer userId, Long jobInstanceId);
 
     Result<Void> jobStore(Integer userId, Long jobInstanceId);
+
+    Result<Void> jobDelete(Integer userId, Long jobInstanceId);
 }

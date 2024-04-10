@@ -56,6 +56,7 @@ public class SeatunnelFuncPermissionKeyConstant {
     public static final String JOB_EXECUTOR_RESOURCE = "project:seatunnel-task:job-exec-resource";
     public static final String JOB_EXECUTOR_INSTANCE = "project:seatunnel-task:job-exec-instance";
     public static final String JOB_EXECUTOR_COMPLETE = "project:seatunnel-task:job-exec-complete";
+    public static final String JOB_EXECUTOR_DELETE = "project:seatunnel-task:job-exec-delete";
 
     /** sync task instance */
     public static final String JOB_METRICS_SUMMARY = "project:seatunnel-task-instance:summary";
