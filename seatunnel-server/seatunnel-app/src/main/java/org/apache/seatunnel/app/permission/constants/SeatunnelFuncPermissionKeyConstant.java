@@ -53,8 +53,11 @@ public class SeatunnelFuncPermissionKeyConstant {
     public static final String JOB_TABLE_SCHEMA = "project:seatunnel-task:table-schema";
     public static final String JOB_TABLE_COLUMN_PROJECTION =
             "project:seatunnel-task:column-projection";
-    public static final String JOB_EXECUTOR_RESOURCE = "project:seatunnel-task:job-exec-resource";
+    public static final String JOB_EXECUTOR_CREATE = "project:seatunnel-task:job-exec-create";
     public static final String JOB_EXECUTOR_INSTANCE = "project:seatunnel-task:job-exec-instance";
+    public static final String JOB_EXECUTOR_STATUS = "project:seatunnel-task:job-exec-status";
+    public static final String JOB_EXECUTOR_START = "project:seatunnel-task:job-exec-start";
+    public static final String JOB_EXECUTOR_PAUSE = "project:seatunnel-task:job-exec-pause";
     public static final String JOB_EXECUTOR_COMPLETE = "project:seatunnel-task:job-exec-complete";
     public static final String JOB_EXECUTOR_DELETE = "project:seatunnel-task:job-exec-delete";
 

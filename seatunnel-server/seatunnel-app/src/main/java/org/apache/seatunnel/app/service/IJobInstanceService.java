@@ -17,23 +17,32 @@
 
 package org.apache.seatunnel.app.service;
 
+import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.entity.JobLine;
 import org.apache.seatunnel.app.dal.entity.JobTask;
-import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 
 import lombok.NonNull;
+import org.apache.seatunnel.engine.client.job.ClientJobProxy;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import java.util.List;
 
 public interface IJobInstanceService {
-    JobExecutorRes createExecuteResource(@NonNull Integer userId, @NonNull Long jobDefineId);
-
     String generateJobConfig(Long jobId, List<JobTask> tasks, List<JobLine> lines, String envStr);
 
-    JobExecutorRes getExecuteResource(@NonNull Long jobEngineId);
+    Long create(@NonNull Integer userId, @NonNull Long jobDefineId);
 
-    void complete(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
+    void start(@NonNull Integer userId, @NonNull Long jobInstanceId);
+
+    JobStatus status(@NonNull Integer userId, @NonNull Long jobInstanceId);
+
+    void pause(@NonNull Integer userId, @NonNull Long jobInstanceId);
+
+    void restore(@NonNull Integer userId, @NonNull Long jobInstanceId);
+
+    void delete(@NonNull Integer userId, @NonNull Long jobInstanceId);
+
+    void complete(@NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
 
     void delete(@NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
 }

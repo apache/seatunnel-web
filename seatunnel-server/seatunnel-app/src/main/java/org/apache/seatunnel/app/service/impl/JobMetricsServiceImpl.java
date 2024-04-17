@@ -167,7 +167,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 // the engine
                 if (!allRunningJobMetricsFromEngine.isEmpty()
                         && allRunningJobMetricsFromEngine.containsKey(
-                                jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                        jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
                     JobSummaryMetricsRes jobMetricsFromEngineRes =
                             getRunningJobMetricsFromEngine(
                                     allRunningJobMetricsFromEngine,
@@ -280,13 +280,13 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
                 } else if (jobInstance.getJobStatus() != null
                         && (jobInstance.getJobStatus().equals("FINISHED")
-                                || jobInstance.getJobStatus().equals("FAILED"))) {
+                        || jobInstance.getJobStatus().equals("FAILED"))) {
                     // Obtain monitoring information from the collection of running jobs returned
                     // from
                     // the engine
                     if (!allRunningJobMetricsFromEngine.isEmpty()
                             && allRunningJobMetricsFromEngine.containsKey(
-                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                            jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
                         // If it can be found, update the information in MySQL and return it to the
                         // front-end data
                         modifyAndUpdateJobInstanceAndJobMetrics(
@@ -319,7 +319,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                     // the engine
                     if (!allRunningJobMetricsFromEngine.isEmpty()
                             && allRunningJobMetricsFromEngine.containsKey(
-                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                            jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
                         modifyAndUpdateJobInstanceAndJobMetrics(
                                 jobInstance,
                                 allRunningJobMetricsFromEngine,

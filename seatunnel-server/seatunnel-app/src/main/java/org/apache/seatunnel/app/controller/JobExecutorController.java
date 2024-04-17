@@ -18,13 +18,11 @@
 package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
-import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.service.IJobExecutorService;
-import org.apache.seatunnel.app.service.IJobInstanceService;
-import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
-import org.apache.seatunnel.server.common.SeatunnelException;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,34 +42,26 @@ import java.io.IOException;
 public class JobExecutorController {
 
     @Resource IJobExecutorService jobExecutorService;
-    @Resource private IJobInstanceService jobInstanceService;
 
-    @GetMapping("/execute")
-    @ApiOperation(value = "Execute synchronization tasks", httpMethod = "GET")
-    public Result<Long> jobExecutor(
+    @PostMapping("/create")
+    @ApiOperation(value = "Create synchronization tasks", httpMethod = "POST")
+    public Result<Long> jobCreate(
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobDefineId", required = true) @RequestParam("jobDefineId")
-                    Long jobDefineId) {
-        return jobExecutorService.jobExecute(userId, jobDefineId);
+            Long jobDefineId) {
+        return jobExecutorService.jobCreate(userId, jobDefineId);
     }
 
-    @GetMapping("/resource")
-    @ApiOperation(value = "get the resource for job executor", httpMethod = "GET")
-    public Result<JobExecutorRes> resource(
-            @ApiParam(value = "userId", required = true) @RequestParam Integer userId,
-            @ApiParam(value = "Job define id", required = true) @RequestParam Long jobDefineId)
-            throws IOException {
-        try {
-            JobExecutorRes executeResource =
-                    jobInstanceService.createExecuteResource(userId, jobDefineId);
-            return Result.success(executeResource);
-        } catch (Exception e) {
-            log.error("Get the resource for job executor error", e);
-            throw new SeatunnelException(SeatunnelErrorEnum.ILLEGAL_STATE, e.getMessage());
-        }
+    @PostMapping("/execute")
+    @ApiOperation(value = "Execute synchronization tasks", httpMethod = "Post")
+    public Result<Long> jobExecutor(
+            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
+            @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
+        return jobExecutorService.jobExecute(userId, jobInstanceId);
     }
 
-    @GetMapping("/pause")
+    @PostMapping("/pause")
+    @ApiOperation(value = "Pause synchronization tasks", httpMethod = "POST")
     public Result<Void> jobPause(
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
@@ -85,7 +75,8 @@ public class JobExecutorController {
         return jobExecutorService.jobStore(userId, jobInstanceId);
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "Delete synchronization tasks", httpMethod = "DELETE")
     public Result<Void> jobCancel(
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {

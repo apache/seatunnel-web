@@ -16,29 +16,40 @@
  */
 package org.apache.seatunnel.app.thirdparty.engine;
 
+import org.apache.seatunnel.common.config.Common;
+import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
+import org.apache.seatunnel.engine.client.job.ClientJobProxy;
 import org.apache.seatunnel.engine.client.job.JobClient;
 import org.apache.seatunnel.engine.common.config.ConfigProvider;
 import org.apache.seatunnel.engine.common.config.JobConfig;
+import org.apache.seatunnel.engine.common.config.SeaTunnelConfig;
+import org.apache.seatunnel.engine.common.config.YamlSeaTunnelConfigBuilder;
 import org.apache.seatunnel.engine.core.job.JobDAGInfo;
 
 import com.hazelcast.client.config.ClientConfig;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class SeaTunnelEngineProxy {
-    ClientConfig clientConfig = null;
 
-    private SeaTunnelEngineProxy() {
-        clientConfig = ConfigProvider.locateAndGetClientConfig();
+    private ClientConfig clientConfig = null;
+
+    private static class SeaTunnelEngineProxyHolder {
+        private static final SeaTunnelEngineProxy INSTANCE = new SeaTunnelEngineProxy();
     }
 
     public static SeaTunnelEngineProxy getInstance() {
         return SeaTunnelEngineProxyHolder.INSTANCE;
+    }
+
+    private SeaTunnelEngineProxy() {
+        clientConfig = ConfigProvider.locateAndGetClientConfig();
     }
 
     public String getMetricsContent(@NonNull String jobEngineId) {
@@ -89,10 +100,6 @@ public class SeaTunnelEngineProxy {
         }
     }
 
-    private static class SeaTunnelEngineProxyHolder {
-        private static final SeaTunnelEngineProxy INSTANCE = new SeaTunnelEngineProxy();
-    }
-
     public String getAllRunningJobMetricsContent() {
 
         SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
@@ -103,29 +110,46 @@ public class SeaTunnelEngineProxy {
         }
     }
 
-    public void pauseJob(String jobEngineId) {
-        SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
-        JobClient jobClient = seaTunnelClient.getJobClient();
-        jobClient.savePointJob(Long.valueOf(jobEngineId));
-    }
+    public ClientJobProxy executeJob(@NonNull String filePath, @NonNull Long jobInstanceId) {
+        Common.setDeployMode(DeployMode.CLIENT);
 
-    public void restoreJob(
-            @NonNull String filePath, @NonNull Long jobInstanceId, @NonNull Long jobEngineId) {
-        SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
         JobConfig jobConfig = new JobConfig();
         jobConfig.setName(jobInstanceId + "_job");
-        try {
-            seaTunnelClient.restoreExecutionContext(filePath, jobConfig, jobEngineId).execute();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        SeaTunnelConfig seaTunnelConfig = new YamlSeaTunnelConfigBuilder().build();
+        try (SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig)) {
+            return seaTunnelClient.createExecutionContext(filePath, jobConfig, seaTunnelConfig).execute();
+        } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteJob(String jobEngineId) {
-        SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
-        JobClient jobClient = seaTunnelClient.getJobClient();
-        jobClient.cancelJob(Long.valueOf(jobEngineId));
+    public void restoreJob(@NonNull String filePath, @NonNull Long jobInstanceId, @NonNull Long jobEngineId) {
+
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setName(jobInstanceId + "_job");
+        SeaTunnelConfig seaTunnelConfig = new YamlSeaTunnelConfigBuilder().build();
+        try (SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig)) {
+            seaTunnelClient
+                    .restoreExecutionContext(filePath, jobConfig, seaTunnelConfig, jobEngineId)
+                    .execute();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void pauseJob(@NonNull String jobEngineId) {
+        try (SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig)) {
+            seaTunnelClient.getJobClient().savePointJob(Long.valueOf(jobEngineId));
+        } catch (Exception e) {
+            log.warn("Can not pause job from engine.", e);
+        }
+    }
+
+    public void deleteJob(@NonNull String jobEngineId) {
+        try (SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig)) {
+            seaTunnelClient.getJobClient().cancelJob(Long.valueOf(jobEngineId));
+        } catch (Exception e) {
+            log.warn("Can not delete job from engine.", e);
+        }
     }
 }

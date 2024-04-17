@@ -16,7 +16,6 @@
  */
 package org.apache.seatunnel.app.bean.engine;
 
-import org.apache.seatunnel.api.table.catalog.DataTypeConvertException;
 import org.apache.seatunnel.api.table.catalog.DataTypeConvertor;
 import org.apache.seatunnel.api.table.type.ArrayType;
 import org.apache.seatunnel.api.table.type.BasicType;
@@ -50,6 +49,12 @@ public class EngineDataType {
         T_BYTE("tinyint", BasicType.BYTE_TYPE),
         T_SHORT("smallint", BasicType.SHORT_TYPE),
         T_INT("int", BasicType.INT_TYPE),
+
+        T_INT8("int8", BasicType.INT_TYPE),
+        T_UNIT32("uint32", BasicType.LONG_TYPE),
+
+        T_Float32("Float32", BasicType.FLOAT_TYPE),
+
         T_LONG("bigint", BasicType.LONG_TYPE),
         T_FLOAT("float", BasicType.FLOAT_TYPE),
         T_DOUBLE("double", BasicType.DOUBLE_TYPE),
@@ -86,21 +91,19 @@ public class EngineDataType {
             implements DataTypeConvertor<SeaTunnelDataType<?>> {
 
         @Override
-        public SeaTunnelDataType<?> toSeaTunnelType(String engineDataType) {
-            return DATA_TYPE_MAP.get(engineDataType.toLowerCase(Locale.ROOT)).getRawType();
+        public SeaTunnelDataType<?> toSeaTunnelType(String s, String s1) {
+            return DATA_TYPE_MAP.get(s.toLowerCase(Locale.ROOT)).getRawType();
         }
 
         @Override
         public SeaTunnelDataType<?> toSeaTunnelType(
-                SeaTunnelDataType<?> seaTunnelDataType, Map<String, Object> map)
-                throws DataTypeConvertException {
+                String s, SeaTunnelDataType<?> seaTunnelDataType, Map<String, Object> map) {
             return seaTunnelDataType;
         }
 
         @Override
         public SeaTunnelDataType<?> toConnectorType(
-                SeaTunnelDataType<?> seaTunnelDataType, Map<String, Object> map)
-                throws DataTypeConvertException {
+                String s, SeaTunnelDataType<?> seaTunnelDataType, Map<String, Object> map) {
             return seaTunnelDataType;
         }
 
