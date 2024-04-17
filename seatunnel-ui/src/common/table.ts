@@ -18,7 +18,7 @@
 import { useSettingStore } from '@/store/setting'
 
 const getTableColumn = (data: Array<{ key: string; title: string }>) => {
-  const tableColumn = []
+  const tableColumn : any[] = []
   const settingStore = useSettingStore()
 
   settingStore.getSequenceColumn &&
@@ -30,7 +30,7 @@ const getTableColumn = (data: Array<{ key: string; title: string }>) => {
 
   settingStore.getDataUniqueValue &&
     tableColumn.push(
-      ...data.map((i) => {
+      ...data.map((i: {key: any, title:any}): {key: any, title:any} => {
         return {
           title: i.title,
           key: i.key
