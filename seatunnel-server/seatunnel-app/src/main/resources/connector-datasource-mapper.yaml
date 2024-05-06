@@ -25,6 +25,7 @@ connector-datasource-mapper:
         - JDBC-SQLServer
         - JDBC-KingBase
         - JDBC-Oracle
+        - JDBC-Db2
 
     MySQL-CDC:
       dataSources:
@@ -134,7 +135,11 @@ connector-datasource-mapper:
         - SINGLE_TABLE
       jobMode:
         - BATCH
-
+    JDBC-Db2:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
 
   sinkDatasourceFeatures:
     JDBC-Mysql:
@@ -215,3 +220,8 @@ connector-datasource-mapper:
       sceneMode:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
+    JDBC-Db2:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
