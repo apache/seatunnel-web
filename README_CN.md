@@ -21,7 +21,7 @@ SeaTunnel是下一代超高性能、分布式、海量数据集成工具。它�
 
 ## 如何开始
 
-注意:一些细节请参考 docs/QuickStart.md
+注意:一些细节请参考 docs/[README_CN.md](README_CN.md)QuickStart.md
 
 ### 1 准备Apache SeaTunnel环境
 
