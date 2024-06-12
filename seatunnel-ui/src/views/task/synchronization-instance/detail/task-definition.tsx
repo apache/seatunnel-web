@@ -68,7 +68,7 @@ const TaskDefinition = defineComponent({
 
     const formatData = () => {
       const obj = jobConfig.value.env
-      const arr = []
+      const arr : any = []
       for (const i in obj) {
         arr.push({ label: String(i), value: obj[i] })
       }
