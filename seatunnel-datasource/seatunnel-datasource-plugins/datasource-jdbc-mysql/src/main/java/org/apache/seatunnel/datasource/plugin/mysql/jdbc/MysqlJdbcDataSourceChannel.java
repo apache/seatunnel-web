@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -187,11 +188,15 @@ public class MysqlJdbcDataSourceChannel implements DataSourceChannel {
         String url =
                 JdbcUtils.replaceDatabase(
                         requestParams.get(MysqlOptionRule.URL.key()), databaseName);
+
+        Properties info = new java.util.Properties();
+        info.put("autoDeserialize", "false");
+        info.put("allowLoadLocalInfile", "false");
+        info.put("allowLoadLocalInfileInPath", "");
         if (requestParams.containsKey(MysqlOptionRule.USER.key())) {
-            String username = requestParams.get(MysqlOptionRule.USER.key());
-            String password = requestParams.get(MysqlOptionRule.PASSWORD.key());
-            return DriverManager.getConnection(url, username, password);
+            info.put("user", requestParams.get(MysqlOptionRule.USER.key()));
+            info.put("password", requestParams.get(MysqlOptionRule.PASSWORD.key()));
         }
-        return DriverManager.getConnection(url);
+        return DriverManager.getConnection(url, info);
     }
 }
