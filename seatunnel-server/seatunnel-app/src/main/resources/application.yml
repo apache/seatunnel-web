@@ -34,7 +34,8 @@ spring:
 
 jwt:
   expireTime: 86400
-  secretKey: https://github.com/apache/seatunnel
+  # please add key when deploy
+  secretKey:
   algorithm: HS256
 
 ---
