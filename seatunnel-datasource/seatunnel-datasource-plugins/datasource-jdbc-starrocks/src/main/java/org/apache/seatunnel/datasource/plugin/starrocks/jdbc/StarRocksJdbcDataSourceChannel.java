@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -169,11 +170,15 @@ public class StarRocksJdbcDataSourceChannel implements DataSourceChannel {
         String url =
                 JdbcUtils.replaceDatabase(
                         requestParams.get(StarRocksOptionRule.URL.key()), databaseName);
+
+        Properties info = new java.util.Properties();
+        info.put("autoDeserialize", "false");
+        info.put("allowLoadLocalInfile", "false");
+        info.put("allowLoadLocalInfileInPath", "");
         if (requestParams.containsKey(StarRocksOptionRule.USER.key())) {
-            String username = requestParams.get(StarRocksOptionRule.USER.key());
-            String password = requestParams.get(StarRocksOptionRule.PASSWORD.key());
-            return DriverManager.getConnection(url, username, password);
+            info.put("user", requestParams.get(StarRocksOptionRule.USER.key()));
+            info.put("password", requestParams.get(StarRocksOptionRule.PASSWORD.key()));
         }
-        return DriverManager.getConnection(url);
+        return DriverManager.getConnection(url, info);
     }
 }
