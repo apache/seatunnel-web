@@ -76,6 +76,7 @@ sh build.sh code
 #### 2.4 Config application and Run SeaTunnel Web Backend Server
 
 1. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml` Fill in the database connection information
+2. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: SeaTunnel.
 
 ![img.png](docs/images/application_config.png)
 
