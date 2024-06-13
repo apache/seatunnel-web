@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.apache.seatunnel</groupId>
         <artifactId>seatunnel-datasource-plugins</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>datasource-plugins-api</artifactId>
@@ -33,8 +33,4 @@
             <artifactId>auto-service</artifactId>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>1.0.1</tag>
-  </scm>
 </project>
