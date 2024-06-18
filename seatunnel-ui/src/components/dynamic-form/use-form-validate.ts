@@ -27,7 +27,7 @@ export function useFormValidate(forms: Array<any>, model: any, t: any) {
     }
 
     if (validate.type === 'non-empty') {
-      data['validator'] = (rule: FormItemRule, value: string) => {
+      data['validator'] = () => {
         if (!model[field]) {
           return Error(t(validate.message))
         }

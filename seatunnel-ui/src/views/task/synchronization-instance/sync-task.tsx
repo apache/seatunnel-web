@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
+import { stateType } from '@/common/common'
+import ColumnSelector from '@/components/column-selector'
+import LogModal from '@/components/log-modal'
+import { queryLog } from '@/service/log'
+import { LogRes } from '@/service/log/types'
+import { getRangeShortCuts } from '@/utils/timePickeroption'
+import { ReloadOutlined, SearchOutlined } from '@vicons/antd'
+import { useAsyncState } from '@vueuse/core'
+import _ from 'lodash'
 import {
+  NButton,
+  NCard,
+  NDataTable,
+  NDatePicker,
+  NGi,
+  NGrid,
+  NIcon,
+  NInput,
+  NPagination,
+  NSelect,
+  NSpace
+} from 'naive-ui'
+import {
+  PropType,
   defineComponent,
   onMounted,
   onUnmounted,
-  PropType,
-  toRefs,
-  watch,
+  reactive,
   ref,
-  reactive
+  toRefs,
+  watch
 } from 'vue'
-import { useSyncTask } from './use-sync-task'
-import {
-  NSpace,
-  NCard,
-  NDataTable,
-  NPagination,
-  NInput,
-  NSelect,
-  NDatePicker,
-  NIcon,
-  NButton,
-  NGrid,
-  NGi,
-  NDropdown
-} from 'naive-ui'
 import { useI18n } from 'vue-i18n'
-import { stateType } from '@/common/common'
-import LogModal from '@/components/log-modal'
-import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
-import { useAsyncState } from '@vueuse/core'
-import { queryLog } from '@/service/log'
-import { LogRes } from '@/service/log/types'
-import ColumnSelector from '@/components/column-selector'
-import { getRangeShortCuts } from '@/utils/timePickeroption'
 import { useRoute, useRouter } from 'vue-router'
-import _ from 'lodash'
-import { DownOutlined } from '@vicons/antd'
+import { useSyncTask } from './use-sync-task'
 
 const props = {
   syncTaskType: {
@@ -165,13 +163,13 @@ const SyncTask = defineComponent({
       router.replace({
         query: !_.isEmpty(query)
           ? {
-            ...route.query,
-            ...query,
-            syncTaskType: props.syncTaskType,
+              ...route.query,
+              ...query,
+              syncTaskType: props.syncTaskType
             }
           : {
               ...route.query,
-              syncTaskType: props.syncTaskType,
+              syncTaskType: props.syncTaskType
             }
       })
       requestData()
@@ -252,7 +250,6 @@ const SyncTask = defineComponent({
       <NSpace vertical>
         <NCard>
           <NGrid cols={26} yGap={10} xGap={5}>
-            
             <NGi span={5}>
               <NInput
                 v-model={[this.taskName, 'value']}

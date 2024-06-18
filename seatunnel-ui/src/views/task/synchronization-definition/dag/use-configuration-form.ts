@@ -151,7 +151,7 @@ export const useConfigurationForm = (
             )
           }
         }
-      },
+      }
     }
   })
 
@@ -201,7 +201,11 @@ export const useConfigurationForm = (
     }
   }
 
-  const getTableOptions = async (databases: Array<string> | string, filterName?: string, size?: number) => {
+  const getTableOptions = async (
+    databases: Array<string> | string,
+    filterName?: string,
+    size?: number
+  ) => {
     filterName = filterName || ''
     if (
       nodeType === 'source' ||
@@ -332,7 +336,11 @@ export const useConfigurationForm = (
       }
 
       if (values.tableOption?.databases?.length) {
-        await getTableOptions(values.tableOption.databases[0], '', state.model.sceneMode === 'MULTIPLE_TABLE' ? 9999999 : 100)
+        await getTableOptions(
+          values.tableOption.databases[0],
+          '',
+          state.model.sceneMode === 'MULTIPLE_TABLE' ? 9999999 : 100
+        )
       }
 
       if (values.sceneMode === 'MULTIPLE_TABLE') {

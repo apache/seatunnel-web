@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
+import { datasourceDelete, datasourceList } from '@/service/data-source'
 import { reactive } from 'vue'
-import {
-  datasourceList,
-  datasourceDelete
-} from '@/service/data-source'
-import type { DatasourceList } from '@/service/data-source/types'
-import type { ResponseTable } from '@/service/types'
 
 export function useTable() {
   const data = reactive({

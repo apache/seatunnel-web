@@ -15,25 +15,22 @@
  * limitations under the License.
  */
 
-import { useI18n } from 'vue-i18n'
-import { h, reactive, ref } from 'vue'
 import { useTableOperation } from '@/hooks'
-import { EditOutlined, PlayCircleOutlined } from '@vicons/antd'
 import {
-  querySyncTaskDefinitionPaging,
   deleteSyncTaskDefinition,
-  executeJob
+  executeJob,
+  querySyncTaskDefinitionPaging
 } from '@/service/sync-task-definition'
-import { useRoute, useRouter } from 'vue-router'
+import { EditOutlined, PlayCircleOutlined } from '@vicons/antd'
+import { h, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Router } from 'vue-router'
+import { useRouter } from 'vue-router'
 import type { JobType } from './dag/types'
-import { COLUMN_WIDTH_CONFIG } from '@/common/column-width-config'
-import { useTableLink } from '@/hooks'
 
 export function useTable() {
   const { t } = useI18n()
   const router: Router = useRouter()
-  const route = useRoute()
   const variables = reactive({
     columns: [],
     tableData: [],
@@ -44,7 +41,7 @@ export function useTable() {
     showModalRef: ref(false),
     statusRef: ref(0),
     row: {},
-    loadingRef: ref(false),
+    loadingRef: ref(false)
   })
 
   const JOB_TYPE = {
@@ -86,36 +83,33 @@ export function useTable() {
         title: t('project.synchronization_definition.update_time'),
         key: 'updateTime'
       },
-      useTableOperation(
-        {
-          title: t('project.synchronization_definition.operation'),
-          key: 'operation',
-          buttons: [
-            {
-              text: t('project.synchronization_definition.edit'),
-              onClick: (row: any) => {
-                router.push({
-                  path: `/task/synchronization-definition/${row.id}`,
-                })
-              },
-              icon: h(EditOutlined)
+      useTableOperation({
+        title: t('project.synchronization_definition.operation'),
+        key: 'operation',
+        buttons: [
+          {
+            text: t('project.synchronization_definition.edit'),
+            onClick: (row: any) => {
+              router.push({
+                path: `/task/synchronization-definition/${row.id}`
+              })
             },
-            
-            {
-              text: t('project.synchronization_definition.start'),
-              onClick: (row: any) => void handleRun(row),
-              icon: h(PlayCircleOutlined)
-            },
-            {
-              isDelete: true,
-              text: t('project.synchronization_definition.delete'),
-              onPositiveClick: (row: any) => void handleDelete(row),
-              popTips: t('security.token.delete_confirm')
-            }
-          ]
-        },
-        
-      )
+            icon: h(EditOutlined)
+          },
+
+          {
+            text: t('project.synchronization_definition.start'),
+            onClick: (row: any) => void handleRun(row),
+            icon: h(PlayCircleOutlined)
+          },
+          {
+            isDelete: true,
+            text: t('project.synchronization_definition.delete'),
+            onPositiveClick: (row: any) => void handleDelete(row),
+            popTips: t('security.token.delete_confirm')
+          }
+        ]
+      })
     ]
   }
 
@@ -164,6 +158,6 @@ export function useTable() {
   return {
     variables,
     createColumns,
-    getTableData,
+    getTableData
   }
 }

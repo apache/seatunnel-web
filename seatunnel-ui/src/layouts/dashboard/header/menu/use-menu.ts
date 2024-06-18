@@ -32,7 +32,8 @@ export function useMenu() {
       key: 'datasource'
     },
     {
-      label: () => h(NEllipsis, null, { default: () => t('menu.virtual_tables') }),
+      label: () =>
+        h(NEllipsis, null, { default: () => t('menu.virtual_tables') }),
       key: 'virtual-tables'
     },
     {

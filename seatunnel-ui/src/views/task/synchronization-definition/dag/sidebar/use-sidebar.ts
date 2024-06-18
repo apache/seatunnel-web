@@ -26,9 +26,11 @@ export function useSidebar() {
   })
 
   const getConnectorTransformsTypeList = () => {
-    connectorTransformsTypeList(route.params.jobDefinitionCode as string).then((res: any) => {
-      variables.transforms = res
-    })
+    connectorTransformsTypeList(route.params.jobDefinitionCode as string).then(
+      (res: any) => {
+        variables.transforms = res
+      }
+    )
   }
 
   return {

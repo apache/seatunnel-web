@@ -15,15 +15,11 @@
  * limitations under the License.
  */
 
-import { defineComponent, computed, ref, watch } from 'vue'
-import { NDropdown, NIcon, NButton, NSelect } from 'naive-ui'
-import { DownOutlined } from '@vicons/antd'
-import { useTheme } from './use-theme'
-import styles from './index.module.scss'
-import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/store/theme'
-import { find } from 'lodash'
 import type { ITheme } from '@/store/theme/types'
+import { NSelect } from 'naive-ui'
+import { computed, defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const Theme = defineComponent({
   name: 'Theme',
@@ -34,14 +30,13 @@ const Theme = defineComponent({
       themeStore.setTheme(theme)
     }
 
-    console.log(t('theme.light'), 'theme.light')
-    const themeOpts = computed(() =>[
+    const themeOpts = computed(() => [
       // { label: t('theme.dark_blue'), key: 'dark-blue' },
       { label: t('theme.light'), key: 'light', value: 'light' },
       { label: t('theme.dark'), key: 'dark', value: 'dark' }
     ])
 
-    let themeLabel = computed(() => themeStore.theme)
+    const themeLabel = computed(() => themeStore.theme)
     return {
       themeOpts,
       themeLabel,

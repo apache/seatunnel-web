@@ -18,25 +18,23 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/store/theme'
-import { find } from 'lodash'
 import type { ITheme } from '@/store/theme/types'
 
 export function useTheme() {
   const { t } = useI18n()
   const themeStore = useThemeStore()
-  
+
   const getThemes = () => [
     // { label: t('theme.dark_blue'), key: 'dark-blue' },
     { label: t('theme.light'), key: 'light', value: 'light' },
     { label: t('theme.dark'), key: 'dark', value: 'dark' }
   ]
 
-  let themeLabel = computed(() => themeStore.theme)
+  const themeLabel = computed(() => themeStore.theme)
   const themes = ref(getThemes())
   // const currentThemeLabel = ref(getThemeLabel())
 
   const onSelectTheme = (theme: ITheme) => {
-    console.log(111)
     themeStore.setTheme(theme)
     // currentThemeLabel.value = getThemeLabel()
   }

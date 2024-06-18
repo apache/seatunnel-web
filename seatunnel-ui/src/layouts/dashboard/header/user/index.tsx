@@ -19,7 +19,13 @@ import { Component, defineComponent, h } from 'vue'
 import { NSpace, NDropdown, NIcon, NButton } from 'naive-ui'
 import { useUserDropdown } from './use-user-dropdown'
 import { useUserStore } from '@/store/user'
-import { DownOutlined, LogoutOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from '@vicons/antd'
+import {
+  DownOutlined,
+  LogoutOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
+  UserOutlined
+} from '@vicons/antd'
 import { useI18n } from 'vue-i18n'
 import type { UserDetail } from '@/service/user/types'
 

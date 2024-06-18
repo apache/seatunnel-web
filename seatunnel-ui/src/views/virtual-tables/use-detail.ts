@@ -77,7 +77,6 @@ export const useDetail = (id: string) => {
 
   const queryFieldsType = async () => {
     const res = await getFieldType()
-    console.log(res, 'type')
     state.fieldTypes = res
     defaultRecord.fieldType = state.fieldTypes[0]
   }
@@ -129,7 +128,6 @@ export const useDetail = (id: string) => {
       ...defaultRecord,
       key: Date.now() + Math.random() * 1000
     })
-    console.log(state, 'ta')
   }
 
   const onChangeStep = async (step: -1 | 1) => {
@@ -169,7 +167,6 @@ export const useDetail = (id: string) => {
   }
 
   onMounted(() => {
-    console.log('vir')
     if (id) {
       queryById()
     }

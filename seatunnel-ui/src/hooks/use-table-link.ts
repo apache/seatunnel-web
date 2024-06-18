@@ -40,7 +40,7 @@ interface ITableLinkParams {
 }
 
 export const useTableLink = (
-  params: ITableLinkParams,
+  params: ITableLinkParams
   // module?: IPermissionModule
 ) => {
   // const functionPermissions = usePermissionStore().getPermissions(
@@ -56,29 +56,27 @@ export const useTableLink = (
     const maxWidth = params.width ? params.width - 24 : params.width
     const textColor = params.textColor ? params.textColor(rowData) || '' : ''
     return h(
-          ButtonLink,
-          {
-            href: params.button.getHref ? params.button.getHref(rowData) : null,
-            onClick: () =>
-              params.button.onClick && params.button.onClick(rowData),
-            disabled: params.button.disabled && params.button.disabled(rowData)
-          },
-          {
-            default: () =>
-              h(
-                NEllipsis,
-                { style: `max-width: ${maxWidth}px; color: ${textColor}` },
-                () => {
-                  if (!params.showEmpty) {
-                    return rowData[params.key]
-                  } else {
-                    return rowData[params.key] || '-'
-                  }
-                }
-              )
-          }
-        )
-    
+      ButtonLink,
+      {
+        href: params.button.getHref ? params.button.getHref(rowData) : null,
+        onClick: () => params.button.onClick && params.button.onClick(rowData),
+        disabled: params.button.disabled && params.button.disabled(rowData)
+      },
+      {
+        default: () =>
+          h(
+            NEllipsis,
+            { style: `max-width: ${maxWidth}px; color: ${textColor}` },
+            () => {
+              if (!params.showEmpty) {
+                return rowData[params.key]
+              } else {
+                return rowData[params.key] || '-'
+              }
+            }
+          )
+      }
+    )
   }
 
   return {

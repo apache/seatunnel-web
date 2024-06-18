@@ -18,14 +18,12 @@
 import i18n from '@/locales'
 const { t } = i18n.global
 export const getRemainTime = (remain: number): any => {
-    if(!remain) return 
-    let h = parseInt(remain / 60 / 60 % 24 + '')
-    let m = parseInt(remain / 60 % 60 + '')
-    let s = parseInt(remain % 60 + '')
-    const hText = h > 0 ? `${h}${t('common.hour')}` : ''
-    const mText = m > 0 ? `${m}${t('common.min')}` : ''
-    const sText = s > 0 ? `${s}${t('common.second')}` : ''
-    return hText + mText + sText
-    
+  if (!remain) return
+  const h = parseInt(((remain / 60 / 60) % 24) + '')
+  const m = parseInt(((remain / 60) % 60) + '')
+  const s = parseInt((remain % 60) + '')
+  const hText = h > 0 ? `${h}${t('common.hour')}` : ''
+  const mText = m > 0 ? `${m}${t('common.min')}` : ''
+  const sText = s > 0 ? `${s}${t('common.second')}` : ''
+  return hText + mText + sText
 }
-

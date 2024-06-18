@@ -18,14 +18,9 @@
 import { Graph } from '@antv/x6'
 import { DagEdgeName } from './dag-setting'
 
-export function useDagGraph(
-  graph: any,
-  dagContainer: HTMLElement,
-  minimapContainer: HTMLElement
-) {
+export function useDagGraph(graph: any, dagContainer: HTMLElement) {
   return new Graph({
     container: dagContainer,
-    scroller: true,
     grid: {
       size: 10,
       visible: true
@@ -37,12 +32,6 @@ export function useDagGraph(
       createEdge() {
         return graph.value?.createEdge({ shape: DagEdgeName })
       }
-    },
-    minimap: {
-      enabled: true,
-      width: 200,
-      height: 120,
-      container: minimapContainer
     }
   })
 }

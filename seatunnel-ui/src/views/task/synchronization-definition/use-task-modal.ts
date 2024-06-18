@@ -17,7 +17,7 @@
 
 import { useI18n } from 'vue-i18n'
 import { reactive, ref, SetupContext } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { createSyncTaskDefinition } from '@/service/sync-task-definition'
 import type { FormItemRule } from 'naive-ui'
 import type { Router } from 'vue-router'
@@ -28,7 +28,6 @@ export function useTaskModal(
 ) {
   const { t } = useI18n()
   const router: Router = useRouter()
-  const route = useRoute()
 
   const variables = reactive({
     taskModalFormRef: ref(),
@@ -83,7 +82,7 @@ export function useTaskModal(
       ctx.emit('confirmModal', props.showModalRef)
 
       router.push({
-        path: `/task/synchronization-definition/${res}`,
+        path: `/task/synchronization-definition/${res}`
       })
     })
   }

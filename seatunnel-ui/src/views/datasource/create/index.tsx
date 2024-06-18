@@ -74,29 +74,42 @@ const DatasourceCreate = defineComponent({
       <NSpace vertical>
         <NCard>
           {{
-            header: () => <NBreadcrumb>
-              <NBreadcrumbItem onClick={onClose}>
-                {t('datasource.datasource')}
-              </NBreadcrumbItem>
-              <NBreadcrumbItem>
-                {t(
-                  route.params.id
-                    ? 'datasource.edit_datasource'
-                    : 'datasource.create_datasource'
-                )}
-              </NBreadcrumbItem>
-            </NBreadcrumb>,
-            'header-extra': () => <NSpace>
-              <NButton secondary type='primary' onClick={testConnect} loading={status.testing}>
-                {t('datasource.test_connect')}
-              </NButton>
-              <NButton secondary onClick={onClose}>
-                {t('datasource.cancel')}
-              </NButton>
-              <NButton type='success' onClick={createOrUpdate} loading={status.saving}>
-                {t('datasource.confirm')}
-              </NButton>
-            </NSpace>
+            header: () => (
+              <NBreadcrumb>
+                <NBreadcrumbItem onClick={onClose}>
+                  {t('datasource.datasource')}
+                </NBreadcrumbItem>
+                <NBreadcrumbItem>
+                  {t(
+                    route.params.id
+                      ? 'datasource.edit_datasource'
+                      : 'datasource.create_datasource'
+                  )}
+                </NBreadcrumbItem>
+              </NBreadcrumb>
+            ),
+            'header-extra': () => (
+              <NSpace>
+                <NButton
+                  secondary
+                  type='primary'
+                  onClick={testConnect}
+                  loading={status.testing}
+                >
+                  {t('datasource.test_connect')}
+                </NButton>
+                <NButton secondary onClick={onClose}>
+                  {t('datasource.cancel')}
+                </NButton>
+                <NButton
+                  type='success'
+                  onClick={createOrUpdate}
+                  loading={status.saving}
+                >
+                  {t('datasource.confirm')}
+                </NButton>
+              </NSpace>
+            )
           }}
         </NCard>
         <NCard>

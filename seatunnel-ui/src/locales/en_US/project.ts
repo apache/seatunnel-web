@@ -998,7 +998,8 @@ export default {
     file_tips: 'Please select an excel file.'
   },
   synchronization_definition: {
-    node_prev_check_tips: 'The current node is not connected to the previous node',
+    node_prev_check_tips:
+      'The current node is not connected to the previous node',
     create_synchronization_task: 'Create Synchronization Task',
     edit_synchronization_task: 'Edit Synchronization Task',
     synchronization_task_name: 'Synchronization Task Name',
@@ -1091,13 +1092,13 @@ export default {
     separator: 'Separator',
     separator_tips: 'Please enter a separator',
     segmented_fields: 'Segmented fields',
-    segmented_fields_placeholder: 'If two fields are separated, you can fill in field1, field2',
+    segmented_fields_placeholder:
+      'If two fields are separated, you can fill in field1, field2',
     copy_field: 'Copy Field',
     check_model: 'Please check the model information',
     sql_content_label: 'sql',
     sql_content_label_placeholder: 'please input the SQL statement',
-    query_validate: 'please input the SQL statement',
-
+    query_validate: 'please input the SQL statement'
   },
   synchronization_instance: {
     pipeline_id: 'Pipeline Id',
@@ -1142,7 +1143,7 @@ export default {
     confirm: 'Confirm',
     cancel: 'Cancel',
     delete: 'Delete',
-    delete_confirm: 'Delete?',
+    delete_confirm: 'Delete?'
   },
   menu: {
     fav: 'Favorites',

@@ -1109,7 +1109,7 @@ export default {
     confirm: '确定',
     cancel: '取消',
     delete: '删除',
-    delete_confirm: '确定删除吗?',
+    delete_confirm: '确定删除吗?'
   },
   menu: {
     fav: '收藏组件',

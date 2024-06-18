@@ -15,29 +15,21 @@
  * limitations under the License.
  */
 
-import { defineComponent, ref, PropType, onMounted, watch, h } from 'vue'
-import { NLayoutSider, NMenu, NIcon, NDropdown, NEllipsis } from 'naive-ui'
 import { useThemeStore } from '@/store/theme'
-import styles from './index.module.scss'
-import { PartitionOutlined, ProjectOutlined, RightOutlined } from '@vicons/antd'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { MenuOption } from 'naive-ui'
+import { NLayoutSider, NMenu } from 'naive-ui'
+import { PropType, defineComponent, h, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { RouterLink, useRoute } from 'vue-router'
 
 const Sidebar = defineComponent({
   name: 'Sidebar',
   props: {
-    sideMenuOptions: {
-      type: Array as PropType<any>,
-      default: []
-    },
     sideKey: {
       type: String as PropType<string>,
       default: ''
     }
   },
   setup() {
-    const router = useRouter()
     const collapsedRef = ref(false)
     const defaultExpandedKeys = ['']
     const route = useRoute()
@@ -87,8 +79,8 @@ const Sidebar = defineComponent({
       menuStyle,
       themeStore,
       showDrop,
-      sideMenuOptions,
-      route
+      route,
+      sideMenuOptions
     }
   },
   render() {

@@ -42,5 +42,6 @@ header:
     - '**/com/typesafe/config/**'
     - 'seatunnel-main-repository/**'
     - 'seatunnel-web-dist/release-docs/**'
+    - 'seatunnel-ui/pnpm-lock.yaml'
 
   comment: on-failure

@@ -76,7 +76,7 @@ service.interceptors.response.use((res: AxiosResponse) => {
   switch (res.data.code) {
     case 0:
       return res.data.data
-    
+
     default:
       handleError(res)
       throw new Error()

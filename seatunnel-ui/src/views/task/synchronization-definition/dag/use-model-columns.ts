@@ -54,7 +54,8 @@ export const useModelColumns = () => {
       title: t('project.synchronization_definition.split_field'),
       content: () => h(SplitModal, { rowData, outputData, ref: splitModalRef }),
       onPositiveClick: () => {
-        const { outputFields, separator, original_field } = splitModalRef.value.getFields()
+        const { outputFields, separator, original_field } =
+          splitModalRef.value.getFields()
 
         outputFields.forEach((field: string) => {
           outputData.push({
@@ -67,8 +68,12 @@ export const useModelColumns = () => {
         })
 
         // For fields that have been split, the button is grayed out.
-        const sourceGroup = outputData.filter((o: any) => !o.isSplit).map((o: any) => o.name)
-        const splitGroup = outputData.filter((o: any) => o.isSplit).map((o: any) => o.original_field)
+        const sourceGroup = outputData
+          .filter((o: any) => !o.isSplit)
+          .map((o: any) => o.name)
+        const splitGroup = outputData
+          .filter((o: any) => o.isSplit)
+          .map((o: any) => o.original_field)
 
         splitGroup.forEach((s: any) => {
           if (sourceGroup.indexOf(s) >= 0) {
@@ -184,21 +189,32 @@ export const useModelColumns = () => {
                   })
               )
             : // @ts-ignore
-              h('div', { align: 'center', style: { display: 'flex', 'flex-wrap': 'no-wrap', 'align-items': 'center' } }, [
-                h(NEllipsis, {}, [row.name as any]),
-                h(
-                  NButton,
-                  {
-                    quaternary: true,
-                    circle: true,
-                    size: 'small',
-                    onClick() {
-                      outputTableData[index].isEdit = true
-                    }
-                  },
-                  { icon: h(NIcon, null, () => h(EditOutlined)) }
-                )
-              ])
+              h(
+                'div',
+                {
+                  align: 'center',
+                  style: {
+                    display: 'flex',
+                    'flex-wrap': 'no-wrap',
+                    'align-items': 'center'
+                  }
+                },
+                [
+                  h(NEllipsis, {}, [row.name as any]),
+                  h(
+                    NButton,
+                    {
+                      quaternary: true,
+                      circle: true,
+                      size: 'small',
+                      onClick() {
+                        outputTableData[index].isEdit = true
+                      }
+                    },
+                    { icon: h(NIcon, null, () => h(EditOutlined)) }
+                  )
+                ]
+              )
         }
       } as TableColumn
       outputColumns.splice(
@@ -209,7 +225,11 @@ export const useModelColumns = () => {
           key: 'original_field',
           ...COLUMN_WIDTH_CONFIG['name'],
           render: (row: any) => {
-            return h('span', { class: row.isError && 'row-error' }, row.original_field)
+            return h(
+              'span',
+              { class: row.isError && 'row-error' },
+              row.original_field
+            )
           }
         },
         nameColumn
@@ -308,8 +328,18 @@ export const useModelColumns = () => {
         ...COLUMN_WIDTH_CONFIG['name'],
         render: (row: any) => {
           // Mark the same field name value in red.
-          const onlyNameColumnTableData = outputTableData.map((o: any) => o.name)
-          return h('span', { class: onlyNameColumnTableData.indexOf(row.name) !== onlyNameColumnTableData.lastIndexOf(row.name)  && 'row-error' }, row.name)
+          const onlyNameColumnTableData = outputTableData.map(
+            (o: any) => o.name
+          )
+          return h(
+            'span',
+            {
+              class:
+                onlyNameColumnTableData.indexOf(row.name) !==
+                  onlyNameColumnTableData.lastIndexOf(row.name) && 'row-error'
+            },
+            row.name
+          )
         }
       } as TableColumn
       outputColumns.splice(
@@ -320,7 +350,11 @@ export const useModelColumns = () => {
           key: 'original_field',
           ...COLUMN_WIDTH_CONFIG['name'],
           render: (row: any) => {
-            return h('span', { class: row.isError && 'row-error' }, row.original_field)
+            return h(
+              'span',
+              { class: row.isError && 'row-error' },
+              row.original_field
+            )
           }
         },
         nameColumn
@@ -331,7 +365,7 @@ export const useModelColumns = () => {
         key: 'operation',
         ...COLUMN_WIDTH_CONFIG['operation'](1),
         width: 60,
-        render(row: any, index: number) {
+        render(row: any) {
           return row.isSplit
             ? h(
                 NPopconfirm,
@@ -342,15 +376,24 @@ export const useModelColumns = () => {
                     // When a piece of information is deleted, the entries that
                     // are divided at the same time as the piece of information
                     // will be deleted together.
-                    remove(outputTableData, (i => (i.original_field === row.original_field) && i.isSplit))
+                    remove(
+                      outputTableData,
+                      (i) =>
+                        i.original_field === row.original_field && i.isSplit
+                    )
 
                     // After all the split fields are deleted, the Unsplit button is grayed out.
-                    const sourceGroup = outputTableData.filter((o: any) => !o.isSplit).map((o: any) => o.name)
-                    const splitGroup = outputTableData.filter((o: any) => o.isSplit).map((o: any) => o.original_field)
+                    const sourceGroup = outputTableData
+                      .filter((o: any) => !o.isSplit)
+                      .map((o: any) => o.name)
+                    const splitGroup = outputTableData
+                      .filter((o: any) => o.isSplit)
+                      .map((o: any) => o.original_field)
 
                     sourceGroup.forEach((s: any) => {
                       if (splitGroup.indexOf(s) < 0) {
-                        outputTableData[sourceGroup.indexOf(s)].splitDisabled = false
+                        outputTableData[sourceGroup.indexOf(s)].splitDisabled =
+                          false
                       }
                     })
                   }
@@ -408,11 +451,23 @@ export const useModelColumns = () => {
         ...COLUMN_WIDTH_CONFIG['name'],
         render: (row: any, index) => {
           // Mark the same field name value in red.
-          const onlyNameColumnTableData = outputTableData.map((o: any) => o.name)
-          return row.copyTimes !== -1 ? 
-                h('span', { class: onlyNameColumnTableData.indexOf(row.name) !== onlyNameColumnTableData.lastIndexOf(row.name)  && 'row-error' }, row.name)
-                : row.isEdit ? 
-                h(NFormItem,
+          const onlyNameColumnTableData = outputTableData.map(
+            (o: any) => o.name
+          )
+          return row.copyTimes !== -1
+            ? h(
+                'span',
+                {
+                  class:
+                    onlyNameColumnTableData.indexOf(row.name) !==
+                      onlyNameColumnTableData.lastIndexOf(row.name) &&
+                    'row-error'
+                },
+                row.name
+              )
+            : row.isEdit
+              ? h(
+                  NFormItem,
                   {
                     showLabel: false,
                     validationStatus: !row.name ? 'error' : 'success',
@@ -430,23 +485,34 @@ export const useModelColumns = () => {
                         outputTableData[index].isEdit = false
                       }
                     })
-                  )
-                : // @ts-ignore
-                h('div', { align: 'center', style: { display: 'flex', 'flex-wrap': 'no-wrap', 'align-items': 'center' } }, [
-                  h(NEllipsis, {}, [row.name as any]),
-                  h(
-                    NButton,
-                    {
-                      quaternary: true,
-                      circle: true,
-                      size: 'small',
-                      onClick() {
-                        outputTableData[index].isEdit = true
-                      }
-                    },
-                    { icon: h(NIcon, null, () => h(EditOutlined)) }
-                  )
-                ])
+                )
+              : // @ts-ignore
+                h(
+                  'div',
+                  {
+                    align: 'center',
+                    style: {
+                      display: 'flex',
+                      'flex-wrap': 'no-wrap',
+                      'align-items': 'center'
+                    }
+                  },
+                  [
+                    h(NEllipsis, {}, [row.name as any]),
+                    h(
+                      NButton,
+                      {
+                        quaternary: true,
+                        circle: true,
+                        size: 'small',
+                        onClick() {
+                          outputTableData[index].isEdit = true
+                        }
+                      },
+                      { icon: h(NIcon, null, () => h(EditOutlined)) }
+                    )
+                  ]
+                )
         }
       } as TableColumn
 
@@ -502,12 +568,19 @@ export const useModelColumns = () => {
                         type: 'info',
                         onClick() {
                           const result = outputTableData.filter(
-                            (o: any) => (o.original_field === row.original_field) && (o.original_field !== o.name)
+                            (o: any) =>
+                              o.original_field === row.original_field &&
+                              o.original_field !== o.name
                           )
 
-                          const maxCopyTimes: any = max(result.map((r: any) => Number(r.name.split(r.original_field)[1])))
+                          const maxCopyTimes: any = max(
+                            result.map((r: any) =>
+                              Number(r.name.split(r.original_field)[1])
+                            )
+                          )
 
-                          outputTableData[index].copyTimes = (maxCopyTimes ?? 0) + 1
+                          outputTableData[index].copyTimes =
+                            (maxCopyTimes ?? 0) + 1
                           outputTableData.push({
                             ...row,
                             name: row.name + row.copyTimes,
@@ -542,7 +615,8 @@ export const useModelColumns = () => {
         ellipsis: {
           tooltip: true
         },
-        render: (row: any) => row.outputDataType ? row.outputDataType : row.type
+        render: (row: any) =>
+          row.outputDataType ? row.outputDataType : row.type
       }
       resultColumns.splice(2, 1, type)
       return resultColumns
@@ -552,7 +626,8 @@ export const useModelColumns = () => {
       inputColumns: !columnSelectable
         ? basicColumns
         : ([selection, ...basicColumns.slice(1)] as TableColumns),
-      outputColumns: nodeType !== 'source' ? basicColumns : sourceOutputCheckType(),
+      outputColumns:
+        nodeType !== 'source' ? basicColumns : sourceOutputCheckType(),
       inputTableWidth: calculateTableWidth(basicColumns),
       outputTableWidth: calculateTableWidth(basicColumns)
     }

@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import { defineComponent, PropType, watch, inject } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { NForm, NFormItem, NInput, NSelect, NSpin } from 'naive-ui'
-import { useTaskSettingModal } from './use-task-setting-modal'
 import { DynamicFormItem } from '@/components/dynamic-form/dynamic-form-item'
 import Modal from '@/components/modal'
+import { NForm, NFormItem, NInput, NSelect, NSpin } from 'naive-ui'
+import { PropType, defineComponent, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useTaskSettingModal } from './use-task-setting-modal'
 
 const props = {
   show: {

@@ -36,7 +36,7 @@ export default {
       component: components['user-manage-list'],
       meta: {
         title: 'user-manage-list',
-        activeMenu: 'user-manage',
+        activeMenu: 'user-manage'
       }
     }
   ]

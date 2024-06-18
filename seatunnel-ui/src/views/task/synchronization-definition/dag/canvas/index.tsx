@@ -19,7 +19,6 @@ import { defineComponent, ref, onMounted, reactive, provide } from 'vue'
 import { Cell, Graph } from '@antv/x6'
 import { useI18n } from 'vue-i18n'
 import { DagEdgeName, DagNodeName, EdgeDefaultConfig } from './dag-setting'
-import { useDagNode } from './use-dag-node'
 import { useDagResize } from './use-dag-resize'
 import { useDagGraph } from './use-dag-graph'
 import {
@@ -33,6 +32,20 @@ import { getDagData } from './dag-data'
 import styles from './index.module.scss'
 import type { Ref } from 'vue'
 import type { InputEdge, InputPlugin, NodeInfo } from '../types'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { Selection } from '@antv/x6-plugin-selection'
+import { History } from '@antv/x6-plugin-history'
+import { MiniMap } from '@antv/x6-plugin-minimap'
+import { Scroller } from '@antv/x6-plugin-scroller'
+import { register } from '@antv/x6-vue-shape'
+import DagNode from './node'
+
+register({
+  shape: DagNodeName,
+  width: 150,
+  height: 36,
+  component: DagNode
+})
 
 const DagCanvas = defineComponent({
   name: 'DagCanvas',
@@ -66,17 +79,29 @@ const DagCanvas = defineComponent({
     }
 
     const initGraph = () => {
-      graph.value = useDagGraph(
-        graph,
-        dagContainer.value,
-        minimapContainer.value
-      )
+      graph.value = useDagGraph(graph, dagContainer.value)
+      graph.value
+        .use(new Keyboard())
+        .use(
+          new Selection({
+            enabled: true,
+            rubberband: false,
+            movable: true,
+            showNodeSelectionBox: true,
+            showEdgeSelectionBox: true
+          })
+        )
+        .use(new History())
+        .use(
+          new MiniMap({
+            width: 200,
+            height: 120,
+            container: minimapContainer.value
+          })
+        )
+        .use(new Scroller())
     }
 
-    const registerNode = () => {
-      Graph.unregisterNode(DagNodeName)
-      Graph.registerNode(DagNodeName, useDagNode())
-    }
 
     const registerEdge = () => {
       Graph.unregisterEdge(DagEdgeName)
@@ -100,7 +125,10 @@ const DagCanvas = defineComponent({
               ...cell.getData(),
               type: cell.getData().type.toLowerCase(),
               sourceFields: fields,
-              predecessorsNodeId: (graph.value?.getPredecessors(cell) as Cell[]).length > 0 ? graph.value?.getPredecessors(cell)[0].id : ''
+              predecessorsNodeId:
+                (graph.value?.getPredecessors(cell) as Cell[]).length > 0
+                  ? graph.value?.getPredecessors(cell)[0].id
+                  : ''
             }
             currentNodeId = cell.id
             state.show = true
@@ -145,7 +173,7 @@ const DagCanvas = defineComponent({
 
     onMounted(() => {
       initGraph()
-      registerNode()
+      // registerNode()
       registerEdge()
       onDoubleClick()
     })

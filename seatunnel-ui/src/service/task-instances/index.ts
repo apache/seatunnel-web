@@ -17,7 +17,7 @@
 
 import { axios } from '@/service/service'
 import utils from '@/utils'
-import { ProjectCodeReq, IdReq, TaskListReq } from './types'
+import { IdReq, TaskListReq } from './types'
 
 export function queryTaskListPaging(params: TaskListReq): any {
   return axios({
@@ -27,7 +27,7 @@ export function queryTaskListPaging(params: TaskListReq): any {
   })
 }
 
-export function forceSuccess(taskId: IdReq, projectCode: ProjectCodeReq): any {
+export function forceSuccess(taskId: IdReq): any {
   return axios({
     url: `/projects//task-instances/${taskId.id}/force-success`,
     method: 'post'

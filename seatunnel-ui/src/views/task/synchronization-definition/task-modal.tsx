@@ -75,16 +75,11 @@ const TaskModal = defineComponent({
       confirmModal,
       preCancle,
       getNextStep,
-      synchronizationForm,
+      synchronizationForm
     }
   },
   render() {
-    const {
-      t,
-      getNextStep,
-      showModalRef,
-      preCancle,
-    } = this
+    const { showModalRef } = this
     return (
       <template>
         <Modal

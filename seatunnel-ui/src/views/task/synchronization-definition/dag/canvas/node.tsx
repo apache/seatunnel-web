@@ -58,7 +58,11 @@ const Node = defineComponent({
       <div
         class={styles['dag-node']}
         style={{
-          borderLeft: isError ? '4px solid #ff4d4f' : (unsaved ? '4px solid #faad14' : '4px solid #1890ff')
+          borderLeft: isError
+            ? '4px solid #ff4d4f'
+            : unsaved
+              ? '4px solid #faad14'
+              : '4px solid #1890ff'
         }}
       >
         <img src={icon.value} class={styles['dag-node-icon']} />

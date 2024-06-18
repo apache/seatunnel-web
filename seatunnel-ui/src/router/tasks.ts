@@ -49,7 +49,7 @@ export default {
         title: 'synchronization-definition-dag',
         activeMenu: 'tasks',
         activeSide: 'synchronization-definition',
-        showSide: true,
+        showSide: true
       }
     },
     {
@@ -71,7 +71,7 @@ export default {
         title: 'synchronization-instance-detail',
         activeMenu: 'tasks',
         activeSide: 'synchronization-instance',
-        showSide: true,
+        showSide: true
       }
     }
   ]
