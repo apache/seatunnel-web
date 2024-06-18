@@ -172,6 +172,7 @@ tar -zxvf apache-seatunnel-web-${project.version}.tar.gz
 #### 3.5 配置应用并运行 SeaTunnel Web 后端服务
 
 * 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 在文件中填写数据库连接信息和数据服务接口相关信息。
+* 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 文件,填写jwt.secretKey密钥,例如：SeaTunnel。
 
 ![image](docs/images/application_config.png)
 
