@@ -69,23 +69,23 @@ export function forcedSuccessByIds(taskInstanceIds: Array<any>) {
   })
 }
 
-export function hanldlePauseJob(id: number): any {
+export function handlePauseJob(id: number): any {
   return axios({
     url: `/job/executor/pause?jobInstanceId=${id}`,
     method: 'get'
   })
 }
 
-export function hanldleRecoverJob(id: number): any {
+export function handleRecoverJob(id: number): any {
   return axios({
     url: `/job/executor/restore?jobInstanceId=${id}`,
     method: 'get'
   })
 }
 
-export function hanldleDelJob(id: number): any {
+export function handleDeleteJob(id: number): any {
   return axios({
-    url: `/job/executor/del?jobInstanceId=${id}`,
+    url: `/job/executor/delete?jobInstanceId=${id}`,
     method: 'get'
   })
 }

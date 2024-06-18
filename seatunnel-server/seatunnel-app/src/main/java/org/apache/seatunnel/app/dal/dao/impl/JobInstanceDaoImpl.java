@@ -61,6 +61,11 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
     }
 
     @Override
+    public void delete(@NonNull JobInstance jobInstance) {
+        jobInstanceMapper.deleteById(jobInstance);
+    }
+
+    @Override
     public JobInstanceMapper getJobInstanceMapper() {
         return jobInstanceMapper;
     }

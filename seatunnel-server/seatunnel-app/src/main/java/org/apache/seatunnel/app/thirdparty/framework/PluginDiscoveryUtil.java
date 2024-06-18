@@ -57,17 +57,23 @@ public class PluginDiscoveryUtil {
     }
 
     public static Map<PluginIdentifier, ConnectorFeature> getConnectorFeatures(
-            PluginType pluginType) throws IOException {
+            PluginType pluginType) {
         Common.setStarter(true);
         if (!pluginType.equals(PluginType.SOURCE)) {
             throw new UnsupportedOperationException("ONLY support plugin type source");
         }
-        Path path = new SeaTunnelSinkPluginDiscovery().getPluginDir();
+
+        ArrayList<PluginIdentifier> pluginIdentifiers = new ArrayList<>();
+        pluginIdentifiers.addAll(
+                SeaTunnelSinkPluginDiscovery.getAllSupportedPlugins(PluginType.SOURCE).keySet());
+        List<URL> pluginJarPaths =
+                new SeaTunnelSinkPluginDiscovery().getPluginJarPaths(pluginIdentifiers);
+
         List<Factory> factories;
-        if (path.toFile().exists()) {
-            List<URL> files = FileUtils.searchJarFiles(path);
+        if (!pluginJarPaths.isEmpty()) {
             factories =
-                    FactoryUtil.discoverFactories(new URLClassLoader(files.toArray(new URL[0])));
+                    FactoryUtil.discoverFactories(
+                            new URLClassLoader(pluginJarPaths.toArray(new URL[0])));
         } else {
             factories =
                     FactoryUtil.discoverFactories(Thread.currentThread().getContextClassLoader());

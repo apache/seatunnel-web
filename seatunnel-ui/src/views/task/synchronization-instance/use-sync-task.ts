@@ -42,9 +42,9 @@ import { NIcon, NSpin, NTooltip } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import {
   querySyncTaskInstancePaging,
-  hanldlePauseJob,
-  hanldleRecoverJob,
-  hanldleDelJob
+  handlePauseJob,
+  handleRecoverJob,
+  handleDeleteJob
 } from '@/service/sync-task-instance'
 import type { RowKey } from 'naive-ui/lib/data-table/src/interface'
 import type { Router } from 'vue-router'
@@ -180,10 +180,8 @@ export function useSyncTask(syncTaskType = 'BATCH') {
               isDelete: true,
               text: t('project.synchronization_instance.delete'),
               icon: h(DeleteOutlined),
-              onClick: (row) => void handleDel(row.id),
-              onPositiveClick: () => {
-                console.log('123')
-              },
+              onClick: (row) => void handleDelete(row.id),
+              onPositiveClick: (row) => void handleDelete(row.id),
               positiveText: t('project.synchronization_instance.confirm'),
               popTips: t('project.synchronization_instance.delete_confirm')
             }
@@ -214,18 +212,19 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       })
   }
   const handleRecover = (id: number) => {
-    hanldleRecoverJob(id).then(() => {
+    handleRecoverJob(id).then(() => {
       message.success(t('common.success_tips'))
     })
   }
   const handlePause = (id: number) => {
-    hanldlePauseJob(id).then(() => {
+    handlePauseJob(id).then(() => {
       message.success(t('common.success_tips'))
     })
   }
-  const handleDel = (id: number) => {
-    hanldleDelJob(id).then(() => {
+  const handleDelete = (id: number) => {
+    handleDeleteJob(id).then(() => {
       message.success(t('common.success_tips'))
+      getList()
     })
   }
 

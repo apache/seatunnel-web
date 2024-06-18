@@ -47,6 +47,9 @@ public interface IJobMetricsService {
     void syncJobDataToDb(
             @NonNull JobInstance jobInstance, @NonNull Integer userId, @NonNull String jobEngineId);
 
+    void deleteJobDataToDb(
+            @NonNull JobInstance jobInstance, @NonNull Integer userId, @NonNull String jobEngineId);
+
     JobSummaryMetricsRes getJobSummaryMetrics(
             @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
 

@@ -26,8 +26,8 @@ import org.apache.seatunnel.api.table.catalog.TableIdentifier;
 import org.apache.seatunnel.api.table.catalog.TableSchema;
 import org.apache.seatunnel.api.table.connector.TableTransform;
 import org.apache.seatunnel.api.table.factory.FactoryUtil;
-import org.apache.seatunnel.api.table.factory.TableFactoryContext;
 import org.apache.seatunnel.api.table.factory.TableTransformFactory;
+import org.apache.seatunnel.api.table.factory.TableTransformFactoryContext;
 import org.apache.seatunnel.api.table.type.ArrayType;
 import org.apache.seatunnel.api.table.type.BasicType;
 import org.apache.seatunnel.api.table.type.DecimalType;
@@ -103,8 +103,8 @@ public class SchemaDerivationServiceImpl implements ISchemaDerivationService {
                         tableSchema.getTableName());
         Map<String, Object> config = new HashMap<>();
         config.put(SQLTransform.KEY_QUERY.key(), sql.getQuery());
-        TableFactoryContext context =
-                new TableFactoryContext(
+        TableTransformFactoryContext context =
+                new TableTransformFactoryContext(
                         Collections.singletonList(table),
                         ReadonlyConfig.fromMap(config),
                         Thread.currentThread().getContextClassLoader());

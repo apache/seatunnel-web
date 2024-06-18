@@ -72,11 +72,19 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
 
     public TableSchemaServiceImpl() throws IOException {
         Common.setStarter(true);
-        Path path = new SeaTunnelSinkPluginDiscovery().getPluginDir();
-        if (path.toFile().exists()) {
-            List<URL> files = FileUtils.searchJarFiles(path);
-            files.addAll(FileUtils.searchJarFiles(Common.pluginRootDir()));
-            factory = new DataTypeConvertorFactory(new URLClassLoader(files.toArray(new URL[0])));
+        Set<PluginIdentifier> pluginIdentifiers =
+                SeaTunnelSinkPluginDiscovery.getAllSupportedPlugins(PluginType.SINK).keySet();
+        ArrayList<PluginIdentifier> pluginIdentifiersList = new ArrayList<>();
+        pluginIdentifiersList.addAll(pluginIdentifiers);
+        List<URL> pluginJarPaths =
+                new SeaTunnelSinkPluginDiscovery().getPluginJarPaths(pluginIdentifiersList);
+        //        Path path = new SeaTunnelSinkPluginDiscovery().getPluginDir();
+        if (!pluginJarPaths.isEmpty()) {
+            //            List<URL> files = FileUtils.searchJarFiles(path);
+            pluginJarPaths.addAll(FileUtils.searchJarFiles(Common.pluginRootDir()));
+            factory =
+                    new DataTypeConvertorFactory(
+                            new URLClassLoader(pluginJarPaths.toArray(new URL[0])));
         } else {
             factory = new DataTypeConvertorFactory();
         }
@@ -105,7 +113,8 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
         }
 
         for (TableField field : tableSchemaReq.getFields()) {
-            SeaTunnelDataType<?> dataType = convertor.toSeaTunnelType(field.getType());
+            SeaTunnelDataType<?> dataType =
+                    convertor.toSeaTunnelType(field.getName(), field.getType());
             field.setType(dataType.toString());
         }
         TableSchemaRes res = new TableSchemaRes();
@@ -135,7 +144,8 @@ public class TableSchemaServiceImpl extends SeatunnelBaseServiceImpl
         }
         for (TableField field : tableFields) {
             try {
-                SeaTunnelDataType<?> dataType = convertor.toSeaTunnelType(field.getType());
+                SeaTunnelDataType<?> dataType =
+                        convertor.toSeaTunnelType(field.getName(), field.getType());
                 field.setUnSupport(false);
                 field.setOutputDataType(dataType.toString());
             } catch (Exception exception) {

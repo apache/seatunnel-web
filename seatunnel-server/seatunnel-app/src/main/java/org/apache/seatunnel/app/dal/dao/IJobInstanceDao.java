@@ -37,6 +37,8 @@ public interface IJobInstanceDao {
 
     void insert(@NonNull JobInstance jobInstance);
 
+    void delete(@NonNull JobInstance jobInstance);
+
     JobInstanceMapper getJobInstanceMapper();
 
     IPage<SeaTunnelJobInstanceDto> queryJobInstanceListPaging(

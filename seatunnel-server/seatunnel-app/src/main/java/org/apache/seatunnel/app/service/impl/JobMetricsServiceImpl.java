@@ -167,7 +167,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 // the engine
                 if (!allRunningJobMetricsFromEngine.isEmpty()
                         && allRunningJobMetricsFromEngine.containsKey(
-                                jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                        jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
                     JobSummaryMetricsRes jobMetricsFromEngineRes =
                             getRunningJobMetricsFromEngine(
                                     allRunningJobMetricsFromEngine,
@@ -280,13 +280,13 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
                 } else if (jobInstance.getJobStatus() != null
                         && (jobInstance.getJobStatus().equals("FINISHED")
-                                || jobInstance.getJobStatus().equals("FAILED"))) {
+                        || jobInstance.getJobStatus().equals("FAILED"))) {
                     // Obtain monitoring information from the collection of running jobs returned
                     // from
                     // the engine
                     if (!allRunningJobMetricsFromEngine.isEmpty()
                             && allRunningJobMetricsFromEngine.containsKey(
-                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                            jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
                         // If it can be found, update the information in MySQL and return it to the
                         // front-end data
                         modifyAndUpdateJobInstanceAndJobMetrics(
@@ -319,7 +319,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                     // the engine
                     if (!allRunningJobMetricsFromEngine.isEmpty()
                             && allRunningJobMetricsFromEngine.containsKey(
-                                    jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
+                            jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId()))) {
                         modifyAndUpdateJobInstanceAndJobMetrics(
                                 jobInstance,
                                 allRunningJobMetricsFromEngine,
@@ -573,6 +573,17 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         syncCompleteJobInfoToDb(jobInstance);
     }
 
+    @Override
+    public void deleteJobDataToDb(
+            @NonNull JobInstance jobInstance,
+            @NonNull Integer userId,
+            @NonNull String jobEngineId) {
+        relationJobInstanceAndJobEngineId(jobInstance, userId, jobEngineId);
+        deleteMetricsToDb(jobInstance, userId, jobEngineId);
+        syncHistoryJobInfoToDb(jobInstance, jobEngineId);
+        deleteJobInfoToDb(jobInstance);
+    }
+
     private void syncMetricsToDb(
             @NonNull JobInstance jobInstance,
             @NonNull Integer userId,
@@ -616,6 +627,16 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         }
     }
 
+    private void deleteMetricsToDb(
+            @NonNull JobInstance jobInstance,
+            @NonNull Integer userId,
+            @NonNull String jobEngineId) {
+        getJobMetricsFromDb(jobInstance, userId, jobEngineId)
+                .forEach(
+                        jobMetrics ->
+                                jobMetricsDao.getJobMetricsMapper().deleteById(jobMetrics.getId()));
+    }
+
     private void syncHistoryJobInfoToDb(
             @NonNull JobInstance jobInstance, @NonNull String jobEngineId) {
         JobInstanceHistory jobHistoryFromEngine = getJobHistoryFromEngine(jobInstance, jobEngineId);
@@ -634,6 +655,10 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     private void syncCompleteJobInfoToDb(@NonNull JobInstance jobInstance) {
         jobInstance.setEndTime(new Date());
         jobInstanceDao.update(jobInstance);
+    }
+
+    private void deleteJobInfoToDb(@NonNull JobInstance jobInstance) {
+        jobInstanceDao.delete(jobInstance);
     }
 
     private void relationJobInstanceAndJobEngineId(

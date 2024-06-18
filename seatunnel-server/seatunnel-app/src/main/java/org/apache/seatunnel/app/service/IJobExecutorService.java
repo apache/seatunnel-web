@@ -21,9 +21,13 @@ import org.apache.seatunnel.app.common.Result;
 
 public interface IJobExecutorService {
 
-    Result<Long> jobExecute(Integer userId, Long jobDefineId);
+    Result<Long> jobCreate(Integer userId, Long jobDefineId);
+
+    Result<Long> jobExecute(Integer userId, Long jobInstanceId);
 
     Result<Void> jobPause(Integer userId, Long jobInstanceId);
 
     Result<Void> jobStore(Integer userId, Long jobInstanceId);
+
+    Result<Void> jobDelete(Integer userId, Long jobInstanceId);
 }
