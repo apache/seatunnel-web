@@ -39,6 +39,7 @@ datasource_list=(
   "datasource-jdbc-starrocks"
   "datasource-jdbc-tidb"
   "datasource-kafka"
+  "datasource-pulsar"
   "datasource-mysql-cdc"
   "datasource-s3"
   "datasource-sqlserver-cdc"
