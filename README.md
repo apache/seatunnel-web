@@ -138,7 +138,7 @@ If you use SeaTunnel Web, you need deploy a SeaTunnel Zeta Client in the SeaTunn
 * Copy `apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz` to the SeaTunnel Web node and unzip it **in the same path of SeaTunnel Zeta Server node**.
 * Set `SEATUNNEL_HOME` to environment variable like SeaTunnel Zeta Server node.
 * Config `hazelcast-client.yaml` reference https://seatunnel.apache.org/docs/seatunnel-engine/deployment#6-config-seatunnel-engine-client
-* Run `$SEATUNNEL_HOME/bin/seatunnel.sh --config $SEATUNNEL_HOME/config/v2.batch.config.template`, If this job run finished, it indicates successful client deployment.
+* Run `$SEATUNNEL_HOME/bin/seatunnel.sh --config $SEATUNNEL_HOME/config/v2.batch.config.template -m local`, If this job run finished, it indicates successful client deployment.
 
 #### 3.2 Build SeaTunnel Web Install Package From Code
 
