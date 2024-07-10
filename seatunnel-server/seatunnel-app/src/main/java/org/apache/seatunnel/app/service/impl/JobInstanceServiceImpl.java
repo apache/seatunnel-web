@@ -363,7 +363,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         } else if (statusList.contains("CANCELED")) {
             jobStatus = JobStatus.CANCELED.name();
         } else if (statusList.contains("CANCELLING")) {
-            jobStatus = JobStatus.CANCELLING.name();
+            jobStatus = JobStatus.CANCELING.name();
         } else {
             jobStatus = JobStatus.RUNNING.name();
         }

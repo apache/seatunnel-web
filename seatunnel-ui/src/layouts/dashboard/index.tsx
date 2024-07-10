@@ -72,7 +72,7 @@ const Dashboard = defineComponent({
                 style={'height: 100%'}
                 size='small'
               >
-                <router-view key={this.$route.fullPath} class={!this.showSide && 'px-32 py-12'} />
+                <router-view key={this['$route'].fullPath} class={!this.showSide && 'px-32 py-12'} />
               </NSpace>
             </NLayoutContent>
           </NLayout>
