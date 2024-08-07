@@ -36,7 +36,7 @@ public class EngineServiceImpl extends SeatunnelBaseServiceImpl implements IEngi
                             Lists.newArrayList(
                                     //        new Engine("Spark", "2.4.0"),
                                     //        new Engine("Flink", "1.13.6"),
-                                    new Engine("SeaTunnel", "2.3.1")));
+                                    new Engine("SeaTunnel", "2.3.6")));
 
     @Override
     public List<Engine> listSupportEngines() {
