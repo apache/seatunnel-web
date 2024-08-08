@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+ $box-node-content: "Double click to configure. After configure, Connect each node ends to another.";
 
 .x6-graph-scroller {
   overflow: hidden !important;
@@ -30,4 +31,26 @@
   border-radius: 5px;
   transition: all 0.2s;
   background-color: rgba(0, 0, 0, 0.25);
+}
+.x6-widget-selection-box.x6-widget-selection-box-node:hover {
+  position: relative;
+  &::before {
+    content: $box-node-content;
+    width: 210px;
+    height: 40px;
+    background: #eeecec;
+    color: #131313;
+    border-radius: 5px;
+    position: absolute;
+    top: -45px;
+    right: -25px;
+    text-align: center;
+    box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.5);
+    font-size: 11.5px;
+    line-height: 1.1;
+    padding: 3px;
+  }
+}
+.task-item-info {
+  cursor: help;
 }
