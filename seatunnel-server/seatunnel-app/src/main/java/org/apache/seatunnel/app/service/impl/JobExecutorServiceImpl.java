@@ -158,12 +158,8 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
     private SeaTunnelClient createSeaTunnelClient() {
         ClientConfig clientConfig = ConfigProvider.locateAndGetClientConfig();
-        clientConfig.setClusterName(getClusterName("seatunnel"));
+        clientConfig.setClusterName(clientConfig.getClusterName());
         return new SeaTunnelClient(clientConfig);
-    }
-
-    public static String getClusterName(String testClassName) {
-        return testClassName;
     }
 
     @Override
