@@ -82,5 +82,6 @@ export default {
   no_structured: '非结构化',
   storage: '存储',
   data_analysis: '数据分析',
-  remote_connection: '远程连接'
+  remote_connection: '远程连接',
+  fake_connection: '假连接'
 }

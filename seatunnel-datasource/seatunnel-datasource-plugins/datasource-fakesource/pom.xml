@@ -18,36 +18,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.seatunnel</groupId>
-        <artifactId>seatunnel-datasource</artifactId>
+        <artifactId>seatunnel-datasource-plugins</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>seatunnel-datasource-plugins</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>datasource-plugins-api</module>
-        <module>datasource-all</module>
-        <module>datasource-kafka</module>
-        <module>datasource-elasticsearch</module>
-        <module>datasource-jdbc-hive</module>
-        <module>datasource-hive</module>
-        <module>datasource-starrocks</module>
-        <module>datasource-jdbc-clickhouse</module>
-        <module>datasource-jdbc-mysql</module>
-        <module>datasource-jdbc-oracle</module>
-        <module>datasource-jdbc-postgresql</module>
-        <module>datasource-jdbc-redshift</module>
-        <module>datasource-jdbc-sqlserver</module>
-        <module>datasource-jdbc-starrocks</module>
-        <module>datasource-mysql-cdc</module>
-        <module>datasource-s3</module>
-        <module>datasource-sqlserver-cdc</module>
-        <module>datasource-jdbc-tidb</module>
-        <module>datasource-mongodb</module>
-        <module>datasource-jdbc-db2</module>
-        <module>datasource-fakesource</module>
-        <module>datasource-console</module>
-    </modules>
-
+    <artifactId>datasource-fakesource</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.seatunnel</groupId>
+            <artifactId>datasource-plugins-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
