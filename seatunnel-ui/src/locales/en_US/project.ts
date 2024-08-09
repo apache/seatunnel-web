@@ -958,6 +958,7 @@ export default {
     git_file: 'Git File',
     break_continue: 'Break continue',
     remote_connection: 'Remote Connection',
+    fake_connection: 'Fake Connection',
     connection_type: 'Connection Type',
     source_name: 'Source Name',
     ssh: 'SSH',

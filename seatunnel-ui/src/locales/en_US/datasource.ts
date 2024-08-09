@@ -86,5 +86,6 @@ export default {
   no_structured: 'NoSQLs',
   storage: 'Storage',
   data_analysis: 'Data Analysis',
-  remote_connection: 'Remote Connection'
+  remote_connection: 'Remote Connection',
+  fake_connection: 'Fake Connection'
 }
