@@ -927,6 +927,7 @@ export default {
     whale_seatunnel_task_tips: '请选择任务',
     break_continue: '断点续传',
     remote_connection: '远程连接',
+    fake_connection: '假连接',
     connection_type: '连接类型',
     source_name: '源名称',
     ssh: 'SSH',

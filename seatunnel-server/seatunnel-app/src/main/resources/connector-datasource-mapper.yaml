@@ -59,6 +59,14 @@ connector-datasource-mapper:
       dataSources:
         - MongoDB
 
+    FakeSource:
+      dataSources:
+        - FakeSource
+
+    Console:
+      dataSources:
+        - Console
+
   sourceDatasourceFeatures:
     JDBC-Mysql:
       businessMode:
@@ -140,6 +148,13 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+    FakeSource:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
 
   sinkDatasourceFeatures:
     JDBC-Mysql:
@@ -225,3 +240,11 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
+
+    Console:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
