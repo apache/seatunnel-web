@@ -75,6 +75,13 @@ public class ConsoleDataSourceConfigSwitcher extends AbstractDataSourceConfigSwi
             BusinessMode businessMode,
             PluginType pluginType,
             Config connectorConfig) {
-        return connectorConfig;
+        return super.mergeDatasourceConfig(
+                dataSourceInstanceConfig,
+                virtualTableDetail,
+                dataSourceOption,
+                selectTableFields,
+                businessMode,
+                pluginType,
+                connectorConfig);
     }
 }

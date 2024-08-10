@@ -35,13 +35,21 @@ public class ConsoleDataSourceConfig {
                     .type(DatasourcePluginTypeEnum.FAKE_CONNECTION.getCode())
                     .build();
 
-    public static final Option<String> URL =
-            Options.key("url")
-                    .stringType()
-                    .defaultValue("dummy://URL")
+    public static final Option<Boolean> LOG_PRINT_DATA =
+            Options.key("log.print.data")
+                    .booleanType()
+                    .defaultValue(true)
                     .withDescription(
-                            "This is required to meet the design constraints, however, it won't be utilized during execution.");
+                            "Flag to determine whether data should be printed in the logs.");
 
-    public static final OptionRule OPTION_RULE = OptionRule.builder().required(URL).build();
+    public static final Option<Integer> LOG_PRINT_DELAY =
+            Options.key("log.print.delay.ms")
+                    .intType()
+                    .defaultValue(0)
+                    .withDescription(
+                            "Delay in milliseconds between printing each data item to the logs.");
+
+    public static final OptionRule OPTION_RULE =
+            OptionRule.builder().required(LOG_PRINT_DATA).optional(LOG_PRINT_DELAY).build();
     public static final OptionRule METADATA_RULE = OptionRule.builder().build();
 }
