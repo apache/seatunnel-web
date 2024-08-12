@@ -108,7 +108,7 @@
         <commons-logging.version>1.2</commons-logging.version>
         <log4j.version>1.2.17</log4j.version>
         <log4j-core.version>2.17.1</log4j-core.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <skip.spotless>false</skip.spotless>
     </properties>
 
