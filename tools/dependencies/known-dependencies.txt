@@ -52,7 +52,7 @@ scala-library-2.12.15.jar
 
 
 
-slf4j-api-1.7.25.jar
+slf4j-api-1.7.36.jar
 snakeyaml-1.29.jar
 spring-aop-5.3.20.jar
 spring-beans-5.3.20.jar
@@ -96,10 +96,10 @@ clickhouse-jdbc-0.3.2-patch11.jar
 commons-lang3-3.4.jar
 httpcore-4.4.13.jar
 httpmime-4.5.13.jar
-jcl-over-slf4j-1.7.25.jar
+jcl-over-slf4j-1.7.36.jar
 jcommander-1.81.jar
 log4j-api-2.17.1.jar
-log4j-over-slf4j-1.7.25.jar
+log4j-over-slf4j-1.7.36.jar
 log4j-to-slf4j-2.17.1.jar
 logback-classic-1.2.3.jar
 logback-core-1.2.3.jar
