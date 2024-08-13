@@ -44,6 +44,7 @@
             <outputDirectory>script</outputDirectory>
         </fileSet>
         <fileSet>
+            <fileMode>755</fileMode>
             <directory>../seatunnel-server/seatunnel-app/src/main/bin</directory>
             <includes>
                 <include>*.sh</include>
