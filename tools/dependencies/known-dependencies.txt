@@ -7,7 +7,12 @@ commons-io-2.11.0.jar
 config-1.3.3.jar
 db2jcc-db2jcc4.jar
 gson-2.8.6.jar
-guava-19.0.jar
+guava-33.2.1-jre.jar
+checker-qual-3.10.0.jar
+error_prone_annotations-2.26.1.jar
+failureaccess-1.0.2.jar
+j2objc-annotations-3.0.0.jar
+listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
 hibernate-validator-6.2.2.Final.jar
 jackson-annotations-2.12.6.jar
 jackson-core-2.13.3.jar
