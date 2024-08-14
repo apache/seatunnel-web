@@ -26,7 +26,10 @@ public class JobExecutorControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<Long> jobExecutor(Long jobDefineId) {
         String response =
-                sendRequest(urlWithParam("job/executor/execute?jobDefineId=" + jobDefineId));
+                sendRequest(
+                        urlWithParam("job/executor/execute?jobDefineId=" + jobDefineId),
+                        "{}",
+                        "POST");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
     }
 

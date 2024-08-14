@@ -317,7 +317,7 @@ export function sqlModelInfo(taskId: string, pluginId: string, data: any): any {
 export function executeJob(jobDefineId: number): any {
   return axios({
     url: `/job/executor/execute?jobDefineId=${jobDefineId}`,
-    method: 'get',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     },
