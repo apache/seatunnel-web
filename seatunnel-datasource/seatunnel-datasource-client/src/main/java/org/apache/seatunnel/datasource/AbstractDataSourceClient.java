@@ -221,7 +221,10 @@ public abstract class AbstractDataSourceClient implements DataSourceService {
     }
 
     private ClassLoader getCustomClassloader(String pluginName) {
-        String getenv = System.getenv(ST_WEB_BASEDIR_PATH);
+        String getenv =
+                System.getenv(ST_WEB_BASEDIR_PATH) == null
+                        ? System.getProperty(ST_WEB_BASEDIR_PATH)
+                        : System.getenv(ST_WEB_BASEDIR_PATH);
         log.info("ST_WEB_BASEDIR_PATH is : " + getenv);
         String libPath = StringUtils.isEmpty(getenv) ? "/datasource" : (getenv + "/datasource");
 
