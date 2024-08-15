@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.common;
 
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
 public class Result<T> {
 
@@ -45,6 +46,12 @@ public class Result<T> {
         this.data = null;
     }
 
+    private Result(SeatunnelException e) {
+        this.code = e.getErrorEnum().getCode();
+        this.msg = e.getMessage();
+        this.data = null;
+    }
+
     public static <T> Result<T> success() {
         return new Result<>();
     }
@@ -62,6 +69,11 @@ public class Result<T> {
 
     public static <T> Result<T> failure(SeatunnelErrorEnum errorEnum, String... messages) {
         Result<T> result = new Result<>(errorEnum, messages);
+        return result;
+    }
+
+    public static <T> Result<T> getFailure(SeatunnelException e) {
+        Result<T> result = new Result<>(e);
         return result;
     }
 

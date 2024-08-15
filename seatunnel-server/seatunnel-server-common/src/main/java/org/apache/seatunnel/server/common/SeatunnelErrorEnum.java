@@ -126,6 +126,8 @@ public enum SeatunnelErrorEnum {
             "datasource can not be delete because it used by task"),
     INVALID_DATASOURCE(-70001, "Datasource [{0}] invalid", "datasource [{0}] invalid"),
     MISSING_PARAM(1777000, "param miss [{0}]", "param miss [{0}]"),
+    PARAM_CAN_NOT_BE_NULL(60018, "", "param [%s] can not be null or empty"),
+    INVALID_PARAM(60019, "", "param [%s] is invalid. %s"),
     ;
 
     private final int code;
