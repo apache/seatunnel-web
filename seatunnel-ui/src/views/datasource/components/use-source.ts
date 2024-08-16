@@ -36,7 +36,8 @@ export const useSource = (showVirtualDataSource = false) => {
     2: 'file',
     3: 'no_structured',
     4: 'storage',
-    5: 'remote_connection'
+    5: 'remote_connection',
+    6: 'fake_connection'
   }
   const state = reactive({
     types: [] as IType[]

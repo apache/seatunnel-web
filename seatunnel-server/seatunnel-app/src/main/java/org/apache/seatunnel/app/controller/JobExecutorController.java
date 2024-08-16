@@ -25,6 +25,7 @@ import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,8 +47,8 @@ public class JobExecutorController {
     @Resource IJobExecutorService jobExecutorService;
     @Resource private IJobInstanceService jobInstanceService;
 
-    @GetMapping("/execute")
-    @ApiOperation(value = "Execute synchronization tasks", httpMethod = "GET")
+    @PostMapping("/execute")
+    @ApiOperation(value = "Execute synchronization tasks", httpMethod = "POST")
     public Result<Long> jobExecutor(
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobDefineId", required = true) @RequestParam("jobDefineId")

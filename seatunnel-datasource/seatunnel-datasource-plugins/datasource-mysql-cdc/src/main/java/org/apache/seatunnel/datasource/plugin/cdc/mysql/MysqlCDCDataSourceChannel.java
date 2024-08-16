@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public class MysqlCDCDataSourceChannel implements DataSourceChannel {
@@ -154,13 +155,17 @@ public class MysqlCDCDataSourceChannel implements DataSourceChannel {
             throw new DataSourcePluginException("Jdbc url is null");
         }
         String url = requestParams.get(MysqlCDCOptionRule.BASE_URL.key());
+
+        Properties info = new java.util.Properties();
+        info.put("autoDeserialize", "false");
+        info.put("allowLoadLocalInfile", "false");
+        info.put("allowLoadLocalInfileInPath", "");
         if (null != requestParams.get(MysqlCDCOptionRule.PASSWORD.key())
                 && null != requestParams.get(MysqlCDCOptionRule.USERNAME.key())) {
-            String username = requestParams.get(MysqlCDCOptionRule.USERNAME.key());
-            String password = requestParams.get(MysqlCDCOptionRule.PASSWORD.key());
-            return DriverManager.getConnection(url, username, password);
+            info.put("user", requestParams.get(MysqlCDCOptionRule.USERNAME.key()));
+            info.put("password", requestParams.get(MysqlCDCOptionRule.PASSWORD.key()));
         }
-        return DriverManager.getConnection(url);
+        return DriverManager.getConnection(url, info);
     }
 
     protected List<String> getDataBaseNames(Map<String, String> requestParams) throws SQLException {

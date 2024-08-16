@@ -1,0 +1,101 @@
+{
+  "jobConfig": {
+    "name": "job name",
+    "description": "job description",
+    "engine": "SeaTunnel",
+    "env": {
+      "job.mode": "BATCH",
+      "job.name": "SeaTunnel_Job",
+      "jars": "",
+      "checkpoint.interval": "",
+      "checkpoint.timeout": "",
+      "read_limit.rows_per_second": "",
+      "read_limit.bytes_per_second": "",
+      "custom_parameters": ""
+    }
+  },
+  "pluginConfigs": [
+    {
+      "name": "source-fake-source",
+      "type": "SOURCE",
+      "connectorType": null,
+      "tableOption": {
+        "databases": [
+          "fake_database"
+        ],
+        "tables": [
+          "fake_table"
+        ]
+      },
+      "selectTableFields": {
+        "tableFields": [
+          "name",
+          "age"
+        ],
+        "all": true
+      },
+      "dataSourceId": 1,
+      "sceneMode": "SINGLE_TABLE",
+      "config": "{\"query\":\"\",\"tables_configs\":\"\",\"schema\":\"fields {\\n        name = \\\"string\\\"\\n        age = \\\"int\\\"\\n      }\",\"string.fake.mode\":\"RANGE\",\"string.template\":\"\",\"tinyint.fake.mode\":\"RANGE\",\"tinyint.template\":\"\",\"smallint.fake.mode\":\"RANGE\",\"smallint.template\":\"\",\"int.fake.mode\":\"RANGE\",\"int.template\":\"\",\"bigint.fake.mode\":\"RANGE\",\"bigint.template\":\"\",\"float.fake.mode\":\"RANGE\",\"float.template\":\"\",\"double.fake.mode\":\"RANGE\",\"double.template\":\"\",\"rows\":\"\",\"row.num\":5,\"split.num\":1,\"split.read-interval\":1,\"map.size\":5,\"array.size\":5,\"bytes.length\":5,\"date.year.template\":\"\",\"date.month.template\":\"\",\"date.day.template\":\"\",\"time.hour.template\":\"\",\"time.minute.template\":\"\",\"time.second.template\":\"\",\"parallelism\":1}",
+      "outputSchema": [
+        {
+          "fields": [
+            {
+              "type": "string",
+              "name": "name",
+              "comment": null,
+              "primaryKey": null,
+              "defaultValue": null,
+              "nullable": null,
+              "properties": null,
+              "unSupport": false,
+              "outputDataType": "STRING"
+            },
+            {
+              "type": "int",
+              "name": "age",
+              "comment": null,
+              "primaryKey": null,
+              "defaultValue": null,
+              "nullable": null,
+              "properties": null,
+              "unSupport": false,
+              "outputDataType": "INT"
+            }
+          ],
+          "tableName": "fake_table",
+          "database": "fake_database"
+        }
+      ],
+      "transformOptions": {}
+    },
+    {
+      "name": "sink-console",
+      "type": "SINK",
+      "connectorType": null,
+      "tableOption": {
+        "databases": [
+          "console_fake_database"
+        ],
+        "tables": [
+          "console_fake_table"
+        ]
+      },
+      "selectTableFields": {
+        "tableFields": [],
+        "all": false
+      },
+      "dataSourceId": 2,
+      "config": "{\"log.print.data\":\"true\",\"log.print.delay.ms\":\"100\"}",
+      "transformOptions": {}
+    }
+  ],
+  "jobDAG": {
+    "edges": [
+      {
+        "inputPluginId": "source-fake-source",
+        "targetPluginId": "sink-console"
+      }
+    ]
+  }
+}

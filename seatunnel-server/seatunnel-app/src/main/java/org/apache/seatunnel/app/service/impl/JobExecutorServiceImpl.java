@@ -31,10 +31,12 @@ import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
+import org.apache.seatunnel.engine.client.job.ClientJobExecutionEnvironment;
 import org.apache.seatunnel.engine.client.job.ClientJobProxy;
-import org.apache.seatunnel.engine.client.job.JobExecutionEnvironment;
 import org.apache.seatunnel.engine.common.config.ConfigProvider;
 import org.apache.seatunnel.engine.common.config.JobConfig;
+import org.apache.seatunnel.engine.common.config.SeaTunnelConfig;
+import org.apache.seatunnel.engine.common.config.YamlSeaTunnelConfigBuilder;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import org.springframework.stereotype.Service;
@@ -104,8 +106,9 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         jobConfig.setName(jobInstanceId + "_job");
         SeaTunnelClient seaTunnelClient = createSeaTunnelClient();
         try {
-            JobExecutionEnvironment jobExecutionEnv =
-                    seaTunnelClient.createExecutionContext(filePath, jobConfig);
+            SeaTunnelConfig seaTunnelConfig = new YamlSeaTunnelConfigBuilder().build();
+            ClientJobExecutionEnvironment jobExecutionEnv =
+                    seaTunnelClient.createExecutionContext(filePath, jobConfig, seaTunnelConfig);
             final ClientJobProxy clientJobProxy = jobExecutionEnv.execute();
             JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
             jobInstance.setJobEngineId(Long.toString(clientJobProxy.getJobId()));
@@ -155,12 +158,8 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
     private SeaTunnelClient createSeaTunnelClient() {
         ClientConfig clientConfig = ConfigProvider.locateAndGetClientConfig();
-        clientConfig.setClusterName(getClusterName("seatunnel"));
+        clientConfig.setClusterName(clientConfig.getClusterName());
         return new SeaTunnelClient(clientConfig);
-    }
-
-    public static String getClusterName(String testClassName) {
-        return testClassName;
     }
 
     @Override

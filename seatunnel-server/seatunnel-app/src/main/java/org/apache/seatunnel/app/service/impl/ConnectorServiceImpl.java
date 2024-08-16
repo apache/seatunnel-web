@@ -65,7 +65,7 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
 
     private static final List<String> SKIP_SOURCE = Collections.emptyList();
 
-    private static final List<String> SKIP_SINK = Collections.singletonList("Console");
+    private static final List<String> SKIP_SINK = Collections.emptyList();
 
     @Autowired
     public ConnectorServiceImpl(ConnectorCache connectorCache) {

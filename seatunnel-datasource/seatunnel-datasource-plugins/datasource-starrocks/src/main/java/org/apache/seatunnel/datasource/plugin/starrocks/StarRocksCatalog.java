@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -79,7 +80,7 @@ public class StarRocksCatalog {
 
     public List<String> listDatabases() throws CatalogException {
         List<String> databases = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(defaultUrl, username, pwd);
+        try (Connection conn = getConnection(defaultUrl);
                 PreparedStatement ps = conn.prepareStatement("SHOW DATABASES;");
                 ResultSet rs = ps.executeQuery(); ) {
 
@@ -103,7 +104,7 @@ public class StarRocksCatalog {
             throw new DatabaseNotExistException(this.catalogName, databaseName);
         }
 
-        try (Connection conn = DriverManager.getConnection(baseUrl + databaseName, username, pwd);
+        try (Connection conn = getConnection(baseUrl + databaseName);
                 PreparedStatement ps = conn.prepareStatement("SHOW TABLES;");
                 ResultSet rs = ps.executeQuery()) {
 
@@ -127,7 +128,7 @@ public class StarRocksCatalog {
         }
 
         String dbUrl = baseUrl + tablePath.getDatabaseName();
-        try (Connection conn = DriverManager.getConnection(dbUrl, username, pwd);
+        try (Connection conn = getConnection(dbUrl);
                 PreparedStatement statement =
                         conn.prepareStatement(
                                 String.format(
@@ -178,7 +179,7 @@ public class StarRocksCatalog {
     protected Optional<PrimaryKey> getPrimaryKey(String schema, String table) throws SQLException {
 
         List<String> pkFields = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(defaultUrl, username, pwd);
+        try (Connection conn = getConnection(defaultUrl);
                 PreparedStatement statement =
                         conn.prepareStatement(
                                 String.format(
@@ -221,5 +222,15 @@ public class StarRocksCatalog {
         } catch (DatabaseNotExistException e) {
             return false;
         }
+    }
+
+    protected Connection getConnection(String url) throws SQLException {
+        Properties info = new java.util.Properties();
+        info.put("autoDeserialize", "false");
+        info.put("allowLoadLocalInfile", "false");
+        info.put("allowLoadLocalInfileInPath", "");
+        info.put("user", username);
+        info.put("password", pwd);
+        return DriverManager.getConnection(url, info);
     }
 }

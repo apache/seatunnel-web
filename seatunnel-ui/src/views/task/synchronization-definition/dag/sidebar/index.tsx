@@ -28,6 +28,7 @@ import ReplaceImg from '../images/replace.png'
 import SplitImg from '../images/spilt.png'
 import CopyImg from '../images/copy.png'
 import SqlImg from '../images/sql.png'
+import { InfoCircleOutlined } from '@vicons/antd'
 
 const DagSidebar = defineComponent({
   name: 'DagSidebar',
@@ -67,6 +68,12 @@ const DagSidebar = defineComponent({
               <img class={styles['task-image']} src={SourceImg} />
               <span>Source</span>
             </NSpace>
+            <span 
+              class="task-item-info ml-auto inline-block"
+              title={'Drag Source into Canvas and Double Click to Setup Configurations'}
+            >
+             <InfoCircleOutlined width="17px" height="17px" />
+            </span>
           </div>
           <div
             class={styles['task-item']}
@@ -77,6 +84,12 @@ const DagSidebar = defineComponent({
               <img class={styles['task-image']} src={SinkImg} />
               <span>Sink</span>
             </NSpace>
+            <span 
+              class="task-item-info ml-auto inline-block"
+              title={'Drag Sink into Canvas and Double Click to Setup Configurations'}
+            >
+              <InfoCircleOutlined width="17px" height="17px" />
+            </span>
           </div>
           {this.transforms.length > 0 && (
             <h3>{this.t('project.synchronization_definition.transforms')}</h3>
@@ -116,6 +129,12 @@ const DagSidebar = defineComponent({
                     <img class={styles['task-image']} src={item.icon} />
                     <span>{item.name}</span>
                   </NSpace>
+                  <span 
+                    class="task-item-info ml-auto inline-block"
+                    title={'Drag '+ item.name +' into Canvas and Double Click to Setup Configurations'}
+                  >
+                    <InfoCircleOutlined width="17px" height="17px" />
+                  </span>
                 </div>
               )
             })}

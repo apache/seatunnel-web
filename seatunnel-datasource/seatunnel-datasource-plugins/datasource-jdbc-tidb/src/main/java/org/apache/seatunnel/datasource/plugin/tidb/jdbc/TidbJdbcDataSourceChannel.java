@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -176,11 +177,14 @@ public class TidbJdbcDataSourceChannel implements DataSourceChannel {
         String url =
                 JdbcUtils.replaceDatabase(
                         requestParams.get(TidbOptionRule.URL.key()), databaseName);
+        Properties info = new java.util.Properties();
+        info.put("autoDeserialize", "false");
+        info.put("allowLoadLocalInfile", "false");
+        info.put("allowLoadLocalInfileInPath", "");
         if (requestParams.containsKey(TidbOptionRule.USER.key())) {
-            String username = requestParams.get(TidbOptionRule.USER.key());
-            String password = requestParams.get(TidbOptionRule.PASSWORD.key());
-            return DriverManager.getConnection(url, username, password);
+            info.put("user", requestParams.get(TidbOptionRule.USER.key()));
+            info.put("password", requestParams.get(TidbOptionRule.PASSWORD.key()));
         }
-        return DriverManager.getConnection(url);
+        return DriverManager.getConnection(url, info);
     }
 }

@@ -5,11 +5,18 @@ commons-collections4-4.4.jar
 commons-codec-1.13.jar
 commons-io-2.11.0.jar
 config-1.3.3.jar
+db2jcc-db2jcc4.jar
 gson-2.8.6.jar
-guava-19.0.jar
+guava-33.2.1-jre.jar
+checker-qual-3.10.0.jar
+error_prone_annotations-2.26.1.jar
+failureaccess-1.0.2.jar
+j2objc-annotations-3.0.0.jar
+listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
 hibernate-validator-6.2.2.Final.jar
 jackson-annotations-2.12.6.jar
-jackson-core-2.12.6.jar
+jackson-core-2.13.3.jar
+jackson-annotations-2.13.3.jar
 jackson-databind-2.12.6.jar
 jackson-datatype-jdk8-2.13.3.jar
 jackson-datatype-jsr310-2.13.3.jar
@@ -34,7 +41,7 @@ jjwt-api-0.10.7.jar
 jjwt-impl-0.10.7.jar
 jjwt-jackson-0.10.7.jar
 mapstruct-1.0.0.Final.jar
-jsqlparser-4.4.jar
+jsqlparser-4.5.jar
 mybatis-3.5.10.jar
 mybatis-spring-2.0.7.jar
 mybatis-plus-3.5.3.1.jar
@@ -42,7 +49,7 @@ mybatis-plus-annotation-3.5.3.1.jar
 mybatis-plus-boot-starter-3.5.3.1.jar
 mybatis-plus-core-3.5.3.1.jar
 mybatis-plus-extension-3.5.3.1.jar
-scala-library-2.11.12.jar
+scala-library-2.12.15.jar
 
 
 
@@ -50,7 +57,7 @@ scala-library-2.11.12.jar
 
 
 
-slf4j-api-1.7.25.jar
+slf4j-api-1.7.36.jar
 snakeyaml-1.29.jar
 spring-aop-5.3.20.jar
 spring-beans-5.3.20.jar
@@ -85,20 +92,19 @@ tomcat-embed-el-9.0.63.jar
 h2-2.1.214.jar
 auto-service-annotations-1.0.1.jar
 jsr305-3.0.0.jar
-checkpoint-storage-api-2.3.3.jar
-checkpoint-storage-local-file-2.3.3.jar
+checkpoint-storage-api-2.3.6.jar
+checkpoint-storage-local-file-2.3.6.jar
 clickhouse-cli-client-0.3.2-patch11-shaded.jar
 clickhouse-grpc-client-0.3.2-patch11-shaded.jar
 clickhouse-http-client-0.3.2-patch11-shaded.jar
 clickhouse-jdbc-0.3.2-patch11.jar
 commons-lang3-3.4.jar
-hazelcast-5.1.jar
 httpcore-4.4.13.jar
 httpmime-4.5.13.jar
-jcl-over-slf4j-1.7.25.jar
+jcl-over-slf4j-1.7.36.jar
 jcommander-1.81.jar
 log4j-api-2.17.1.jar
-log4j-over-slf4j-1.7.25.jar
+log4j-over-slf4j-1.7.36.jar
 log4j-to-slf4j-2.17.1.jar
 logback-classic-1.2.3.jar
 logback-core-1.2.3.jar
@@ -106,20 +112,22 @@ protostuff-api-1.8.0.jar
 protostuff-collectionschema-1.8.0.jar
 protostuff-core-1.8.0.jar
 protostuff-runtime-1.8.0.jar
-seatunnel-api-2.3.3.jar
-seatunnel-common-2.3.3.jar
-seatunnel-config-base-2.3.3.jar
-seatunnel-config-shade-2.3.3.jar
-seatunnel-core-starter-2.3.3.jar
-seatunnel-engine-client-2.3.3.jar
-seatunnel-engine-common-2.3.3.jar
-seatunnel-engine-core-2.3.3.jar
-seatunnel-guava-2.3.3-optional.jar
-seatunnel-jackson-2.3.3-optional.jar
-seatunnel-plugin-discovery-2.3.3.jar
-seatunnel-transforms-v2-2.3.3.jar
-serializer-api-2.3.3.jar
-serializer-protobuf-2.3.3.jar
+seatunnel-api-2.3.6.jar
+seatunnel-common-2.3.6.jar
+seatunnel-config-base-2.3.6.jar
+seatunnel-config-shade-2.3.6.jar
+seatunnel-core-starter-2.3.6.jar
+seatunnel-engine-client-2.3.6.jar
+seatunnel-engine-common-2.3.6.jar
+seatunnel-engine-core-2.3.6.jar
+seatunnel-guava-2.3.6-optional.jar
+seatunnel-jackson-2.3.6-optional.jar
+seatunnel-plugin-discovery-2.3.6.jar
+seatunnel-transforms-v2-2.3.6.jar
+seatunnel-config-sql-2.3.6.jar
+seatunnel-hazelcast-shade-2.3.6-optional.jar
+serializer-api-2.3.6.jar
+serializer-protobuf-2.3.6.jar
 swagger-annotations-2.2.14.jar
 commons-codec-1.11.jar
 commons-compress-1.20.jar
@@ -132,6 +140,7 @@ lz4-java-1.8.0.jar
 security-206.jar
 snappy-java-1.1.8.4.jar
 zstd-jni-1.5.2-1.jar
+commons-csv-1.10.0.jar
 
 
 

@@ -56,7 +56,7 @@ public class JwtUtils implements InitializingBean {
         final Date expireDate = DateUtils.addSeconds(currentDate, expireTime);
 
         return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes(StandardCharsets.UTF_8))
+                .signWith(algorithm, secretKey.getBytes(StandardCharsets.UTF_8))
                 .setId(UUID.randomUUID().toString())
                 .setClaims(data)
                 .setIssuedAt(currentDate)

@@ -52,3 +52,4 @@ spark-warehouse
 /seatunnel-ui/node/*
 /seatunnel-ui/node_modules
 /seatunnel-ui/node_modules/*
+/seatunnel-web-it/profile/*

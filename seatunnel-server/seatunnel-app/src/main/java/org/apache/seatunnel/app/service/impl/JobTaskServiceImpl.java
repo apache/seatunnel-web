@@ -406,6 +406,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.SINGLE_TASK_CREATE, 0);
         JobTask jobTask;
         JobTask old = jobTaskDao.getTask(jobVersionId, pluginConfig.getPluginId());
+        String pluginId = pluginConfig.getPluginId();
         try {
             checkConfigFormat(pluginConfig.getConfig());
             long id;
@@ -413,6 +414,10 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                 id = old.getId();
             } else {
                 id = CodeGenerateUtils.getInstance().genCode();
+                pluginId =
+                        pluginId == null
+                                ? String.valueOf(CodeGenerateUtils.getInstance().genCode())
+                                : pluginId;
             }
             String connectorType;
             String transformOptionsStr = null;
@@ -429,7 +434,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
             jobTask =
                     JobTask.builder()
                             .id(id)
-                            .pluginId(pluginConfig.getPluginId())
+                            .pluginId(pluginId)
                             .name(pluginConfig.getName())
                             .type(pluginConfig.getType().name().toUpperCase())
                             .dataSourceId(pluginConfig.getDataSourceId())

@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.utils;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
+import org.apache.seatunnel.server.common.ParamValidationException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -81,5 +82,10 @@ public class GlobalExceptionHandler {
 
     private void logError(Throwable throwable) {
         log.error(throwable.getMessage(), throwable);
+    }
+
+    @ExceptionHandler(value = ParamValidationException.class)
+    private Result<String> paramValidationHandler(SeatunnelException e) {
+        return Result.getFailure(e);
     }
 }

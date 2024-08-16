@@ -93,7 +93,7 @@ export function formatLayout(
   cols?: number,
   rows?: number
 ) {
-  let layoutFunc = null
+  let layoutFunc : any = null
   const layoutConfig: any = {
     nodesep: 50,
     padding: 50,

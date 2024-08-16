@@ -47,6 +47,8 @@
         <module>datasource-mongodb</module>
         <module>datasource-jdbc-db2</module>
         <module>datasource-jdbc-snowflake</module>
+        <module>datasource-fakesource</module>
+        <module>datasource-console</module>
     </modules>
 
 </project>
