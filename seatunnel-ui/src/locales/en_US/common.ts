@@ -17,6 +17,7 @@
 
 export default {
   success_tips: 'Success',
+  day: 'd',
   hour: 'h',
   min: 'm',
   second: 's',
