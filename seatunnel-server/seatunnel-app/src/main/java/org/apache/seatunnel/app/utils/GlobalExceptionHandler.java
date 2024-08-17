@@ -79,7 +79,9 @@ public class GlobalExceptionHandler {
     }
 
     private void logDebug(Throwable throwable) {
-        log.debug(throwable.getMessage(), throwable);
+        if (log.isDebugEnabled()) {
+            log.debug(throwable.getMessage(), throwable);
+        }
     }
 
     @ExceptionHandler(value = ParamValidationException.class)
