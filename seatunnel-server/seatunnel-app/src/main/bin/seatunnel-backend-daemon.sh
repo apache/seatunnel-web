@@ -40,6 +40,10 @@ start() {
   check
 
   LOGDIR=${WORKDIR}/../logs
+  # Create the log directory if it does not exist
+  if [ ! -d "$LOGDIR" ]; then
+    mkdir -p "$LOGDIR"
+  fi
   JAVA_OPTS="${JAVA_OPTS} -server -Xms1g -Xmx1g -Xmn512m -XX:+PrintGCDetails -Xloggc:${LOGDIR}/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dump.hprof"
   SPRING_OPTS="${SPRING_OPTS} -Dspring.config.name=application.yml -Dspring.config.location=classpath:application.yml"
   JAVA_OPTS="${JAVA_OPTS} -Dseatunnel-web.logs.path=${LOGDIR}"
