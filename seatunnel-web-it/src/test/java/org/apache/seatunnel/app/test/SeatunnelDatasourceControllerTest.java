@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -121,7 +122,8 @@ public class SeatunnelDatasourceControllerTest {
                 seatunnelDatasourceControllerWrapper.getFakeSourceDatasourceReq(datasourceName);
         Result<String> result = seatunnelDatasourceControllerWrapper.createDatasource(req);
         assertTrue(result.isFailed());
-        assertEquals(60004, result.getCode());
+        assertEquals(SeatunnelErrorEnum.DATASOURCE_NAME_ALREADY_EXISTS.getCode(), result.getCode());
+        assertEquals("datasource [" + datasourceName + "] already exists", result.getMsg());
     }
 
     @AfterAll

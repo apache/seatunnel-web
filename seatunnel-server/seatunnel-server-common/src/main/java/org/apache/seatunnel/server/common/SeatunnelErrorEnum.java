@@ -59,7 +59,7 @@ public enum SeatunnelErrorEnum {
             99996, "unsupported operation", "This operation [%s] is not supported now."),
     HTTP_REQUEST_FAILED(99997, "http request failed", "Http request failed, url is %s"),
     ILLEGAL_STATE(99998, "illegal state", "%s"),
-    UNKNOWN(99999, "unknown exception", "Unknown exception"),
+    UNKNOWN(99999, "Unknown exception", "Unknown exception"),
 
     UNSUPPORTED_CONNECTOR_TYPE(
             30000,
@@ -124,7 +124,7 @@ public enum SeatunnelErrorEnum {
             1600000,
             "datasource can not be delete because it used by task",
             "datasource can not be delete because it used by task"),
-    INVALID_DATASOURCE(-70001, "Datasource [{0}] invalid", "datasource [{0}] invalid"),
+    INVALID_DATASOURCE(-70001, "Datasource invalid", "datasource [{0}] invalid"),
     MISSING_PARAM(1777000, "param miss [{0}]", "param miss [{0}]"),
     PARAM_CAN_NOT_BE_NULL(60018, "", "param [%s] can not be null or empty"),
     INVALID_PARAM(60019, "", "param [%s] is invalid. %s"),

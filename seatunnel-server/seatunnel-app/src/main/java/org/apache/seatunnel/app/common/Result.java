@@ -52,6 +52,12 @@ public class Result<T> {
         this.data = null;
     }
 
+    private Result(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+        this.data = null;
+    }
+
     public static <T> Result<T> success() {
         return new Result<>();
     }
@@ -72,8 +78,13 @@ public class Result<T> {
         return result;
     }
 
-    public static <T> Result<T> getFailure(SeatunnelException e) {
+    public static <T> Result<T> failure(SeatunnelException e) {
         Result<T> result = new Result<>(e);
+        return result;
+    }
+
+    public static <T> Result<T> failure(int code, String msg) {
+        Result<T> result = new Result<>(code, msg);
         return result;
     }
 

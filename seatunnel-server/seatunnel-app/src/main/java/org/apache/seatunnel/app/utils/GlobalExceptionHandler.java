@@ -36,29 +36,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = SeatunnelException.class)
     private Result<String> portalExceptionHandler(SeatunnelException e) {
-        logError(e);
-
-        //        final SeatunnelException seatunnelException =
-        //                Optional.ofNullable(e)
-        //
-        // .orElse(SeatunnelException.newInstance(SeatunnelErrorEnum.UNKNOWN));
-
-        final String message = e.getMessage();
-        final SeatunnelErrorEnum errorEnum = e.getErrorEnum();
-
-        return Result.failure(errorEnum, message);
+        logDebug(e);
+        return Result.failure(e);
     }
 
     @ExceptionHandler(value = DataSourcePluginException.class)
     private Result<String> dsHandler(DataSourcePluginException e) {
         logError(e);
-        final String message = e.getMessage();
-        return Result.failure(SeatunnelErrorEnum.INVALID_DATASOURCE, e.getMessage());
+        return Result.failure(
+                SeatunnelErrorEnum.INVALID_DATASOURCE.getCode(),
+                SeatunnelErrorEnum.INVALID_DATASOURCE.getMsg() + ". " + e.getMessage());
     }
 
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
     private Result<String> missParam(MissingServletRequestParameterException e) {
-        logError(e);
+        logDebug(e);
         return Result.failure(SeatunnelErrorEnum.MISSING_PARAM, e.getParameterName());
     }
 
@@ -70,22 +62,28 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = ExpiredJwtException.class)
     private Result<String> expiredJwtException(ExpiredJwtException e) {
-        logError(e);
+        logDebug(e);
         return Result.failure(SeatunnelErrorEnum.TOKEN_ILLEGAL, e.getMessage());
     }
 
     @ExceptionHandler(value = Exception.class)
     private Result<String> exceptionHandler(Exception e) {
         logError(e);
-        return Result.failure(SeatunnelErrorEnum.UNKNOWN, e.getMessage());
+        return Result.failure(
+                SeatunnelErrorEnum.UNKNOWN.getCode(),
+                SeatunnelErrorEnum.UNKNOWN.getMsg() + ". " + e.getMessage());
     }
 
     private void logError(Throwable throwable) {
         log.error(throwable.getMessage(), throwable);
     }
 
+    private void logDebug(Throwable throwable) {
+        log.debug(throwable.getMessage(), throwable);
+    }
+
     @ExceptionHandler(value = ParamValidationException.class)
     private Result<String> paramValidationHandler(SeatunnelException e) {
-        return Result.getFailure(e);
+        return Result.failure(e);
     }
 }
