@@ -154,11 +154,11 @@ export const useDetail = (id: string) => {
         state.stepTwo.config = values
         const flag = state.stepTwo.list.some((item) => item.isEdit)
         if (flag) {
-          window.$message.error(t('virtualTables.save_data_tips'))
+          window.$message.error(t('virtual_tables.save_data_tips'))
           return
         }
         if (state.stepTwo.list.length === 0) {
-          window.$message.error(t('virtualTables.table_data_required_tips'))
+          window.$message.error(t('virtual_tables.table_data_required_tips'))
           return
         }
       } finally {

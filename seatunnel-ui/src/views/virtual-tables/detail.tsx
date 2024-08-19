@@ -80,7 +80,7 @@ const VirtualTablesDetail = defineComponent({
           <NBreadcrumbItem>
             {t(
               route.params.id
-                ? t('virtualTables.edit_virtual_tables')
+                ? t('virtual_tables.edit_virtual_tables')
                 : t('virtual_tables.create_virtual_tables')
             )}
           </NBreadcrumbItem>
@@ -88,7 +88,7 @@ const VirtualTablesDetail = defineComponent({
         <NCard
           title={t(
             route.params.id
-              ? t('virtualTables.edit_virtual_tables')
+              ? t('virtual_tables.edit_virtual_tables')
               : t('virtual_tables.create_virtual_tables')
           )}
         >

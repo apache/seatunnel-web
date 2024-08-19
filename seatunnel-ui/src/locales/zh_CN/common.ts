@@ -17,6 +17,7 @@
 
 export default {
   success_tips: '操作成功',
+  day: '天',
   hour: '时',
   min: '分',
   second: '秒',
