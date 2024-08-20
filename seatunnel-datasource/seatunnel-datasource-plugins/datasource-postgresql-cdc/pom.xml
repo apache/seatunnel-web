@@ -22,6 +22,7 @@
         <version>${revision}</version>
     </parent>
 
+
     <artifactId>datasource-postgresql-cdc</artifactId>
 
     <properties>

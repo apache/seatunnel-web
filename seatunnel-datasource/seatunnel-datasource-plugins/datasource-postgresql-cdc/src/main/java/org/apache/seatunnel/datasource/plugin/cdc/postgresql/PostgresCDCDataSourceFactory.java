@@ -17,6 +17,7 @@ public class PostgresCDCDataSourceFactory implements DataSourceFactory {
         return "Postgres-CDC";
     }
 
+
     @Override
     public Set<DataSourcePluginInfo> supportedDataSources() {
         return Collections.singleton(

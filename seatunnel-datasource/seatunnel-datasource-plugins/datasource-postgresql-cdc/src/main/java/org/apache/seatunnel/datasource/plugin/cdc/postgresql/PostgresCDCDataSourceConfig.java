@@ -7,6 +7,7 @@ public class PostgresCDCDataSourceConfig {
 
     public static final String PLUGIN_NAME = "Postgres-CDC";
 
+
     public static final DataSourcePluginInfo POSTGRES_CDC_DATASOURCE_PLUGIN_INFO =
             DataSourcePluginInfo.builder()
                     .name(PLUGIN_NAME)

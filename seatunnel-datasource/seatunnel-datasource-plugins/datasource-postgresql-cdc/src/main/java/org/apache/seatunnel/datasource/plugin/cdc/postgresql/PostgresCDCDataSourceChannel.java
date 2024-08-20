@@ -100,6 +100,7 @@ public class PostgresCDCDataSourceChannel implements DataSourceChannel {
         }
     }
 
+
     protected Connection init(Map<String, String> requestParams) throws SQLException {
         if (null == requestParams.get(PostgresCDCOptionRule.BASE_URL.key())) {
             throw new DataSourcePluginException("Jdbc url is null");
