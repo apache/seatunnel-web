@@ -30,18 +30,18 @@ public class DatasourceLoadConfig {
     public static final Map<String, String> classLoaderJarName;
     public static final String[] DEFAULT_PARENT_FIRST_PATTERNS =
             new String[] {
-                "java.",
-                "javax.xml",
-                "org.xml",
-                "org.w3c",
-                "scala.",
-                "javax.annotation.",
-                "org.slf4j",
-                "org.apache.log4j",
-                "org.apache.seatunnel.api",
-                "org.apache.logging",
-                "org.apache.commons",
-                "com.fasterxml.jackson"
+                    "java.",
+                    "javax.xml",
+                    "org.xml",
+                    "org.w3c",
+                    "scala.",
+                    "javax.annotation.",
+                    "org.slf4j",
+                    "org.apache.log4j",
+                    "org.apache.seatunnel.api",
+                    "org.apache.logging",
+                    "org.apache.commons",
+                    "com.fasterxml.jackson"
             };
 
     static {
@@ -79,6 +79,9 @@ public class DatasourceLoadConfig {
                 "MYSQL-CDC",
                 "org.apache.seatunnel.datasource.plugin.cdc.mysql.MysqlCDCDataSourceFactory");
         classLoaderFactoryName.put(
+                "POSTGRES-CDC",
+                "org.apache.seatunnel.datasource.plugin.cdc.postgresql.PostgresCDCDataSourceFactory");
+        classLoaderFactoryName.put(
                 "S3", "org.apache.seatunnel.datasource.plugin.s3.S3DataSourceFactory");
         classLoaderFactoryName.put(
                 "S3-REDSHIFT",
@@ -114,7 +117,7 @@ public class DatasourceLoadConfig {
 
         classLoaderJarName.put("SQLSERVER-CDC", "datasource-sqlserver-cdc-");
         classLoaderJarName.put("MYSQL-CDC", "datasource-mysql-cdc-");
-
+        classLoaderJarName.put("POSTGRES-CDC", "datasource-postgresql-cdc-");
         classLoaderJarName.put("ELASTICSEARCH", "datasource-elasticsearch-");
         classLoaderJarName.put("S3", "datasource-s3-");
         classLoaderJarName.put("HIVE", "datasource-hive-");
@@ -140,6 +143,7 @@ public class DatasourceLoadConfig {
                     "JDBC-TiDB",
                     "Kafka",
                     "MySQL-CDC",
+                    "POSTGRES-CDC",
                     "S3",
                     "SqlServer-CDC",
                     "StarRocks",

@@ -48,6 +48,8 @@
         <module>datasource-jdbc-db2</module>
         <module>datasource-fakesource</module>
         <module>datasource-console</module>
+        <module>datasource-postgresql-cdc</module>
+
     </modules>
 
 </project>
