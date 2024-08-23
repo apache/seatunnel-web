@@ -30,18 +30,18 @@ public class DatasourceLoadConfig {
     public static final Map<String, String> classLoaderJarName;
     public static final String[] DEFAULT_PARENT_FIRST_PATTERNS =
             new String[] {
-                    "java.",
-                    "javax.xml",
-                    "org.xml",
-                    "org.w3c",
-                    "scala.",
-                    "javax.annotation.",
-                    "org.slf4j",
-                    "org.apache.log4j",
-                    "org.apache.seatunnel.api",
-                    "org.apache.logging",
-                    "org.apache.commons",
-                    "com.fasterxml.jackson"
+                "java.",
+                "javax.xml",
+                "org.xml",
+                "org.w3c",
+                "scala.",
+                "javax.annotation.",
+                "org.slf4j",
+                "org.apache.log4j",
+                "org.apache.seatunnel.api",
+                "org.apache.logging",
+                "org.apache.commons",
+                "com.fasterxml.jackson"
             };
 
     static {
