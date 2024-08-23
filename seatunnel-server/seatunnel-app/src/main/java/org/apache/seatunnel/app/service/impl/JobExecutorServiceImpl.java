@@ -20,6 +20,7 @@ package org.apache.seatunnel.app.service.impl;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.engine.Engine;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.service.IJobExecutorService;
@@ -64,10 +65,10 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     @Resource private IJobInstanceDao jobInstanceDao;
 
     @Override
-    public Result<Long> jobExecute(Integer userId, Long jobDefineId) {
+    public Result<Long> jobExecute(Integer userId, Long jobDefineId, JobExecParam executeParam) {
 
         JobExecutorRes executeResource =
-                jobInstanceService.createExecuteResource(userId, jobDefineId);
+                jobInstanceService.createExecuteResource(userId, jobDefineId, executeParam);
         String jobConfig = executeResource.getJobConfig();
 
         String configFile = writeJobConfigIntoConfFile(jobConfig, jobDefineId);

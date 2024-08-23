@@ -267,7 +267,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
             }
             // check the config can be generated
             jobInstanceService.generateJobConfig(
-                    version.getJobId(), tasks, lines, version.getEnv());
+                    version.getJobId(), tasks, lines, version.getEnv(), null);
             // TODO check schema output and input matched
         } catch (SeaTunnelException e) {
             log.error(ExceptionUtils.getMessage(e));

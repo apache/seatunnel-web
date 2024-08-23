@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.service.IJobExecutorService;
 import org.apache.seatunnel.app.service.IJobInstanceService;
@@ -27,6 +28,7 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,8 +54,9 @@ public class JobExecutorController {
     public Result<Long> jobExecutor(
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobDefineId", required = true) @RequestParam("jobDefineId")
-                    Long jobDefineId) {
-        return jobExecutorService.jobExecute(userId, jobDefineId);
+                    Long jobDefineId,
+            @RequestBody(required = false) JobExecParam executeParam) {
+        return jobExecutorService.jobExecute(userId, jobDefineId, executeParam);
     }
 
     @GetMapping("/resource")
@@ -64,7 +67,7 @@ public class JobExecutorController {
             throws IOException {
         try {
             JobExecutorRes executeResource =
-                    jobInstanceService.createExecuteResource(userId, jobDefineId);
+                    jobInstanceService.createExecuteResource(userId, jobDefineId, null);
             return Result.success(executeResource);
         } catch (Exception e) {
             log.error("Get the resource for job executor error", e);

@@ -1,0 +1,106 @@
+{
+  "jobConfig": {
+    "name": "mysql_source_mysql_sink",
+    "description": "mysql_source_mysql_sink description",
+    "engine": "SeaTunnel",
+    "env": {
+      "job.mode": "BATCH",
+      "job.name": "SeaTunnel_Job",
+      "jars": "",
+      "checkpoint.interval": "",
+      "checkpoint.timeout": "",
+      "read_limit.rows_per_second": "",
+      "read_limit.bytes_per_second": "",
+      "custom_parameters": ""
+    }
+  },
+  "pluginConfigs": [
+    {
+      "pluginId": "1724412762429155",
+      "name": "mysql_source_1",
+      "type": "SOURCE",
+      "connectorType": null,
+      "tableOption": {
+        "databases": [
+          "test"
+        ],
+        "tables": [
+          "test_table"
+        ]
+      },
+      "selectTableFields": {
+        "tableFields": [
+          "name",
+          "age"
+        ],
+        "all": true
+      },
+      "dataSourceId": 14717667385504,
+      "sceneMode": "SINGLE_TABLE",
+      "config": "{\"query\":\"\",\"connection_check_timeout_sec\":30,\"fetch_size\":\"\",\"partition_column\":\"\",\"partition_upper_bound\":\"\",\"partition_lower_bound\":\"\",\"partition_num\":\"\",\"compatible_mode\":\"\",\"properties\":\"\",\"table_path\":\"\",\"where_condition\":\"\",\"table_list\":\"\",\"split.size\":8096,\"split.even-distribution.factor.upper-bound\":100,\"split.even-distribution.factor.lower-bound\":0.05,\"split.sample-sharding.threshold\":1000,\"split.inverse-sampling.rate\":1000,\"parallelism\":1}",
+      "outputSchema": [
+        {
+          "fields": [
+            {
+              "type": "LONGTEXT",
+              "name": "name",
+              "comment": "",
+              "primaryKey": false,
+              "defaultValue": null,
+              "nullable": false,
+              "properties": null,
+              "unSupport": false,
+              "outputDataType": "STRING"
+            },
+            {
+              "type": "INT",
+              "name": "age",
+              "comment": "",
+              "primaryKey": false,
+              "defaultValue": null,
+              "nullable": false,
+              "properties": null,
+              "unSupport": false,
+              "outputDataType": "INT"
+            }
+          ],
+          "tableName": "test_table",
+          "database": "test"
+        }
+      ],
+      "transformOptions": {}
+    },
+    {
+      "pluginId": "17244128298414uc",
+      "name": "mysql_sink_1",
+      "type": "SINK",
+      "connectorType": null,
+      "tableOption": {
+        "databases": [
+          "test"
+        ],
+        "tables": [
+          "test_table"
+        ]
+      },
+      "selectTableFields": {
+        "tableFields": [
+          "name",
+          "age"
+        ],
+        "all": true
+      },
+      "dataSourceId": 14717667385504,
+      "config": "{\"query\":\"\",\"schema_save_mode\":\"CREATE_SCHEMA_WHEN_NOT_EXIST\",\"data_save_mode\":\"APPEND_DATA\",\"custom_sql\":\"\",\"connection_check_timeout_sec\":30,\"batch_size\":1000,\"is_exactly_once\":\"false\",\"xa_data_source_class_name\":\"\",\"max_commit_attempts\":3,\"transaction_timeout_sec\":-1,\"max_retries\":\"1\",\"auto_commit\":\"true\",\"support_upsert_by_query_primary_key_exist\":\"false\",\"primary_keys\":\"\",\"compatible_mode\":\"\",\"multi_table_sink_replica\":1}",
+      "transformOptions": {}
+    }
+  ],
+  "jobDAG": {
+    "edges": [
+      {
+        "inputPluginId": "mysql_source_1",
+        "targetPluginId": "mysql_sink_1"
+      }
+    ]
+  }
+}
