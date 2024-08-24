@@ -243,6 +243,28 @@ public class JobExecutorControllerTest {
         assertTrue(result.isSuccess());
     }
 
+    @Test
+    public void executeJob_JobStatusUpdate_WhenSubmissionFailed() {
+        String jobName = "execJobStatus" + uniqueId;
+        JobCreateReq jobCreateReq = JobUtils.populateMySQLJobCreateReqFromFile();
+        jobCreateReq.getJobConfig().setName(jobName);
+        jobCreateReq.getJobConfig().setDescription(jobName + " description");
+        String datasourceName = "execJobStatus_db_1" + uniqueId;
+        String mysqlDatasourceId =
+                seatunnelDatasourceControllerWrapper.createMysqlDatasource(datasourceName);
+        for (PluginConfig pluginConfig : jobCreateReq.getPluginConfigs()) {
+            pluginConfig.setDataSourceId(Long.parseLong(mysqlDatasourceId));
+        }
+        Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
+        assertTrue(job.isSuccess());
+        Long jobVersionId = job.getData();
+        Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
+        // Fails because of the wrong database credentials.
+        assertFalse(result.isSuccess());
+        // Even though job failed but job instance is created into the database.
+        assertTrue(result.getData() > 0);
+    }
+
     @AfterAll
     public static void tearDown() {
         seaTunnelWebCluster.stop();
