@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.controller;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.JSONUtils;
 
@@ -45,10 +46,10 @@ public class JobExecutorControllerWrapper extends SeatunnelWebTestingBase {
         return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
     }
 
-    public Result<Void> resource(Long jobDefineId) {
+    public Result<JobExecutorRes> resource(Long jobDefineId) {
         String response =
                 sendRequest(urlWithParam("job/executor/resource?jobDefineId=" + jobDefineId));
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<JobExecutorRes>>() {});
     }
 
     public Result<Void> jobPause(Long jobInstanceId) {

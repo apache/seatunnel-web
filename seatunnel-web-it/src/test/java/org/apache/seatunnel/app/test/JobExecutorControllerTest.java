@@ -25,6 +25,7 @@ import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobUtils;
 
@@ -41,6 +42,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobExecutorControllerTest {
@@ -241,6 +243,15 @@ public class JobExecutorControllerTest {
         assertTrue(executorResult.isSuccess());
         Result<Void> result = jobExecutorControllerWrapper.jobRestore(executorResult.getData());
         assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void getResource_shouldReturnSuccess_whenValidRequest() {
+        String jobName = "getResource" + uniqueId;
+        long jobVersionId = JobUtils.createJob(jobName);
+        Result<JobExecutorRes> result = jobExecutorControllerWrapper.resource(jobVersionId);
+        assertTrue(result.isSuccess());
+        assertNotNull(result.getData());
     }
 
     @Test
