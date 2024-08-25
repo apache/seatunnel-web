@@ -24,10 +24,14 @@ import org.apache.seatunnel.app.controller.JobTaskControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
 import org.apache.seatunnel.app.domain.request.job.Edge;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
+import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.response.job.JobTaskCheckRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -137,5 +141,16 @@ public class JobUtils {
                 jobTaskControllerWrapper.saveJobDAG(jobVersionId, jobDAG);
         assertTrue(jobTaskCheckResResult.isSuccess());
         return jobVersionId;
+    }
+
+    public static JobCreateReq populateMySQLJobCreateReqFromFile() {
+        String filePath = "src/test/resources/jobs/mysql_source_mysql_sink.json";
+        String jsonContent;
+        try {
+            jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return JSONTestUtils.parseObject(jsonContent, JobCreateReq.class);
     }
 }

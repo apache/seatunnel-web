@@ -18,7 +18,9 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
+import org.apache.seatunnel.app.utils.JSONUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -29,6 +31,16 @@ public class JobExecutorControllerWrapper extends SeatunnelWebTestingBase {
                 sendRequest(
                         urlWithParam("job/executor/execute?jobDefineId=" + jobDefineId),
                         "{}",
+                        "POST");
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
+    }
+
+    public Result<Long> jobExecutor(Long jobDefineId, JobExecParam jobExecParam) {
+        String requestBody = JSONUtils.toPrettyJsonString(jobExecParam);
+        String response =
+                sendRequest(
+                        urlWithParam("job/executor/execute?jobDefineId=" + jobDefineId),
+                        requestBody,
                         "POST");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
     }

@@ -46,6 +46,13 @@ public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBas
         return result.getData();
     }
 
+    public String createMysqlDatasource(String datasourceName) {
+        DatasourceReq req = getMysqlDatasource(datasourceName);
+        Result<String> result = createDatasource(req);
+        assertTrue(result.isSuccess());
+        return result.getData();
+    }
+
     public DatasourceReq getFakeSourceDatasourceReq(String datasourceName) {
         DatasourceReq req = new DatasourceReq();
         req.setDatasourceName(datasourceName);
@@ -103,5 +110,15 @@ public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBas
                                 baseUrl, searchVal, pluginName, pageNo, pageSize));
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<DatasourceRes>>>() {});
+    }
+
+    public DatasourceReq getMysqlDatasource(String datasourceName) {
+        DatasourceReq req = new DatasourceReq();
+        req.setDatasourceName(datasourceName);
+        req.setPluginName("JDBC-Mysql");
+        req.setDescription(datasourceName + " description");
+        req.setDatasourceConfig(
+                "{\"url\":\"jdbc:mysql://localhost:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&allowPublicKeyRetrieval=true\",\"driver\":\"com.mysql.cj.jdbc.Driver\",\"user\":\"someUser\",\"password\":\"somePassword\"}");
+        return req;
     }
 }

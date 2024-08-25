@@ -14,17 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.domain.request.job;
 
-package org.apache.seatunnel.app.service;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import org.apache.seatunnel.app.common.Result;
-import org.apache.seatunnel.app.domain.request.job.JobExecParam;
+import java.util.Map;
 
-public interface IJobExecutorService {
-
-    Result<Long> jobExecute(Integer userId, Long jobDefineId, JobExecParam executeParam);
-
-    Result<Void> jobPause(Integer userId, Long jobInstanceId);
-
-    Result<Void> jobStore(Integer userId, Long jobInstanceId);
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+// Job execution parameters
+public class JobExecParam {
+    // job name -> key -> value
+    private Map<String, String> env;
+    // task name -> key -> value
+    private Map<String, Map<String, String>> tasks;
+    // task name -> new datasource id
+    private Map<String, String> datasource;
 }

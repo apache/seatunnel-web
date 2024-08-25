@@ -45,6 +45,7 @@ import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.connector.SceneMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.DatabaseTableSchemaReq;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.request.job.TableSchemaReq;
 import org.apache.seatunnel.app.domain.request.job.transform.Transform;
@@ -59,6 +60,7 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
+import org.apache.seatunnel.app.utils.JobExecParamUtil;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
@@ -125,7 +127,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public JobExecutorRes createExecuteResource(
-            @NonNull Integer userId, @NonNull Long jobDefineId) {
+            @NonNull Integer userId, @NonNull Long jobDefineId, JobExecParam executeParam) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_RESOURCE, userId);
         log.info(
                 "receive createExecuteResource request, userId:{}, jobDefineId:{}",
@@ -134,7 +136,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         JobDefinition job = jobDefinitionDao.getJob(jobDefineId);
         JobVersion latestVersion = jobVersionDao.getLatestVersion(job.getId());
         JobInstance jobInstance = new JobInstance();
-        String jobConfig = createJobConfig(latestVersion);
+        String jobConfig = createJobConfig(latestVersion, executeParam);
 
         try {
             jobInstance.setId(CodeGenerateUtils.getInstance().genCode());
@@ -163,11 +165,17 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public String generateJobConfig(
-            Long jobId, List<JobTask> tasks, List<JobLine> lines, String envStr) {
+            Long jobId,
+            List<JobTask> tasks,
+            List<JobLine> lines,
+            String envStr,
+            JobExecParam executeParam) {
         checkSceneMode(tasks);
         BusinessMode businessMode =
                 BusinessMode.valueOf(jobDefinitionDao.getJob(jobId).getJobType());
         Config envConfig = filterEmptyValue(ConfigFactory.parseString(envStr));
+        envConfig = JobExecParamUtil.updateEnvConfig(executeParam, envConfig);
+        JobExecParamUtil.updateDataSource(executeParam, tasks);
 
         Map<String, List<Config>> sourceMap = new LinkedHashMap<>();
         Map<String, List<Config>> transformMap = new LinkedHashMap<>();
@@ -222,6 +230,9 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                                         ParsingMode.SHARDING.name()));
                             }
 
+                            config =
+                                    JobExecParamUtil.updateTaskConfig(
+                                            executeParam, config, task.getName());
                             Config mergeConfig =
                                     mergeTaskConfig(
                                             task,
@@ -230,7 +241,9 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                             businessMode,
                                             config,
                                             optionRule);
-
+                            mergeConfig =
+                                    JobExecParamUtil.updateQueryTaskConfig(
+                                            executeParam, mergeConfig, task.getName());
                             sourceMap
                                     .get(task.getConnectorType())
                                     .add(filterEmptyValue(mergeConfig));
@@ -260,6 +273,9 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                         }
                         List<TableSchemaReq> inputSchemas = findInputSchemas(tasks, lines, task);
                         Config transformConfig = buildTransformConfig(task, config, inputSchemas);
+                        transformConfig =
+                                JobExecParamUtil.updateTaskConfig(
+                                        executeParam, transformConfig, task.getName());
                         transformMap
                                 .get(task.getConnectorType())
                                 .add(filterEmptyValue(transformConfig));
@@ -274,6 +290,9 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                             if (!sinkMap.containsKey(task.getConnectorType())) {
                                 sinkMap.put(task.getConnectorType(), new ArrayList<>());
                             }
+                            config =
+                                    JobExecParamUtil.updateTaskConfig(
+                                            executeParam, config, task.getName());
                             Config mergeConfig =
                                     mergeTaskConfig(
                                             task,
@@ -492,10 +511,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                 connectorConfig);
     }
 
-    private String createJobConfig(@NonNull JobVersion jobVersion) {
+    private String createJobConfig(@NonNull JobVersion jobVersion, JobExecParam executeParam) {
         List<JobTask> tasks = jobTaskDao.getTasksByVersionId(jobVersion.getId());
         List<JobLine> lines = jobLineDao.getLinesByVersionId(jobVersion.getId());
-        return generateJobConfig(jobVersion.getJobId(), tasks, lines, jobVersion.getEnv());
+        return generateJobConfig(
+                jobVersion.getJobId(), tasks, lines, jobVersion.getEnv(), executeParam);
     }
 
     private String getConnectorConfig(Map<String, List<Config>> connectorMap) {
