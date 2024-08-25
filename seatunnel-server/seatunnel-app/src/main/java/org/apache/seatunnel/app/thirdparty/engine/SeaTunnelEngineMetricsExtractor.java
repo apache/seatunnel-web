@@ -92,7 +92,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
     @Override
     public List<JobMetrics> getMetricsByJobEngineId(@NonNull String jobEngineId) {
-        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap();
+        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
 
         LinkedHashMap<Integer, String> jobPipelineStatus = getJobPipelineStatus(jobEngineId);
         try {
@@ -258,7 +258,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             value = value.replace(" ", "");
             Map<String, String> otherMetrics = JsonUtils.toMap(value);
             for (String key : clusterHealthMetricsKeys) {
-                hostMetrics.put(key, otherMetrics.get(key).toString());
+                hostMetrics.put(key, otherMetrics.get(key));
             }
             zetaClusterMetrics.add(hostMetrics);
         }
@@ -267,7 +267,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
     @Override
     public Map<Integer, JobMetrics> getMetricsByJobEngineIdRTMap(@NonNull String jobEngineId) {
-        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap();
+        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
 
         LinkedHashMap<Integer, String> jobPipelineStatus = getJobPipelineStatus(jobEngineId);
         try {
@@ -370,7 +370,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             JsonNode jsonNode = JsonUtils.stringToJsonNode(allJobMetricsContent);
             Iterator<JsonNode> iterator = jsonNode.iterator();
             while (iterator.hasNext()) {
-                LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap();
+                LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
                 JsonNode next = iterator.next();
 
                 JsonNode sourceReceivedCount = next.get("metrics").get("SourceReceivedCount");
