@@ -62,7 +62,7 @@ public class JobExecutorController {
     @GetMapping("/resource")
     @ApiOperation(value = "get the resource for job executor", httpMethod = "GET")
     public Result<JobExecutorRes> resource(
-            @ApiParam(value = "userId", required = true) @RequestParam Integer userId,
+            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "Job define id", required = true) @RequestParam Long jobDefineId)
             throws IOException {
         try {
