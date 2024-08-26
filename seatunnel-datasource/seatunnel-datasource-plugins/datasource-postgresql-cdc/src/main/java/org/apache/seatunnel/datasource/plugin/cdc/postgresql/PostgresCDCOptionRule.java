@@ -30,7 +30,6 @@ public class PostgresCDCOptionRule {
                             "jdbc url, eg:"
                                     + "jdbc:postgresql://localhost:5432//test?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8");
 
-
     public static final Option<String> BASE_URL =
             Options.key("base-url")
                     .stringType()
