@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seatunnel.datasource.plugin.db2.jdbc;
+
+package org.apache.seatunnel.datasource.plugin.snowflake.jdbc;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
@@ -28,10 +29,10 @@ import lombok.NonNull;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,59 +40,66 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class Db2JdbcDataSourceChannel implements DataSourceChannel {
+public class SnowFlakeJdbcDataSourceChannel implements DataSourceChannel {
 
     @Override
     public OptionRule getDataSourceOptions(@NonNull String pluginName) {
-        return Db2DataSourceConfig.OPTION_RULE;
+        return SnowFlakeDataSourceConfig.OPTION_RULE;
     }
 
     @Override
     public OptionRule getDatasourceMetadataFieldsByDataSourceName(@NonNull String pluginName) {
-        return Db2DataSourceConfig.METADATA_RULE;
+        return SnowFlakeDataSourceConfig.METADATA_RULE;
     }
 
-    @Override
     public List<String> getTables(
-            @NonNull String pluginName,
+            String pluginName,
             Map<String, String> requestParams,
             String database,
             Map<String, String> options) {
-        List<String> tableNames = new ArrayList<>();
-        String filterName = options.get("filterName");
-        String size = options.get("size");
-        boolean isSize = StringUtils.isNotEmpty(size);
-        if (StringUtils.isNotEmpty(filterName) && !filterName.contains("%")) {
-            filterName = "%" + filterName + "%";
-        } else if (StringUtils.equals(filterName, "")) {
-            filterName = null;
-        }
-        try (Connection connection = getConnection(requestParams);
-                ResultSet resultSet =
-                        connection
-                                .getMetaData()
-                                .getTables(null, null, "%", new String[] {"TABLE"})) {
-            while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
-                if (StringUtils.isNotBlank(tableName)) {
-                    tableNames.add(tableName);
-                    if (isSize && tableNames.size() >= Integer.parseInt(size)) {
-                        break;
+        List<String> schemaTableNames = new ArrayList<>();
+        try {
+            Class.forName(requestParams.get(SnowFlakeOptionRule.DRIVER.key()));
+            try (Connection connection = getConnection(requestParams)) {
+                DatabaseMetaData metaData = connection.getMetaData();
+                try (ResultSet resultSet =
+                        metaData.getTables(database, null, null, new String[] {"TABLE"})) {
+                    while (resultSet.next()) {
+                        String schemaName = resultSet.getString("TABLE_SCHEM");
+                        String tableName = resultSet.getString("TABLE_NAME");
+                        if (StringUtils.isNotBlank(tableName)) {
+                            schemaTableNames.add(schemaName + "." + tableName);
+                        }
                     }
                 }
             }
-            return tableNames;
         } catch (ClassNotFoundException | SQLException e) {
-            throw new DataSourcePluginException("get table names failed", e);
+            // Handle exceptions or rethrow as unchecked
+            throw new RuntimeException("Error accessing database metadata", e);
         }
+        return schemaTableNames;
     }
 
     @Override
     public List<String> getDatabases(
             @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
-        // Hardcoded list of example database names
-        List<String> dbNames = Arrays.asList("default");
-        return dbNames;
+        List<String> dbNames = new ArrayList<>();
+        try {
+            Connection connection = getConnection(requestParams);
+            PreparedStatement statement = connection.prepareStatement("SHOW DATABASES;");
+            ResultSet re = statement.executeQuery();
+            // filter system databases
+            while (re.next()) {
+                String dbName = re.getString("name");
+                if (StringUtils.isNotBlank(dbName)
+                        && !SnowFlakeDataSourceConfig.SNOWFLAKE_SYSTEM_DATABASES.contains(dbName)) {
+                    dbNames.add(dbName);
+                }
+            }
+            return dbNames;
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new DataSourcePluginException("Get databases failed", e);
+        }
     }
 
     @Override
@@ -111,42 +119,33 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
             @NonNull String database,
             @NonNull String table) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams)) {
+        try (Connection connection = getConnection(requestParams, database); ) {
             DatabaseMetaData metaData = connection.getMetaData();
-
-            // Retrieve primary key information
             String primaryKey = getPrimaryKey(metaData, database, table);
-
-            // Retrieve column information
-            try (ResultSet resultSet = metaData.getColumns(null, null, table, null)) {
-
+            String[] split = table.split("\\.");
+            if (split.length != 2) {
+                //                throw new DataSourcePluginException(
+                //                        "Postgresql tableName should composed by
+                // schemaName.tableName");
+            }
+            try (ResultSet resultSet = metaData.getColumns(database, split[0], split[1], null)) {
                 while (resultSet.next()) {
                     TableField tableField = new TableField();
                     String columnName = resultSet.getString("COLUMN_NAME");
-
-                    // Set primary key flag
-                    tableField.setPrimaryKey(primaryKey != null && primaryKey.equals(columnName));
-
-                    // Set other field attributes
+                    tableField.setPrimaryKey(false);
+                    if (StringUtils.isNotBlank(primaryKey) && primaryKey.equals(columnName)) {
+                        tableField.setPrimaryKey(true);
+                    }
                     tableField.setName(columnName);
                     tableField.setType(resultSet.getString("TYPE_NAME"));
                     tableField.setComment(resultSet.getString("REMARKS"));
-
-                    // Set nullable flag
-                    String isNullable = resultSet.getString("IS_NULLABLE");
-                    tableField.setNullable("YES".equalsIgnoreCase(isNullable));
-
+                    Object nullable = resultSet.getObject("IS_NULLABLE");
+                    tableField.setNullable(Boolean.TRUE.toString().equals(nullable.toString()));
                     tableFields.add(tableField);
                 }
             }
-        } catch (SQLException e) {
-            // Log the exception and rethrow as DataSourcePluginException
-            System.out.println("Error while retrieving table fields: " + e);
-            throw new DataSourcePluginException("Failed to get table fields", e);
-        } catch (ClassNotFoundException e) {
-            // Log the exception and rethrow as DataSourcePluginException
-            System.out.println("JDBC driver class not found" + e);
-            throw new DataSourcePluginException("JDBC driver class not found", e);
+        } catch (SQLException | ClassNotFoundException e) {
+            //            throw new DataSourcePluginException("get table fields failed", e);
         }
         return tableFields;
     }
@@ -168,7 +167,7 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
 
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
             throws SQLException {
-        ResultSet primaryKeysInfo = metaData.getPrimaryKeys(null, dbName, tableName);
+        ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
         while (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
         }
@@ -177,15 +176,25 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
 
     private Connection getConnection(Map<String, String> requestParams)
             throws SQLException, ClassNotFoundException {
-        // Ensure the DB2 JDBC driver is loaded
-        Class.forName("com.ibm.db2.jcc.DB2Driver");
-        checkNotNull(requestParams.get(Db2OptionRule.URL.key()), "Jdbc url cannot be null");
-        String url = requestParams.get(Db2OptionRule.URL.key());
-        if (requestParams.containsKey(Db2OptionRule.USER.key())) {
-            String username = requestParams.get(Db2OptionRule.USER.key());
-            String password = requestParams.get(Db2OptionRule.PASSWORD.key());
+        return getConnection(requestParams, null);
+    }
+
+    private static Connection getConnection(Map<String, String> requestParams, String databaseName)
+            throws SQLException, ClassNotFoundException {
+        checkNotNull(requestParams.get(SnowFlakeOptionRule.DRIVER.key()));
+        checkNotNull(requestParams.get(SnowFlakeOptionRule.URL.key()), "Jdbc url cannot be null");
+        String url =
+                replaceDatabase(requestParams.get(SnowFlakeOptionRule.URL.key()), databaseName);
+        if (requestParams.containsKey(SnowFlakeOptionRule.USER.key())) {
+            String username = requestParams.get(SnowFlakeOptionRule.USER.key());
+            String password = requestParams.get(SnowFlakeOptionRule.PASSWORD.key());
             return DriverManager.getConnection(url, username, password);
         }
         return DriverManager.getConnection(url);
+    }
+    // Placeholder for the JdbcUtils.replaceDatabase method
+    private static String replaceDatabase(String url, String databaseName) {
+        // Implement database name replacement logic
+        return url; // Return the original URL or modified URL
     }
 }
