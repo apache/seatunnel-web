@@ -73,4 +73,7 @@ public class JobInstance {
 
     @TableField("job_type")
     private String jobType;
+
+    @TableField("error_message")
+    private String errorMessage;
 }

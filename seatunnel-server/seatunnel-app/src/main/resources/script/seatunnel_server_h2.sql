@@ -99,6 +99,7 @@ CREATE TABLE t_st_job_instance (
                                    update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                    end_time TIMESTAMP(3) DEFAULT NULL,
                                    job_type VARCHAR(50) NOT NULL,
+                                   error_message VARCHAR(4096) DEFAULT NULL,
                                    PRIMARY KEY (id)
 );
 

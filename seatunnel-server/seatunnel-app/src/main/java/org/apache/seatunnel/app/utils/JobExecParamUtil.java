@@ -27,6 +27,18 @@ import java.util.Map;
 
 public class JobExecParamUtil {
 
+    // The maximum length of the job execution error message, 4KB
+    private static final int ERROR_MESSAGE_MAX_LENGTH = 4096;
+
+    public static String getJobInstanceErrorMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+        return message.length() > ERROR_MESSAGE_MAX_LENGTH
+                ? message.substring(0, ERROR_MESSAGE_MAX_LENGTH)
+                : message;
+    }
+
     public static Config updateEnvConfig(JobExecParam jobExecParam, Config envConfig) {
         if (jobExecParam == null || jobExecParam.getEnv() == null) {
             return envConfig;

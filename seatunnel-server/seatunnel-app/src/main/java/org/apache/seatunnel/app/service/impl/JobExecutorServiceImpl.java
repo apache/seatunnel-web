@@ -28,6 +28,7 @@ import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
+import org.apache.seatunnel.app.utils.JobExecParamUtil;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
@@ -37,6 +38,7 @@ import org.apache.seatunnel.engine.common.config.ConfigProvider;
 import org.apache.seatunnel.engine.common.config.JobConfig;
 import org.apache.seatunnel.engine.common.config.SeaTunnelConfig;
 import org.apache.seatunnel.engine.common.config.YamlSeaTunnelConfigBuilder;
+import org.apache.seatunnel.engine.core.job.JobResult;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
@@ -128,6 +130,9 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
             jobInstance.setJobStatus(JobStatus.FAILED.name());
             jobInstance.setEndTime(new Date());
+            String jobInstanceErrorMessage =
+                    JobExecParamUtil.getJobInstanceErrorMessage(e.getMessage());
+            jobInstance.setErrorMessage(jobInstanceErrorMessage);
             jobInstanceDao.update(jobInstance);
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -152,21 +157,22 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             String jobEngineId,
             SeaTunnelClient seaTunnelClient) {
         ExecutorService executor = Executors.newFixedThreadPool(1);
-        CompletableFuture<JobStatus> future =
-                CompletableFuture.supplyAsync(clientJobProxy::waitForJobComplete, executor);
+        CompletableFuture<JobResult> future =
+                CompletableFuture.supplyAsync(clientJobProxy::waitForJobCompleteV2, executor);
+        JobResult jobResult = new JobResult(JobStatus.FAILED, "");
         try {
-            log.info("future.get before");
-            JobStatus jobStatus = future.get();
-
+            jobResult = future.get();
             executor.shutdown();
         } catch (InterruptedException e) {
+            jobResult.setError(e.getMessage());
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
+            jobResult.setError(e.getMessage());
             throw new RuntimeException(e);
         } finally {
             seaTunnelClient.close();
             log.info("and jobInstanceService.complete begin");
-            jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
+            jobInstanceService.complete(userId, jobInstanceId, jobEngineId, jobResult);
         }
     }
 

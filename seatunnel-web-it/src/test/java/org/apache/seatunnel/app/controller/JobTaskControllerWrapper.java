@@ -71,7 +71,7 @@ public class JobTaskControllerWrapper extends SeatunnelWebTestingBase {
         return JSONTestUtils.parseObject(response, Result.class);
     }
 
-    public String createFakeSourcePlugin(String datasourceId, long jobVersionId) {
+    public String createFakeSourcePlugin(String datasourceId, long jobVersionId, String rows) {
         DataSourceOption tableOption = new DataSourceOption();
         tableOption.setDatabases(Arrays.asList("fake_database"));
         tableOption.setTables(Arrays.asList("fake_table"));
@@ -88,12 +88,24 @@ public class JobTaskControllerWrapper extends SeatunnelWebTestingBase {
                         .dataSourceId(Long.parseLong(datasourceId))
                         .sceneMode(SceneMode.SINGLE_TABLE)
                         .config(
-                                "{\"query\":\"\",\"tables_configs\":\"\",\"schema\":\"fields {\\n        name = \\\"string\\\"\\n        age = \\\"int\\\"\\n      }\",\"string.fake.mode\":\"RANGE\",\"string.template\":\"\",\"tinyint.fake.mode\":\"RANGE\",\"tinyint.template\":\"\",\"smallint.fake.mode\":\"RANGE\",\"smallint.template\":\"\",\"int.fake.mode\":\"RANGE\",\"int.template\":\"\",\"bigint.fake.mode\":\"RANGE\",\"bigint.template\":\"\",\"float.fake.mode\":\"RANGE\",\"float.template\":\"\",\"double.fake.mode\":\"RANGE\",\"double.template\":\"\",\"rows\":\"\",\"row.num\":5,\"split.num\":1,\"split.read-interval\":1,\"map.size\":5,\"array.size\":5,\"bytes.length\":5,\"date.year.template\":\"\",\"date.month.template\":\"\",\"date.day.template\":\"\",\"time.hour.template\":\"\",\"time.minute.template\":\"\",\"time.second.template\":\"\",\"parallelism\":1}")
+                                "{\"query\":\"\",\"tables_configs\":\"\",\"schema\":\"fields {\\n        name = \\\"string\\\"\\n        age = \\\"int\\\"\\n      }\",\"string.fake.mode\":\"RANGE\",\"string.template\":\"\",\"tinyint.fake.mode\":\"RANGE\",\"tinyint.template\":\"\",\"smallint.fake.mode\":\"RANGE\",\"smallint.template\":\"\",\"int.fake.mode\":\"RANGE\",\"int.template\":\"\",\"bigint.fake.mode\":\"RANGE\",\"bigint.template\":\"\",\"float.fake.mode\":\"RANGE\",\"float.template\":\"\",\"double.fake.mode\":\"RANGE\",\"double.template\":\"\",\"rows\":\""
+                                        + rows
+                                        + "\",\"row.num\":5,\"split.num\":1,\"split.read-interval\":1,\"map.size\":5,\"array.size\":5,\"bytes.length\":5,\"date.year.template\":\"\",\"date.month.template\":\"\",\"date.day.template\":\"\",\"time.hour.template\":\"\",\"time.minute.template\":\"\",\"time.second.template\":\"\",\"parallelism\":1}")
                         .build();
 
         Result<Void> srcResult = saveSingleTask(jobVersionId, sourcePluginConfig);
         assertTrue(srcResult.isSuccess());
         return sourcePluginId;
+    }
+
+    public String createFakeSourcePlugin(String datasourceId, long jobVersionId) {
+        return createFakeSourcePlugin(datasourceId, jobVersionId, "");
+    }
+
+    public String createFakeSourcePluginThatFails(String datasourceId, long jobVersionId) {
+        String rows =
+                "[{kind=INSERT, fields=[\"org\", 100]}, {kind=INSERT, fields=[\"apache\", 50]}, {kind=INSERT, fields=[\"seatunnel\", 25]}, {kind=INSERT, fields=[\"seatunnel-web\", 12]}, {kind=INSERT, fields=[\"etl\", 6_age_invalid_number]}]";
+        return createFakeSourcePlugin(datasourceId, jobVersionId, rows);
     }
 
     public String createConsoleSinkPlugin(String datasourceId, long jobVersionId) {
