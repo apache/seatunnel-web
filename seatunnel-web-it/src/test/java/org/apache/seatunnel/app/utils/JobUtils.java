@@ -109,6 +109,10 @@ public class JobUtils {
     }
 
     public static Long createJob(String jobName) {
+        return createJob(jobName, false);
+    }
+
+    public static Long createJob(String jobName, boolean shouldExecutionFail) {
         Long jobId = jobDefinitionControllerWrapper.createJobDefinition(jobName);
         JobConfig jobConfig = jobConfigControllerWrapper.populateJobConfigObject(jobName);
         // jobVersionId is same as jobId
@@ -124,9 +128,18 @@ public class JobUtils {
         String consoleDatasourceId =
                 seatunnelDatasourceControllerWrapper.createConsoleDatasource("console_" + jobName);
 
-        String sourcePluginId =
-                jobTaskControllerWrapper.createFakeSourcePlugin(
-                        fakeSourceDatasourceId, jobVersionId);
+        String sourcePluginId;
+        if (shouldExecutionFail) {
+            sourcePluginId =
+                    jobTaskControllerWrapper.createFakeSourcePluginThatFails(
+                            fakeSourceDatasourceId, jobVersionId);
+
+        } else {
+            sourcePluginId =
+                    jobTaskControllerWrapper.createFakeSourcePlugin(
+                            fakeSourceDatasourceId, jobVersionId);
+        }
+
         String transPluginId = jobTaskControllerWrapper.createReplaceTransformPlugin(jobVersionId);
         String sinkPluginId =
                 jobTaskControllerWrapper.createConsoleSinkPlugin(consoleDatasourceId, jobVersionId);

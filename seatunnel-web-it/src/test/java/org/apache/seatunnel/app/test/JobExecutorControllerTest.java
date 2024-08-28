@@ -21,6 +21,8 @@ import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
+import org.apache.seatunnel.app.controller.TaskInstanceControllerWrapper;
+import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
@@ -51,6 +53,7 @@ public class JobExecutorControllerTest {
     private static final String uniqueId = "_" + System.currentTimeMillis();
     private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper;
     private static JobControllerWrapper jobControllerWrapper;
+    private static TaskInstanceControllerWrapper taskInstanceControllerWrapper;
 
     @BeforeAll
     public static void setUp() {
@@ -58,6 +61,7 @@ public class JobExecutorControllerTest {
         jobExecutorControllerWrapper = new JobExecutorControllerWrapper();
         seatunnelDatasourceControllerWrapper = new SeatunnelDatasourceControllerWrapper();
         jobControllerWrapper = new JobControllerWrapper();
+        taskInstanceControllerWrapper = new TaskInstanceControllerWrapper();
     }
 
     @Test
@@ -274,6 +278,25 @@ public class JobExecutorControllerTest {
         assertFalse(result.isSuccess());
         // Even though job failed but job instance is created into the database.
         assertTrue(result.getData() > 0);
+        SeaTunnelJobInstanceDto taskInstanceList =
+                taskInstanceControllerWrapper.getTaskInstanceList(jobName);
+        assertNotNull(taskInstanceList.getErrorMessage());
+    }
+
+    @Test
+    public void storeErrorMessageWhenJobFailed() throws InterruptedException {
+        String jobName = "failureCause" + uniqueId;
+        long jobVersionId = JobUtils.createJob(jobName, true);
+        Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
+        // job submitted successfully but it will fail during execution
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() > 0);
+        JobUtils.waitForJobCompletion(result.getData());
+        // extra second to let the data get updated in the database
+        Thread.sleep(2000);
+        SeaTunnelJobInstanceDto taskInstanceList =
+                taskInstanceControllerWrapper.getTaskInstanceList(jobName);
+        assertNotNull(taskInstanceList.getErrorMessage());
     }
 
     @AfterAll

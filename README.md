@@ -206,3 +206,9 @@ Now ,let me show you how to use it.
 
 #### Virtual Tables manage
 ![img.png](docs/images/VirtualImage.png)
+
+### Upgrades
+#### 1. Upgrade from 1.0.1 or before to 1.0.2 or after.
+Execute the following SQL to upgrade the database:
+
+```ALTER TABLE `t_st_job_instance` ADD COLUMN `error_message` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;```

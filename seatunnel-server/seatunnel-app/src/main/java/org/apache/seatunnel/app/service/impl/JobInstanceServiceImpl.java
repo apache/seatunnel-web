@@ -52,7 +52,6 @@ import org.apache.seatunnel.app.domain.request.job.transform.Transform;
 import org.apache.seatunnel.app.domain.request.job.transform.TransformOptions;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
-import org.apache.seatunnel.app.domain.response.metrics.JobPipelineSummaryMetricsRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobInstanceService;
@@ -64,7 +63,7 @@ import org.apache.seatunnel.app.utils.JobExecParamUtil;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
-import org.apache.seatunnel.engine.core.job.JobStatus;
+import org.apache.seatunnel.engine.core.job.JobResult;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -361,34 +360,18 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public void complete(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
+            @NonNull Integer userId,
+            @NonNull Long jobInstanceId,
+            @NonNull String jobEngineId,
+            JobResult jobResult) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_COMPLETE, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
         jobMetricsService.syncJobDataToDb(jobInstance, userId, jobEngineId);
-
-        List<JobPipelineSummaryMetricsRes> status =
-                jobMetricsService.getJobPipelineSummaryMetrics(userId, jobInstanceId);
-
-        String jobStatus;
-        Set<String> statusList =
-                status.stream()
-                        .map(JobPipelineSummaryMetricsRes::getStatus)
-                        .map(String::toUpperCase)
-                        .collect(Collectors.toSet());
-        if (statusList.size() == 1 && statusList.contains("FINISHED")) {
-            jobStatus = JobStatus.FINISHED.name();
-        } else if (statusList.contains("FAILED")) {
-            jobStatus = JobStatus.FAILED.name();
-        } else if (statusList.contains("CANCELED")) {
-            jobStatus = JobStatus.CANCELED.name();
-        } else if (statusList.contains("CANCELLING")) {
-            jobStatus = JobStatus.CANCELING.name();
-        } else {
-            jobStatus = JobStatus.RUNNING.name();
-        }
-        jobInstance.setJobStatus(jobStatus);
+        jobInstance.setJobStatus(jobResult.getStatus().name());
         jobInstance.setJobEngineId(jobEngineId);
         jobInstance.setUpdateUserId(userId);
+        jobInstance.setErrorMessage(
+                JobExecParamUtil.getJobInstanceErrorMessage(jobResult.getError()));
         jobInstanceDao.update(jobInstance);
     }
 

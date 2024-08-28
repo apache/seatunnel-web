@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.dal.entity.JobLine;
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
+import org.apache.seatunnel.engine.core.job.JobResult;
 
 import lombok.NonNull;
 
@@ -40,5 +41,8 @@ public interface IJobInstanceService {
     JobExecutorRes getExecuteResource(@NonNull Long jobEngineId);
 
     void complete(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
+            @NonNull Integer userId,
+            @NonNull Long jobInstanceId,
+            @NonNull String jobEngineId,
+            JobResult jobResult);
 }
