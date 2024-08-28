@@ -18,6 +18,8 @@
 package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.utils.PageInfo;
 
 public interface ITaskInstanceService<T> {
@@ -32,4 +34,8 @@ public interface ITaskInstanceService<T> {
             String syncTaskType,
             Integer pageNo,
             Integer pageSize);
+
+    Result<JobExecutionStatus> getJobExecutionStatus(Integer userId, long jobInstanceId);
+
+    Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(Integer userId, long jobInstanceId);
 }

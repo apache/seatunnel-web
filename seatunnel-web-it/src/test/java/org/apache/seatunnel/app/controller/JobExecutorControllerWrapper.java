@@ -18,7 +18,9 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
+import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.JSONUtils;
@@ -62,5 +64,19 @@ public class JobExecutorControllerWrapper extends SeatunnelWebTestingBase {
         String response =
                 sendRequest(urlWithParam("job/executor/restore?jobInstanceId=" + jobInstanceId));
         return JSONTestUtils.parseObject(response, Result.class);
+    }
+
+    public Result<JobExecutionStatus> getJobExecutionStatus(Long jobInstanceId) {
+        String response =
+                sendRequest(urlWithParam("job/executor/status?jobInstanceId=" + jobInstanceId));
+        return JSONTestUtils.parseObject(
+                response, new TypeReference<Result<JobExecutionStatus>>() {});
+    }
+
+    public Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(Long jobInstanceId) {
+        String response =
+                sendRequest(urlWithParam("job/executor/detail?jobInstanceId=" + jobInstanceId));
+        return JSONTestUtils.parseObject(
+                response, new TypeReference<Result<SeaTunnelJobInstanceDto>>() {});
     }
 }

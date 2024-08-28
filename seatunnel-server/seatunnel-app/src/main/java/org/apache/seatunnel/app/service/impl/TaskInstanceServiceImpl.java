@@ -22,7 +22,9 @@ import org.apache.seatunnel.app.common.Status;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
+import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.metrics.JobSummaryMetricsRes;
 import org.apache.seatunnel.app.service.BaseService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
@@ -41,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -103,13 +106,18 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         if (CollectionUtils.isEmpty(records)) {
             return result;
         }
-        addJobDefineNameToResult(records);
-        addRunningTimeToResult(records);
-        jobPipelineSummaryMetrics(records, syncTaskType, userId);
+        populateExecutionMetricsData(userId, syncTaskType, records);
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
         pageInfo.setTotalList(records);
         result.setData(pageInfo);
         return result;
+    }
+
+    private void populateExecutionMetricsData(
+            Integer userId, String syncTaskType, List<SeaTunnelJobInstanceDto> records) {
+        addJobDefineNameToResult(records);
+        addRunningTimeToResult(records);
+        jobPipelineSummaryMetrics(records, syncTaskType, userId);
     }
 
     private void addRunningTimeToResult(List<SeaTunnelJobInstanceDto> records) {
@@ -186,5 +194,47 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
                         "instance {} {} set instance and engine id error", taskInstance.getId(), e);
             }
         }
+    }
+
+    @Override
+    public Result<JobExecutionStatus> getJobExecutionStatus(Integer userId, long jobInstanceId) {
+        JobInstance jobInstance = jobInstanceDao.getJobExecutionStatus(jobInstanceId);
+        if (jobInstance == null) {
+            return Result.failure(404, "Job instance not found");
+        }
+        return Result.success(
+                new JobExecutionStatus(jobInstance.getJobStatus(), jobInstance.getErrorMessage()));
+    }
+
+    @Override
+    public Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(
+            Integer userId, long jobInstanceId) {
+        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+        if (jobInstance == null) {
+            return Result.failure(404, "Job instance not found");
+        }
+        SeaTunnelJobInstanceDto executionDetails = convertToDto(jobInstance);
+        populateExecutionMetricsData(
+                userId, jobInstance.getJobType(), Collections.singletonList(executionDetails));
+        return Result.success(executionDetails);
+    }
+
+    private SeaTunnelJobInstanceDto convertToDto(JobInstance jobInstance) {
+        SeaTunnelJobInstanceDto dto = new SeaTunnelJobInstanceDto();
+        dto.setId(jobInstance.getId());
+        dto.setJobDefineId(jobInstance.getJobDefineId());
+        dto.setJobStatus(jobInstance.getJobStatus());
+        dto.setJobConfig(jobInstance.getJobConfig());
+        dto.setEngineName(jobInstance.getEngineName());
+        dto.setEngineVersion(jobInstance.getEngineVersion());
+        dto.setJobEngineId(jobInstance.getJobEngineId());
+        dto.setCreateUserId(jobInstance.getCreateUserId());
+        dto.setUpdateUserId(jobInstance.getUpdateUserId());
+        dto.setCreateTime(jobInstance.getCreateTime());
+        dto.setUpdateTime(jobInstance.getUpdateTime());
+        dto.setEndTime(jobInstance.getEndTime());
+        dto.setJobType(jobInstance.getJobType());
+        dto.setErrorMessage(jobInstance.getErrorMessage());
+        return dto;
     }
 }
