@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.controller;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.JSONUtils;
 
@@ -34,6 +35,18 @@ public class JobControllerWrapper extends SeatunnelWebTestingBase {
         String requestBody = JSONUtils.toPrettyJsonString(jobCreateRequest);
         String response = sendRequest(url("job/create"), requestBody, "POST");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
+    }
+
+    public Result<Void> updateJob(long jobVersionId, JobCreateReq jobCreateReq) {
+        String requestBody = JSONUtils.toPrettyJsonString(jobCreateReq);
+        String response =
+                sendRequest(urlWithParam("job/update/" + jobVersionId + "?"), requestBody, "PUT");
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<Void>>() {});
+    }
+
+    public Result<JobRes> getJob(long jobVersionId) {
+        String response = sendRequest(urlWithParam("job/get/" + jobVersionId + "?"), null, "GET");
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<JobRes>>() {});
     }
 
     public JobCreateReq populateJobCreateReqFromFile() {

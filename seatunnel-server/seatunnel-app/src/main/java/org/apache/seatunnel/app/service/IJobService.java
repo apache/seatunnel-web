@@ -17,10 +17,16 @@
 package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface IJobService {
 
     long createJob(int userId, JobCreateReq jobCreateRequest) throws JsonProcessingException;
+
+    void updateJob(Integer userId, long jobId, JobCreateReq jobCreateReq)
+            throws JsonProcessingException;
+
+    JobRes getJob(Integer userId, long jobId) throws JsonProcessingException;
 }

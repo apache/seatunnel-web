@@ -23,7 +23,10 @@ import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
+import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -35,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,7 +63,7 @@ public class JobControllerTest {
         JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
         jobCreateReq.getJobConfig().setName(jobName);
         jobCreateReq.getJobConfig().setDescription(jobName + " description");
-        setSourceIds(jobCreateReq, "fake_source_ds1" + uniqueId, "console_ds1" + uniqueId);
+        setSourceIds(jobCreateReq, "fake_source_create" + uniqueId, "console_create" + uniqueId);
 
         Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(job.isSuccess());
@@ -124,11 +128,100 @@ public class JobControllerTest {
                 result.getMsg());
 
         jobConfig.getEnv().put("job.mode", "BATCH");
-        setSourceIds(jobCreateReq, "fake_source_ds2" + uniqueId, "console_ds2" + uniqueId);
+        setSourceIds(jobCreateReq, "fake_source_create2" + uniqueId, "console_create2" + uniqueId);
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getCode());
         assertNotNull(result.getData());
+    }
+
+    @Test
+    public void testUpdateJob_ForValidAndInvalidScenarios() {
+        String jobName = "updateJob_single_api" + uniqueId;
+        JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
+        jobCreateReq.getJobConfig().setName(jobName);
+        jobCreateReq.getJobConfig().setDescription(jobName + " description");
+        setSourceIds(
+                jobCreateReq, "fake_source_update_job" + uniqueId, "console_update_job" + uniqueId);
+
+        Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
+        assertTrue(job.isSuccess());
+
+        Result<JobRes> getJobResponse = jobControllerWrapper.getJob(job.getData());
+        assertTrue(getJobResponse.isSuccess());
+        JobRes jobRes = getJobResponse.getData();
+        assertNotNull(jobRes.getJobConfig());
+        assertNotNull(jobRes.getJobConfig());
+        assertNotNull(jobRes.getJobDAG());
+
+        assertEquals(jobName, jobRes.getJobConfig().getName());
+        assertEquals(
+                jobCreateReq.getPluginConfigs().get(0).getName(),
+                jobRes.getPluginConfigs().get(0).getName());
+        assertEquals(
+                jobCreateReq.getPluginConfigs().get(1).getName(),
+                jobRes.getPluginConfigs().get(1).getName());
+
+        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        String jobName2 = "updateJob_single_api2" + uniqueId;
+        jobUpdateReq.getJobConfig().setName(jobName2);
+        jobUpdateReq.getJobConfig().setDescription(jobName2 + " description");
+
+        Result<Void> jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
+        assertTrue(jobUpdateResult.isSuccess());
+
+        Result<JobRes> getJobResponse2 = jobControllerWrapper.getJob(job.getData());
+        assertTrue(getJobResponse2.isSuccess());
+        JobRes jobRes2 = getJobResponse2.getData();
+        assertEquals(jobName2, jobRes2.getJobConfig().getName());
+        assertEquals(
+                jobUpdateReq.getPluginConfigs().get(0).getName(),
+                jobRes2.getPluginConfigs().get(0).getName());
+        assertEquals(
+                jobUpdateReq.getPluginConfigs().get(1).getName(),
+                jobRes2.getPluginConfigs().get(1).getName());
+
+        // Handle error scenarios
+
+        // Invalid job instance id
+        Result<JobRes> invalidJobInstanceIdResponse = jobControllerWrapper.getJob(123L);
+        assertFalse(invalidJobInstanceIdResponse.isSuccess());
+        assertEquals(
+                SeatunnelErrorEnum.RESOURCE_NOT_FOUND.getCode(),
+                invalidJobInstanceIdResponse.getCode());
+
+        Result<Void> result = jobControllerWrapper.updateJob(123L, jobUpdateReq);
+        assertFalse(result.isSuccess());
+        assertEquals(SeatunnelErrorEnum.RESOURCE_NOT_FOUND.getCode(), result.getCode());
+
+        // While doing job update some configuration is wrong.
+        jobUpdateReq.getJobDAG().getEdges().get(0).setInputPluginId("InvalidInputPluginId");
+        jobUpdateReq.getJobDAG().getEdges().get(0).setTargetPluginId("InvalidTargetPluginId");
+        jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
+        assertFalse(jobUpdateResult.isSuccess());
+        assertEquals(SeatunnelErrorEnum.ERROR_CONFIG.getCode(), jobUpdateResult.getCode());
+    }
+
+    private JobCreateReq convertJobResToJobCreateReq(JobRes jobRes) {
+        JobCreateReq jobCreateReq = new JobCreateReq();
+
+        // Assuming JobRes contains JobConfigRes and List<PluginConfig> and JobDAG
+        JobConfigRes jobConfigRes = jobRes.getJobConfig();
+        List<PluginConfig> pluginConfigs = jobRes.getPluginConfigs();
+        JobDAG jobDAG = jobRes.getJobDAG();
+
+        // Populate JobCreateReq with data from JobRes
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setName(jobConfigRes.getName());
+        jobConfig.setDescription(jobConfigRes.getDescription());
+        jobConfig.setEnv(jobConfigRes.getEnv());
+        jobConfig.setEngine(jobConfigRes.getEngine());
+
+        jobCreateReq.setJobConfig(jobConfig);
+        jobCreateReq.setPluginConfigs(pluginConfigs);
+        jobCreateReq.setJobDAG(jobDAG);
+
+        return jobCreateReq;
     }
 
     @AfterAll
