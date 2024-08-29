@@ -47,4 +47,6 @@ public interface IJobInstanceDao {
             String jobMode);
 
     List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList);
+
+    JobInstance getJobExecutionStatus(@NonNull Long jobInstanceId);
 }

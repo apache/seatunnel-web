@@ -21,15 +21,16 @@ import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
-import org.apache.seatunnel.app.controller.TaskInstanceControllerWrapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,7 +54,6 @@ public class JobExecutorControllerTest {
     private static final String uniqueId = "_" + System.currentTimeMillis();
     private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper;
     private static JobControllerWrapper jobControllerWrapper;
-    private static TaskInstanceControllerWrapper taskInstanceControllerWrapper;
 
     @BeforeAll
     public static void setUp() {
@@ -61,7 +61,6 @@ public class JobExecutorControllerTest {
         jobExecutorControllerWrapper = new JobExecutorControllerWrapper();
         seatunnelDatasourceControllerWrapper = new SeatunnelDatasourceControllerWrapper();
         jobControllerWrapper = new JobControllerWrapper();
-        taskInstanceControllerWrapper = new TaskInstanceControllerWrapper();
     }
 
     @Test
@@ -277,10 +276,19 @@ public class JobExecutorControllerTest {
         // Fails because of the wrong database credentials.
         assertFalse(result.isSuccess());
         // Even though job failed but job instance is created into the database.
-        assertTrue(result.getData() > 0);
-        SeaTunnelJobInstanceDto taskInstanceList =
-                taskInstanceControllerWrapper.getTaskInstanceList(jobName);
-        assertNotNull(taskInstanceList.getErrorMessage());
+        Long jobInstanceId = result.getData();
+        assertTrue(jobInstanceId > 0);
+        Result<JobExecutionStatus> jobExecutionStatusResult =
+                jobExecutorControllerWrapper.getJobExecutionStatus(jobInstanceId);
+        assertTrue(jobExecutionStatusResult.isSuccess());
+        assertEquals(JobStatus.FAILED.name(), jobExecutionStatusResult.getData().getJobStatus());
+        assertNotNull(jobExecutionStatusResult.getData().getErrorMessage());
+
+        // Invalid jobInstanceId
+        Result<JobExecutionStatus> jobExecutionStatusResult2 =
+                jobExecutorControllerWrapper.getJobExecutionStatus(123L);
+        assertFalse(jobExecutionStatusResult2.isSuccess());
+        assertEquals(404, jobExecutionStatusResult2.getCode());
     }
 
     @Test
@@ -291,12 +299,22 @@ public class JobExecutorControllerTest {
         // job submitted successfully but it will fail during execution
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
-        JobUtils.waitForJobCompletion(result.getData());
+        Long jobInstanceId = result.getData();
+        JobUtils.waitForJobCompletion(jobInstanceId);
         // extra second to let the data get updated in the database
         Thread.sleep(2000);
-        SeaTunnelJobInstanceDto taskInstanceList =
-                taskInstanceControllerWrapper.getTaskInstanceList(jobName);
-        assertNotNull(taskInstanceList.getErrorMessage());
+        Result<SeaTunnelJobInstanceDto> jobExecutionDetailResult =
+                jobExecutorControllerWrapper.getJobExecutionDetail(jobInstanceId);
+        assertTrue(jobExecutionDetailResult.isSuccess());
+        assertEquals(JobStatus.FAILED.name(), jobExecutionDetailResult.getData().getJobStatus());
+        assertNotNull(jobExecutionDetailResult.getData().getErrorMessage());
+        assertNotNull(jobExecutionDetailResult.getData().getJobDefineName());
+
+        // Invalid jobInstanceId
+        Result<SeaTunnelJobInstanceDto> jobExecutionDetailResult2 =
+                jobExecutorControllerWrapper.getJobExecutionDetail(123L);
+        assertFalse(jobExecutionDetailResult2.isSuccess());
+        assertEquals(404, jobExecutionDetailResult2.getCode());
     }
 
     @AfterAll

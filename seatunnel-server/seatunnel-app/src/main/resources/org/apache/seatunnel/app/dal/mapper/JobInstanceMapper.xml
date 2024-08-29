@@ -53,4 +53,9 @@
         </where>
         ORDER BY create_time DESC
     </select>
+    <select id="getJobExecutionStatus" resultType="org.apache.seatunnel.app.dal.entity.JobInstance">
+        SELECT `job_status`, `error_message`
+        FROM t_st_job_instance t
+        WHERE t.id = #{jobInstanceId}
+    </select>
 </mapper>

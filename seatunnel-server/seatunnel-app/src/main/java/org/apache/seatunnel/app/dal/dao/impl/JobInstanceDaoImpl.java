@@ -88,4 +88,9 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
 
         return jobInstances;
     }
+
+    @Override
+    public JobInstance getJobExecutionStatus(@NonNull Long jobInstanceId) {
+        return jobInstanceMapper.getJobExecutionStatus(jobInstanceId);
+    }
 }
