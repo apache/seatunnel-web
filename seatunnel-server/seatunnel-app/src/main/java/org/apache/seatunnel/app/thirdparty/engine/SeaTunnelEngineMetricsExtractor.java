@@ -92,7 +92,6 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
     @Override
     public List<JobMetrics> getMetricsByJobEngineId(@NonNull String jobEngineId) {
-        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
 
         LinkedHashMap<Integer, String> jobPipelineStatus = getJobPipelineStatus(jobEngineId);
         try {
@@ -103,83 +102,15 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
             JsonNode jsonNode =
                     JsonUtils.stringToJsonNode(seaTunnelEngineProxy.getMetricsContent(jobEngineId));
-            JsonNode sourceReceivedCount = jsonNode.get("SourceReceivedCount");
-            if (sourceReceivedCount != null && sourceReceivedCount.isArray()) {
-                for (JsonNode node : sourceReceivedCount) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setReadRowCount(
-                            currPipelineMetrics.getReadRowCount() + node.get("value").asLong());
-                }
-            }
-
-            JsonNode sinkWriteCount = jsonNode.get("SinkWriteCount");
-            if (sinkWriteCount != null && sinkWriteCount.isArray()) {
-                for (JsonNode node : jsonNode.get("SinkWriteCount")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setWriteRowCount(
-                            currPipelineMetrics.getWriteRowCount() + node.get("value").asLong());
-                }
-            }
-
-            JsonNode sinkWriteQPS = jsonNode.get("SinkWriteQPS");
-            if (sinkWriteQPS != null && sinkWriteQPS.isArray()) {
-                for (JsonNode node : jsonNode.get("SinkWriteQPS")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setWriteQps(
-                            currPipelineMetrics.getWriteQps()
-                                    + (new Double(node.get("value").asDouble())).longValue());
-                }
-            }
-
-            JsonNode sourceReceivedQPS = jsonNode.get("SourceReceivedQPS");
-            if (sourceReceivedQPS != null && sourceReceivedQPS.isArray()) {
-                for (JsonNode node : jsonNode.get("SourceReceivedQPS")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setReadQps(
-                            currPipelineMetrics.getReadQps()
-                                    + (new Double(node.get("value").asDouble())).longValue());
-                }
-            }
-
-            JsonNode cdcRecordEmitDelay = jsonNode.get("CDCRecordEmitDelay");
-            if (cdcRecordEmitDelay != null && cdcRecordEmitDelay.isArray()) {
-                Map<Integer, List<Long>> dataMap = new HashMap<>();
-                for (JsonNode node : jsonNode.get("CDCRecordEmitDelay")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    long value = node.get("value").asLong();
-                    dataMap.computeIfAbsent(pipelineId, n -> new ArrayList<>()).add(value);
-                }
-                dataMap.forEach(
-                        (key, value) -> {
-                            JobMetrics currPipelineMetrics =
-                                    getOrCreatePipelineMetricsMap(
-                                            metricsMap, jobPipelineStatus, key);
-                            OptionalDouble average = value.stream().mapToDouble(a -> a).average();
-                            currPipelineMetrics.setRecordDelay(
-                                    Double.valueOf(average.isPresent() ? average.getAsDouble() : 0)
-                                            .longValue());
-                        });
-            }
+            LinkedHashMap<Integer, JobMetrics> metricsMap =
+                    extractMetrics(jobPipelineStatus, jsonNode);
+            return Arrays.asList(metricsMap.values().toArray(new JobMetrics[0]));
         } catch (JsonProcessingException e) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.LOAD_ENGINE_METRICS_JSON_ERROR,
                     "SeaTunnel",
                     ExceptionUtils.getMessage(e));
         }
-
-        return Arrays.asList(metricsMap.values().toArray(new JobMetrics[0]));
     }
 
     @Override
@@ -267,8 +198,6 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
     @Override
     public Map<Integer, JobMetrics> getMetricsByJobEngineIdRTMap(@NonNull String jobEngineId) {
-        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
-
         LinkedHashMap<Integer, String> jobPipelineStatus = getJobPipelineStatus(jobEngineId);
         try {
             String metricsContent = seaTunnelEngineProxy.getMetricsContent(jobEngineId);
@@ -276,84 +205,83 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                 return new HashMap<>();
             }
 
-            JsonNode jsonNode =
-                    JsonUtils.stringToJsonNode(seaTunnelEngineProxy.getMetricsContent(jobEngineId));
-            JsonNode sourceReceivedCount = jsonNode.get("SourceReceivedCount");
-            if (sourceReceivedCount != null && sourceReceivedCount.isArray()) {
-                for (JsonNode node : sourceReceivedCount) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setReadRowCount(
-                            currPipelineMetrics.getReadRowCount() + node.get("value").asLong());
-                }
-            }
-
-            JsonNode sinkWriteCount = jsonNode.get("SinkWriteCount");
-            if (sinkWriteCount != null && sinkWriteCount.isArray()) {
-                for (JsonNode node : jsonNode.get("SinkWriteCount")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setWriteRowCount(
-                            currPipelineMetrics.getWriteRowCount() + node.get("value").asLong());
-                }
-            }
-
-            JsonNode sinkWriteQPS = jsonNode.get("SinkWriteQPS");
-            if (sinkWriteQPS != null && sinkWriteQPS.isArray()) {
-                for (JsonNode node : jsonNode.get("SinkWriteQPS")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setWriteQps(
-                            currPipelineMetrics.getWriteQps()
-                                    + (new Double(node.get("value").asDouble())).longValue());
-                }
-            }
-
-            JsonNode sourceReceivedQPS = jsonNode.get("SourceReceivedQPS");
-            if (sourceReceivedQPS != null && sourceReceivedQPS.isArray()) {
-                for (JsonNode node : jsonNode.get("SourceReceivedQPS")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    JobMetrics currPipelineMetrics =
-                            getOrCreatePipelineMetricsMap(
-                                    metricsMap, jobPipelineStatus, pipelineId);
-                    currPipelineMetrics.setReadQps(
-                            currPipelineMetrics.getReadQps()
-                                    + (new Double(node.get("value").asDouble())).longValue());
-                }
-            }
-
-            JsonNode cdcRecordEmitDelay = jsonNode.get("CDCRecordEmitDelay");
-            if (cdcRecordEmitDelay != null && cdcRecordEmitDelay.isArray()) {
-                Map<Integer, List<Long>> dataMap = new HashMap<>();
-                for (JsonNode node : jsonNode.get("CDCRecordEmitDelay")) {
-                    Integer pipelineId = node.get("tags").get("pipelineId").asInt();
-                    long value = node.get("value").asLong();
-                    dataMap.computeIfAbsent(pipelineId, n -> new ArrayList<>()).add(value);
-                }
-                dataMap.forEach(
-                        (key, value) -> {
-                            JobMetrics currPipelineMetrics =
-                                    getOrCreatePipelineMetricsMap(
-                                            metricsMap, jobPipelineStatus, key);
-                            OptionalDouble average = value.stream().mapToDouble(a -> a).average();
-                            currPipelineMetrics.setRecordDelay(
-                                    Double.valueOf(average.isPresent() ? average.getAsDouble() : 0)
-                                            .longValue());
-                        });
-            }
+            JsonNode jsonNode = JsonUtils.stringToJsonNode(metricsContent);
+            return extractMetrics(jobPipelineStatus, jsonNode);
         } catch (JsonProcessingException e) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.LOAD_ENGINE_METRICS_JSON_ERROR,
                     "SeaTunnel",
                     ExceptionUtils.getMessage(e));
         }
+    }
 
+    private LinkedHashMap<Integer, JobMetrics> extractMetrics(
+            LinkedHashMap<Integer, String> jobPipelineStatus, JsonNode jsonNode) {
+        LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
+        JsonNode sourceReceivedCount = jsonNode.get("SourceReceivedCount");
+        if (sourceReceivedCount != null && sourceReceivedCount.isArray()) {
+            for (JsonNode node : sourceReceivedCount) {
+                Integer pipelineId = node.get("tags").get("pipelineId").asInt();
+                JobMetrics currPipelineMetrics =
+                        getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
+                currPipelineMetrics.setReadRowCount(
+                        currPipelineMetrics.getReadRowCount() + node.get("value").asLong());
+            }
+        }
+
+        JsonNode sinkWriteCount = jsonNode.get("SinkWriteCount");
+        if (sinkWriteCount != null && sinkWriteCount.isArray()) {
+            for (JsonNode node : jsonNode.get("SinkWriteCount")) {
+                Integer pipelineId = node.get("tags").get("pipelineId").asInt();
+                JobMetrics currPipelineMetrics =
+                        getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
+                currPipelineMetrics.setWriteRowCount(
+                        currPipelineMetrics.getWriteRowCount() + node.get("value").asLong());
+            }
+        }
+
+        JsonNode sinkWriteQPS = jsonNode.get("SinkWriteQPS");
+        if (sinkWriteQPS != null && sinkWriteQPS.isArray()) {
+            for (JsonNode node : jsonNode.get("SinkWriteQPS")) {
+                Integer pipelineId = node.get("tags").get("pipelineId").asInt();
+                JobMetrics currPipelineMetrics =
+                        getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
+                currPipelineMetrics.setWriteQps(
+                        currPipelineMetrics.getWriteQps()
+                                + (new Double(node.get("value").asDouble())).longValue());
+            }
+        }
+
+        JsonNode sourceReceivedQPS = jsonNode.get("SourceReceivedQPS");
+        if (sourceReceivedQPS != null && sourceReceivedQPS.isArray()) {
+            for (JsonNode node : jsonNode.get("SourceReceivedQPS")) {
+                Integer pipelineId = node.get("tags").get("pipelineId").asInt();
+                JobMetrics currPipelineMetrics =
+                        getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
+                currPipelineMetrics.setReadQps(
+                        currPipelineMetrics.getReadQps()
+                                + (new Double(node.get("value").asDouble())).longValue());
+            }
+        }
+
+        JsonNode cdcRecordEmitDelay = jsonNode.get("CDCRecordEmitDelay");
+        if (cdcRecordEmitDelay != null && cdcRecordEmitDelay.isArray()) {
+            Map<Integer, List<Long>> dataMap = new HashMap<>();
+            for (JsonNode node : jsonNode.get("CDCRecordEmitDelay")) {
+                Integer pipelineId = node.get("tags").get("pipelineId").asInt();
+                long value = node.get("value").asLong();
+                dataMap.computeIfAbsent(pipelineId, n -> new ArrayList<>()).add(value);
+            }
+            dataMap.forEach(
+                    (key, value) -> {
+                        JobMetrics currPipelineMetrics =
+                                getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, key);
+                        OptionalDouble average = value.stream().mapToDouble(a -> a).average();
+                        currPipelineMetrics.setRecordDelay(
+                                Double.valueOf(average.isPresent() ? average.getAsDouble() : 0)
+                                        .longValue());
+                    });
+        }
         return metricsMap;
     }
 
@@ -452,7 +380,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to fetch running job metrics", e);
         }
         return allRunningJobMetricsHashMap;
     }

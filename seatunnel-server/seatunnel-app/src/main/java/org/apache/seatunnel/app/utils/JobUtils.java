@@ -25,7 +25,7 @@ import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import java.util.List;
 import java.util.Map;
 
-public class JobExecParamUtil {
+public class JobUtils {
 
     // The maximum length of the job execution error message, 4KB
     private static final int ERROR_MESSAGE_MAX_LENGTH = 4096;
