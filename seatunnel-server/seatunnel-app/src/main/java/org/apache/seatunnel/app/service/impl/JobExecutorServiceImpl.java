@@ -28,7 +28,7 @@ import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
-import org.apache.seatunnel.app.utils.JobExecParamUtil;
+import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
@@ -130,8 +130,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
             jobInstance.setJobStatus(JobStatus.FAILED.name());
             jobInstance.setEndTime(new Date());
-            String jobInstanceErrorMessage =
-                    JobExecParamUtil.getJobInstanceErrorMessage(e.getMessage());
+            String jobInstanceErrorMessage = JobUtils.getJobInstanceErrorMessage(e.getMessage());
             jobInstance.setErrorMessage(jobInstanceErrorMessage);
             jobInstanceDao.update(jobInstance);
             throw new RuntimeException(e.getMessage(), e);
@@ -178,7 +177,6 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
 
     private SeaTunnelClient createSeaTunnelClient() {
         ClientConfig clientConfig = ConfigProvider.locateAndGetClientConfig();
-        clientConfig.setClusterName(clientConfig.getClusterName());
         return new SeaTunnelClient(clientConfig);
     }
 

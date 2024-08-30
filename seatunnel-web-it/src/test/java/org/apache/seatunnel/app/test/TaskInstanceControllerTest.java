@@ -24,7 +24,7 @@ import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.TaskInstanceControllerWrapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
-import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.app.utils.JobTestingUtils;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,11 +53,11 @@ public class TaskInstanceControllerTest extends SeatunnelWebTestingBase {
     @Test
     public void getTaskInstanceList_shouldReturnData_whenValidRequest() {
         String jobName = "getTaskInstance" + uniqueId;
-        long jobVersionId = JobUtils.createJob(jobName);
+        long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> execuitonResult = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(execuitonResult.isSuccess());
         Result<List<JobPipelineDetailMetricsRes>> listResult =
-                JobUtils.waitForJobCompletion(execuitonResult.getData());
+                JobTestingUtils.waitForJobCompletion(execuitonResult.getData());
         assertEquals(1, listResult.getData().size());
         assertEquals("FINISHED", listResult.getData().get(0).getStatus());
 

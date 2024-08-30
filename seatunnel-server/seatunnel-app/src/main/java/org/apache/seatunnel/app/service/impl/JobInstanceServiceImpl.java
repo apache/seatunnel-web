@@ -50,6 +50,7 @@ import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.request.job.TableSchemaReq;
 import org.apache.seatunnel.app.domain.request.job.transform.Transform;
 import org.apache.seatunnel.app.domain.request.job.transform.TransformOptions;
+import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
@@ -59,7 +60,7 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
-import org.apache.seatunnel.app.utils.JobExecParamUtil;
+import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
@@ -173,8 +174,8 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         BusinessMode businessMode =
                 BusinessMode.valueOf(jobDefinitionDao.getJob(jobId).getJobType());
         Config envConfig = filterEmptyValue(ConfigFactory.parseString(envStr));
-        envConfig = JobExecParamUtil.updateEnvConfig(executeParam, envConfig);
-        JobExecParamUtil.updateDataSource(executeParam, tasks);
+        envConfig = JobUtils.updateEnvConfig(executeParam, envConfig);
+        JobUtils.updateDataSource(executeParam, tasks);
 
         Map<String, List<Config>> sourceMap = new LinkedHashMap<>();
         Map<String, List<Config>> transformMap = new LinkedHashMap<>();
@@ -230,8 +231,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                             }
 
                             config =
-                                    JobExecParamUtil.updateTaskConfig(
-                                            executeParam, config, task.getName());
+                                    JobUtils.updateTaskConfig(executeParam, config, task.getName());
                             Config mergeConfig =
                                     mergeTaskConfig(
                                             task,
@@ -241,7 +241,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                             config,
                                             optionRule);
                             mergeConfig =
-                                    JobExecParamUtil.updateQueryTaskConfig(
+                                    JobUtils.updateQueryTaskConfig(
                                             executeParam, mergeConfig, task.getName());
                             sourceMap
                                     .get(task.getConnectorType())
@@ -273,7 +273,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                         List<TableSchemaReq> inputSchemas = findInputSchemas(tasks, lines, task);
                         Config transformConfig = buildTransformConfig(task, config, inputSchemas);
                         transformConfig =
-                                JobExecParamUtil.updateTaskConfig(
+                                JobUtils.updateTaskConfig(
                                         executeParam, transformConfig, task.getName());
                         transformMap
                                 .get(task.getConnectorType())
@@ -290,8 +290,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                 sinkMap.put(task.getConnectorType(), new ArrayList<>());
                             }
                             config =
-                                    JobExecParamUtil.updateTaskConfig(
-                                            executeParam, config, task.getName());
+                                    JobUtils.updateTaskConfig(executeParam, config, task.getName());
                             Config mergeConfig =
                                     mergeTaskConfig(
                                             task,
@@ -370,8 +369,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         jobInstance.setJobStatus(jobResult.getStatus().name());
         jobInstance.setJobEngineId(jobEngineId);
         jobInstance.setUpdateUserId(userId);
-        jobInstance.setErrorMessage(
-                JobExecParamUtil.getJobInstanceErrorMessage(jobResult.getError()));
+        jobInstance.setErrorMessage(JobUtils.getJobInstanceErrorMessage(jobResult.getError()));
         jobInstanceDao.update(jobInstance);
     }
 
@@ -436,16 +434,14 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             throws JsonProcessingException {
 
         Long datasourceInstanceId = task.getDataSourceId();
-        String pluginName =
-                datasourceService
-                        .queryDatasourceDetailById(datasourceInstanceId.toString())
-                        .getPluginName();
+        DatasourceDetailRes datasourceDetailRes =
+                datasourceService.queryDatasourceDetailById(datasourceInstanceId.toString());
+        String pluginName = datasourceDetailRes.getPluginName();
         Config datasourceConf =
                 parseConfigWithOptionRule(
                         pluginType,
                         connectorType,
-                        datasourceService.queryDatasourceConfigById(
-                                datasourceInstanceId.toString()),
+                        datasourceDetailRes.getDatasourceConfig(),
                         optionRule);
 
         DataSourceOption dataSourceOption = null;

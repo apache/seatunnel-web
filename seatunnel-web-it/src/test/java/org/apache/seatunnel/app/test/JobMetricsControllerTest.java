@@ -22,7 +22,7 @@ import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.JobMetricsControllerWrapper;
 import org.apache.seatunnel.app.domain.response.metrics.JobDAG;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
-import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.app.utils.JobTestingUtils;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,7 +58,7 @@ public class JobMetricsControllerTest {
     }
 
     private static Long executeJob(String jobName) {
-        Long jobVersionId = JobUtils.createJob(jobName);
+        Long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> jobExecutionResult = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(jobExecutionResult.isSuccess());
         return jobExecutionResult.getData();

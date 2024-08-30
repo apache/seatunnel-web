@@ -29,7 +29,7 @@ import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
-import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.app.utils.JobTestingUtils;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import org.junit.jupiter.api.AfterAll;
@@ -66,12 +66,12 @@ public class JobExecutorControllerTest {
     @Test
     public void executeJob_shouldReturnSuccess_whenValidRequest() {
         String jobName = "execJob" + uniqueId;
-        long jobVersionId = JobUtils.createJob(jobName);
+        long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
         Result<List<JobPipelineDetailMetricsRes>> listResult =
-                JobUtils.waitForJobCompletion(result.getData());
+                JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
         assertEquals("FINISHED", listResult.getData().get(0).getStatus());
         assertEquals(5, listResult.getData().get(0).getReadRowCount());
@@ -81,12 +81,12 @@ public class JobExecutorControllerTest {
     @Test
     public void executeJobWithParameters() {
         String jobName = "execJobWithParam" + uniqueId;
-        long jobVersionId = JobUtils.createJob(jobName);
+        long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
         Result<List<JobPipelineDetailMetricsRes>> listResult =
-                JobUtils.waitForJobCompletion(result.getData());
+                JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
         assertEquals("FINISHED", listResult.getData().get(0).getStatus());
         assertEquals(5, listResult.getData().get(0).getReadRowCount());
@@ -120,7 +120,7 @@ public class JobExecutorControllerTest {
         result = jobExecutorControllerWrapper.jobExecutor(jobVersionId, jobExecParam);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
-        listResult = JobUtils.waitForJobCompletion(result.getData());
+        listResult = JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
         assertEquals("FINISHED", listResult.getData().get(0).getStatus());
         assertEquals(numberOfRecords, listResult.getData().get(0).getReadRowCount());
@@ -138,7 +138,7 @@ public class JobExecutorControllerTest {
     @Test
     public void executeJobWithParameters_AllowQueryUpdate() {
         String jobName = "execJobUpdateQuery" + uniqueId;
-        JobCreateReq jobCreateReq = JobUtils.populateMySQLJobCreateReqFromFile();
+        JobCreateReq jobCreateReq = JobTestingUtils.populateMySQLJobCreateReqFromFile();
         jobCreateReq.getJobConfig().setName(jobName);
         jobCreateReq.getJobConfig().setDescription(jobName + " description");
         String datasourceName = "execJobUpdateQuery_db" + uniqueId;
@@ -184,7 +184,7 @@ public class JobExecutorControllerTest {
     @Test
     public void executeJobWithParameters_ChangeDatabase() {
         String jobName = "execJobChangeDatabase" + uniqueId;
-        JobCreateReq jobCreateReq = JobUtils.populateMySQLJobCreateReqFromFile();
+        JobCreateReq jobCreateReq = JobTestingUtils.populateMySQLJobCreateReqFromFile();
         jobCreateReq.getJobConfig().setName(jobName);
         jobCreateReq.getJobConfig().setDescription(jobName + " description");
         String datasourceName = "execJobChangeDatabase_db_1" + uniqueId;
@@ -241,7 +241,7 @@ public class JobExecutorControllerTest {
     @Test
     public void restoreJob_shouldReturnSuccess_whenValidRequest() {
         String jobName = "jobRestore" + uniqueId;
-        long jobVersionId = JobUtils.createJob(jobName);
+        long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> executorResult = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(executorResult.isSuccess());
         Result<Void> result = jobExecutorControllerWrapper.jobRestore(executorResult.getData());
@@ -251,7 +251,7 @@ public class JobExecutorControllerTest {
     @Test
     public void getResource_shouldReturnSuccess_whenValidRequest() {
         String jobName = "getResource" + uniqueId;
-        long jobVersionId = JobUtils.createJob(jobName);
+        long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<JobExecutorRes> result = jobExecutorControllerWrapper.resource(jobVersionId);
         assertTrue(result.isSuccess());
         assertNotNull(result.getData());
@@ -260,7 +260,7 @@ public class JobExecutorControllerTest {
     @Test
     public void executeJob_JobStatusUpdate_WhenSubmissionFailed() {
         String jobName = "execJobStatus" + uniqueId;
-        JobCreateReq jobCreateReq = JobUtils.populateMySQLJobCreateReqFromFile();
+        JobCreateReq jobCreateReq = JobTestingUtils.populateMySQLJobCreateReqFromFile();
         jobCreateReq.getJobConfig().setName(jobName);
         jobCreateReq.getJobConfig().setDescription(jobName + " description");
         String datasourceName = "execJobStatus_db_1" + uniqueId;
@@ -294,13 +294,13 @@ public class JobExecutorControllerTest {
     @Test
     public void storeErrorMessageWhenJobFailed() throws InterruptedException {
         String jobName = "failureCause" + uniqueId;
-        long jobVersionId = JobUtils.createJob(jobName, true);
+        long jobVersionId = JobTestingUtils.createJob(jobName, true);
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         // job submitted successfully but it will fail during execution
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
         Long jobInstanceId = result.getData();
-        JobUtils.waitForJobCompletion(jobInstanceId);
+        JobTestingUtils.waitForJobCompletion(jobInstanceId);
         // extra second to let the data get updated in the database
         Thread.sleep(2000);
         Result<SeaTunnelJobInstanceDto> jobExecutionDetailResult =
