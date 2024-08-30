@@ -14,8 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.domain.response.job;
 
-package org.apache.seatunnel.app.domain.request.job;
+import org.apache.seatunnel.app.domain.request.job.JobDAG;
+import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +28,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobDAG {
-
-    private List<Edge> edges;
+public class JobRes {
+    private JobConfigRes jobConfig;
+    private List<PluginConfig> pluginConfigs;
+    private JobDAG jobDAG;
 }

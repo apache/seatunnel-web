@@ -57,6 +57,10 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
     public JobConfigRes getJobConfig(long jobVersionId) throws JsonProcessingException {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_DETAIL, 0);
         JobVersion jobVersion = jobVersionDao.getVersionById(jobVersionId);
+        if (jobVersion == null) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "job version not found.");
+        }
         JobDefinition jobDefinition = jobDefinitionDao.getJob(jobVersion.getJobId());
         JobConfigRes jobConfigRes = new JobConfigRes();
         jobConfigRes.setName(jobDefinition.getName());
@@ -80,6 +84,10 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
             throws JsonProcessingException {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_UPDATE, 0);
         JobVersion version = jobVersionDao.getVersionById(jobVersionId);
+        if (version == null) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "job version not found.");
+        }
         JobDefinition jobDefinition = new JobDefinition();
         jobDefinition.setId(version.getJobId());
         jobDefinition.setUpdateUserId(userId);

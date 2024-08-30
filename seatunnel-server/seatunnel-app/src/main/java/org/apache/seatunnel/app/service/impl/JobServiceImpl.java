@@ -23,7 +23,10 @@ import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
+import org.apache.seatunnel.app.domain.request.job.JobTaskInfo;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.service.IJobConfigService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobService;
@@ -107,5 +110,25 @@ public class JobServiceImpl implements IJobService {
                     "job.mode should be either BATCH or STREAM");
         }
         return jobReq;
+    }
+
+    @Override
+    public void updateJob(Integer userId, long jobVersionId, JobCreateReq jobCreateReq)
+            throws JsonProcessingException {
+        jobConfigService.updateJobConfig(userId, jobVersionId, jobCreateReq.getJobConfig());
+        List<PluginConfig> pluginConfigs = jobCreateReq.getPluginConfigs();
+        if (pluginConfigs != null) {
+            for (PluginConfig pluginConfig : pluginConfigs) {
+                jobTaskService.saveSingleTask(jobVersionId, pluginConfig);
+            }
+        }
+        jobTaskService.saveJobDAG(jobVersionId, jobCreateReq.getJobDAG());
+    }
+
+    @Override
+    public JobRes getJob(Integer userId, long jobVersionId) throws JsonProcessingException {
+        JobConfigRes jobConfig = jobConfigService.getJobConfig(jobVersionId);
+        JobTaskInfo taskConfig = jobTaskService.getTaskConfig(jobVersionId);
+        return new JobRes(jobConfig, taskConfig.getPlugins(), new JobDAG(taskConfig.getEdges()));
     }
 }

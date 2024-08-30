@@ -31,6 +31,8 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.app.utils.PageInfo;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -200,7 +202,8 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     public Result<JobExecutionStatus> getJobExecutionStatus(Integer userId, long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobExecutionStatus(jobInstanceId);
         if (jobInstance == null) {
-            return Result.failure(404, "Job instance not found");
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "Job instance not found");
         }
         return Result.success(
                 new JobExecutionStatus(jobInstance.getJobStatus(), jobInstance.getErrorMessage()));
@@ -211,7 +214,8 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
             Integer userId, long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         if (jobInstance == null) {
-            return Result.failure(404, "Job instance not found");
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "Job instance not found");
         }
         SeaTunnelJobInstanceDto executionDetails = convertToDto(jobInstance);
         populateExecutionMetricsData(
