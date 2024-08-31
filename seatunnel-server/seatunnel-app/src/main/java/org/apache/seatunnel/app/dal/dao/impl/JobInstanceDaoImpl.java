@@ -93,4 +93,9 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
     public JobInstance getJobExecutionStatus(@NonNull Long jobInstanceId) {
         return jobInstanceMapper.getJobExecutionStatus(jobInstanceId);
     }
+
+    @Override
+    public void deleteById(@NonNull Long jobInstanceId) {
+        jobInstanceMapper.deleteById(jobInstanceId);
+    }
 }

@@ -317,6 +317,36 @@ public class JobExecutorControllerTest {
         assertEquals(404, jobExecutionDetailResult2.getCode());
     }
 
+    @Test
+    public void testJobInstanceDelete() {
+        String jobName = "jobInstanceDelete" + uniqueId;
+        long jobVersionId = JobTestingUtils.createJob(jobName);
+        Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() > 0);
+        Long jobInstanceId = result.getData();
+        JobTestingUtils.waitForJobCompletion(jobInstanceId);
+        Result<SeaTunnelJobInstanceDto> jobExecutionDetailResult =
+                jobExecutorControllerWrapper.getJobExecutionDetail(jobInstanceId);
+        assertTrue(jobExecutionDetailResult.isSuccess());
+        assertNotNull(jobExecutionDetailResult.getData());
+
+        // Delete should be success
+        Result<Void> deleteResult = jobExecutorControllerWrapper.deleteJobInstance(jobInstanceId);
+        assertTrue(deleteResult.isSuccess());
+
+        // After delete job instance should not be found
+        jobExecutionDetailResult =
+                jobExecutorControllerWrapper.getJobExecutionDetail(jobInstanceId);
+        assertFalse(jobExecutionDetailResult.isSuccess());
+        assertEquals(404, jobExecutionDetailResult.getCode());
+
+        // Delete job instance which do not exist
+        deleteResult = jobExecutorControllerWrapper.deleteJobInstance(jobInstanceId);
+        // should be success as there is nothing to delete
+        assertTrue(deleteResult.isSuccess());
+    }
+
     @AfterAll
     public static void tearDown() {
         seaTunnelWebCluster.stop();

@@ -241,4 +241,10 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         dto.setErrorMessage(jobInstance.getErrorMessage());
         return dto;
     }
+
+    @Override
+    public Result<Void> deleteJobInstanceById(Integer userId, long jobInstanceId) {
+        jobInstanceDao.deleteById(jobInstanceId);
+        return Result.success();
+    }
 }
