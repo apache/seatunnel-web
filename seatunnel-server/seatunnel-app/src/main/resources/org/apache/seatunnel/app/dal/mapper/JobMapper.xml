@@ -53,7 +53,7 @@
     join (select * from t_st_job_version where job_mode = #{jobMode}) v on t.id = v.job_id
     <where>
     <if test="searchName!=null and searchName != ''">
-      and name LIKE concat('%', #{searchName}, '%')
+      and t.name LIKE concat('%', #{searchName}, '%')
     </if>
     </where>
     order by update_time desc

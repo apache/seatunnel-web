@@ -48,7 +48,7 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
     }
 
     public Result<PageInfo<JobDefinitionRes>> getJobDefinition(
-            String searchName, Integer pageNo, Integer pageSize) {
+            String searchName, Integer pageNo, Integer pageSize, String jobMode) {
         String response =
                 sendRequest(
                         urlWithParam("job/definition?")
@@ -57,7 +57,9 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
                                 + "&pageNo="
                                 + pageNo
                                 + "&pageSize="
-                                + pageSize);
+                                + pageSize
+                                + "&jobMode="
+                                + jobMode);
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<JobDefinitionRes>>>() {});
     }

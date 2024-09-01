@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobDefinitionControllerWrapper;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JobDefinitionControllerTest {
     private static final SeaTunnelWebCluster seaTunnelWebCluster = new SeaTunnelWebCluster();
     private static JobDefinitionControllerWrapper jobDefinitionControllerWrapper;
-    private static String uniqueId = "_" + System.currentTimeMillis();
+    private static final String uniqueId = "_" + System.currentTimeMillis();
 
     @BeforeAll
     public static void setUp() {
@@ -61,10 +62,16 @@ public class JobDefinitionControllerTest {
         String job3 = "job3" + uniqueId;
         long jobId = jobDefinitionControllerWrapper.createJobDefinition(job3);
         Result<PageInfo<JobDefinitionRes>> result =
-                jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10);
+                jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10, JobMode.BATCH.name());
         assertTrue(result.isSuccess());
         assertEquals(1, result.getData().getData().size());
         assertEquals(jobId, result.getData().getData().get(0).getId());
+
+        result =
+                jobDefinitionControllerWrapper.getJobDefinition(
+                        job3, 1, 10, JobMode.STREAMING.name());
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getData().getData().size());
     }
 
     @Test
