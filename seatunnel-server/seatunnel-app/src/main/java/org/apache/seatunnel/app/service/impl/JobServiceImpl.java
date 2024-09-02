@@ -17,7 +17,6 @@
 package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
-import org.apache.seatunnel.app.domain.request.connector.JobMode;
 import org.apache.seatunnel.app.domain.request.job.Edge;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
@@ -31,6 +30,7 @@ import org.apache.seatunnel.app.service.IJobConfigService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobService;
 import org.apache.seatunnel.app.service.IJobTaskService;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.ParamValidationException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -101,7 +101,7 @@ public class JobServiceImpl implements IJobService {
         }
         if (JobMode.BATCH.name().equals(jobMode)) {
             jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
-        } else if (JobMode.STREAM.name().equals(jobMode)) {
+        } else if (JobMode.STREAMING.name().equals(jobMode)) {
             jobReq.setJobType(BusinessMode.DATA_REPLICA);
         } else {
             throw new ParamValidationException(
