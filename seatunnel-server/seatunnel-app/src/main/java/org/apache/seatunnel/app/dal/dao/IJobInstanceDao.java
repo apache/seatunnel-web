@@ -49,4 +49,6 @@ public interface IJobInstanceDao {
     List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList);
 
     JobInstance getJobExecutionStatus(@NonNull Long jobInstanceId);
+
+    void deleteById(@NonNull Long jobInstanceId);
 }

@@ -38,4 +38,6 @@ public interface ITaskInstanceService<T> {
     Result<JobExecutionStatus> getJobExecutionStatus(Integer userId, long jobInstanceId);
 
     Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(Integer userId, long jobInstanceId);
+
+    Result<Void> deleteJobInstanceById(Integer userId, long jobInstanceId);
 }

@@ -28,6 +28,7 @@ import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -107,5 +108,13 @@ public class JobExecutorController {
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
         return taskInstanceService.getJobExecutionDetail(userId, jobInstanceId);
+    }
+
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "Deletes given job instance id", httpMethod = "DELETE")
+    Result<Void> deleteJobInstance(
+            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
+            @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
+        return taskInstanceService.deleteJobInstanceById(userId, jobInstanceId);
     }
 }

@@ -79,4 +79,13 @@ public class JobExecutorControllerWrapper extends SeatunnelWebTestingBase {
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<SeaTunnelJobInstanceDto>>() {});
     }
+
+    public Result<Void> deleteJobInstance(long jobInstanceId) {
+        String response =
+                sendRequest(
+                        urlWithParam("job/executor/delete?jobInstanceId=" + jobInstanceId),
+                        null,
+                        "DELETE");
+        return JSONTestUtils.parseObject(response, Result.class);
+    }
 }

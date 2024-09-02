@@ -180,10 +180,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
               isDelete: true,
               text: t('project.synchronization_instance.delete'),
               icon: h(DeleteOutlined),
-              onClick: (row) => void handleDel(row.id),
-              onPositiveClick: () => {
-                console.log('123')
-              },
+              onPositiveClick: (row) => void handleDel(row.id),
               positiveText: t('project.synchronization_instance.confirm'),
               popTips: t('project.synchronization_instance.delete_confirm')
             }
@@ -226,6 +223,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   const handleDel = (id: number) => {
     hanldleDelJob(id).then(() => {
       message.success(t('common.success_tips'))
+      getList()
     })
   }
 
