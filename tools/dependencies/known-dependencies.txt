@@ -106,8 +106,8 @@ jcommander-1.81.jar
 log4j-api-2.17.1.jar
 log4j-over-slf4j-1.7.36.jar
 log4j-to-slf4j-2.17.1.jar
-logback-classic-1.2.3.jar
-logback-core-1.2.3.jar
+logback-classic-1.5.7.jar
+logback-core-1.5.7.jar
 protostuff-api-1.8.0.jar
 protostuff-collectionschema-1.8.0.jar
 protostuff-core-1.8.0.jar
