@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
+import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
@@ -86,17 +87,21 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .updateUserId(userId)
                         .jobType(jobReq.getJobType().name())
                         .build());
-        jobVersionDao.createVersion(
-                JobVersion.builder()
-                        .jobId(uuid)
-                        .createUserId(userId)
-                        .updateUserId(userId)
-                        .name(DEFAULT_VERSION)
-                        .id(uuid)
-                        .engineName(EngineType.SeaTunnel.name())
-                        .jobMode(JobMode.BATCH.name())
-                        .engineVersion("2.3.0")
-                        .build());
+        JobVersion.JobVersionBuilder builder = JobVersion.builder();
+        builder.jobId(uuid)
+                .createUserId(userId)
+                .updateUserId(userId)
+                .name(DEFAULT_VERSION)
+                .id(uuid)
+                .engineName(EngineType.SeaTunnel.name())
+                .engineVersion("2.3.7");
+        if (BusinessMode.DATA_INTEGRATION.equals(jobReq.getJobType())) {
+            builder.jobMode(JobMode.BATCH.name());
+        } else if (BusinessMode.DATA_REPLICA.equals(jobReq.getJobType())) {
+            builder.jobMode(JobMode.STREAMING.name());
+        }
+        jobVersionDao.createVersion(builder.build());
+
         return uuid;
     }
 
