@@ -43,7 +43,7 @@ public interface IJobInstanceDao {
             IPage<JobInstance> page,
             Date startTime,
             Date endTime,
-            Long jobDefineId,
+            String jobDefineId,
             String jobMode);
 
     List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList);

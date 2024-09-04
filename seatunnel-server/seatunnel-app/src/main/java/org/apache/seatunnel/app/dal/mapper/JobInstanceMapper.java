@@ -35,7 +35,7 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
             IPage<JobInstance> page,
             @Param("startTime") Date startTime,
             @Param("endTime") Date endTime,
-            @Param("jobDefineId") Long jobDefineId,
+            @Param("jobDefineName") String jobDefineName,
             @Param("jobMode") String jobMode);
 
     JobInstance getJobExecutionStatus(@Param("jobInstanceId") Long jobInstanceId);

@@ -44,8 +44,8 @@
             <if test="endTime != null">
                 AND (end_time <![CDATA[ <=]]> #{endTime} or end_time is null)
             </if>
-            <if test="jobDefineId != null">
-                AND job_define_id = #{jobDefineId}
+            <if test="jobDefineName != null">
+                AND job_define_id in (select x.id from t_st_job_definition x where x.name LIKE concat('%', #{jobDefineName}, '%'))
             </if>
             <if test="jobMode != null">
                 AND job_type = #{jobMode}
