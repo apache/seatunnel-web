@@ -37,7 +37,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(
-            String jobDefineName,
+            String taskName,
             String executorName,
             String stateType,
             String startTime,
@@ -48,8 +48,8 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
         String response =
                 sendRequest(
                         urlWithParam(
-                                "task/jobMetrics?jobDefineName="
-                                        + jobDefineName
+                                "task/jobMetrics?taskName="
+                                        + taskName
                                         + "&executorName="
                                         + executorName
                                         + "&stateType="
