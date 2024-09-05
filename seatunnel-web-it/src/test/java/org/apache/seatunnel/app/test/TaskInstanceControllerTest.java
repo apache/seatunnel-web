@@ -34,6 +34,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TaskInstanceControllerTest extends SeatunnelWebTestingBase {
@@ -53,6 +54,21 @@ public class TaskInstanceControllerTest extends SeatunnelWebTestingBase {
     @Test
     public void getTaskInstanceList_shouldReturnData_whenValidRequest() {
         String jobName = "getTaskInstance" + uniqueId;
+        extractedJob1(jobName);
+        String jobName2 = "getTaskInstance" + uniqueId + "_2";
+        extractedJob1(jobName2);
+
+        List<SeaTunnelJobInstanceDto> taskInstanceList =
+                taskInstanceControllerWrapper.getTaskInstanceList(jobName);
+        assertNotNull(taskInstanceList);
+        assertEquals(2, taskInstanceList.size());
+
+        taskInstanceList =
+                taskInstanceControllerWrapper.getTaskInstanceList("name_which_matches_no_job");
+        assertNull(taskInstanceList);
+    }
+
+    private static void extractedJob1(String jobName) {
         long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> execuitonResult = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(execuitonResult.isSuccess());
@@ -60,10 +76,6 @@ public class TaskInstanceControllerTest extends SeatunnelWebTestingBase {
                 JobTestingUtils.waitForJobCompletion(execuitonResult.getData());
         assertEquals(1, listResult.getData().size());
         assertEquals("FINISHED", listResult.getData().get(0).getStatus());
-
-        SeaTunnelJobInstanceDto taskInstanceList =
-                taskInstanceControllerWrapper.getTaskInstanceList(jobName);
-        assertNotNull(taskInstanceList);
     }
 
     @AfterAll

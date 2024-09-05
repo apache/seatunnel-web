@@ -41,7 +41,7 @@ public class TaskInstanceController {
     @ApiOperation(value = "get the jobMetrics list ", httpMethod = "GET")
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(
             @RequestAttribute(name = "userId") Integer userId,
-            @RequestParam(name = "jobDefineName", required = false) String jobDefineName,
+            @RequestParam(name = "taskName", required = false) String jobDefineName,
             @RequestParam(name = "executorName", required = false) String executorName,
             @RequestParam(name = "stateType", required = false) String stateType,
             @RequestParam(name = "startDate", required = false) String startTime,

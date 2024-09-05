@@ -28,8 +28,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
@@ -37,7 +37,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(
-            String jobDefineName,
+            String taskName,
             String executorName,
             String stateType,
             String startTime,
@@ -48,8 +48,8 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
         String response =
                 sendRequest(
                         urlWithParam(
-                                "task/jobMetrics?jobDefineName="
-                                        + jobDefineName
+                                "task/jobMetrics?taskName="
+                                        + taskName
                                         + "&executorName="
                                         + executorName
                                         + "&stateType="
@@ -68,7 +68,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
                 response, new TypeReference<Result<PageInfo<SeaTunnelJobInstanceDto>>>() {});
     }
 
-    public SeaTunnelJobInstanceDto getTaskInstanceList(String jobDefineName) {
+    public List<SeaTunnelJobInstanceDto> getTaskInstanceList(String jobDefineName) {
         String startTime =
                 URLEncoder.encode(
                         dateFormat.format(
@@ -94,7 +94,6 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
         if (result.getData().getTotalList().isEmpty()) {
             return null;
         }
-        assertEquals(1, result.getData().getTotalList().size());
-        return result.getData().getTotalList().get(0);
+        return result.getData().getTotalList();
     }
 }

@@ -76,12 +76,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
             String syncTaskType,
             Integer pageNo,
             Integer pageSize) {
-        JobDefinition jobDefinition = null;
-        IPage<SeaTunnelJobInstanceDto> jobInstanceIPage;
-        if (jobDefineName != null) {
-            jobDefinition = jobDefinitionDao.getJobByName(jobDefineName);
-        }
-
         Result<PageInfo<SeaTunnelJobInstanceDto>> result = new Result<>();
         PageInfo<SeaTunnelJobInstanceDto> pageInfo = new PageInfo<>(pageNo, pageSize);
         result.setData(pageInfo);
@@ -90,19 +84,13 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         Date startDate = dateConverter(startTime);
         Date endDate = dateConverter(endTime);
 
-        if (jobDefinition != null) {
-            jobInstanceIPage =
-                    jobInstanceDao.queryJobInstanceListPaging(
-                            new Page<>(pageNo, pageSize),
-                            startDate,
-                            endDate,
-                            jobDefinition.getId(),
-                            syncTaskType);
-        } else {
-            jobInstanceIPage =
-                    jobInstanceDao.queryJobInstanceListPaging(
-                            new Page<>(pageNo, pageSize), startDate, endDate, null, syncTaskType);
-        }
+        IPage<SeaTunnelJobInstanceDto> jobInstanceIPage =
+                jobInstanceDao.queryJobInstanceListPaging(
+                        new Page<>(pageNo, pageSize),
+                        startDate,
+                        endDate,
+                        jobDefineName,
+                        syncTaskType);
 
         List<SeaTunnelJobInstanceDto> records = jobInstanceIPage.getRecords();
         if (CollectionUtils.isEmpty(records)) {
