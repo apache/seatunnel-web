@@ -32,6 +32,7 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
+import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.Constants;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -43,7 +44,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -76,9 +76,8 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             @NonNull Integer userId, @NonNull Long jobInstanceId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_METRICS_SUMMARY, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        String jobEngineId = jobInstance.getJobEngineId();
         List<JobMetrics> jobPipelineDetailMetrics =
-                getJobPipelineMetrics(userId, jobInstanceId, jobEngineId);
+                getJobPipelineDetailMetrics(jobInstance, userId);
         return summaryMetrics(jobPipelineDetailMetrics);
     }
 
@@ -93,7 +92,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         String jobStatus = engineMetricsExtractor.getJobStatus(jobEngineId);
 
         List<JobMetrics> jobPipelineDetailMetrics =
-                getJobPipelineMetrics(userId, jobInstanceId, jobEngineId);
+                getJobPipelineDetailMetrics(jobInstance, userId);
         long readCount =
                 jobPipelineDetailMetrics.stream().mapToLong(JobMetrics::getReadRowCount).sum();
         long writeCount =
@@ -460,26 +459,21 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private List<JobMetrics> getJobPipelineDetailMetrics(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull String jobEngineId,
-            String jobStatus,
-            @NonNull IEngineMetricsExtractor engineMetricsExtractor) {
-
-        // If job is not end state, get metrics from engine.
+            @NonNull JobInstance jobInstance, @NonNull Integer userId) {
         List<JobMetrics> jobMetrics;
-        if (jobStatus == null) {
-            jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
-        } else if (engineMetricsExtractor.isJobEndStatus(jobStatus)) {
-            jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
+        if (JobUtils.isJobEndStatus(jobInstance.getJobStatus())) {
+            jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobInstance.getJobEngineId());
             if (CollectionUtils.isEmpty(jobMetrics)) {
-                syncMetricsToDb(jobInstance, userId, jobEngineId);
-                jobMetrics = getJobMetricsFromEngine(jobInstance, jobEngineId);
+                jobMetrics = getJobMetricsFromEngine(jobInstance, jobInstance.getJobEngineId());
+                if (!jobMetrics.isEmpty()) {
+                    // If engine returns some metrics then it makes sens to insert into database
+                    syncMetricsToDb(jobInstance, userId, jobInstance.getJobEngineId());
+                }
             }
         } else {
-            jobMetrics = getJobMetricsFromEngine(jobInstance, jobEngineId);
+            // If job is not end state, get metrics from engine.
+            jobMetrics = getJobMetricsFromEngine(jobInstance, jobInstance.getJobEngineId());
         }
-
         return jobMetrics;
     }
 
@@ -488,29 +482,15 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             @NonNull Integer userId, @NonNull Long jobInstanceId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DETAIL, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        String jobEngineId = jobInstance.getJobEngineId();
         List<JobMetrics> jobPipelineDetailMetrics =
-                getJobPipelineMetrics(userId, jobInstanceId, jobEngineId);
+                getJobPipelineDetailMetrics(jobInstance, userId);
         return jobPipelineDetailMetrics.stream()
                 .map(this::wrapperJobMetrics)
                 .collect(Collectors.toList());
     }
 
-    private List<JobMetrics> getJobPipelineMetrics(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
-
-        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        Engine engine = new Engine(jobInstance.getEngineName(), jobInstance.getEngineVersion());
-        IEngineMetricsExtractor engineMetricsExtractor =
-                (new EngineMetricsExtractorFactory(engine)).getEngineMetricsExtractor();
-        String jobStatus = engineMetricsExtractor.getJobStatus(jobEngineId);
-        return getJobPipelineDetailMetrics(
-                jobInstance, userId, jobEngineId, jobStatus, engineMetricsExtractor);
-    }
-
     @Override
-    public JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId)
-            throws JsonProcessingException {
+    public JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DAG, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         String jobEngineId = jobInstance.getJobEngineId();

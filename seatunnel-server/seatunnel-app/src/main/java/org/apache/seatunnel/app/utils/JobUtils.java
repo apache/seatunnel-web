@@ -97,4 +97,10 @@ public class JobUtils {
                                                             Long.parseLong(datasourceId)));
                         });
     }
+
+    public static boolean isJobEndStatus(String jobStatus) {
+        return "finished".equalsIgnoreCase(jobStatus)
+                || "canceled".equalsIgnoreCase(jobStatus)
+                || "failed".equalsIgnoreCase(jobStatus);
+    }
 }
