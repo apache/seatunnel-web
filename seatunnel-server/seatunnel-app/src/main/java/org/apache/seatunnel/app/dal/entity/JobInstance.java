@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.app.dal.entity;
 
+import org.apache.seatunnel.engine.core.job.JobStatus;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -42,7 +44,7 @@ public class JobInstance {
     private Long jobDefineId;
 
     @TableField("job_status")
-    private String jobStatus;
+    private JobStatus jobStatus;
 
     @TableField("job_config")
     private String jobConfig;

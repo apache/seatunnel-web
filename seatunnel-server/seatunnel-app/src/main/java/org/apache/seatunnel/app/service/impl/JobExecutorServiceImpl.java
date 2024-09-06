@@ -55,7 +55,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -128,7 +127,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         } catch (Throwable e) {
             log.error("Job execution submission failed.", e);
             JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-            jobInstance.setJobStatus(JobStatus.FAILED.name());
+            jobInstance.setJobStatus(JobStatus.FAILED);
             jobInstance.setEndTime(new Date());
             String jobInstanceErrorMessage = JobUtils.getJobInstanceErrorMessage(e.getMessage());
             jobInstance.setErrorMessage(jobInstanceErrorMessage);
@@ -183,14 +182,14 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     @Override
     public Result<Void> jobPause(Integer userId, Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        if (Objects.equals(
-                getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()), "RUNNING")) {
+        if (getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId())
+                == JobStatus.RUNNING) {
             pauseJobInEngine(jobInstance.getJobEngineId());
         }
         return Result.success();
     }
 
-    private String getJobStatusFromEngine(@NonNull JobInstance jobInstance, String jobEngineId) {
+    private JobStatus getJobStatusFromEngine(@NonNull JobInstance jobInstance, String jobEngineId) {
 
         Engine engine = new Engine(jobInstance.getEngineName(), jobInstance.getEngineVersion());
 

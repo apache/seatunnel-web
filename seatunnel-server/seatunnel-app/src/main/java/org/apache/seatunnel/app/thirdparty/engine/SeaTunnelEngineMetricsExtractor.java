@@ -26,6 +26,7 @@ import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.engine.core.job.JobDAGInfo;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -161,14 +162,14 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
     @Override
     public boolean isJobEnd(@NonNull String jobEngineId) {
-        String jobStatus = seaTunnelEngineProxy.getJobStatus(jobEngineId);
-        return "finished".equalsIgnoreCase(jobStatus)
-                || "canceled".equalsIgnoreCase(jobStatus)
-                || "failed".equalsIgnoreCase(jobStatus);
+        JobStatus jobStatus = seaTunnelEngineProxy.getJobStatus(jobEngineId);
+        return jobStatus == JobStatus.FINISHED
+                || jobStatus == JobStatus.CANCELED
+                || jobStatus == JobStatus.FAILED;
     }
 
     @Override
-    public String getJobStatus(@NonNull String jobEngineId) {
+    public JobStatus getJobStatus(@NonNull String jobEngineId) {
         return seaTunnelEngineProxy.getJobStatus(jobEngineId);
     }
 
@@ -293,13 +294,11 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                 return new HashMap<>();
             }
             JsonNode jsonNode = JsonUtils.stringToJsonNode(allJobMetricsContent);
-            Iterator<JsonNode> iterator = jsonNode.iterator();
-            while (iterator.hasNext()) {
+            for (JsonNode item : jsonNode) {
                 LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
-                JsonNode next = iterator.next();
 
-                JsonNode sourceReceivedCount = next.get("metrics").get("SourceReceivedCount");
-                Long jobEngineId = 0L;
+                JsonNode sourceReceivedCount = item.get("metrics").get("SourceReceivedCount");
+                long jobEngineId = 0L;
                 if (sourceReceivedCount != null && sourceReceivedCount.isArray()) {
                     for (JsonNode node : sourceReceivedCount) {
                         jobEngineId = node.get("tags").get("jobId").asLong();
@@ -311,7 +310,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                     }
                 }
 
-                JsonNode sinkWriteCount = next.get("metrics").get("SinkWriteCount");
+                JsonNode sinkWriteCount = item.get("metrics").get("SinkWriteCount");
                 if (sinkWriteCount != null && sinkWriteCount.isArray()) {
                     for (JsonNode node : sinkWriteCount) {
                         jobEngineId = node.get("tags").get("jobId").asLong();
@@ -324,7 +323,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                     }
                 }
 
-                JsonNode sinkWriteQPS = next.get("metrics").get("SinkWriteQPS");
+                JsonNode sinkWriteQPS = item.get("metrics").get("SinkWriteQPS");
                 if (sinkWriteQPS != null && sinkWriteQPS.isArray()) {
                     for (JsonNode node : sinkWriteQPS) {
                         Integer pipelineId = node.get("tags").get("pipelineId").asInt();
@@ -336,7 +335,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                     }
                 }
 
-                JsonNode sourceReceivedQPS = next.get("metrics").get("SourceReceivedQPS");
+                JsonNode sourceReceivedQPS = item.get("metrics").get("SourceReceivedQPS");
                 if (sourceReceivedQPS != null && sourceReceivedQPS.isArray()) {
                     for (JsonNode node : sourceReceivedQPS) {
                         Integer pipelineId = node.get("tags").get("pipelineId").asInt();
@@ -348,7 +347,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                     }
                 }
 
-                JsonNode cdcRecordEmitDelay = next.get("metrics").get("CDCRecordEmitDelay");
+                JsonNode cdcRecordEmitDelay = item.get("metrics").get("CDCRecordEmitDelay");
                 if (cdcRecordEmitDelay != null && cdcRecordEmitDelay.isArray()) {
                     Map<Integer, List<Long>> dataMap = new HashMap<>();
                     for (JsonNode node : cdcRecordEmitDelay) {
@@ -387,7 +386,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
         JobMetrics currPipelineMetrics = metricsMap.get(pipelineId);
         if (currPipelineMetrics == null) {
             currPipelineMetrics = new JobMetrics();
-            currPipelineMetrics.setStatus("RUNNING");
+            currPipelineMetrics.setStatus(JobStatus.RUNNING);
             currPipelineMetrics.setPipelineId(pipelineId);
             metricsMap.put(pipelineId, currPipelineMetrics);
         }
@@ -402,7 +401,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
         if (currPipelineMetrics == null) {
             currPipelineMetrics = new JobMetrics();
             metricsMap.put(pipelineId, currPipelineMetrics);
-            currPipelineMetrics.setStatus(jobPipelineStatus.get(pipelineId));
+            currPipelineMetrics.setStatus(JobStatus.valueOf(jobPipelineStatus.get(pipelineId)));
             currPipelineMetrics.setPipelineId(pipelineId);
         }
         return currPipelineMetrics;
