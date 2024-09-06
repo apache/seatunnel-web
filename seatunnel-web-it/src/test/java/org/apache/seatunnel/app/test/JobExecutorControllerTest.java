@@ -73,7 +73,7 @@ public class JobExecutorControllerTest {
         Result<List<JobPipelineDetailMetricsRes>> listResult =
                 JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
-        assertEquals("FINISHED", listResult.getData().get(0).getStatus());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
         assertEquals(5, listResult.getData().get(0).getReadRowCount());
         assertEquals(5, listResult.getData().get(0).getWriteRowCount());
     }
@@ -88,7 +88,7 @@ public class JobExecutorControllerTest {
         Result<List<JobPipelineDetailMetricsRes>> listResult =
                 JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
-        assertEquals("FINISHED", listResult.getData().get(0).getStatus());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
         assertEquals(5, listResult.getData().get(0).getReadRowCount());
         assertEquals(5, listResult.getData().get(0).getWriteRowCount());
         String generatedJobFile = getGenerateJobFile(String.valueOf(jobVersionId));
@@ -122,7 +122,7 @@ public class JobExecutorControllerTest {
         assertTrue(result.getData() > 0);
         listResult = JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
-        assertEquals("FINISHED", listResult.getData().get(0).getStatus());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
         assertEquals(numberOfRecords, listResult.getData().get(0).getReadRowCount());
         assertEquals(numberOfRecords, listResult.getData().get(0).getWriteRowCount());
 
@@ -281,7 +281,7 @@ public class JobExecutorControllerTest {
         Result<JobExecutionStatus> jobExecutionStatusResult =
                 jobExecutorControllerWrapper.getJobExecutionStatus(jobInstanceId);
         assertTrue(jobExecutionStatusResult.isSuccess());
-        assertEquals(JobStatus.FAILED.name(), jobExecutionStatusResult.getData().getJobStatus());
+        assertEquals(JobStatus.FAILED, jobExecutionStatusResult.getData().getJobStatus());
         assertNotNull(jobExecutionStatusResult.getData().getErrorMessage());
 
         // Invalid jobInstanceId
@@ -306,7 +306,7 @@ public class JobExecutorControllerTest {
         Result<SeaTunnelJobInstanceDto> jobExecutionDetailResult =
                 jobExecutorControllerWrapper.getJobExecutionDetail(jobInstanceId);
         assertTrue(jobExecutionDetailResult.isSuccess());
-        assertEquals(JobStatus.FAILED.name(), jobExecutionDetailResult.getData().getJobStatus());
+        assertEquals(JobStatus.FAILED, jobExecutionDetailResult.getData().getJobStatus());
         assertNotNull(jobExecutionDetailResult.getData().getErrorMessage());
         assertNotNull(jobExecutionDetailResult.getData().getJobDefineName());
 

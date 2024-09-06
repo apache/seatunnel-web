@@ -25,6 +25,7 @@ import org.apache.seatunnel.app.controller.TaskInstanceControllerWrapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,7 +76,7 @@ public class TaskInstanceControllerTest extends SeatunnelWebTestingBase {
         Result<List<JobPipelineDetailMetricsRes>> listResult =
                 JobTestingUtils.waitForJobCompletion(execuitonResult.getData());
         assertEquals(1, listResult.getData().size());
-        assertEquals("FINISHED", listResult.getData().get(0).getStatus());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
     }
 
     @AfterAll
