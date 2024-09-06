@@ -99,9 +99,9 @@ public class JobTestingUtils {
             return false;
         }
         switch (metrics.getStatus()) {
-            case "FINISHED":
-            case "CANCELED":
-            case "FAILED":
+            case FINISHED:
+            case CANCELED:
+            case FAILED:
                 return true;
             default:
                 return false;
