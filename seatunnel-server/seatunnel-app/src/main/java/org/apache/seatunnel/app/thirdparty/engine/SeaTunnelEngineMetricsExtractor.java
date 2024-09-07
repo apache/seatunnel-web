@@ -401,7 +401,10 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
         if (currPipelineMetrics == null) {
             currPipelineMetrics = new JobMetrics();
             metricsMap.put(pipelineId, currPipelineMetrics);
-            currPipelineMetrics.setStatus(JobStatus.valueOf(jobPipelineStatus.get(pipelineId)));
+            currPipelineMetrics.setStatus(
+                    "DEPLOYING".equals(jobPipelineStatus.get(pipelineId))
+                            ? JobStatus.SCHEDULED
+                            : JobStatus.valueOf(jobPipelineStatus.get(pipelineId)));
             currPipelineMetrics.setPipelineId(pipelineId);
         }
         return currPipelineMetrics;

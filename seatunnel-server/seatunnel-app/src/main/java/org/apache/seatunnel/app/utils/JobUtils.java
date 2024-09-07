@@ -21,6 +21,7 @@ import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
 
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -98,9 +99,9 @@ public class JobUtils {
                         });
     }
 
-    public static boolean isJobEndStatus(String jobStatus) {
-        return "finished".equalsIgnoreCase(jobStatus)
-                || "canceled".equalsIgnoreCase(jobStatus)
-                || "failed".equalsIgnoreCase(jobStatus);
+    public static boolean isJobEndStatus(JobStatus jobStatus) {
+        return JobStatus.FINISHED == jobStatus
+                || JobStatus.CANCELED == jobStatus
+                || JobStatus.FAILED == jobStatus;
     }
 }
