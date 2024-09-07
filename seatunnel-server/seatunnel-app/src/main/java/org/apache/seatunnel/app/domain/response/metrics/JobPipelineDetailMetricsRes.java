@@ -16,6 +16,8 @@
  */
 package org.apache.seatunnel.app.domain.response.metrics;
 
+import org.apache.seatunnel.engine.core.job.JobStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,5 +47,5 @@ public class JobPipelineDetailMetricsRes {
 
     private long recordDelay;
 
-    private String status;
+    private JobStatus status;
 }

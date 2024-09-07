@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.app.domain.response.executor;
 
+import org.apache.seatunnel.engine.core.job.JobStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobExecutionStatus {
 
-    private String jobStatus;
+    private JobStatus jobStatus;
 
     private String errorMessage;
 }

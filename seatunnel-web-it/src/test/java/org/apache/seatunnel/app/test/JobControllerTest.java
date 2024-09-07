@@ -29,6 +29,7 @@ import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import org.junit.jupiter.api.AfterAll;
@@ -73,7 +74,7 @@ public class JobControllerTest {
         Result<List<JobPipelineDetailMetricsRes>> listResult =
                 JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
-        assertEquals("FINISHED", listResult.getData().get(0).getStatus());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
         assertEquals(5, listResult.getData().get(0).getReadRowCount());
         assertEquals(5, listResult.getData().get(0).getWriteRowCount());
     }

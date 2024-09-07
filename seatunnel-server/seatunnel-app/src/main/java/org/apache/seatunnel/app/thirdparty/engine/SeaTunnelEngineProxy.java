@@ -22,6 +22,7 @@ import org.apache.seatunnel.engine.common.config.JobConfig;
 import org.apache.seatunnel.engine.common.config.SeaTunnelConfig;
 import org.apache.seatunnel.engine.common.config.YamlSeaTunnelConfigBuilder;
 import org.apache.seatunnel.engine.core.job.JobDAGInfo;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import com.hazelcast.client.config.ClientConfig;
 import lombok.NonNull;
@@ -74,10 +75,10 @@ public class SeaTunnelEngineProxy {
         }
     }
 
-    public String getJobStatus(@NonNull String jobEngineId) {
+    public JobStatus getJobStatus(@NonNull String jobEngineId) {
         SeaTunnelClient seaTunnelClient = new SeaTunnelClient(clientConfig);
         try {
-            return seaTunnelClient.getJobStatus(Long.valueOf(jobEngineId));
+            return JobStatus.valueOf(seaTunnelClient.getJobStatus(Long.valueOf(jobEngineId)));
         } catch (Exception e) {
             log.warn("Can not get job from engine.", e);
             return null;
