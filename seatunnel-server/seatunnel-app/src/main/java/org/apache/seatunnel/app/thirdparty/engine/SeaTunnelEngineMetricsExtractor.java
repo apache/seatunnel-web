@@ -119,6 +119,10 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
         LinkedHashMap<Integer, String> pipelineStatusMap = new LinkedHashMap<>();
         try {
             JsonNode jsonNode = JsonUtils.stringToJsonNode(jobState);
+            if (jsonNode.get("err") != null) {
+                throw new SeatunnelException(
+                        SeatunnelErrorEnum.LOAD_ENGINE_METRICS_ERROR, jsonNode.get("err").asText());
+            }
             Iterator<Map.Entry<String, JsonNode>> iterator =
                     jsonNode.get("pipelineStateMapperMap").fields();
 
@@ -158,13 +162,6 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
     @Override
     public boolean isJobEnd(@NonNull String jobEngineId) {
         String jobStatus = seaTunnelEngineProxy.getJobStatus(jobEngineId);
-        return "finished".equalsIgnoreCase(jobStatus)
-                || "canceled".equalsIgnoreCase(jobStatus)
-                || "failed".equalsIgnoreCase(jobStatus);
-    }
-
-    @Override
-    public boolean isJobEndStatus(@NonNull String jobStatus) {
         return "finished".equalsIgnoreCase(jobStatus)
                 || "canceled".equalsIgnoreCase(jobStatus)
                 || "failed".equalsIgnoreCase(jobStatus);

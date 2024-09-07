@@ -37,8 +37,6 @@ public interface IEngineMetricsExtractor {
     /** contains finished, failed, canceled */
     boolean isJobEnd(@NonNull String jobEngineId);
 
-    boolean isJobEndStatus(@NonNull String jobStatus);
-
     List<Map<String, String>> getClusterHealthMetrics();
 
     String getJobStatus(@NonNull String jobEngineId);
