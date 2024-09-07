@@ -80,7 +80,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             return Result.success(executeResource.getJobInstanceId());
         } catch (RuntimeException e) {
             Result<Long> failure =
-                    Result.failure(SeatunnelErrorEnum.JUB_EXEC_SUBMISSION_ERROR, e.getMessage());
+                    Result.failure(SeatunnelErrorEnum.JOB_EXEC_SUBMISSION_ERROR, e.getMessage());
             // Even though job execution submission failed, we still need to return the
             // jobInstanceId to the user
             // as the job instance has been created in the database.

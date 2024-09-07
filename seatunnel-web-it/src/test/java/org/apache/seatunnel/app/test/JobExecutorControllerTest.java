@@ -81,7 +81,10 @@ public class JobExecutorControllerTest {
     @Test
     public void executeJobWithParameters() {
         String jobName = "execJobWithParam" + uniqueId;
-        long jobVersionId = JobTestingUtils.createJob(jobName);
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_exec-1" + uniqueId, "console_exec-1" + uniqueId);
+        long jobVersionId = JobTestingUtils.createJob(jobCreateReq);
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
@@ -96,26 +99,19 @@ public class JobExecutorControllerTest {
         assertTrue(generatedJobFile.contains("\"log.print.delay.ms\"=\"100\""));
 
         JobExecParam jobExecParam = new JobExecParam();
+        Map<String, String> placeholderValues = new HashMap<>();
 
-        Map<String, String> envConf = new HashMap<>();
-        envConf.put("job.name", "executeJobWithParameters");
-        jobExecParam.setEnv(envConf);
-        Map<String, Map<String, String>> tasks = new HashMap<>();
-        jobExecParam.setTasks(tasks);
-
+        // source configuration
         int numberOfRecords = 100;
-        Map<String, String> task1Config = new HashMap<>();
-        task1Config.put("row.num", String.valueOf(numberOfRecords));
-        tasks.put("source-fakesource", task1Config);
+        placeholderValues.put("rowNum", String.valueOf(numberOfRecords));
 
-        Map<String, String> task2Config = new HashMap<>();
-        task2Config.put("replace_first", "true");
-        task2Config.put("is_regex", "true");
-        tasks.put("transform-replace", task2Config);
+        // transform configuration
+        placeholderValues.put("firstReplace", "true");
+        placeholderValues.put("isRegex", "true");
 
-        Map<String, String> task3Config = new HashMap<>();
-        task3Config.put("log.print.delay.ms", "99");
-        tasks.put("sink-console", task3Config);
+        // sink configuration
+        placeholderValues.put("logPrintDelayMs", "99");
+        jobExecParam.setPlaceholderValues(placeholderValues);
 
         result = jobExecutorControllerWrapper.jobExecutor(jobVersionId, jobExecParam);
         assertTrue(result.isSuccess());
@@ -132,53 +128,6 @@ public class JobExecutorControllerTest {
         assertTrue(generatedJobFile.contains("\"replace_first\"=\"true\""));
         // database properties except query can not be updated
         assertFalse(generatedJobFile.contains("\"log.print.delay.ms\"=\"99\""));
-        assertTrue(generatedJobFile.contains("\"job.name\"=executeJobWithParameters"));
-    }
-
-    @Test
-    public void executeJobWithParameters_AllowQueryUpdate() {
-        String jobName = "execJobUpdateQuery" + uniqueId;
-        JobCreateReq jobCreateReq = JobTestingUtils.populateMySQLJobCreateReqFromFile();
-        jobCreateReq.getJobConfig().setName(jobName);
-        jobCreateReq.getJobConfig().setDescription(jobName + " description");
-        String datasourceName = "execJobUpdateQuery_db" + uniqueId;
-        String mysqlDatasourceId =
-                seatunnelDatasourceControllerWrapper.createMysqlDatasource(datasourceName);
-        for (PluginConfig pluginConfig : jobCreateReq.getPluginConfigs()) {
-            pluginConfig.setDataSourceId(Long.parseLong(mysqlDatasourceId));
-        }
-        Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
-        assertTrue(job.isSuccess());
-        Long jobVersionId = job.getData();
-        Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
-        // Fails because of the wrong credentials of the database.
-        assertFalse(result.isSuccess());
-        String generatedJobFile = getGenerateJobFile(String.valueOf(jobVersionId));
-        assertTrue(
-                generatedJobFile.contains(
-                        "query=\"SELECT `name`, `age` FROM `test`.`test_table`\""));
-        assertTrue(generatedJobFile.contains("user=someUser"));
-        assertTrue(generatedJobFile.contains("password=somePassword"));
-
-        JobExecParam jobExecParam = new JobExecParam();
-        Map<String, Map<String, String>> tasks = new HashMap<>();
-        jobExecParam.setTasks(tasks);
-
-        Map<String, String> task1Config = new HashMap<>();
-        task1Config.put("query", "SELECT `name`, `age` FROM `test`.`test_table` LIMIT 10");
-        task1Config.put("user", "otherUser");
-        task1Config.put("password", "otherPassword");
-        tasks.put("mysql_source_1", task1Config);
-
-        result = jobExecutorControllerWrapper.jobExecutor(jobVersionId, jobExecParam);
-        assertFalse(result.isSuccess());
-        // query should be changed but other database details should not be changed,
-        generatedJobFile = getGenerateJobFile(String.valueOf(jobVersionId));
-        assertTrue(
-                generatedJobFile.contains(
-                        "query=\"SELECT `name`, `age` FROM `test`.`test_table` LIMIT 10\""));
-        assertTrue(generatedJobFile.contains("user=someUser"));
-        assertTrue(generatedJobFile.contains("password=somePassword"));
     }
 
     @Test

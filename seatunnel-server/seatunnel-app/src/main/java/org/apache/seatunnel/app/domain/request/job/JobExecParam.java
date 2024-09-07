@@ -27,10 +27,8 @@ import java.util.Map;
 @AllArgsConstructor
 // Job execution parameters
 public class JobExecParam {
-    // job name -> key -> value
-    private Map<String, String> env;
-    // task name -> key -> value
-    private Map<String, Map<String, String>> tasks;
+    // job config placeholder name -> value
+    private Map<String, String> placeholderValues;
     // task name -> new datasource id
     private Map<String, String> datasource;
 }
