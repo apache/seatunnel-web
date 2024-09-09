@@ -94,20 +94,23 @@ public class JobServiceImpl implements IJobService {
                     SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL, "description");
         }
         jobReq.setDescription(jobConfig.getDescription());
-        JobMode jobMode = JobMode.valueOf((String) jobConfig.getEnv().get("job.mode"));
-        if (StringUtils.isEmpty(jobMode.name())) {
-            throw new ParamValidationException(
-                    SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL, "job.mode");
-        }
-        if (JobMode.BATCH == jobMode) {
-            jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
-        } else if (JobMode.STREAMING == jobMode) {
-            jobReq.setJobType(BusinessMode.DATA_REPLICA);
-        } else {
+        try {
+            JobMode jobMode = JobMode.valueOf((String) jobConfig.getEnv().get("job.mode"));
+            if (JobMode.BATCH == jobMode) {
+                jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
+            } else if (JobMode.STREAMING == jobMode) {
+                jobReq.setJobType(BusinessMode.DATA_REPLICA);
+            } else {
+                throw new ParamValidationException(
+                        SeatunnelErrorEnum.INVALID_PARAM,
+                        "job.mode",
+                        "job.mode should be either BATCH or STREAMING");
+            }
+        } catch (Exception e) {
             throw new ParamValidationException(
                     SeatunnelErrorEnum.INVALID_PARAM,
                     "job.mode",
-                    "job.mode should be either BATCH or STREAM");
+                    "job.mode should be either BATCH or STREAMING");
         }
         return jobReq;
     }

@@ -100,15 +100,17 @@ public class JobControllerTest {
         jobConfig.getEnv().put("job.mode", "");
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isFailed());
-        assertEquals(SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL.getCode(), result.getCode());
-        assertEquals("param [job.mode] can not be null or empty", result.getMsg());
+        assertEquals(SeatunnelErrorEnum.INVALID_PARAM.getCode(), result.getCode());
+        assertEquals(
+                "param [job.mode] is invalid. job.mode should be either BATCH or STREAMING",
+                result.getMsg());
 
         jobConfig.getEnv().put("job.mode", "InvalidJobMode");
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isFailed());
         assertEquals(SeatunnelErrorEnum.INVALID_PARAM.getCode(), result.getCode());
         assertEquals(
-                "param [job.mode] is invalid. job.mode should be either BATCH or STREAM",
+                "param [job.mode] is invalid. job.mode should be either BATCH or STREAMING",
                 result.getMsg());
 
         jobConfig.getEnv().put("job.mode", JobMode.BATCH);
