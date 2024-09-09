@@ -22,7 +22,6 @@ import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -87,9 +86,7 @@ public class JobUtilsTests {
 
         assertThrows(
                 SeatunnelException.class,
-                () -> {
-                    JobUtils.replaceJobConfigPlaceholders(jobConfigContent, jobExecParam);
-                });
+                () -> JobUtils.replaceJobConfigPlaceholders(jobConfigContent, jobExecParam));
     }
 
     @Test
@@ -112,7 +109,7 @@ public class JobUtilsTests {
         assertNotNull(config);
     }
 
-    private static @NotNull JobExecParam getJobExecParam(Map<String, String> paramValues) {
+    private JobExecParam getJobExecParam(Map<String, String> paramValues) {
         JobExecParam jobExecParam = new JobExecParam();
         jobExecParam.setPlaceholderValues(paramValues);
         return jobExecParam;
