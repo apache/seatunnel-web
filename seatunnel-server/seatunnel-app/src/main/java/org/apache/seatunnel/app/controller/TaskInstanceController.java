@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.app.utils.PageInfo;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +47,7 @@ public class TaskInstanceController {
             @RequestParam(name = "stateType", required = false) String stateType,
             @RequestParam(name = "startDate", required = false) String startTime,
             @RequestParam(name = "endDate", required = false) String endTime,
-            @RequestParam("syncTaskType") String syncTaskType,
+            @RequestParam("syncTaskType") JobMode jobMode,
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam("pageSize") Integer pageSize) {
         return taskInstanceService.getSyncTaskInstancePaging(
@@ -56,7 +57,7 @@ public class TaskInstanceController {
                 stateType,
                 startTime,
                 endTime,
-                syncTaskType,
+                jobMode,
                 pageNo,
                 pageSize);
     }

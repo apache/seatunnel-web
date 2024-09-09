@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.utils.PageInfo;
+import org.apache.seatunnel.common.constants.JobMode;
 
 public interface ITaskInstanceService<T> {
 
@@ -31,7 +32,7 @@ public interface ITaskInstanceService<T> {
             String stateType,
             String startTime,
             String endTime,
-            String syncTaskType,
+            JobMode jobMode,
             Integer pageNo,
             Integer pageSize);
 

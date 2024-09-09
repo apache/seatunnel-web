@@ -28,6 +28,7 @@ import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
@@ -110,7 +111,7 @@ public class JobControllerTest {
                 "param [job.mode] is invalid. job.mode should be either BATCH or STREAM",
                 result.getMsg());
 
-        jobConfig.getEnv().put("job.mode", "BATCH");
+        jobConfig.getEnv().put("job.mode", JobMode.BATCH);
         // setSourceIds(jobCreateReq, "fake_source_create2" + uniqueId, "console_create2" +
         // uniqueId);
         result = jobControllerWrapper.createJob(jobCreateReq);

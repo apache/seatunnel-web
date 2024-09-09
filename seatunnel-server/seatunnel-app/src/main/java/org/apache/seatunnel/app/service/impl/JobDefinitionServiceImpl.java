@@ -93,12 +93,12 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                 .updateUserId(userId)
                 .name(DEFAULT_VERSION)
                 .id(uuid)
-                .engineName(EngineType.SeaTunnel.name())
+                .engineName(EngineType.SeaTunnel)
                 .engineVersion("2.3.7");
         if (BusinessMode.DATA_INTEGRATION.equals(jobReq.getJobType())) {
-            builder.jobMode(JobMode.BATCH.name());
+            builder.jobMode(JobMode.BATCH);
         } else if (BusinessMode.DATA_REPLICA.equals(jobReq.getJobType())) {
-            builder.jobMode(JobMode.STREAMING.name());
+            builder.jobMode(JobMode.STREAMING);
         }
         jobVersionDao.createVersion(builder.build());
 

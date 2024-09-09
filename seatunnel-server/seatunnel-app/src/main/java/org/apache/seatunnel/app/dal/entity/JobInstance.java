@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.app.dal.entity;
 
+import org.apache.seatunnel.app.common.EngineType;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -50,7 +52,7 @@ public class JobInstance {
     private String jobConfig;
 
     @TableField("engine_name")
-    private String engineName;
+    private EngineType engineName;
 
     @TableField("engine_version")
     private String engineVersion;
@@ -74,7 +76,7 @@ public class JobInstance {
     private Date endTime;
 
     @TableField("job_type")
-    private String jobType;
+    private JobMode jobType;
 
     @TableField("error_message")
     private String errorMessage;

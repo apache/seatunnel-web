@@ -31,6 +31,7 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.app.utils.PageInfo;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -73,7 +74,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
             String stateType,
             String startTime,
             String endTime,
-            String syncTaskType,
+            JobMode jobMode,
             Integer pageNo,
             Integer pageSize) {
         Result<PageInfo<SeaTunnelJobInstanceDto>> result = new Result<>();
@@ -86,17 +87,13 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
 
         IPage<SeaTunnelJobInstanceDto> jobInstanceIPage =
                 jobInstanceDao.queryJobInstanceListPaging(
-                        new Page<>(pageNo, pageSize),
-                        startDate,
-                        endDate,
-                        jobDefineName,
-                        syncTaskType);
+                        new Page<>(pageNo, pageSize), startDate, endDate, jobDefineName, jobMode);
 
         List<SeaTunnelJobInstanceDto> records = jobInstanceIPage.getRecords();
         if (CollectionUtils.isEmpty(records)) {
             return result;
         }
-        populateExecutionMetricsData(userId, syncTaskType, records);
+        populateExecutionMetricsData(userId, jobMode, records);
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
         pageInfo.setTotalList(records);
         result.setData(pageInfo);
@@ -104,10 +101,10 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     }
 
     private void populateExecutionMetricsData(
-            Integer userId, String syncTaskType, List<SeaTunnelJobInstanceDto> records) {
+            Integer userId, JobMode jobMode, List<SeaTunnelJobInstanceDto> records) {
         addJobDefineNameToResult(records);
         addRunningTimeToResult(records);
-        jobPipelineSummaryMetrics(records, syncTaskType, userId);
+        jobPipelineSummaryMetrics(records, jobMode, userId);
     }
 
     private void addRunningTimeToResult(List<SeaTunnelJobInstanceDto> records) {
@@ -150,7 +147,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     }
 
     private void jobPipelineSummaryMetrics(
-            List<SeaTunnelJobInstanceDto> records, String syncTaskType, Integer userId) {
+            List<SeaTunnelJobInstanceDto> records, JobMode jobMode, Integer userId) {
         try {
             ArrayList<Long> jobInstanceIdList = new ArrayList<>();
             HashMap<Long, Long> jobInstanceIdAndJobEngineIdMap = new HashMap<>();
@@ -165,10 +162,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
 
             Map<Long, JobSummaryMetricsRes> jobSummaryMetrics =
                     jobMetricsService.getALLJobSummaryMetrics(
-                            userId,
-                            jobInstanceIdAndJobEngineIdMap,
-                            jobInstanceIdList,
-                            syncTaskType);
+                            userId, jobInstanceIdAndJobEngineIdMap, jobInstanceIdList, jobMode);
 
             for (SeaTunnelJobInstanceDto taskInstance : records) {
                 if (jobSummaryMetrics.get(taskInstance.getId()) != null) {

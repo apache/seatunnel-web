@@ -16,6 +16,7 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
+import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceHistoryDao;
 import org.apache.seatunnel.app.dal.dao.IJobMetricsDao;
@@ -33,6 +34,7 @@ import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
 import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.Constants;
@@ -108,7 +110,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             @NonNull Integer userId,
             @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
             @NonNull List<Long> jobInstanceIdList,
-            @NonNull String syncTaskType) {
+            @NonNull JobMode jobMode) {
         log.info("jobInstanceIdAndJobEngineIdMap={}", jobInstanceIdAndJobEngineIdMap);
 
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_METRICS_SUMMARY, userId);
@@ -125,15 +127,14 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         allJobInstance.get(0).getEngineName(),
                         allJobInstance.get(0).getEngineVersion());
 
-        if (syncTaskType.equals("BATCH")) {
-
+        if (JobMode.BATCH == jobMode) {
             result =
                     getMatricsListIfTaskTypeIsBatch(
                             allJobInstance,
                             userId,
                             allRunningJobMetricsFromEngine,
                             jobInstanceIdAndJobEngineIdMap);
-        } else if (syncTaskType.equals("STREAMING")) {
+        } else if (JobMode.STREAMING == jobMode) {
             result =
                     getMatricsListIfTaskTypeIsStreaming(
                             allJobInstance,
@@ -425,7 +426,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private Map<Long, HashMap<Integer, JobMetrics>> getAllRunningJobMetricsFromEngine(
-            String engineName, String engineVersion) {
+            EngineType engineName, String engineVersion) {
         Engine engine = new Engine(engineName, engineVersion);
 
         IEngineMetricsExtractor engineMetricsExtractor =

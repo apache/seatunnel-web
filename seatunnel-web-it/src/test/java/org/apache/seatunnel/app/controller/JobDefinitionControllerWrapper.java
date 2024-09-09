@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -48,7 +49,7 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
     }
 
     public Result<PageInfo<JobDefinitionRes>> getJobDefinition(
-            String searchName, Integer pageNo, Integer pageSize, String jobMode) {
+            String searchName, Integer pageNo, Integer pageSize, JobMode jobMode) {
         String response =
                 sendRequest(
                         urlWithParam("job/definition?")

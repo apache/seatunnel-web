@@ -148,9 +148,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         jobInstance.setEngineVersion(latestVersion.getEngineVersion());
         jobInstance.setJobConfig(jobConfig);
         jobInstance.setCreateUserId(userId);
-        if (!latestVersion.getJobMode().isEmpty()) {
-            jobInstance.setJobType(latestVersion.getJobMode());
-        }
+        jobInstance.setJobType(latestVersion.getJobMode());
 
         jobInstanceDao.insert(jobInstance);
 

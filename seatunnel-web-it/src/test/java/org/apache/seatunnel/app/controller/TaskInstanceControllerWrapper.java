@@ -22,6 +22,7 @@ import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.PageInfo;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -42,7 +43,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
             String stateType,
             String startTime,
             String endTime,
-            String syncTaskType,
+            JobMode jobMode,
             Integer pageNo,
             Integer pageSize) {
         String response =
@@ -59,7 +60,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
                                         + "&endDate="
                                         + endTime
                                         + "&syncTaskType="
-                                        + syncTaskType
+                                        + jobMode
                                         + "&pageNo="
                                         + pageNo
                                         + "&pageSize="
@@ -77,19 +78,12 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
                 URLEncoder.encode(
                         dateFormat.format(
                                 new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)));
-        String syncTaskType = "BATCH";
+        JobMode jobMode = JobMode.BATCH;
         Integer pageNo = 1;
         Integer pageSize = 10;
         Result<PageInfo<SeaTunnelJobInstanceDto>> result =
                 getTaskInstanceList(
-                        jobDefineName,
-                        null,
-                        null,
-                        startTime,
-                        endTime,
-                        syncTaskType,
-                        pageNo,
-                        pageSize);
+                        jobDefineName, null, null, startTime, endTime, jobMode, pageNo, pageSize);
         assertTrue(result.isSuccess());
         if (result.getData().getTotalList().isEmpty()) {
             return null;

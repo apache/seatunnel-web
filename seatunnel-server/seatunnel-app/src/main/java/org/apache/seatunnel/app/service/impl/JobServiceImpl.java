@@ -94,14 +94,14 @@ public class JobServiceImpl implements IJobService {
                     SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL, "description");
         }
         jobReq.setDescription(jobConfig.getDescription());
-        String jobMode = (String) jobConfig.getEnv().get("job.mode");
-        if (StringUtils.isEmpty(jobMode)) {
+        JobMode jobMode = JobMode.valueOf((String) jobConfig.getEnv().get("job.mode"));
+        if (StringUtils.isEmpty(jobMode.name())) {
             throw new ParamValidationException(
                     SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL, "job.mode");
         }
-        if (JobMode.BATCH.name().equals(jobMode)) {
+        if (JobMode.BATCH == jobMode) {
             jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
-        } else if (JobMode.STREAMING.name().equals(jobMode)) {
+        } else if (JobMode.STREAMING == jobMode) {
             jobReq.setJobType(BusinessMode.DATA_REPLICA);
         } else {
             throw new ParamValidationException(

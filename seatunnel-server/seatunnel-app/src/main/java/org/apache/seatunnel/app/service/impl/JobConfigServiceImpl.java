@@ -16,7 +16,6 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
-import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
@@ -74,7 +73,7 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        jobConfigRes.setEngine(EngineType.valueOf(jobVersion.getEngineName()));
+        jobConfigRes.setEngine(jobVersion.getEngineName());
         return jobConfigRes;
     }
 
@@ -100,8 +99,8 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
                     JobVersion.builder()
                             .jobId(version.getJobId())
                             .id(version.getId())
-                            .jobMode(jobMode.name())
-                            .engineName(jobConfig.getEngine().name())
+                            .jobMode(jobMode)
+                            .engineName(jobConfig.getEngine())
                             .updateUserId(userId)
                             .env(OBJECT_MAPPER.writeValueAsString(jobConfig.getEnv()))
                             .build());
