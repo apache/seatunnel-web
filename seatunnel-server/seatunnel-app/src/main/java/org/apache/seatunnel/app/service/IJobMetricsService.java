@@ -22,6 +22,7 @@ import org.apache.seatunnel.app.domain.response.metrics.JobDAG;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineSummaryMetricsRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobSummaryMetricsRes;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -54,5 +55,5 @@ public interface IJobMetricsService {
             @NonNull Integer userId,
             @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
             @NonNull List<Long> jobInstanceIdList,
-            @NonNull String syncTaskType);
+            @NonNull JobMode jobMode);
 }

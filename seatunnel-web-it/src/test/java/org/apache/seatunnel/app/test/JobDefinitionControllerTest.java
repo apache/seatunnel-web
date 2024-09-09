@@ -64,14 +64,12 @@ public class JobDefinitionControllerTest {
         String job3 = "job3" + uniqueId;
         long jobId = jobDefinitionControllerWrapper.createJobDefinition(job3);
         Result<PageInfo<JobDefinitionRes>> result =
-                jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10, JobMode.BATCH.name());
+                jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10, JobMode.BATCH);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getData().getData().size());
         assertEquals(jobId, result.getData().getData().get(0).getId());
 
-        result =
-                jobDefinitionControllerWrapper.getJobDefinition(
-                        job3, 1, 10, JobMode.STREAMING.name());
+        result = jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10, JobMode.STREAMING);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getData().getData().size());
 
@@ -85,14 +83,11 @@ public class JobDefinitionControllerTest {
         assertTrue(jobDefinition.isSuccess());
         jobId = jobDefinition.getData();
 
-        result =
-                jobDefinitionControllerWrapper.getJobDefinition(job31, 1, 10, JobMode.BATCH.name());
+        result = jobDefinitionControllerWrapper.getJobDefinition(job31, 1, 10, JobMode.BATCH);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getData().getData().size());
 
-        result =
-                jobDefinitionControllerWrapper.getJobDefinition(
-                        job31, 1, 10, JobMode.STREAMING.name());
+        result = jobDefinitionControllerWrapper.getJobDefinition(job31, 1, 10, JobMode.STREAMING);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getData().getData().size());
         assertEquals(jobId, result.getData().getData().get(0).getId());

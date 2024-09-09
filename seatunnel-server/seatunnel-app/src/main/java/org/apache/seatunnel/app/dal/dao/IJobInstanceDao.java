@@ -20,6 +20,7 @@ package org.apache.seatunnel.app.dal.dao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.mapper.JobInstanceMapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.NonNull;
@@ -44,7 +45,7 @@ public interface IJobInstanceDao {
             Date startTime,
             Date endTime,
             String jobDefineId,
-            String jobMode);
+            JobMode jobMode);
 
     List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList);
 

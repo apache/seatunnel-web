@@ -23,11 +23,11 @@ import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.JSONUtils;
-
-import org.apache.commons.collections.map.HashedMap;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class JobConfigControllerWrapper extends SeatunnelWebTestingBase {
@@ -48,8 +48,8 @@ public class JobConfigControllerWrapper extends SeatunnelWebTestingBase {
         jobConfig.setName(jobName);
         jobConfig.setDescription(jobName + " description from config");
         jobConfig.setEngine(EngineType.SeaTunnel);
-        Map<String, Object> env = new HashedMap();
-        env.put("job.mode", "BATCH");
+        Map<String, Object> env = new HashMap<>();
+        env.put("job.mode", JobMode.BATCH);
         env.put("job.name", "SeaTunnel_Job");
         env.put("jars", "");
         env.put("checkpoint.interval", "30");

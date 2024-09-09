@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -36,7 +37,7 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
             @Param("startTime") Date startTime,
             @Param("endTime") Date endTime,
             @Param("jobDefineName") String jobDefineName,
-            @Param("jobMode") String jobMode);
+            @Param("jobMode") JobMode jobMode);
 
     JobInstance getJobExecutionStatus(@Param("jobInstanceId") Long jobInstanceId);
 }

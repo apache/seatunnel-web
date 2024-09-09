@@ -16,7 +16,9 @@
  */
 package org.apache.seatunnel.app.domain;
 
+import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,11 +37,10 @@ public class JobExecutorResDeserializer extends JsonDeserializer<JobExecutorRes>
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         Long jobInstanceId = node.get("jobInstanceId").asLong();
         String jobConfig = node.get("jobConfig").asText();
-        String engine = node.get("engine").asText();
+        EngineType engine = EngineType.valueOf(node.get("engine").asText());
         String deployMode = node.get("deployMode").asText();
         String master = node.get("master").asText();
-        String jobMode = node.get("jobMode").asText();
-
+        JobMode jobMode = JobMode.valueOf(node.get("jobMode").asText());
         return new JobExecutorRes(jobInstanceId, jobConfig, engine, deployMode, master, jobMode);
     }
 }

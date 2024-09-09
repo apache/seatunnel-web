@@ -28,6 +28,7 @@ import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
@@ -99,18 +100,20 @@ public class JobControllerTest {
         jobConfig.getEnv().put("job.mode", "");
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isFailed());
-        assertEquals(SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL.getCode(), result.getCode());
-        assertEquals("param [job.mode] can not be null or empty", result.getMsg());
+        assertEquals(SeatunnelErrorEnum.INVALID_PARAM.getCode(), result.getCode());
+        assertEquals(
+                "param [job.mode] is invalid. job.mode should be either BATCH or STREAMING",
+                result.getMsg());
 
         jobConfig.getEnv().put("job.mode", "InvalidJobMode");
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isFailed());
         assertEquals(SeatunnelErrorEnum.INVALID_PARAM.getCode(), result.getCode());
         assertEquals(
-                "param [job.mode] is invalid. job.mode should be either BATCH or STREAM",
+                "param [job.mode] is invalid. job.mode should be either BATCH or STREAMING",
                 result.getMsg());
 
-        jobConfig.getEnv().put("job.mode", "BATCH");
+        jobConfig.getEnv().put("job.mode", JobMode.BATCH);
         // setSourceIds(jobCreateReq, "fake_source_create2" + uniqueId, "console_create2" +
         // uniqueId);
         result = jobControllerWrapper.createJob(jobCreateReq);

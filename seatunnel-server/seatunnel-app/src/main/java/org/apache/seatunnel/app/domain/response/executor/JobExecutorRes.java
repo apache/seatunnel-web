@@ -17,6 +17,9 @@
 
 package org.apache.seatunnel.app.domain.response.executor;
 
+import org.apache.seatunnel.app.common.EngineType;
+import org.apache.seatunnel.common.constants.JobMode;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -29,7 +32,7 @@ public class JobExecutorRes {
     private final String jobConfig;
 
     /** engine name Spark/Flink/SeaTunnel */
-    private final String engine;
+    private final EngineType engine;
 
     /** The driver run mode, only spark use now, support 'client' and 'cluster' */
     private final String deployMode;
@@ -37,5 +40,5 @@ public class JobExecutorRes {
     /** The engine run mode, for SeaTunnel Engine only support 'local' and null */
     private final String master;
 
-    private final String jobMode;
+    private final JobMode jobMode;
 }
