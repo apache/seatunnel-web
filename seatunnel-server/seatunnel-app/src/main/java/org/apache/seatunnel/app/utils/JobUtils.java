@@ -16,20 +16,23 @@
  */
 package org.apache.seatunnel.app.utils;
 
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
-import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
-
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.engine.core.job.JobStatus;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JobUtils {
 
     // The maximum length of the job execution error message, 4KB
     private static final int ERROR_MESSAGE_MAX_LENGTH = 4096;
+    private static final Pattern placeholderPattern = Pattern.compile("\\$\\{(\\w+)(?::(.*?))?\\}");
 
     public static String getJobInstanceErrorMessage(String message) {
         if (message == null) {
@@ -38,46 +41,6 @@ public class JobUtils {
         return message.length() > ERROR_MESSAGE_MAX_LENGTH
                 ? message.substring(0, ERROR_MESSAGE_MAX_LENGTH)
                 : message;
-    }
-
-    public static Config updateEnvConfig(JobExecParam jobExecParam, Config envConfig) {
-        if (jobExecParam == null || jobExecParam.getEnv() == null) {
-            return envConfig;
-        }
-        return updateConfig(envConfig, jobExecParam.getEnv());
-    }
-
-    private static Config updateConfig(Config config, Map<String, String> properties) {
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-            config =
-                    config.withValue(
-                            entry.getKey(), ConfigValueFactory.fromAnyRef(entry.getValue()));
-        }
-        return config;
-    }
-
-    public static Config updateTaskConfig(
-            JobExecParam jobExecParam, Config taskConfig, String taskName) {
-        if (jobExecParam == null
-                || jobExecParam.getTasks() == null
-                || jobExecParam.getTasks().get(taskName) == null) {
-            return taskConfig;
-        }
-        return updateConfig(taskConfig, jobExecParam.getTasks().get(taskName));
-    }
-
-    public static Config updateQueryTaskConfig(
-            JobExecParam jobExecParam, Config taskConfig, String taskName) {
-        if (jobExecParam == null
-                || jobExecParam.getTasks() == null
-                || jobExecParam.getTasks().get(taskName) == null) {
-            return taskConfig;
-        }
-        String query = jobExecParam.getTasks().get(taskName).get("query");
-        if (query != null) {
-            return taskConfig.withValue("query", ConfigValueFactory.fromAnyRef(query));
-        }
-        return taskConfig;
     }
 
     public static void updateDataSource(JobExecParam jobExecParam, List<JobTask> tasks) {
@@ -103,5 +66,30 @@ public class JobUtils {
         return JobStatus.FINISHED == jobStatus
                 || JobStatus.CANCELED == jobStatus
                 || JobStatus.FAILED == jobStatus;
+    }
+
+    // Replace placeholders in job config with actual values
+    public static String replaceJobConfigPlaceholders(
+            String jobConfigString, JobExecParam jobExecParam) {
+        Map<String, String> placeholderValues =
+                (jobExecParam != null && jobExecParam.getPlaceholderValues() != null)
+                        ? jobExecParam.getPlaceholderValues()
+                        : Collections.emptyMap();
+
+        Matcher matcher = placeholderPattern.matcher(jobConfigString);
+        StringBuffer result = new StringBuffer();
+
+        while (matcher.find()) {
+            String placeholderName = matcher.group(1);
+            String replacement = placeholderValues.getOrDefault(placeholderName, matcher.group(2));
+            if (replacement == null) {
+                throw new SeatunnelException(
+                        SeatunnelErrorEnum.JOB_NO_VALUE_FOUND_FOR_PLACEHOLDER, placeholderName);
+            }
+            matcher.appendReplacement(result, replacement);
+        }
+
+        matcher.appendTail(result);
+        return result.toString();
     }
 }

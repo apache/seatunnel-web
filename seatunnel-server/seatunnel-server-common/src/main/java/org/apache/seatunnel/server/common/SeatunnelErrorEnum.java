@@ -82,9 +82,11 @@ public enum SeatunnelErrorEnum {
             "load job state from engine error",
             "load job statue from engine [%s] error, error msg is [%s]"),
     UNSUPPORTED_ENGINE(40003, "unsupported engine", "unsupported engine [%s] version [%s]"),
-    JUB_EXEC_SUBMISSION_ERROR(40004, "Job execution submission error.", "%s"),
+    JOB_EXEC_SUBMISSION_ERROR(40004, "Job execution submission error.", "%s"),
     LOAD_ENGINE_METRICS_ERROR(
             40005, "load engine metrics error", "load engine metrics error. error msg is [%s]"),
+    JOB_NO_VALUE_FOUND_FOR_PLACEHOLDER(
+            40006, "No value found for placeholder", "No value found for placeholder: [%s]"),
 
     JOB_RUN_GENERATE_UUID_ERROR(50001, "generate uuid error", "generate uuid error"),
     /* datasource and virtual table */

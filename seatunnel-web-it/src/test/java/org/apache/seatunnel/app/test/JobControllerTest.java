@@ -20,7 +20,6 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
-import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
@@ -45,7 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobControllerTest {
     private static final SeaTunnelWebCluster seaTunnelWebCluster = new SeaTunnelWebCluster();
-    private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper;
     private static JobControllerWrapper jobControllerWrapper;
     private static JobExecutorControllerWrapper jobExecutorControllerWrapper;
     private static final String uniqueId = "_" + System.currentTimeMillis();
@@ -53,7 +51,6 @@ public class JobControllerTest {
     @BeforeAll
     public static void setUp() {
         seaTunnelWebCluster.start();
-        seatunnelDatasourceControllerWrapper = new SeatunnelDatasourceControllerWrapper();
         jobControllerWrapper = new JobControllerWrapper();
         jobExecutorControllerWrapper = new JobExecutorControllerWrapper();
     }
@@ -61,11 +58,9 @@ public class JobControllerTest {
     @Test
     public void createJobWithSingleAPI_shouldExecuteSuccessfully() {
         String jobName = "jobWithSingleAPI" + uniqueId;
-        JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
-        jobCreateReq.getJobConfig().setName(jobName);
-        jobCreateReq.getJobConfig().setDescription(jobName + " description");
-        setSourceIds(jobCreateReq, "fake_source_create" + uniqueId, "console_create" + uniqueId);
-
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create" + uniqueId, "console_create" + uniqueId);
         Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(job.isSuccess());
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(job.getData());
@@ -79,25 +74,12 @@ public class JobControllerTest {
         assertEquals(5, listResult.getData().get(0).getWriteRowCount());
     }
 
-    private void setSourceIds(
-            JobCreateReq jobCreateReq, String fsdSourceName, String csSourceName) {
-        // Set the data source id for the plugin configs
-        String fakeSourceDataSourceId =
-                seatunnelDatasourceControllerWrapper.createFakeSourceDatasource(fsdSourceName);
-        String consoleDataSourceId =
-                seatunnelDatasourceControllerWrapper.createConsoleDatasource(csSourceName);
-        for (PluginConfig pluginConfig : jobCreateReq.getPluginConfigs()) {
-            if (pluginConfig.getName().equals("source-fake-source")) {
-                pluginConfig.setDataSourceId(Long.parseLong(fakeSourceDataSourceId));
-            } else if (pluginConfig.getName().equals("sink-console")) {
-                pluginConfig.setDataSourceId(Long.parseLong(consoleDataSourceId));
-            }
-        }
-    }
-
     @Test
     public void createJobWithSingleAPI_ValidateInput() {
-        JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
+        String jobName = "jobWithSingleAPI2" + uniqueId;
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create_2" + uniqueId, "console_create_2" + uniqueId);
         JobConfig jobConfig = jobCreateReq.getJobConfig();
         jobConfig.setName("");
         Result<Long> result = jobControllerWrapper.createJob(jobCreateReq);
@@ -105,7 +87,7 @@ public class JobControllerTest {
         assertEquals(SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL.getCode(), result.getCode());
         assertEquals("param [name] can not be null or empty", result.getMsg());
 
-        String jobName = "jobValidation" + uniqueId;
+        jobName = "jobValidation" + uniqueId;
         jobConfig.setName(jobName);
         jobConfig.setDescription(null);
         result = jobControllerWrapper.createJob(jobCreateReq);
@@ -129,7 +111,8 @@ public class JobControllerTest {
                 result.getMsg());
 
         jobConfig.getEnv().put("job.mode", "BATCH");
-        setSourceIds(jobCreateReq, "fake_source_create2" + uniqueId, "console_create2" + uniqueId);
+        // setSourceIds(jobCreateReq, "fake_source_create2" + uniqueId, "console_create2" +
+        // uniqueId);
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getCode());
@@ -139,11 +122,9 @@ public class JobControllerTest {
     @Test
     public void testUpdateJob_ForValidAndInvalidScenarios() {
         String jobName = "updateJob_single_api" + uniqueId;
-        JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
-        jobCreateReq.getJobConfig().setName(jobName);
-        jobCreateReq.getJobConfig().setDescription(jobName + " description");
-        setSourceIds(
-                jobCreateReq, "fake_source_update_job" + uniqueId, "console_update_job" + uniqueId);
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create_3" + uniqueId, "console_create_3" + uniqueId);
 
         Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(job.isSuccess());

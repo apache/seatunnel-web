@@ -25,10 +25,6 @@ import org.apache.seatunnel.app.utils.JSONUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public class JobControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<Long> createJob(JobCreateReq jobCreateRequest) {
@@ -47,16 +43,5 @@ public class JobControllerWrapper extends SeatunnelWebTestingBase {
     public Result<JobRes> getJob(long jobVersionId) {
         String response = sendRequest(urlWithParam("job/get/" + jobVersionId + "?"), null, "GET");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<JobRes>>() {});
-    }
-
-    public JobCreateReq populateJobCreateReqFromFile() {
-        String filePath = "src/test/resources/jobs/fake_source_console_job.json";
-        String jsonContent;
-        try {
-            jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return JSONTestUtils.parseObject(jsonContent, JobCreateReq.class);
     }
 }
