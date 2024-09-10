@@ -29,9 +29,8 @@ import org.springframework.stereotype.Repository;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.annotation.Resource;
 import lombok.NonNull;
-
-import javax.annotation.Resource;
 
 import java.util.List;
 

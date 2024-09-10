@@ -23,7 +23,7 @@ import org.apache.seatunnel.app.common.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

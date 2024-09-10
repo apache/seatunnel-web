@@ -45,10 +45,9 @@ import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.springframework.stereotype.Service;
 
 import com.hazelcast.client.config.ClientConfig;
+import jakarta.annotation.Resource;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.Resource;
 
 import java.io.BufferedWriter;
 import java.io.File;

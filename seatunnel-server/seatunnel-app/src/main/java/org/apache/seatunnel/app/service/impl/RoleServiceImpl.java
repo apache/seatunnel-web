@@ -28,9 +28,8 @@ import org.apache.seatunnel.app.service.IRoleService;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.Resource;
 
 import java.util.Objects;
 

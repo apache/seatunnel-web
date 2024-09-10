@@ -22,9 +22,8 @@ import org.apache.seatunnel.app.dal.mapper.JobMetricsMapper;
 
 import org.springframework.stereotype.Repository;
 
+import jakarta.annotation.Resource;
 import lombok.NonNull;
-
-import javax.annotation.Resource;
 
 import java.util.List;
 

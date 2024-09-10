@@ -27,9 +27,8 @@ import org.springframework.stereotype.Repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.annotation.Resource;
 import lombok.NonNull;
-
-import javax.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.Date;

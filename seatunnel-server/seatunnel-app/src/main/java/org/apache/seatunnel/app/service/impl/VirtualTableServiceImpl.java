@@ -48,8 +48,8 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.annotation.Resource;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 import java.util.ArrayList;

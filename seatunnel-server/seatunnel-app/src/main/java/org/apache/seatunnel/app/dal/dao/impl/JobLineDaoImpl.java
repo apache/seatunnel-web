@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.List;
 
