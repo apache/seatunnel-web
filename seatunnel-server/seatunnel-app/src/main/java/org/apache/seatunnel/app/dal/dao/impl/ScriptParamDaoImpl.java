@@ -26,8 +26,7 @@ import org.apache.seatunnel.app.domain.dto.script.UpdateScriptParamDto;
 import org.springframework.stereotype.Repository;
 
 import com.google.common.collect.Lists;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.List;
 import java.util.Map;

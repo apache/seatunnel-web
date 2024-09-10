@@ -24,8 +24,7 @@ import org.apache.seatunnel.app.dal.mapper.JobInstanceHistoryMapper;
 import org.springframework.stereotype.Repository;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Repository
 public class JobInstanceHistoryDaoImpl implements IJobInstanceHistoryDao {

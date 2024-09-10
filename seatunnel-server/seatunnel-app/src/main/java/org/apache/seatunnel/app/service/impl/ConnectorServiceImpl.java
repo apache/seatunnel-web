@@ -40,9 +40,8 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.Resource;
 import lombok.NonNull;
-
-import javax.annotation.Resource;
 
 import java.io.IOException;
 import java.util.ArrayList;
