@@ -24,8 +24,7 @@ import org.apache.seatunnel.app.dal.mapper.JobTaskMapper;
 import org.springframework.stereotype.Repository;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.List;
 
