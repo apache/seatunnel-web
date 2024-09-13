@@ -60,6 +60,7 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
+import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.common.constants.PluginType;
@@ -75,7 +76,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -122,8 +122,6 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
     @Resource private IJobLineDao jobLineDao;
 
     @Resource private IJobMetricsService jobMetricsService;
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public JobExecutorRes createExecuteResource(
@@ -391,25 +389,20 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                 });
 
         checkArgument(outputSchemas.size() == 1, "input schema size must be 1");
-        try {
-            List<DatabaseTableSchemaReq> databaseTableSchemaReqs =
-                    OBJECT_MAPPER.readValue(
-                            outputSchemas.get(0),
-                            new com.fasterxml.jackson.core.type.TypeReference<
-                                    List<DatabaseTableSchemaReq>>() {});
-            return databaseTableSchemaReqs.stream()
-                    .map(
-                            databaseTableSchemaReq -> {
-                                TableSchemaReq tableSchemaReq = new TableSchemaReq();
-                                tableSchemaReq.setTableName(databaseTableSchemaReq.getTableName());
-                                tableSchemaReq.setFields(databaseTableSchemaReq.getFields());
-                                return tableSchemaReq;
-                            })
-                    .collect(Collectors.toList());
-
-        } catch (JsonProcessingException e) {
-            throw new SeatunnelException(SeatunnelErrorEnum.ILLEGAL_STATE, e.getMessage());
-        }
+        List<DatabaseTableSchemaReq> databaseTableSchemaReqs =
+                JSONUtils.parseObject(
+                        outputSchemas.get(0),
+                        new com.fasterxml.jackson.core.type.TypeReference<
+                                List<DatabaseTableSchemaReq>>() {});
+        return databaseTableSchemaReqs.stream()
+                .map(
+                        databaseTableSchemaReq -> {
+                            TableSchemaReq tableSchemaReq = new TableSchemaReq();
+                            tableSchemaReq.setTableName(databaseTableSchemaReq.getTableName());
+                            tableSchemaReq.setFields(databaseTableSchemaReq.getFields());
+                            return tableSchemaReq;
+                        })
+                .collect(Collectors.toList());
     }
 
     private Config mergeTaskConfig(
@@ -432,28 +425,15 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                         datasourceDetailRes.getDatasourceConfig(),
                         optionRule);
 
-        DataSourceOption dataSourceOption = null;
-        try {
-            dataSourceOption =
-                    task.getDataSourceOption() == null
-                            ? null
-                            : new ObjectMapper()
-                                    .readValue(task.getDataSourceOption(), DataSourceOption.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        SelectTableFields selectTableFields = null;
-        try {
-            selectTableFields =
-                    task.getSelectTableFields() == null
-                            ? null
-                            : new ObjectMapper()
-                                    .readValue(
-                                            task.getSelectTableFields(), SelectTableFields.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        DataSourceOption dataSourceOption =
+                task.getDataSourceOption() == null
+                        ? null
+                        : JSONUtils.parseObject(task.getDataSourceOption(), DataSourceOption.class);
+        SelectTableFields selectTableFields =
+                task.getSelectTableFields() == null
+                        ? null
+                        : JSONUtils.parseObject(
+                                task.getSelectTableFields(), SelectTableFields.class);
         SceneMode sceneMode =
                 task.getSceneMode() == null ? null : SceneMode.valueOf(task.getSceneMode());
         VirtualTableDetailRes virtualTableDetailRes = null;

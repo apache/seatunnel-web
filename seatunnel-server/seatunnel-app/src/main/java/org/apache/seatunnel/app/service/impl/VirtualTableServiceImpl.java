@@ -35,7 +35,7 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
-import org.apache.seatunnel.common.utils.JsonUtils;
+import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -104,7 +104,7 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
         }
         String fieldJson = convertTableFields(req.getTableFields());
         virtualTable.setTableFields(fieldJson);
-        virtualTable.setVirtualTableConfig(JsonUtils.toJsonString(req.getDatabaseProperties()));
+        virtualTable.setVirtualTableConfig(JSONUtils.toJsonString(req.getDatabaseProperties()));
 
         boolean success = virtualTableDao.insertVirtualTable(virtualTable);
         if (!success) {
@@ -130,7 +130,7 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
                 fieldList.add(fieldRes);
             }
         }
-        return JsonUtils.toJsonString(fieldList);
+        return JSONUtils.toJsonString(fieldList);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
             virtualTable.setTableFields(fieldJson);
         }
 
-        virtualTable.setVirtualTableConfig(JsonUtils.toJsonString(req.getDatabaseProperties()));
+        virtualTable.setVirtualTableConfig(JSONUtils.toJsonString(req.getDatabaseProperties()));
 
         return virtualTableDao.updateVirtualTable(virtualTable);
     }
@@ -209,7 +209,7 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
                                                         .CAN_NOT_FOUND_CONNECTOR_FOR_DATASOURCE,
                                                 pluginName));
         FormStructure form = SeaTunnelOptionRuleWrapper.wrapper(rule, connectorForDatasourceName);
-        return JsonUtils.toJsonString(form);
+        return JSONUtils.toJsonString(form);
     }
 
     @Override
@@ -242,10 +242,10 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
         res.setCreateTime(virtualTable.getCreateTime());
         res.setUpdateTime(virtualTable.getUpdateTime());
         res.setDatasourceName(datasource.getDatasourceName());
-        res.setDatasourceProperties(JsonUtils.toMap(virtualTable.getVirtualTableConfig()));
+        res.setDatasourceProperties(JSONUtils.toMap(virtualTable.getVirtualTableConfig()));
 
         List<VirtualTableFieldRes> fields =
-                JsonUtils.toList(virtualTable.getTableFields(), VirtualTableFieldRes.class);
+                JSONUtils.toList(virtualTable.getTableFields(), VirtualTableFieldRes.class);
         res.setFields(fields);
         return res;
     }

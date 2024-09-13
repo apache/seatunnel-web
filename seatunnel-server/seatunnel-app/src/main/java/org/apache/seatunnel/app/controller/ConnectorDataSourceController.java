@@ -23,8 +23,8 @@ import org.apache.seatunnel.app.domain.request.connector.SceneMode;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.domain.response.connector.DataSourceInstance;
 import org.apache.seatunnel.app.service.IConnectorService;
+import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.PluginType;
-import org.apache.seatunnel.common.utils.JsonUtils;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,12 +96,12 @@ public class ConnectorDataSourceController {
                     Long dataSourceInstanceId) {
         if (PluginType.TRANSFORM.getType().equals(connectorType)) {
             return Result.success(
-                    JsonUtils.toJsonString(
+                    JSONUtils.toJsonString(
                             connectorService.getTransformFormStructure(
                                     connectorType, connectorName)));
         }
         return Result.success(
-                JsonUtils.toJsonString(
+                JSONUtils.toJsonString(
                         connectorService.getDatasourceFormStructure(
                                 jobId, dataSourceInstanceId, connectorType)));
     }

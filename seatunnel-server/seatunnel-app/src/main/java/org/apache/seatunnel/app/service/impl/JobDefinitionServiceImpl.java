@@ -31,6 +31,7 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
+import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -42,12 +43,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 
 import javax.annotation.Resource;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +59,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
         implements IJobDefinitionService {
 
     private static final String DEFAULT_VERSION = "1.0";
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Resource(name = "jobDefinitionDaoImpl")
     private IJobDefinitionDao jobDefinitionDao;
@@ -198,16 +195,11 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .map(JobTask::getDataSourceOption)
                         .distinct()
                         .map(
-                                option -> {
-                                    try {
-                                        return StringUtils.isEmpty(option)
+                                option ->
+                                        StringUtils.isEmpty(option)
                                                 ? null
-                                                : OBJECT_MAPPER.readValue(
-                                                        option, DataSourceOption.class);
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                })
+                                                : JSONUtils.parseObject(
+                                                        option, DataSourceOption.class))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
         return options.stream().anyMatch(option -> option.getTables().contains(tableName));

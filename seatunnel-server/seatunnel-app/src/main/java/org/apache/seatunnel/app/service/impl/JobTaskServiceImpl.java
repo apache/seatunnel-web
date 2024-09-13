@@ -49,6 +49,7 @@ import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyC
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.service.IJobTaskService;
+import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.common.utils.SeaTunnelException;
@@ -63,7 +64,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
@@ -101,8 +101,6 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
     @Resource private IJobInstanceService jobInstanceService;
 
     @Resource private ConnectorDataSourceMapperConfig connectorDataSourceMapperConfig;
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private void checkConfigIntegrity(JobVersion version, JobTaskInfo jobTaskInfo) {
         if (StringUtils.isEmpty(version.getEnv())) {
@@ -314,7 +312,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
         Map<String, Object> options = nextConfig.getTransformOptions();
         if (options != null && !options.isEmpty()) {
             Transform transform = Transform.valueOf(nextConfig.getConnectorType().toUpperCase());
-            String transformOptionsStr = OBJECT_MAPPER.writeValueAsString(options);
+            String transformOptionsStr = JSONUtils.toJsonString(options);
 
             List<TransformOption> transformOptions = new ArrayList<>();
 
@@ -425,7 +423,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                 connectorType = pluginConfig.getConnectorType();
                 if (pluginConfig.getTransformOptions() != null) {
                     transformOptionsStr =
-                            OBJECT_MAPPER.writeValueAsString(pluginConfig.getTransformOptions());
+                            JSONUtils.toJsonString(pluginConfig.getTransformOptions());
                 }
                 transformOptionCheck(connectorType, transformOptionsStr);
             } else {
@@ -448,17 +446,16 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                             .dataSourceOption(
                                     pluginConfig.getTableOption() == null
                                             ? null
-                                            : OBJECT_MAPPER.writeValueAsString(
-                                                    pluginConfig.getTableOption()))
+                                            : JSONUtils.toJsonString(pluginConfig.getTableOption()))
                             .selectTableFields(
                                     pluginConfig.getSelectTableFields() == null
                                             ? null
-                                            : OBJECT_MAPPER.writeValueAsString(
+                                            : JSONUtils.toJsonString(
                                                     pluginConfig.getSelectTableFields()))
                             .outputSchema(
                                     pluginConfig.getOutputSchema() == null
                                             ? null
-                                            : OBJECT_MAPPER.writeValueAsString(
+                                            : JSONUtils.toJsonString(
                                                     pluginConfig.getOutputSchema()))
                             .transformOptions(transformOptionsStr)
                             .build();
@@ -596,24 +593,24 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                     .tableOption(
                             StringUtils.isEmpty(jobTask.getDataSourceOption())
                                     ? null
-                                    : OBJECT_MAPPER.readValue(
+                                    : JSONUtils.parseObject(
                                             jobTask.getDataSourceOption(), DataSourceOption.class))
                     .selectTableFields(
                             StringUtils.isEmpty(jobTask.getSelectTableFields())
                                     ? null
-                                    : OBJECT_MAPPER.readValue(
+                                    : JSONUtils.parseObject(
                                             jobTask.getSelectTableFields(),
                                             SelectTableFields.class))
                     .outputSchema(
                             StringUtils.isEmpty(jobTask.getOutputSchema())
                                     ? null
-                                    : OBJECT_MAPPER.readValue(
+                                    : JSONUtils.parseObject(
                                             jobTask.getOutputSchema(),
                                             new TypeReference<List<DatabaseTableSchemaReq>>() {}))
                     .transformOptions(
                             StringUtils.isEmpty(jobTask.getTransformOptions())
                                     ? null
-                                    : OBJECT_MAPPER.readValue(
+                                    : JSONUtils.parseObject(
                                             jobTask.getTransformOptions(),
                                             new TypeReference<Map<String, Object>>() {}))
                     .config(jobTask.getConfig())

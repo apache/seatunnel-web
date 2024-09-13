@@ -16,15 +16,10 @@
  */
 package org.apache.seatunnel.app.thirdparty.engine;
 
-import org.apache.seatunnel.shade.com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
-import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.apache.seatunnel.app.dal.entity.JobInstanceHistory;
 import org.apache.seatunnel.app.dal.entity.JobMetrics;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
-import org.apache.seatunnel.common.utils.ExceptionUtils;
-import org.apache.seatunnel.common.utils.JsonUtils;
+import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.engine.core.job.JobDAGInfo;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -32,6 +27,7 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -40,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +45,6 @@ import java.util.OptionalDouble;
 /** Engine metrics extractor SeaTunnel Engine implement. */
 public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor {
     @Getter @Setter private SeaTunnelEngineProxy seaTunnelEngineProxy;
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static final String[] clusterHealthMetricsKeys =
             new String[] {
@@ -95,55 +88,33 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
     public List<JobMetrics> getMetricsByJobEngineId(@NonNull String jobEngineId) {
 
         LinkedHashMap<Integer, String> jobPipelineStatus = getJobPipelineStatus(jobEngineId);
-        try {
-            String metricsContent = seaTunnelEngineProxy.getMetricsContent(jobEngineId);
-            if (StringUtils.isEmpty(metricsContent)) {
-                return new ArrayList<>();
-            }
-
-            JsonNode jsonNode =
-                    JsonUtils.stringToJsonNode(seaTunnelEngineProxy.getMetricsContent(jobEngineId));
-            LinkedHashMap<Integer, JobMetrics> metricsMap =
-                    extractMetrics(jobPipelineStatus, jsonNode);
-            return Arrays.asList(metricsMap.values().toArray(new JobMetrics[0]));
-        } catch (JsonProcessingException e) {
-            throw new SeatunnelException(
-                    SeatunnelErrorEnum.LOAD_ENGINE_METRICS_JSON_ERROR,
-                    "SeaTunnel",
-                    ExceptionUtils.getMessage(e));
+        String metricsContent = seaTunnelEngineProxy.getMetricsContent(jobEngineId);
+        if (StringUtils.isEmpty(metricsContent)) {
+            return new ArrayList<>();
         }
+        LinkedHashMap<Integer, JobMetrics> metricsMap =
+                extractMetrics(
+                        jobPipelineStatus, seaTunnelEngineProxy.getMetricsContent(jobEngineId));
+        return Arrays.asList(metricsMap.values().toArray(new JobMetrics[0]));
     }
 
     @Override
     public LinkedHashMap<Integer, String> getJobPipelineStatus(@NonNull String jobEngineId) {
         String jobState = seaTunnelEngineProxy.getJobPipelineStatusStr(jobEngineId);
         LinkedHashMap<Integer, String> pipelineStatusMap = new LinkedHashMap<>();
-        try {
-            JsonNode jsonNode = JsonUtils.stringToJsonNode(jobState);
-            if (jsonNode.get("err") != null) {
-                throw new SeatunnelException(
-                        SeatunnelErrorEnum.LOAD_ENGINE_METRICS_ERROR, jsonNode.get("err").asText());
-            }
-            Iterator<Map.Entry<String, JsonNode>> iterator =
-                    jsonNode.get("pipelineStateMapperMap").fields();
-
-            while (iterator.hasNext()) {
-                Map.Entry<String, JsonNode> next = iterator.next();
-                // "PipelineLocation(jobId=650612768629587969, pipelineId=2)"
-                String pipelineLocation = next.getKey();
-                String pipelineId =
-                        pipelineLocation.substring(
-                                pipelineLocation.lastIndexOf("=") + 1,
-                                pipelineLocation.length() - 1);
-                pipelineStatusMap.put(
-                        Integer.valueOf(pipelineId),
-                        next.getValue().get("pipelineStatus").asText());
-            }
-        } catch (JsonProcessingException e) {
-            throw new SeatunnelException(
-                    SeatunnelErrorEnum.LOAD_ENGINE_JOB_STATUS_JSON_ERROR,
-                    "SeaTunnel",
-                    ExceptionUtils.getMessage(e));
+        String err = JSONUtils.getNodeString(jobState, "err");
+        if (StringUtils.isNotBlank(err)) {
+            throw new SeatunnelException(SeatunnelErrorEnum.LOAD_ENGINE_METRICS_ERROR, err);
+        }
+        String pipelineStateMapperMap = JSONUtils.getNodeString(jobState, "pipelineStateMapperMap");
+        for (Map.Entry<String, String> next : JSONUtils.toMap(pipelineStateMapperMap).entrySet()) {
+            // "PipelineLocation(jobId=650612768629587969, pipelineId=2)"
+            String pipelineLocation = next.getKey();
+            String pipelineId =
+                    pipelineLocation.substring(
+                            pipelineLocation.lastIndexOf("=") + 1, pipelineLocation.length() - 1);
+            String pipelineStatus = JSONUtils.getNodeString(next.getValue(), "pipelineStatus");
+            pipelineStatusMap.put(Integer.valueOf(pipelineId), pipelineStatus);
         }
         return pipelineStatusMap;
     }
@@ -152,11 +123,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
     public JobInstanceHistory getJobHistoryById(String jobEngineId) {
         JobDAGInfo jobInfo = seaTunnelEngineProxy.getJobInfo(jobEngineId);
         JobInstanceHistory jobInstanceHistory = new JobInstanceHistory();
-        try {
-            jobInstanceHistory.setDag(OBJECT_MAPPER.writeValueAsString(jobInfo));
-        } catch (JsonProcessingException e) {
-            throw new org.apache.seatunnel.common.utils.SeaTunnelException(e);
-        }
+        jobInstanceHistory.setDag(JSONUtils.toJsonString(jobInfo));
         return jobInstanceHistory;
     }
 
@@ -185,7 +152,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
 
             String value = entry.getValue();
             value = value.replace(" ", "");
-            Map<String, String> otherMetrics = JsonUtils.toMap(value);
+            Map<String, String> otherMetrics = JSONUtils.toMap(value);
             for (String key : clusterHealthMetricsKeys) {
                 hostMetrics.put(key, otherMetrics.get(key));
             }
@@ -197,26 +164,18 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
     @Override
     public Map<Integer, JobMetrics> getMetricsByJobEngineIdRTMap(@NonNull String jobEngineId) {
         LinkedHashMap<Integer, String> jobPipelineStatus = getJobPipelineStatus(jobEngineId);
-        try {
-            String metricsContent = seaTunnelEngineProxy.getMetricsContent(jobEngineId);
-            if (StringUtils.isEmpty(metricsContent)) {
-                return new HashMap<>();
-            }
-
-            JsonNode jsonNode = JsonUtils.stringToJsonNode(metricsContent);
-            return extractMetrics(jobPipelineStatus, jsonNode);
-        } catch (JsonProcessingException e) {
-            throw new SeatunnelException(
-                    SeatunnelErrorEnum.LOAD_ENGINE_METRICS_JSON_ERROR,
-                    "SeaTunnel",
-                    ExceptionUtils.getMessage(e));
+        String metricsContent = seaTunnelEngineProxy.getMetricsContent(jobEngineId);
+        if (StringUtils.isEmpty(metricsContent)) {
+            return new HashMap<>();
         }
+        return extractMetrics(jobPipelineStatus, metricsContent);
     }
 
     private LinkedHashMap<Integer, JobMetrics> extractMetrics(
-            LinkedHashMap<Integer, String> jobPipelineStatus, JsonNode jsonNode) {
+            LinkedHashMap<Integer, String> jobPipelineStatus, String metrics) {
         LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
-        JsonNode sourceReceivedCount = jsonNode.get("SourceReceivedCount");
+        String sourceReceivedCountStr = JSONUtils.getNodeString(metrics, "SourceReceivedCount");
+        JsonNode sourceReceivedCount = JSONUtils.toJsonNode(sourceReceivedCountStr);
         if (sourceReceivedCount != null && sourceReceivedCount.isArray()) {
             for (JsonNode node : sourceReceivedCount) {
                 Integer pipelineId = node.get("tags").get("pipelineId").asInt();
@@ -227,9 +186,10 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             }
         }
 
-        JsonNode sinkWriteCount = jsonNode.get("SinkWriteCount");
+        String sinkWriteCountStr = JSONUtils.getNodeString(metrics, "SinkWriteCount");
+        JsonNode sinkWriteCount = JSONUtils.toJsonNode(sinkWriteCountStr);
         if (sinkWriteCount != null && sinkWriteCount.isArray()) {
-            for (JsonNode node : jsonNode.get("SinkWriteCount")) {
+            for (JsonNode node : sinkWriteCount) {
                 Integer pipelineId = node.get("tags").get("pipelineId").asInt();
                 JobMetrics currPipelineMetrics =
                         getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
@@ -238,9 +198,10 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             }
         }
 
-        JsonNode sinkWriteQPS = jsonNode.get("SinkWriteQPS");
+        String sinkWriteQPSStr = JSONUtils.getNodeString(metrics, "SinkWriteQPS");
+        JsonNode sinkWriteQPS = JSONUtils.toJsonNode(sinkWriteQPSStr);
         if (sinkWriteQPS != null && sinkWriteQPS.isArray()) {
-            for (JsonNode node : jsonNode.get("SinkWriteQPS")) {
+            for (JsonNode node : sinkWriteQPS) {
                 Integer pipelineId = node.get("tags").get("pipelineId").asInt();
                 JobMetrics currPipelineMetrics =
                         getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
@@ -250,9 +211,10 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             }
         }
 
-        JsonNode sourceReceivedQPS = jsonNode.get("SourceReceivedQPS");
+        String sourceReceivedQPSStr = JSONUtils.getNodeString(metrics, "SourceReceivedQPS");
+        JsonNode sourceReceivedQPS = JSONUtils.toJsonNode(sourceReceivedQPSStr);
         if (sourceReceivedQPS != null && sourceReceivedQPS.isArray()) {
-            for (JsonNode node : jsonNode.get("SourceReceivedQPS")) {
+            for (JsonNode node : sourceReceivedQPS) {
                 Integer pipelineId = node.get("tags").get("pipelineId").asInt();
                 JobMetrics currPipelineMetrics =
                         getOrCreatePipelineMetricsMap(metricsMap, jobPipelineStatus, pipelineId);
@@ -262,10 +224,11 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             }
         }
 
-        JsonNode cdcRecordEmitDelay = jsonNode.get("CDCRecordEmitDelay");
+        String cdcRecordEmitDelayStr = JSONUtils.getNodeString(metrics, "CDCRecordEmitDelay");
+        JsonNode cdcRecordEmitDelay = JSONUtils.toJsonNode(cdcRecordEmitDelayStr);
         if (cdcRecordEmitDelay != null && cdcRecordEmitDelay.isArray()) {
             Map<Integer, List<Long>> dataMap = new HashMap<>();
-            for (JsonNode node : jsonNode.get("CDCRecordEmitDelay")) {
+            for (JsonNode node : cdcRecordEmitDelay) {
                 Integer pipelineId = node.get("tags").get("pipelineId").asInt();
                 long value = node.get("value").asLong();
                 dataMap.computeIfAbsent(pipelineId, n -> new ArrayList<>()).add(value);
@@ -293,7 +256,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
             if (StringUtils.isEmpty(allJobMetricsContent)) {
                 return new HashMap<>();
             }
-            JsonNode jsonNode = JsonUtils.stringToJsonNode(allJobMetricsContent);
+            JsonNode jsonNode = JSONUtils.toJsonNode(allJobMetricsContent);
             for (JsonNode item : jsonNode) {
                 LinkedHashMap<Integer, JobMetrics> metricsMap = new LinkedHashMap<>();
 
