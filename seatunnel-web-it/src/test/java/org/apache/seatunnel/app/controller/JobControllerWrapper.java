@@ -16,31 +16,32 @@
  */
 package org.apache.seatunnel.app.controller;
 
-import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
-
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
+import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 public class JobControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<Long> createJob(JobCreateReq jobCreateRequest) {
         String requestBody = JsonUtils.toJsonString(jobCreateRequest);
         String response = sendRequest(url("job/create"), requestBody, "POST");
-        return JsonUtils.parseObject(response, new TypeReference<Result<Long>>() {});
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
     }
 
     public Result<Void> updateJob(long jobVersionId, JobCreateReq jobCreateReq) {
         String requestBody = JsonUtils.toJsonString(jobCreateReq);
         String response =
                 sendRequest(urlWithParam("job/update/" + jobVersionId + "?"), requestBody, "PUT");
-        return JsonUtils.parseObject(response, new TypeReference<Result<Void>>() {});
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<Void>>() {});
     }
 
     public Result<JobRes> getJob(long jobVersionId) {
         String response = sendRequest(urlWithParam("job/get/" + jobVersionId + "?"), null, "GET");
-        return JsonUtils.parseObject(response, new TypeReference<Result<JobRes>>() {});
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<JobRes>>() {});
     }
 }

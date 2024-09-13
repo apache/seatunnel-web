@@ -16,11 +16,12 @@
  */
 package org.apache.seatunnel.app.common;
 
-import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
-
 import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
+import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +38,8 @@ public class SeatunnelWebTestingBase {
     protected Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq) {
         String requestBody = JsonUtils.toJsonString(userLoginReq);
         String response = sendRequest(url("user/login"), requestBody, "POST");
-        return JsonUtils.parseObject(response, new TypeReference<Result<UserSimpleInfoRes>>() {});
+        return JSONTestUtils.parseObject(
+                response, new TypeReference<Result<UserSimpleInfoRes>>() {});
     }
 
     protected String url(String path) {

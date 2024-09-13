@@ -17,14 +17,14 @@
 
 package org.apache.seatunnel.app.controller;
 
-import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
-
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.PageInfo;
 import org.apache.seatunnel.common.constants.JobMode;
-import org.apache.seatunnel.common.utils.JsonUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -65,7 +65,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
                                         + pageNo
                                         + "&pageSize="
                                         + pageSize));
-        return JsonUtils.parseObject(
+        return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<SeaTunnelJobInstanceDto>>>() {});
     }
 
