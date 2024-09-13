@@ -17,14 +17,14 @@
 
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.app.utils.PageInfo;
 import org.apache.seatunnel.common.constants.JobMode;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(
             String taskName,
@@ -65,7 +65,7 @@ public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
                                         + pageNo
                                         + "&pageSize="
                                         + pageSize));
-        return JSONTestUtils.parseObject(
+        return JsonUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<SeaTunnelJobInstanceDto>>>() {});
     }
 

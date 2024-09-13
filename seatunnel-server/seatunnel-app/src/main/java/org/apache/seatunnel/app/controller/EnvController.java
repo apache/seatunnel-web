@@ -18,7 +18,7 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.service.IJobEnvService;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +37,6 @@ public class EnvController {
     @GetMapping("")
     @ApiOperation(value = "get job env config parameters", httpMethod = "GET")
     public Result<String> getJobEnvFormStructure() {
-        return Result.success(JSONUtils.toJsonString(jobEnvService.getJobEnvFormStructure()));
+        return Result.success(JsonUtils.toJsonString(jobEnvService.getJobEnvFormStructure()));
     }
 }

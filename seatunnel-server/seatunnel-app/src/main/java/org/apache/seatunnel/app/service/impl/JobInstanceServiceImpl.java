@@ -60,11 +60,11 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.engine.core.job.JobResult;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -390,10 +390,8 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
         checkArgument(outputSchemas.size() == 1, "input schema size must be 1");
         List<DatabaseTableSchemaReq> databaseTableSchemaReqs =
-                JSONUtils.parseObject(
-                        outputSchemas.get(0),
-                        new com.fasterxml.jackson.core.type.TypeReference<
-                                List<DatabaseTableSchemaReq>>() {});
+                JsonUtils.parseObject(
+                        outputSchemas.get(0), new TypeReference<List<DatabaseTableSchemaReq>>() {});
         return databaseTableSchemaReqs.stream()
                 .map(
                         databaseTableSchemaReq -> {
@@ -428,11 +426,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         DataSourceOption dataSourceOption =
                 task.getDataSourceOption() == null
                         ? null
-                        : JSONUtils.parseObject(task.getDataSourceOption(), DataSourceOption.class);
+                        : JsonUtils.parseObject(task.getDataSourceOption(), DataSourceOption.class);
         SelectTableFields selectTableFields =
                 task.getSelectTableFields() == null
                         ? null
-                        : JSONUtils.parseObject(
+                        : JsonUtils.parseObject(
                                 task.getSelectTableFields(), SelectTableFields.class);
         SceneMode sceneMode =
                 task.getSceneMode() == null ? null : SceneMode.valueOf(task.getSceneMode());

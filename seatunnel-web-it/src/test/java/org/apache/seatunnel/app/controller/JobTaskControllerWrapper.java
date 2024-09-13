@@ -16,6 +16,8 @@
  */
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.connector.SceneMode;
@@ -26,15 +28,13 @@ import org.apache.seatunnel.app.domain.request.job.JobTaskInfo;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.request.job.SelectTableFields;
 import org.apache.seatunnel.app.domain.response.job.JobTaskCheckRes;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.PluginType;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,38 +43,38 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JobTaskControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<JobTaskCheckRes> saveJobDAG(long jobVersionId, JobDAG jobDAG) {
-        String requestBody = JSONUtils.toPrettyJsonString(jobDAG);
+        String requestBody = JsonUtils.toJsonString(jobDAG);
         String response = sendRequest(url("job/dag/" + jobVersionId), requestBody, "POST");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<JobTaskCheckRes>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<JobTaskCheckRes>>() {});
     }
 
     public Result<JobTaskInfo> getJob(long jobVersionId) {
         String response = sendRequest(url("job/" + jobVersionId));
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<JobTaskInfo>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<JobTaskInfo>>() {});
     }
 
     public Result<Void> saveSingleTask(long jobVersionId, PluginConfig pluginConfig) {
-        String requestBody = JSONUtils.toPrettyJsonString(pluginConfig);
+        String requestBody = JsonUtils.toJsonString(pluginConfig);
         String response = sendRequest(url("job/task/" + jobVersionId), requestBody, "POST");
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 
     public Result<PluginConfig> getSingleTask(long jobVersionId, String pluginId) {
         String response = sendRequest(url("job/task/" + jobVersionId) + "pluginId=" + pluginId);
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<PluginConfig>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<PluginConfig>>() {});
     }
 
     public Result<Void> deleteSingleTask(long jobVersionId, String pluginId) {
         String response =
                 sendRequest(
                         url("job/task/" + jobVersionId) + "pluginId=" + pluginId, null, "DELETE");
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 
     public String createFakeSourcePlugin(String datasourceId, long jobVersionId, String rows) {
         DataSourceOption tableOption = new DataSourceOption();
-        tableOption.setDatabases(Arrays.asList("fake_database"));
-        tableOption.setTables(Arrays.asList("fake_table"));
+        tableOption.setDatabases(Collections.singletonList("fake_database"));
+        tableOption.setTables(Collections.singletonList("fake_table"));
         String sourcePluginId = "src_" + System.currentTimeMillis();
         PluginConfig sourcePluginConfig =
                 PluginConfig.builder()
@@ -110,8 +110,8 @@ public class JobTaskControllerWrapper extends SeatunnelWebTestingBase {
 
     public String createConsoleSinkPlugin(String datasourceId, long jobVersionId) {
         DataSourceOption sinkTableOption = new DataSourceOption();
-        sinkTableOption.setDatabases(Arrays.asList("console_fake_database"));
-        sinkTableOption.setTables(Arrays.asList("console_fake_table"));
+        sinkTableOption.setDatabases(Collections.singletonList("console_fake_database"));
+        sinkTableOption.setTables(Collections.singletonList("console_fake_table"));
 
         String sinkPluginId = "sink_" + System.currentTimeMillis();
         PluginConfig sinkPluginConfig =
@@ -157,7 +157,7 @@ public class JobTaskControllerWrapper extends SeatunnelWebTestingBase {
         databaseTableSchemaReq.setDatabase("fake_database");
         databaseTableSchemaReq.setTableName("fake_table");
         databaseTableSchemaReq.setFields(createFields());
-        return Arrays.asList(databaseTableSchemaReq);
+        return Collections.singletonList(databaseTableSchemaReq);
     }
 
     private List<TableField> createFields() {

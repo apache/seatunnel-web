@@ -18,7 +18,7 @@
 package org.apache.seatunnel.app.parameters.resource;
 
 import org.apache.seatunnel.app.common.UdfType;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -218,6 +218,6 @@ public class UdfFuncParameters extends AbstractResourceParameters {
 
     @Override
     public String toString() {
-        return JSONUtils.toJsonString(this);
+        return JsonUtils.toJsonString(this);
     }
 }

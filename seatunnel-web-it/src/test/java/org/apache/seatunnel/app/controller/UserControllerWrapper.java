@@ -16,43 +16,42 @@
  */
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.user.AddUserReq;
 import org.apache.seatunnel.app.domain.request.user.UpdateUserReq;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 public class UserControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<AddUserRes> addUser(AddUserReq addUserReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(addUserReq);
+        String requestBody = JsonUtils.toJsonString(addUserReq);
         String response = sendRequest(url("user"), requestBody, "POST");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<AddUserRes>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<AddUserRes>>() {});
     }
 
     public Result<Void> updateUser(String userId, UpdateUserReq updateUserReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(updateUserReq);
+        String requestBody = JsonUtils.toJsonString(updateUserReq);
         String response = sendRequest(url("user/" + userId), requestBody, "PUT");
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 
     public Result<Void> deleteUser(String userId) {
         String response = sendRequest(url("user/" + userId), null, "DELETE");
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 
     public Result<Void> listUsers(Integer pageNo, Integer pageSize) {
         String response =
                 sendRequest(urlWithParam("user?pageNo=" + pageNo + "&pageSize=" + pageSize));
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 
     public Result<Void> logout() {
         String response = sendRequest(url("user/logout"), null, "PATCH");
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 }

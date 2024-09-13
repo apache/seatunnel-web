@@ -16,13 +16,13 @@
  */
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.response.metrics.JobDAG;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import java.util.List;
 
@@ -31,19 +31,19 @@ public class JobMetricsControllerWrapper extends SeatunnelWebTestingBase {
     public Result<List<JobPipelineDetailMetricsRes>> detail(Long jobInstanceId) {
         String response =
                 sendRequest(urlWithParam("job/metrics/detail?jobInstanceId=" + jobInstanceId));
-        return JSONTestUtils.parseObject(
+        return JsonUtils.parseObject(
                 response, new TypeReference<Result<List<JobPipelineDetailMetricsRes>>>() {});
     }
 
     public Result<JobDAG> getJobDAG(Long jobInstanceId) {
         String response =
                 sendRequest(urlWithParam("job/metrics/dag?jobInstanceId=" + jobInstanceId));
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<JobDAG>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<JobDAG>>() {});
     }
 
     public Result<Void> summary(Long jobInstanceId) {
         String response =
                 sendRequest(urlWithParam("job/metrics/summary?jobInstanceId=" + jobInstanceId));
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 }

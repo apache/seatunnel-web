@@ -16,6 +16,8 @@
  */
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.datasource.DatasourceCheckReq;
@@ -23,10 +25,7 @@ import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,32 +72,31 @@ public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBas
     }
 
     public Result<String> createDatasource(DatasourceReq req) {
-        String requestBody = JSONUtils.toPrettyJsonString(req);
+        String requestBody = JsonUtils.toJsonString(req);
         String response = sendRequest(url("datasource/create"), requestBody, "POST");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<String>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<String>>() {});
     }
 
     public Result<Boolean> testConnect(DatasourceCheckReq req) {
-        String requestBody = JSONUtils.toPrettyJsonString(req);
+        String requestBody = JsonUtils.toJsonString(req);
         String response = sendRequest(url("datasource/check/connect"), requestBody, "POST");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<Boolean>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<Boolean>>() {});
     }
 
     public Result<Boolean> updateDatasource(String id, DatasourceReq req) {
-        String requestBody = JSONUtils.toPrettyJsonString(req);
+        String requestBody = JsonUtils.toJsonString(req);
         String response = sendRequest(url("datasource/" + id), requestBody, "PUT");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<Boolean>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<Boolean>>() {});
     }
 
     public Result<Boolean> deleteDatasource(String id) {
         String response = sendRequest(url("datasource/" + id), null, "DELETE");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<Boolean>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<Boolean>>() {});
     }
 
     public Result<DatasourceDetailRes> getDatasource(String id) {
         String response = sendRequest(url("datasource/" + id));
-        return JSONTestUtils.parseObject(
-                response, new TypeReference<Result<DatasourceDetailRes>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<DatasourceDetailRes>>() {});
     }
 
     public Result<PageInfo<DatasourceRes>> getDatasourceList(
@@ -108,7 +106,7 @@ public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBas
                         String.format(
                                 "%s/datasource/list?searchVal=%s&pluginName=%s&pageNo=%d&pageSize=%d",
                                 baseUrl, searchVal, pluginName, pageNo, pageSize));
-        return JSONTestUtils.parseObject(
+        return JsonUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<DatasourceRes>>>() {});
     }
 

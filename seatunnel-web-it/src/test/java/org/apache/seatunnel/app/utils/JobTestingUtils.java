@@ -30,6 +30,7 @@ import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.response.job.JobTaskCheckRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -167,7 +168,7 @@ public class JobTestingUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return JSONTestUtils.parseObject(jsonContent, JobCreateReq.class);
+        return JsonUtils.parseObject(jsonContent, JobCreateReq.class);
     }
 
     public static JobCreateReq populateJobCreateReqFromFile(
@@ -179,7 +180,7 @@ public class JobTestingUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JobCreateReq jobCreateReq = JSONTestUtils.parseObject(jsonContent, JobCreateReq.class);
+        JobCreateReq jobCreateReq = JsonUtils.parseObject(jsonContent, JobCreateReq.class);
         jobCreateReq.getJobConfig().setName(jobName);
         jobCreateReq.getJobConfig().setDescription(jobName + " description");
         setSourceIds(jobCreateReq, fsdSourceName, csSourceName);

@@ -31,8 +31,8 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -198,7 +198,7 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                                 option ->
                                         StringUtils.isEmpty(option)
                                                 ? null
-                                                : JSONUtils.parseObject(
+                                                : JsonUtils.parseObject(
                                                         option, DataSourceOption.class))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());

@@ -16,13 +16,12 @@
  */
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import java.util.List;
 
@@ -30,25 +29,25 @@ public class ConnectorControllerWrapper extends SeatunnelWebTestingBase {
 
     public List<ConnectorInfo> listAllTransform() {
         String response = sendRequest(url("connector/transforms"));
-        JsonNode data = JSONUtils.parseObject(response).findValue("data");
-        return JSONTestUtils.toList(data.toString(), ConnectorInfo.class);
+        JsonNode data = JsonUtils.parseObject(response).findValue("data");
+        return JsonUtils.toList(data.toString(), ConnectorInfo.class);
     }
 
     public List<ConnectorInfo> listSource(String status) {
         String response = sendRequest(urlWithParam("connector/sources?status=" + status));
-        JsonNode data = JSONUtils.parseObject(response).findValue("data");
-        return JSONTestUtils.toList(data.toString(), ConnectorInfo.class);
+        JsonNode data = JsonUtils.parseObject(response).findValue("data");
+        return JsonUtils.toList(data.toString(), ConnectorInfo.class);
     }
 
     public List<ConnectorInfo> listSink(String status) {
         String response = sendRequest(urlWithParam("connector/sinks?status=" + status));
-        JsonNode data = JSONUtils.parseObject(response).findValue("data");
-        return JSONTestUtils.toList(data.toString(), ConnectorInfo.class);
+        JsonNode data = JsonUtils.parseObject(response).findValue("data");
+        return JsonUtils.toList(data.toString(), ConnectorInfo.class);
     }
 
     public Result<Void> sync() {
         String response = sendRequest(url("connector/sync"));
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 
     public Result<Void> getConnectorFormStructure(String connectorType, String connectorName) {
@@ -59,6 +58,6 @@ public class ConnectorControllerWrapper extends SeatunnelWebTestingBase {
                                         + connectorType
                                         + "&connectorName="
                                         + connectorName));
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 }

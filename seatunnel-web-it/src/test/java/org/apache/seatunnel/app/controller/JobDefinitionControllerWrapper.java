@@ -16,26 +16,25 @@
  */
 package org.apache.seatunnel.app.controller;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
-import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.JobMode;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<Long> createJobDefinition(JobReq jobReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(jobReq);
+        String requestBody = JsonUtils.toJsonString(jobReq);
         String response = sendRequest(url("job/definition"), requestBody, "POST");
-        return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<Long>>() {});
     }
 
     public Long createJobDefinition(String jobName) {
@@ -61,18 +60,17 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
                                 + pageSize
                                 + "&jobMode="
                                 + jobMode);
-        return JSONTestUtils.parseObject(
+        return JsonUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<JobDefinitionRes>>>() {});
     }
 
     public Result<JobDefinitionRes> getJobDefinitionById(long jobId) {
         String response = sendRequest(url("job/definition/" + jobId));
-        return JSONTestUtils.parseObject(
-                response, new TypeReference<Result<JobDefinitionRes>>() {});
+        return JsonUtils.parseObject(response, new TypeReference<Result<JobDefinitionRes>>() {});
     }
 
     public Result<Void> deleteJobDefinition(long id) {
         String response = sendRequest(urlWithParam("job/definition?id=" + id), null, "DELETE");
-        return JSONTestUtils.parseObject(response, Result.class);
+        return JsonUtils.parseObject(response, Result.class);
     }
 }

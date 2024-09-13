@@ -33,9 +33,9 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.Constants;
@@ -496,7 +496,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         JobInstanceHistory history = getJobHistoryFromDb(jobInstance, userId, jobEngineId);
         if (history != null) {
             String dag = history.getDag();
-            return JSONUtils.parseObject(dag, JobDAG.class);
+            return JsonUtils.parseObject(dag, JobDAG.class);
         }
         Engine engine = new Engine(jobInstance.getEngineName(), jobInstance.getEngineVersion());
         IEngineMetricsExtractor engineMetricsExtractor =
@@ -510,7 +510,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         }
         if (history != null) {
             String dag = history.getDag();
-            return JSONUtils.parseObject(dag, JobDAG.class);
+            return JsonUtils.parseObject(dag, JobDAG.class);
         }
         return null;
     }

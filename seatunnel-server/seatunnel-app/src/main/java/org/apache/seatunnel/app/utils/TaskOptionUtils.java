@@ -23,6 +23,7 @@ import org.apache.seatunnel.app.domain.request.job.transform.SQLTransformOptions
 import org.apache.seatunnel.app.domain.request.job.transform.SplitTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.Transform;
 import org.apache.seatunnel.app.domain.request.job.transform.TransformOptions;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -60,6 +61,6 @@ public class TaskOptionUtils {
                     SeatunnelErrorEnum.ILLEGAL_STATE,
                     optionClass.getName() + " transformOptions can not be empty");
         }
-        return (T) JSONUtils.parseObject(transformOptionsStr, optionClass);
+        return (T) JsonUtils.parseObject(transformOptionsStr, optionClass);
     }
 }

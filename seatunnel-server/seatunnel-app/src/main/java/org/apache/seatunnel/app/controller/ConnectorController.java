@@ -21,7 +21,7 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.domain.request.connector.ConnectorStatus;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.service.IConnectorService;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +76,7 @@ public class ConnectorController {
             @ApiParam(value = "connector name", required = true) @RequestParam
                     String connectorName) {
         return Result.success(
-                JSONUtils.toJsonString(
+                JsonUtils.toJsonString(
                         connectorService.getConnectorFormStructure(connectorType, connectorName)));
     }
 }

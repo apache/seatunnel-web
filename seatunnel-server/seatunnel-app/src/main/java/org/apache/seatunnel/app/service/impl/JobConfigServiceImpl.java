@@ -24,8 +24,8 @@ import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobConfigService;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -62,7 +62,7 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
         jobConfigRes.setEnv(
                 StringUtils.isEmpty(jobVersion.getEnv())
                         ? null
-                        : JSONUtils.toMap(jobVersion.getEnv(), String.class, Object.class));
+                        : JsonUtils.toMap(jobVersion.getEnv(), String.class, Object.class));
         jobConfigRes.setEngine(jobVersion.getEngineName());
         return jobConfigRes;
     }
@@ -92,7 +92,7 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
                             .jobMode(jobMode)
                             .engineName(jobConfig.getEngine())
                             .updateUserId(userId)
-                            .env(JSONUtils.toJsonString(jobConfig.getEnv()))
+                            .env(JsonUtils.toJsonString(jobConfig.getEnv()))
                             .build());
         } else {
             throw new SeatunnelException(SeatunnelErrorEnum.ILLEGAL_STATE, "job mode is not set");
