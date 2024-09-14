@@ -31,7 +31,7 @@ import java.util.Set;
 public class MongoDataSourceFactory implements DataSourceFactory {
     public static final String MONGO_PLUGIN_NAME = "MongoDB";
     public static final String MONGO_PLUGIN_ICON = "MongoDB";
-    public static final String MONGO_PLUGIN_VERSION = "1.0.0";
+    public static final String MONGO_PLUGIN_VERSION = "1.0.1";
 
     @Override
     public String factoryIdentifier() {
@@ -45,13 +45,13 @@ public class MongoDataSourceFactory implements DataSourceFactory {
                         .name(MONGO_PLUGIN_NAME)
                         .icon(MONGO_PLUGIN_ICON)
                         .version(MONGO_PLUGIN_VERSION)
-                        .supportVirtualTables(true)
+                        .supportVirtualTables(false)
                         .type(DatasourcePluginTypeEnum.NO_STRUCTURED.getCode())
                         .build());
     }
 
     @Override
     public DataSourceChannel createChannel() {
-        return new MongoDataSoueceChannel();
+        return new MongoDataSourceChannel();
     }
 }
