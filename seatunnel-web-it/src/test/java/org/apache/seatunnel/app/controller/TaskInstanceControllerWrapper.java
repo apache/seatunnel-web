@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TaskInstanceControllerWrapper extends SeatunnelWebTestingBase {
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(
             String taskName,

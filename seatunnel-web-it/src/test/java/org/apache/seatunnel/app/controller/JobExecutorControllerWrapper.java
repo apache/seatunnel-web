@@ -23,7 +23,7 @@ import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -39,7 +39,7 @@ public class JobExecutorControllerWrapper extends SeatunnelWebTestingBase {
     }
 
     public Result<Long> jobExecutor(Long jobDefineId, JobExecParam jobExecParam) {
-        String requestBody = JSONUtils.toPrettyJsonString(jobExecParam);
+        String requestBody = JsonUtils.toJsonString(jobExecParam);
         String response =
                 sendRequest(
                         urlWithParam("job/executor/execute?jobDefineId=" + jobDefineId),

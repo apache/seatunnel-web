@@ -31,8 +31,8 @@ import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.utils.CartesianProductUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.app.utils.PropertyUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -116,7 +116,7 @@ public class SeatunnelDatasourceController extends BaseController {
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestBody DatasourceReq req) {
         String datasourceConfig = req.getDatasourceConfig();
-        Map<String, String> stringStringMap = JSONUtils.toMap(datasourceConfig);
+        Map<String, String> stringStringMap = JsonUtils.toMap(datasourceConfig);
         return Result.success(
                 datasourceService.createDatasource(
                         loginUser.getId(),
@@ -146,8 +146,6 @@ public class SeatunnelDatasourceController extends BaseController {
     Result<Boolean> testConnect(
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestBody DatasourceCheckReq req) {
-
-        // Map<String, String> stringStringMap = JSONUtils.toMap(req.getDatasourceConfig());
         return Result.success(
                 datasourceService.testDatasourceConnectionAble(
                         loginUser.getId(),
@@ -182,7 +180,7 @@ public class SeatunnelDatasourceController extends BaseController {
             @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @PathVariable("id") String id,
             @RequestBody DatasourceReq req) {
-        Map<String, String> stringStringMap = JSONUtils.toMap(req.getDatasourceConfig());
+        Map<String, String> stringStringMap = JsonUtils.toMap(req.getDatasourceConfig());
         Long datasourceId = Long.parseLong(id);
         return Result.success(
                 datasourceService.updateDatasource(

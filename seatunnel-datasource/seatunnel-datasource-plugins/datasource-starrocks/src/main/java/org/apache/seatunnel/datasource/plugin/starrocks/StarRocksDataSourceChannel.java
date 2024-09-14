@@ -17,10 +17,9 @@
 
 package org.apache.seatunnel.datasource.plugin.starrocks;
 
-import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.table.catalog.TablePath;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
@@ -40,8 +39,6 @@ import java.util.Map;
 public class StarRocksDataSourceChannel implements DataSourceChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StarRocksDataSourceChannel.class);
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public boolean canAbleGetSchema() {
@@ -81,7 +78,7 @@ public class StarRocksDataSourceChannel implements DataSourceChannel {
         try {
             StarRocksCatalog catalog = getCatalog(requestParams);
             String nodeUrls = requestParams.get(StarRocksOptionRule.NODE_URLS.key());
-            List<String> nodeList = OBJECT_MAPPER.readValue(nodeUrls, List.class);
+            List<String> nodeList = JsonUtils.toList(nodeUrls, String.class);
             if (!telnet(nodeList.get(0))) {
                 return false;
             }

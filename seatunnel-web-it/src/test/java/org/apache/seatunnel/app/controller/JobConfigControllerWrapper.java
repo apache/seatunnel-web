@@ -22,8 +22,8 @@ import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -33,7 +33,7 @@ import java.util.Map;
 public class JobConfigControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<Void> updateJobConfig(long jobVersionId, JobConfig jobConfig) {
-        String requestBody = JSONUtils.toPrettyJsonString(jobConfig);
+        String requestBody = JsonUtils.toJsonString(jobConfig);
         String response = sendRequest(url("job/config/" + jobVersionId), requestBody, "PUT");
         return JSONTestUtils.parseObject(response, Result.class);
     }

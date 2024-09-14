@@ -17,14 +17,15 @@
 
 package org.apache.seatunnel.app.dal.entity;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import org.apache.seatunnel.app.common.ConditionType;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 import java.util.Date;
@@ -66,8 +67,8 @@ public class ProcessTaskRelation {
     private ConditionType conditionType;
 
     /** condition parameters */
-    @JsonDeserialize(using = JSONUtils.JsonDataDeserializer.class)
-    @JsonSerialize(using = JSONUtils.JsonDataSerializer.class)
+    @JsonDeserialize(using = JsonUtils.JsonDataDeserializer.class)
+    @JsonSerialize(using = JsonUtils.JsonDataSerializer.class)
     private String conditionParams;
 
     /** create time */

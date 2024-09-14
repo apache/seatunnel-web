@@ -18,7 +18,6 @@ package org.apache.seatunnel.app.thirdparty.engine;
 
 import org.apache.seatunnel.shade.com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
-import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.seatunnel.app.dal.entity.JobInstanceHistory;
 import org.apache.seatunnel.app.dal.entity.JobMetrics;
@@ -50,8 +49,6 @@ import java.util.OptionalDouble;
 /** Engine metrics extractor SeaTunnel Engine implement. */
 public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor {
     @Getter @Setter private SeaTunnelEngineProxy seaTunnelEngineProxy;
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static final String[] clusterHealthMetricsKeys =
             new String[] {
@@ -152,11 +149,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
     public JobInstanceHistory getJobHistoryById(String jobEngineId) {
         JobDAGInfo jobInfo = seaTunnelEngineProxy.getJobInfo(jobEngineId);
         JobInstanceHistory jobInstanceHistory = new JobInstanceHistory();
-        try {
-            jobInstanceHistory.setDag(OBJECT_MAPPER.writeValueAsString(jobInfo));
-        } catch (JsonProcessingException e) {
-            throw new org.apache.seatunnel.common.utils.SeaTunnelException(e);
-        }
+        jobInstanceHistory.setDag(JsonUtils.toJsonString(jobInfo));
         return jobInstanceHistory;
     }
 

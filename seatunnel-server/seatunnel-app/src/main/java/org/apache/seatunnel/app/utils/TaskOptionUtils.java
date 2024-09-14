@@ -23,18 +23,15 @@ import org.apache.seatunnel.app.domain.request.job.transform.SQLTransformOptions
 import org.apache.seatunnel.app.domain.request.job.transform.SplitTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.Transform;
 import org.apache.seatunnel.app.domain.request.job.transform.TransformOptions;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 
 public class TaskOptionUtils {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static <T extends TransformOptions> T getTransformOption(
             Transform transform, String transformOptionsStr) throws IOException {
@@ -58,13 +55,12 @@ public class TaskOptionUtils {
     }
 
     public static <T extends TransformOptions> T convertTransformStrToOptions(
-            String transformOptionsStr, Class<? extends TransformOptions> optionClass)
-            throws IOException {
+            String transformOptionsStr, Class<? extends TransformOptions> optionClass) {
         if (StringUtils.isEmpty(transformOptionsStr)) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.ILLEGAL_STATE,
                     optionClass.getName() + " transformOptions can not be empty");
         }
-        return (T) OBJECT_MAPPER.readValue(transformOptionsStr, optionClass);
+        return (T) JsonUtils.parseObject(transformOptionsStr, optionClass);
     }
 }
