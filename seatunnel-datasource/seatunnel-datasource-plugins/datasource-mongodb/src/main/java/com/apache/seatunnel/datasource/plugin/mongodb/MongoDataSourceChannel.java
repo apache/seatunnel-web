@@ -23,6 +23,8 @@ import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
 import org.bson.Document;
+import org.bson.types.Decimal128;
+import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -32,10 +34,13 @@ import com.mongodb.client.MongoIterable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class MongoDataSourceChannel implements DataSourceChannel {
@@ -95,30 +100,85 @@ public class MongoDataSourceChannel implements DataSourceChannel {
             @NonNull Map<String, String> requestParams,
             @NonNull String database,
             @NonNull String table) {
+        Set<String> nullables = new HashSet<>();
+        Map<String, Class<?>> mongoTypes = new HashMap<>();
         try (MongoClient mongoClient = createMongoClient(requestParams)) {
             MongoCollection<Document> mongoCollection =
                     mongoClient.getDatabase(database).getCollection(table);
             // read first 100 rows from the table, and combine all keys to get the field types
-            Map<String, Class<?>> mongoTypes = new HashMap<>();
             for (Document bson : mongoCollection.find().limit(100)) {
-                bson.keySet().forEach(key -> mongoTypes.putIfAbsent(key, bson.get(key).getClass()));
+                bson.keySet()
+                        .forEach(
+                                key -> {
+                                    Object val = bson.get(key);
+                                    if (val == null) {
+                                        nullables.add(key);
+                                    } else {
+                                        mongoTypes.putIfAbsent(key, val.getClass());
+                                    }
+                                });
             }
-            List<TableField> tableFields = new ArrayList<>();
-            mongoTypes.forEach(
-                    (key, type) -> tableFields.add(createTableField(key, type.getSimpleName())));
-            return tableFields;
         } catch (Exception e) {
             throw new DataSourcePluginException("get table fields failed", e);
         }
+
+        List<TableField> tableFields = new ArrayList<>();
+        mongoTypes.forEach(
+                (key, type) ->
+                        tableFields.add(createTableField(key, type, nullables.contains(key))));
+        return tableFields;
     }
 
-    private TableField createTableField(String name, String type) {
+    private TableField createTableField(String name, Class<?> type, boolean nullable) {
         TableField field = new TableField();
-        field.setType(type);
         field.setName(name);
+        field.setType(toSeaTunnelType(type));
         field.setPrimaryKey("_id".equals(name));
-        field.setNullable(!"_id".equals(name));
+        field.setNullable(nullable);
         return field;
+    }
+
+    private String toSeaTunnelType(Class<?> type) {
+        if (type.equals(ObjectId.class)
+                || type.equals(String.class)
+                || type.isAssignableFrom(Map.class)) {
+            return "string";
+        } else if (type.equals(Byte.class)) {
+            return "tinyint";
+        } else if (type.equals(Short.class)) {
+            return "smallint";
+        } else if (type.equals(Integer.class)) {
+            return "int";
+        } else if (type.equals(Long.class)) {
+            return "bigint";
+        } else if (type.equals(Float.class)) {
+            return "float";
+        } else if (type.equals(Double.class)) {
+            return "double";
+        } else if (type.equals(Decimal128.class)) {
+            return "decimal(38, 18)";
+        } else if (type.equals(Boolean.class)) {
+            return "boolean";
+        } else if (type.equals(java.util.Date.class) || type.equals(java.sql.Date.class)) {
+            return "date";
+        } else if (type.equals(java.sql.Time.class)) {
+            return "time";
+        } else if (type.equals(Timestamp.class)) {
+            return "timestamp";
+        } else if (type.equals(byte[].class)) {
+            return "bytes";
+        } else if (type.equals(int[].class)) {
+            return "array<int>";
+        } else if (type.equals(long[].class)) {
+            return "array<bigint>";
+        } else if (type.equals(String[].class)) {
+            return "array<string>";
+        } else if (type.isAssignableFrom(List.class)) {
+            return "array<string>";
+        } else {
+            log.warn("unsupported type: {}", type);
+            return null;
+        }
     }
 
     @Override
