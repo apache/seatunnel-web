@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package com.whaleops.datasource.datasource.plugin.hive;
+package org.apache.seatunnel.datasource.plugin.hive;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+import org.apache.seatunnel.datasource.plugin.hive.client.HiveClient;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.whaleops.datasource.datasource.plugin.hive.client.HiveClient;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.whaleops.datasource.s3;
+package org.apache.seatunnel.datasource;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;

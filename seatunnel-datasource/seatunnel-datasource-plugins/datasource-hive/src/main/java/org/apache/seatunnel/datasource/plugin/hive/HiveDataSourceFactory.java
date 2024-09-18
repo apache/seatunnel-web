@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.whaleops.datasource.datasource.plugin.hive;
+package org.apache.seatunnel.datasource.plugin.hive;
 
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceFactory;

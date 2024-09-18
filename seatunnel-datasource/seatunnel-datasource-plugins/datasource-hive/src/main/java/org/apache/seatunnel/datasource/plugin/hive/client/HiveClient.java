@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package com.whaleops.datasource.datasource.plugin.hive.client;
+package org.apache.seatunnel.datasource.plugin.hive.client;
 
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+import org.apache.seatunnel.datasource.plugin.hive.HiveOptionRule;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,6 @@ import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.thrift.TException;
 
-import com.whaleops.datasource.datasource.plugin.hive.HiveOptionRule;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
