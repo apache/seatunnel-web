@@ -62,8 +62,10 @@ public class HiveClient implements AutoCloseable {
         String kerberosKeytabPath = reqParam.get(HiveOptionRule.KERBEROS_KEYTAB_PATH.key());
         String hdfsSitePath = reqParam.get(HiveOptionRule.HDFS_SITE_PATH.key());
         String hiveSitePath = reqParam.get(HiveOptionRule.HIVE_SITE_PATH.key());
-        System.setProperty("java.security.krb5.conf", kerberosKrb5ConfPath);
-        System.setProperty("krb.principal", "hadoop");
+        if (StringUtils.isNotEmpty(kerberosKrb5ConfPath)) {
+            // if this property is not set, default environment krb5.conf path is used
+            System.setProperty("java.security.krb5.conf", kerberosKrb5ConfPath);
+        }
         try {
             if (StringUtils.isNotEmpty(kerberosPrincipal)) {
                 // login Kerberos
