@@ -57,7 +57,7 @@ public class DatasourceLoadConfig {
                 "JDBC-CLICKHOUSE",
                 "org.apache.seatunnel.datasource.plugin.clickhouse.jdbc.ClickhouseJdbcDataSourceFactory");
         classLoaderFactoryName.put(
-                "HIVE", "com.whaleops.datasource.datasource.plugin.hive.HiveDataSourceFactory");
+                "HIVE", "org.apache.seatunnel.datasource.plugin.hive.HiveDataSourceFactory");
         classLoaderFactoryName.put(
                 "JDBC-ORACLE",
                 "org.apache.seatunnel.datasource.plugin.oracle.jdbc.OracleJdbcDataSourceFactory");
