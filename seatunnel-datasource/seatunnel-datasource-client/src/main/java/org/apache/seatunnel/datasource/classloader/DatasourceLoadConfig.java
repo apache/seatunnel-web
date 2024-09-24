@@ -74,6 +74,9 @@ public class DatasourceLoadConfig {
                 "JDBC-TIDB",
                 "org.apache.seatunnel.datasource.plugin.tidb.jdbc.TidbJdbcDataSourceFactory");
         classLoaderFactoryName.put(
+                "JDBC-HIVE",
+                "org.apache.seatunnel.datasource.plugin.hive.jdbc.HiveJdbcDataSourceFactory");
+        classLoaderFactoryName.put(
                 "KAFKA", "org.apache.seatunnel.datasource.plugin.kafka.KafkaDataSourceFactory");
         classLoaderFactoryName.put(
                 "MYSQL-CDC",
@@ -124,6 +127,7 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("JDBC-STARROCKS", "datasource-jdbc-starrocks-");
         classLoaderJarName.put("MONGODB", "datasource-mongodb-");
         classLoaderJarName.put("JDBC-DB2", "datasource-jdbc-db2-");
+        classLoaderJarName.put("JDBC-HIVE", "datasource-jdbc-hive-");
         classLoaderJarName.put("FAKESOURCE", "datasource-fakesource-");
         classLoaderJarName.put("CONSOLE", "datasource-console-");
     }
@@ -138,6 +142,7 @@ public class DatasourceLoadConfig {
                     "JDBC-Postgres",
                     "JDBC-SQLServer",
                     "JDBC-TiDB",
+                    "JDBC-Hive",
                     "Kafka",
                     "MySQL-CDC",
                     "S3",

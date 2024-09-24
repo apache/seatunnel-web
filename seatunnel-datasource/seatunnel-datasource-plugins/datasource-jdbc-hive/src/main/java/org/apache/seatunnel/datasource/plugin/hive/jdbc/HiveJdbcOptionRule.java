@@ -26,17 +26,64 @@ public class HiveJdbcOptionRule {
     public static final Option<String> URL =
             Options.key("url")
                     .stringType()
+                    .defaultValue("jdbc:hive2://localhost:10000/default")
+                    .withDescription(
+                            "The URL of the JDBC connection. Refer to a case: jdbc:hive2://localhost:10000/default");
+
+    public static final Option<String> DRIVER =
+            Options.key("driver")
+                    .stringType()
+                    .defaultValue("org.apache.hive.jdbc.HiveDriver")
+                    .withDescription(
+                            "The jdbc class name used to connect to the remote data source");
+
+    public static final Option<String> USER =
+            Options.key("user").stringType().noDefaultValue().withDescription("user");
+
+    public static final Option<String> PASSWORD =
+            Options.key("password").stringType().noDefaultValue().withDescription("password");
+
+    public static final Option<Boolean> USE_KERBEROS =
+            Options.key("use_kerberos")
+                    .booleanType()
+                    .defaultValue(false)
+                    .withDescription("Whether to enable Kerberos, default is false.");
+
+    public static final Option<String> KERBEROS_PRINCIPAL =
+            Options.key("kerberos_principal")
+                    .stringType()
                     .noDefaultValue()
                     .withDescription(
-                            "jdbc url, eg:"
-                                    + "jdbc:hive2://localhost:10000/default?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8");
+                            "When use kerberos, we should set kerberos principal such as 'test_user@xxx'. ");
+
+    public static final Option<String> KERBEROS_KEYTAB_PATH =
+            Options.key("kerberos_keytab_path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription(
+                            "When use kerberos, we should set kerberos principal file path such as '/home/test/test_user.keytab'. ");
+
+    public static final Option<String> KRB5_PATH =
+            Options.key("krb5_path")
+                    .stringType()
+                    .defaultValue("/etc/krb5.conf")
+                    .withDescription(
+                            "When use kerberos, we should set krb5 path file path such as '/seatunnel/krb5.conf' or use the default path '/etc/krb5.conf");
 
     public static OptionRule optionRule() {
-        return OptionRule.builder().required(URL).build();
+        return OptionRule.builder()
+                .required(URL)
+                .required(DRIVER)
+                .optional(USER)
+                .optional(PASSWORD)
+                .optional(USE_KERBEROS)
+                .optional(KERBEROS_PRINCIPAL)
+                .optional(KERBEROS_KEYTAB_PATH)
+                .optional(KRB5_PATH)
+                .build();
     }
 
     public static OptionRule metadataRule() {
-        // todo
         return OptionRule.builder().build();
     }
 }

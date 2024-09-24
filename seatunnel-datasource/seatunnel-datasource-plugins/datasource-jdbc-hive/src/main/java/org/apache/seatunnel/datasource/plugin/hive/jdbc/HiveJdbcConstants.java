@@ -24,6 +24,5 @@ import java.util.Set;
 public class HiveJdbcConstants {
 
     public static final Set<String> HIVE_SYSTEM_DATABASES =
-            Sets.newHashSet(
-                    "information_schema", "mysql", "performance_schema", "sys", "test", "hivedb");
+            Sets.newHashSet("information_schema", "performance_schema", "sys");
 }
