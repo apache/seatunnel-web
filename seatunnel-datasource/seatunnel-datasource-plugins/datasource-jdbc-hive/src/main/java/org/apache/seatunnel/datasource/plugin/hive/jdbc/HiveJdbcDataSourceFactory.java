@@ -28,17 +28,17 @@ import java.util.Set;
 public class HiveJdbcDataSourceFactory implements DataSourceFactory {
     @Override
     public String factoryIdentifier() {
-        return "JDBC-Hive";
+        return HiveJdbcConstants.PLUGIN_NAME;
     }
 
     @Override
     public Set<DataSourcePluginInfo> supportedDataSources() {
         DataSourcePluginInfo dataSourcePluginInfo =
                 DataSourcePluginInfo.builder()
-                        .name("JDBC-Hive")
+                        .name(HiveJdbcConstants.PLUGIN_NAME)
                         .type(DatasourcePluginTypeEnum.DATABASE.getCode())
                         .version("1.0.0")
-                        .icon("JDBC-Hive")
+                        .icon(HiveJdbcConstants.PLUGIN_NAME)
                         .supportVirtualTables(false)
                         .build();
         Set<DataSourcePluginInfo> dataSourceInfos = new HashSet<>();
