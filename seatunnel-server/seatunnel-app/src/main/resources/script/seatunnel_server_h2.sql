@@ -40,6 +40,12 @@ CREATE TABLE role (
 );
 
 -- ----------------------------
+-- Records of role
+-- ----------------------------
+INSERT INTO role (type, role_name, description) VALUES (0, 'ADMIN_ROLE', 'Admin User');
+INSERT INTO role (type, role_name, description) VALUES (1, 'NORMAL_ROLE', 'Normal User');
+
+-- ----------------------------
 -- Table structure for role_user_relation
 -- ----------------------------
 DROP TABLE IF EXISTS role_user_relation;

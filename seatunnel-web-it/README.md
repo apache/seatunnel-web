@@ -1,13 +1,16 @@
 Build seatunnel-web
 ./mvnw clean install -DskipTests
 
-Update mysql database details in src/test/resources/application.yml and Run the seatunnel-web-it integration tests
-./mvnw -T 1C -B verify -DskipUT=true -DskipIT=false -DSEATUNNEL_HOME=/some/path/apache-seatunnel-2.3.7 -DST_WEB_BASEDIR_PATH=seatunnel-web-dist/target/apache-seatunnel-web-1.0.0-SNAPSHOT/apache-seatunnel-web-1.0.0-SNAPSHOT
+Run seatunnel-web-it integration tests
+./mvnw -T 1C -B verify -DskipUT=true -DskipIT=false -DSEATUNNEL_HOME=/some/path/apache-seatunnel-2.3.7 -DST_WEB_BASEDIR_PATH=seatunnel-web-dist/target/apache-seatunnel-web-1.0.2-SNAPSHOT/apache-seatunnel-web-1.0.2-SNAPSHOT
 NOTE: Please remember to update the versions according to the latest supported versions.
 
 If you're using a version of Java higher than Java 8 for running the tests, add the following VM options: 
--DitJvmArgs="--add-opens java.base/java.lang.invoke=ALL-UNNAMED".
+-DitJvmArgs="-Xmx1024m --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED"
 
 While running integrations tests from IDE, ensure following VM options are set
 SEATUNNEL_HOME=/some/path/apache-seatunnel-2.3.7
-ST_WEB_BASEDIR_PATH=/some/path/seatunnel-web-dist/target/apache-seatunnel-web-1.0.0-SNAPSHOT/apache-seatunnel-web-1.0.0-SNAPSHOT
+ST_WEB_BASEDIR_PATH=/some/path/seatunnel-web-dist/target/apache-seatunnel-web-1.0.2-SNAPSHOT/apache-seatunnel-web-1.0.2-SNAPSHOT
+
+By default, integration tests use the H2 database. If you want to use the MySQL database, update the MySQL database details in src/test/resources/application.yml and run the seatunnel-web-it integration tests with the -DdbType=mysql option as shown below:
+./mvnw -T 1C -B verify -DskipUT=true -DskipIT=false -DdbType=mysql -DSEATUNNEL_HOME=/some/path/apache-seatunnel-2.3.7 -DST_WEB_BASEDIR_PATH=seatunnel-web-dist/target/apache-seatunnel-web-1.0.2-SNAPSHOT/apache-seatunnel-web-1.0.2-SNAPSHOT
