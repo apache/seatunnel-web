@@ -24,13 +24,13 @@ import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.UserGroupInformation;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Slf4j
 public class HiveJdbcDataSourceChannel implements DataSourceChannel {
@@ -61,15 +62,15 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
             Map<String, String> requestParams,
             String database,
             Map<String, String> option) {
-        return getTables(pluginName, requestParams, database, option);
+        return getTableNames(requestParams, database);
     }
 
     @Override
     public List<String> getDatabases(
             @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
         try {
-            return getDataBaseNames(pluginName, requestParams);
-        } catch (SQLException e) {
+            return getDataBaseNames(requestParams);
+        } catch (SQLException | IOException e) {
             log.error("Query Hive databases error, request params is {}", requestParams, e);
             throw new DataSourcePluginException("Query Hive databases error,", e);
         }
@@ -104,7 +105,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
     }
 
     protected boolean checkJdbcConnectivity(Map<String, String> requestParams) {
-        try (Connection ignored = init(requestParams)) {
+        try (Connection ignored = getHiveConnection(requestParams)) {
             return true;
         } catch (Exception e) {
             throw new DataSourcePluginException(
@@ -112,25 +113,61 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
         }
     }
 
-    protected Connection init(Map<String, String> requestParams) throws SQLException {
+    protected Connection getHiveConnection(Map<String, String> requestParams)
+            throws IOException, SQLException {
         if (MapUtils.isEmpty(requestParams)) {
             throw new DataSourcePluginException(
                     "Hive jdbc request params is null, please check your config");
         }
-        String url = requestParams.get(HiveJdbcOptionRule.URL.key());
-        return DriverManager.getConnection(url);
+        String driverClass =
+                requestParams.getOrDefault(
+                        HiveJdbcOptionRule.DRIVER.key(), "org.apache.hive.jdbc.HiveDriver");
+        try {
+            Class.forName(driverClass);
+        } catch (ClassNotFoundException e) {
+            throw new DataSourcePluginException(
+                    "Hive jdbc driver " + driverClass + " not found", e);
+        }
+        Properties connProps = new Properties();
+        boolean isKerberosEnabled =
+                Boolean.parseBoolean(requestParams.get(HiveJdbcOptionRule.USE_KERBEROS.key()));
+        if (isKerberosEnabled) {
+            String krb5ConfPath = requestParams.get(HiveJdbcOptionRule.KRB5_PATH.key());
+            if (StringUtils.isNotEmpty(krb5ConfPath)) {
+                System.setProperty("java.security.krb5.conf", krb5ConfPath);
+            }
+            Configuration conf = new Configuration();
+            conf.set("hadoop.security.authentication", "Kerberos");
+            UserGroupInformation.setConfiguration(conf);
+            String principal = requestParams.get(HiveJdbcOptionRule.KERBEROS_PRINCIPAL.key());
+            connProps.setProperty("principal", principal);
+            String keytabPath = requestParams.get(HiveJdbcOptionRule.KERBEROS_KEYTAB_PATH.key());
+            UserGroupInformation.loginUserFromKeytab(principal, keytabPath);
+        }
+
+        String user = requestParams.get(HiveJdbcOptionRule.USER.key());
+        String password = requestParams.get(HiveJdbcOptionRule.PASSWORD.key());
+        if (StringUtils.isNotEmpty(user)) {
+            connProps.setProperty("user", user);
+        }
+        if (StringUtils.isNotEmpty(password)) {
+            connProps.setProperty("password", password);
+        }
+
+        String jdbcUrl = requestParams.get(HiveJdbcOptionRule.URL.key());
+        return DriverManager.getConnection(jdbcUrl, connProps);
     }
 
-    protected List<String> getDataBaseNames(String pluginName, Map<String, String> requestParams)
-            throws SQLException {
+    protected List<String> getDataBaseNames(Map<String, String> requestParams)
+            throws SQLException, IOException {
         List<String> dbNames = new ArrayList<>();
-        try (Connection connection = init(requestParams);
-                Statement statement = connection.createStatement(); ) {
-            ResultSet re = statement.executeQuery("SHOW DATABASES;");
+        try (Connection connection = getHiveConnection(requestParams);
+                Statement statement = connection.createStatement()) {
+            ResultSet re = statement.executeQuery("SHOW DATABASES");
             // filter system databases
             while (re.next()) {
-                String dbName = re.getString("database");
-                if (StringUtils.isNotBlank(dbName) && isNotSystemDatabase(pluginName, dbName)) {
+                String dbName = re.getString("database_name");
+                if (StringUtils.isNotBlank(dbName) && isNotSystemDatabase(dbName)) {
                     dbNames.add(dbName);
                 }
             }
@@ -140,9 +177,11 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
 
     protected List<String> getTableNames(Map<String, String> requestParams, String dbName) {
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = init(requestParams); ) {
+        try (Connection connection = getHiveConnection(requestParams)) {
             ResultSet resultSet =
-                    connection.getMetaData().getTables(dbName, null, null, new String[] {"TABLE"});
+                    connection
+                            .getMetaData()
+                            .getTables(dbName, dbName, null, new String[] {"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -150,7 +189,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
                 }
             }
             return tableNames;
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             throw new DataSourcePluginException("get table names failed", e);
         }
     }
@@ -158,7 +197,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
     protected List<TableField> getTableFields(
             Map<String, String> requestParams, String dbName, String tableName) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = init(requestParams); ) {
+        try (Connection connection = getHiveConnection(requestParams)) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, tableName);
             ResultSet resultSet = metaData.getColumns(dbName, null, tableName, null);
@@ -177,7 +216,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
                 tableField.setNullable(isNullable);
                 tableFields.add(tableField);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             throw new DataSourcePluginException("get table fields failed", e);
         }
         return tableFields;
@@ -186,25 +225,14 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
             throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(dbName, "%", tableName);
-        while (primaryKeysInfo.next()) {
+        if (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
         }
         return null;
     }
 
-    @SuppressWarnings("checkstyle:MagicNumber")
-    private static boolean checkHostConnectable(String host, int port) {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), 1000);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    private boolean isNotSystemDatabase(String pluginName, String dbName) {
-        // FIXME,filters system databases
-        return true;
+    private boolean isNotSystemDatabase(String dbName) {
+        return !HiveJdbcConstants.HIVE_SYSTEM_DATABASES.contains(dbName.toLowerCase());
     }
 
     private boolean convertToBoolean(Object value) {
