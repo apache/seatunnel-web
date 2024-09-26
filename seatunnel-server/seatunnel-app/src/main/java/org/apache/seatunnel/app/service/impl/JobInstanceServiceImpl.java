@@ -17,6 +17,7 @@
 
 package org.apache.seatunnel.app.service.impl;
 
+import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
@@ -73,6 +74,7 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -122,6 +124,9 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
     @Resource private IJobLineDao jobLineDao;
 
     @Resource private IJobMetricsService jobMetricsService;
+
+    @Value("${datasource.encryption.type:default}")
+    private String datasourceEncryptionType;
 
     @Override
     public JobExecutorRes createExecuteResource(
@@ -326,6 +331,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                         .setJson(false)
                                         .setComments(false)
                                         .setOriginComments(false));
+        env = env + "\"shade.identifier\"=" + datasourceEncryptionType + "\n";
         String jobConfig = SeaTunnelConfigUtil.generateConfig(env, sources, transforms, sinks);
         return JobUtils.replaceJobConfigPlaceholders(jobConfig, executeParam);
     }
@@ -571,6 +577,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             String connectorType,
             Map<String, String> config,
             OptionRule optionRule) {
+        ConfigShadeUtil.encryptData(config, datasourceEncryptionType);
         return parseConfigWithOptionRule(
                 pluginType, connectorType, ConfigFactory.parseMap(config), optionRule);
     }

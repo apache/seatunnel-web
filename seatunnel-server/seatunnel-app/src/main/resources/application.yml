@@ -38,6 +38,10 @@ jwt:
   secretKey:
   algorithm: HS256
 
+datasource:
+  encryption:
+    type: base64
+
 ---
 spring:
   config:
