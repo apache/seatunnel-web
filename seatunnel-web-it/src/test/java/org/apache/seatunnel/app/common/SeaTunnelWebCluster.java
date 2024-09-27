@@ -32,11 +32,19 @@ import com.hazelcast.logging.ILogger;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class SeaTunnelWebCluster {
+    private static final String DB_TYPE_H2 = "h2";
+    private static final String DB_TYPE_MYSQL = "mysql";
+    private static final Set<String> SUPPORTED_DB_TYPES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(DB_TYPE_H2, DB_TYPE_MYSQL)));
     private SeaTunnelServer server;
     private HazelcastInstanceImpl instance;
     private ConfigurableApplicationContext applicationContext;
@@ -59,8 +67,16 @@ public class SeaTunnelWebCluster {
         server = instance.node.nodeEngine.getService(SeaTunnelServer.SERVICE_NAME);
         ILogger LOGGER = instance.node.nodeEngine.getLogger(SeaTunnelWebCluster.class);
 
-        // String[] args = {"--spring.profiles.active=h2"};
-        String[] args = {};
+        // For integration tests, default database is H2, so the default spring profile is h2
+        String dbType = System.getProperty("dbType", DB_TYPE_H2);
+        if (!SUPPORTED_DB_TYPES.contains(dbType)) {
+            throw new IllegalArgumentException(
+                    "Invalid dbType: " + dbType + ". Supported values are: " + SUPPORTED_DB_TYPES);
+        }
+
+        String springProfile = dbType.equals(DB_TYPE_MYSQL) ? "default" : "h2";
+        String[] args = {"--spring.profiles.active=" + springProfile};
+
         applicationContext = SpringApplication.run(SeatunnelApplication.class, args);
         LOGGER.info("SeaTunnel-web server started.");
         assertTrue(isRunning());

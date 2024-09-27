@@ -40,6 +40,10 @@ jwt:
 
 ---
 spring:
+  application:
+    name: seatunnel
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
   config:
     activate:
       on-profile: h2
@@ -58,3 +62,8 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+jwt:
+  expireTime: 86400
+  # please add key when deploy
+  secretKey: https://github.com/apache/seatunnel
+  algorithm: HS256
