@@ -69,7 +69,11 @@ public class EngineDataType {
         T_INT_ARRAY("array<int>", ArrayType.INT_ARRAY_TYPE),
         T_LONG_ARRAY("array<bigint>", ArrayType.LONG_ARRAY_TYPE),
         T_FLOAT_ARRAY("array<float>", ArrayType.FLOAT_ARRAY_TYPE),
-        T_DOUBLE_ARRAY("array<double>", ArrayType.DOUBLE_ARRAY_TYPE);
+        T_DOUBLE_ARRAY("array<double>", ArrayType.DOUBLE_ARRAY_TYPE),
+        T_VARCHAR("varchar", BasicType.STRING_TYPE),
+        T_CHAR("char", BasicType.STRING_TYPE),
+        T_INTEGER("integer", BasicType.INT_TYPE),
+        T_DECIMAL_DEFAULT("decimal", BasicType.DOUBLE_TYPE);
 
         @Getter private final String name;
         @Getter private final SeaTunnelDataType<?> RawType;

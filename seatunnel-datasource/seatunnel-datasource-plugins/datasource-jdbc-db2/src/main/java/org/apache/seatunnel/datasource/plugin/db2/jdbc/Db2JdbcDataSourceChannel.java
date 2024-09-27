@@ -25,14 +25,15 @@ import org.apache.seatunnel.datasource.plugin.api.model.TableField;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,8 +41,8 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@Slf4j
 public class Db2JdbcDataSourceChannel implements DataSourceChannel {
-
     @Override
     public OptionRule getDataSourceOptions(@NonNull String pluginName) {
         return Db2DataSourceConfig.OPTION_RULE;
@@ -65,13 +66,13 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
         if (StringUtils.isNotEmpty(filterName) && !filterName.contains("%")) {
             filterName = "%" + filterName + "%";
         } else if (StringUtils.equals(filterName, "")) {
-            filterName = null;
+            filterName = "%";
         }
         try (Connection connection = getConnection(requestParams);
                 ResultSet resultSet =
                         connection
                                 .getMetaData()
-                                .getTables(null, null, "%", new String[] {"TABLE"})) {
+                                .getTables(null, database, filterName, new String[] {"TABLE"})) {
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -90,9 +91,28 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
     @Override
     public List<String> getDatabases(
             @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
-        // Hardcoded list of example database names
-        List<String> dbNames = Arrays.asList("default");
+        List<String> dbNames = new ArrayList<>();
+        try (Connection connection = getConnection(requestParams);
+                Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT SCHEMANAME FROM SYSCAT.SCHEMATA");
+            while (resultSet.next()) {
+                String dbName = resultSet.getString("SCHEMANAME");
+                if (StringUtils.isBlank(dbName)) {
+                    continue;
+                }
+                dbName = dbName.trim();
+                if (isNotSystemDatabase(dbName)) {
+                    dbNames.add(dbName);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new DataSourcePluginException("Failed to get database names", e);
+        }
         return dbNames;
+    }
+
+    private boolean isNotSystemDatabase(String dbName) {
+        return !Db2DataSourceConfig.DB2_SYSTEM_DATABASES.contains(dbName.toUpperCase());
     }
 
     @Override
@@ -119,7 +139,7 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
             String primaryKey = getPrimaryKey(metaData, database, table);
 
             // Retrieve column information
-            try (ResultSet resultSet = metaData.getColumns(null, null, table, null)) {
+            try (ResultSet resultSet = metaData.getColumns(null, database, table, null)) {
 
                 while (resultSet.next()) {
                     TableField tableField = new TableField();
@@ -140,14 +160,9 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
                     tableFields.add(tableField);
                 }
             }
-        } catch (SQLException e) {
-            // Log the exception and rethrow as DataSourcePluginException
-            System.out.println("Error while retrieving table fields: " + e);
+        } catch (SQLException | ClassNotFoundException e) {
+            log.error("Error while retrieving table fields", e);
             throw new DataSourcePluginException("Failed to get table fields", e);
-        } catch (ClassNotFoundException e) {
-            // Log the exception and rethrow as DataSourcePluginException
-            System.out.println("JDBC driver class not found" + e);
-            throw new DataSourcePluginException("JDBC driver class not found", e);
         }
         return tableFields;
     }
@@ -170,7 +185,7 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
     private String getPrimaryKey(DatabaseMetaData metaData, String dbName, String tableName)
             throws SQLException {
         ResultSet primaryKeysInfo = metaData.getPrimaryKeys(null, dbName, tableName);
-        while (primaryKeysInfo.next()) {
+        if (primaryKeysInfo.next()) {
             return primaryKeysInfo.getString("COLUMN_NAME");
         }
         return null;
@@ -178,8 +193,15 @@ public class Db2JdbcDataSourceChannel implements DataSourceChannel {
 
     private Connection getConnection(Map<String, String> requestParams)
             throws SQLException, ClassNotFoundException {
-        // Ensure the DB2 JDBC driver is loaded
-        Class.forName("com.ibm.db2.jcc.DB2Driver");
+        String driverClass =
+                requestParams.getOrDefault(
+                        Db2OptionRule.DRIVER.key(),
+                        Db2OptionRule.DriverType.DB2.getDriverClassName());
+        try {
+            Class.forName(driverClass);
+        } catch (ClassNotFoundException e) {
+            throw new DataSourcePluginException("DB2 jdbc driver " + driverClass + " not found", e);
+        }
         checkNotNull(requestParams.get(Db2OptionRule.URL.key()), "Jdbc url cannot be null");
         String url = requestParams.get(Db2OptionRule.URL.key());
         if (requestParams.containsKey(Db2OptionRule.USER.key())) {
