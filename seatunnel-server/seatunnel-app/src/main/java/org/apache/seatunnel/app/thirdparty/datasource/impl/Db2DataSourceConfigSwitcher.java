@@ -199,7 +199,7 @@ public class Db2DataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitche
                 sb.append(", ");
             }
         }
-        sb.append(" FROM ").append(quoteIdentifier(table));
+        sb.append(" FROM ").append(quoteIdentifier(database) + "." + quoteIdentifier(table));
 
         return sb.toString();
     }
@@ -211,7 +211,9 @@ public class Db2DataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitche
     protected String generateSinkSql(
             List<String> tableFields, String database, String schema, String table) {
         StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(quoteIdentifier(table)).append(" (");
+        sb.append("INSERT INTO ")
+                .append(quoteIdentifier(database) + "." + quoteIdentifier(table))
+                .append(" (");
 
         // Append column names
         for (int i = 0; i < tableFields.size(); i++) {
