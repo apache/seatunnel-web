@@ -179,9 +179,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
         List<String> tableNames = new ArrayList<>();
         try (Connection connection = getHiveConnection(requestParams)) {
             ResultSet resultSet =
-                    connection
-                            .getMetaData()
-                            .getTables(dbName, dbName, null, new String[] {"TABLE"});
+                    connection.getMetaData().getTables(null, dbName, null, new String[] {"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 if (StringUtils.isNotBlank(tableName)) {
@@ -200,7 +198,7 @@ public class HiveJdbcDataSourceChannel implements DataSourceChannel {
         try (Connection connection = getHiveConnection(requestParams)) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, dbName, tableName);
-            ResultSet resultSet = metaData.getColumns(dbName, null, tableName, null);
+            ResultSet resultSet = metaData.getColumns(null, dbName, tableName, null);
             while (resultSet.next()) {
                 TableField tableField = new TableField();
                 String columnName = resultSet.getString("COLUMN_NAME");
