@@ -22,8 +22,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 public class HiveConstants {
-
+    public static final String PLUGIN_NAME = "Hive";
     public static final Set<String> HIVE_SYSTEM_DATABASES =
-            Sets.newHashSet(
-                    "information_schema", "mysql", "performance_schema", "sys", "test", "hivedb");
+            Sets.newHashSet("sys", "information_schema", "performance_schema", "mysql");
 }

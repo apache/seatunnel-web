@@ -91,7 +91,4 @@ public class HiveOptionRule {
         // todo
         return OptionRule.builder().build();
     }
-
-    public static final Option<String> TABLE_NAME =
-            Options.key("table").stringType().noDefaultValue().withDescription("hive table");
 }
