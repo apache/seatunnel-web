@@ -77,7 +77,7 @@ sh build.sh code
 
 1. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml` Fill in the database connection information
   ![img.png](docs/images/application_config.png)
-2. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: SeaTunnel.
+2. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: https://github.com/apache/seatunnel(Notice that cannot be too short).
 3. Copy `apache-seatunnel-2.3.8/connectors/plugin-mapping.properties` file to `seatunnel-web/seatunnel-server/seatunnel-app/src/main/resources` dir.
 4. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started. Notice that, you must set `-DSEATUNNEL_HOME=${your_seatunnel_install_path}` like this:
 
@@ -170,6 +170,7 @@ tar -zxvf apache-seatunnel-web-${project.version}.tar.gz
 #### 3.5 Config application and Run SeaTunnel Web Backend Server
 
 * Edit `apache-seatunnel-web-${project.version}/conf/application.yml` Fill in the database connection information and DS interface related information in the file.
+* Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: https://github.com/apache/seatunnel(Notice that cannot be too short).
 
 ![image](docs/images/application_config.png)
 
