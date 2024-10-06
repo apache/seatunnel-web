@@ -256,11 +256,6 @@ connector-datasource-mapper:
         - DATA_INTEGRATION
       sceneMode:
         - SINGLE_TABLE
-    JDBC-Hive:
-      businessMode:
-        - DATA_INTEGRATION
-      sceneMode:
-        - SINGLE_TABLE
 
     Console:
       businessMode:
