@@ -20,6 +20,7 @@ package org.apache.seatunnel.datasource.plugin.hive.client;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
+import org.apache.seatunnel.datasource.plugin.hive.HiveConstants;
 import org.apache.seatunnel.datasource.plugin.hive.HiveOptionRule;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -94,17 +97,6 @@ public class HiveClient implements AutoCloseable {
         }
     }
 
-    /*private static void authKerberos(
-            String kerberosKrb5ConfPath, String kerberosKeytabPath, String kerberosPrincipal)
-            throws IOException {
-        System.setProperty("java.security.krb5.conf", kerberosKrb5ConfPath);
-        Configuration configuration = new Configuration();
-        configuration.set("hadoop.security.authentication", "Kerberos");
-        configuration.setBoolean("hadoop.security.authorization", true);
-        UserGroupInformation.setConfiguration(configuration);
-        UserGroupInformation.loginUserFromKeytab(kerberosPrincipal, kerberosKeytabPath);
-    }*/
-
     public static void doKerberosAuthentication(
             Configuration configuration, String principal, String keytabPath) {
         if (StringUtils.isBlank(principal) || StringUtils.isBlank(keytabPath)) {
@@ -142,15 +134,15 @@ public class HiveClient implements AutoCloseable {
 
     public List<String> getAllDatabases() {
         try {
-            return hiveMetaStoreClient.getAllDatabases();
+            List<String> allDatabases = hiveMetaStoreClient.getAllDatabases();
+            Set<String> systemDatabases = HiveConstants.HIVE_SYSTEM_DATABASES;
+            return allDatabases.stream()
+                    .filter(db -> !systemDatabases.contains(db))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             log.error(ExceptionUtils.getMessage(e));
             throw new DataSourcePluginException("get database names failed", e);
         }
-    }
-
-    public List<String> getAllTables(String dbName) {
-        return getAllTables(dbName, null, null);
     }
 
     public List<String> getAllTables(String dbName, String filterName, Integer size) {

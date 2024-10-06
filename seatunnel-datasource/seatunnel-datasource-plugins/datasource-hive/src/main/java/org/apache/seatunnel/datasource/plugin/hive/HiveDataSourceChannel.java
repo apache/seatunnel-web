@@ -28,9 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +61,7 @@ public class HiveDataSourceChannel implements DataSourceChannel {
     @Override
     public List<String> getDatabases(
             @NonNull String pluginName, @NonNull Map<String, String> requestParams) {
-        try (HiveClient hiveClient = HiveClient.createInstance(requestParams); ) {
+        try (HiveClient hiveClient = HiveClient.createInstance(requestParams)) {
             return hiveClient.getAllDatabases();
         }
     }
@@ -112,29 +109,5 @@ public class HiveDataSourceChannel implements DataSourceChannel {
         try (HiveClient hiveClient = HiveClient.createInstance(requestParams)) {
             return hiveClient.getFields(dbName, tableName);
         }
-    }
-
-    private static boolean checkHostConnectable(String host, int port) {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), 1000);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    private boolean isNotSystemDatabase(String pluginName, String dbName) {
-        // FIXME,filters system databases
-        return true;
-    }
-
-    private boolean convertToBoolean(Object value) {
-        if (value instanceof Boolean) {
-            return (Boolean) value;
-        }
-        if (value instanceof String) {
-            return value.equals("TRUE");
-        }
-        return false;
     }
 }
