@@ -27,6 +27,7 @@ import org.apache.seatunnel.app.dynamicforms.FormLocale;
 import org.apache.seatunnel.app.dynamicforms.FormOptionBuilder;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.dynamicforms.FormStructureBuilder;
+import org.apache.seatunnel.app.dynamicforms.PlaceholderUtil;
 import org.apache.seatunnel.app.dynamicforms.validate.ValidateBuilder;
 import org.apache.seatunnel.common.constants.PluginType;
 
@@ -95,6 +96,17 @@ public class SeaTunnelOptionRuleWrapper {
         formStructureBuilder.withLocale(locale);
 
         return FormOptionSort.sortFormStructure(formStructureBuilder.build());
+    }
+
+    private static Object getDefaultValue(Option<?> option) {
+        Object defValue = option.defaultValue();
+        if (defValue == null) {
+            return null;
+        }
+        if (String.class.equals(option.typeReference().getType())) {
+            return PlaceholderUtil.escapePlaceholders(defValue.toString());
+        }
+        return defValue;
     }
 
     private static List<AbstractFormOption> wrapperOptionOptions(
@@ -401,10 +413,7 @@ public class SeaTunnelOptionRuleWrapper {
         AbstractFormOption abstractFormOption =
                 staticSelectOptionBuilder
                         .formStaticSelectOption()
-                        .withDefaultValue(
-                                option.defaultValue() == null
-                                        ? null
-                                        : option.defaultValue().toString());
+                        .withDefaultValue(getDefaultValue(option));
 
         String placeholderI18nOptionKey = i18nOptionKey + "_description";
         if (enableLabelI18n(connectorName, placeholderI18nOptionKey, locale)) {
@@ -457,7 +466,7 @@ public class SeaTunnelOptionRuleWrapper {
                 builder.withField(option.key())
                         .inputOptionBuilder()
                         .formTextInputOption()
-                        .withDefaultValue(option.defaultValue());
+                        .withDefaultValue(getDefaultValue(option));
         if (enableLabelI18n(connectorName, placeholderI18nOptionKey, locale)) {
             abstractFormOption = abstractFormOption.withI18nPlaceholder(placeholderI18nOptionKey);
         } else {
@@ -484,7 +493,7 @@ public class SeaTunnelOptionRuleWrapper {
                         .inputOptionBuilder()
                         .formTextareaInputOption()
                         .withClearable()
-                        .withDefaultValue(option.defaultValue());
+                        .withDefaultValue(getDefaultValue(option));
         if (enableLabelI18n(connectorName, placeholderI18nOptionKey, locale)) {
             abstractFormOption = abstractFormOption.withI18nPlaceholder(placeholderI18nOptionKey);
         } else {

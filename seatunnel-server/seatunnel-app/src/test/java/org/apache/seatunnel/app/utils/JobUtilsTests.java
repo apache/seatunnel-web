@@ -109,6 +109,22 @@ public class JobUtilsTests {
         assertNotNull(config);
     }
 
+    @Test
+    public void testEscapedPlaceholderValuesNotReplaced() {
+        String jobConfigContent =
+                "job.mode=\\${jobModeParam:BATCH}\ncheckpoint.interval=\\\\${checkParam:30}\njob.name=${jobNameParam}";
+        Map<String, String> paramValues = new HashMap<>();
+        paramValues.put("jobModeParam", "STREAMING");
+        paramValues.put("jobNameParam", "newJob");
+        JobExecParam jobExecParam = getJobExecParam(paramValues);
+
+        String expected =
+                "job.mode=${jobModeParam:BATCH}\ncheckpoint.interval=${checkParam:30}\njob.name=newJob";
+        String actual = JobUtils.replaceJobConfigPlaceholders(jobConfigContent, jobExecParam);
+
+        assertEquals(expected, actual);
+    }
+
     private JobExecParam getJobExecParam(Map<String, String> paramValues) {
         JobExecParam jobExecParam = new JobExecParam();
         jobExecParam.setPlaceholderValues(paramValues);

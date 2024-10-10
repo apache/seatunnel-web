@@ -32,7 +32,8 @@ public class JobUtils {
 
     // The maximum length of the job execution error message, 4KB
     private static final int ERROR_MESSAGE_MAX_LENGTH = 4096;
-    private static final Pattern placeholderPattern = Pattern.compile("\\$\\{(\\w+)(?::(.*?))?\\}");
+    private static final Pattern placeholderPattern =
+            Pattern.compile("(\\\\{0,2})\\$\\{(\\w+)(?::(.*?))?\\}");
 
     public static String getJobInstanceErrorMessage(String message) {
         if (message == null) {
@@ -75,18 +76,26 @@ public class JobUtils {
                 (jobExecParam != null && jobExecParam.getPlaceholderValues() != null)
                         ? jobExecParam.getPlaceholderValues()
                         : Collections.emptyMap();
-
         Matcher matcher = placeholderPattern.matcher(jobConfigString);
         StringBuffer result = new StringBuffer();
 
         while (matcher.find()) {
-            String placeholderName = matcher.group(1);
-            String replacement = placeholderValues.getOrDefault(placeholderName, matcher.group(2));
+            String escapeCharacter = matcher.group(1);
+            String placeholderName = matcher.group(2);
+
+            if (escapeCharacter != null && !escapeCharacter.isEmpty()) {
+                String withoutEscape =
+                        matcher.group().replace("\\\\${", "${").replace("\\${", "${");
+                matcher.appendReplacement(result, Matcher.quoteReplacement(withoutEscape));
+                // remove the escape character and continue
+                continue;
+            }
+            String replacement = placeholderValues.getOrDefault(placeholderName, matcher.group(3));
             if (replacement == null) {
                 throw new SeatunnelException(
                         SeatunnelErrorEnum.JOB_NO_VALUE_FOUND_FOR_PLACEHOLDER, placeholderName);
             }
-            matcher.appendReplacement(result, replacement);
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
         }
 
         matcher.appendTail(result);
