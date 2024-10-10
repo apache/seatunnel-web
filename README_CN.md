@@ -73,7 +73,7 @@ sh build.sh code
 #### 2.4 配置应用程序并运行SeaTunnel Web后端服务器
 
 1. 编辑 `seatunnel-server/seatunnel-app/src/main/resources/application.yml` 写数据库连接信息
-2. 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 文件,填写jwt.secretKey密钥,例如：https://github.com/apache/seatunnel(注意不要太短)。
+2. 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 文件,填写jwt.secretKey密钥,例如：https://github.com/apache/seatunnel (注意不要太短)。
 
 ![img.png](docs/images/application_config.png)
 
@@ -173,7 +173,7 @@ tar -zxvf apache-seatunnel-web-${project.version}.tar.gz
 #### 3.5 配置应用并运行 SeaTunnel Web 后端服务
 
 * 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 在文件中填写数据库连接信息和数据服务接口相关信息。
-* 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 文件,填写jwt.secretKey密钥,例如：https://github.com/apache/seatunnel(注意不要太短)。
+* 编辑 `apache-seatunnel-web-${project.version}/conf/application.yml` 文件,填写jwt.secretKey密钥,例如：https://github.com/apache/seatunnel (注意不要太短)。
 
 ![image](docs/images/application_config.png)
 
