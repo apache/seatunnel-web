@@ -92,8 +92,8 @@ tomcat-embed-el-9.0.63.jar
 h2-2.1.214.jar
 auto-service-annotations-1.0.1.jar
 jsr305-3.0.0.jar
-checkpoint-storage-api-2.3.7.jar
-checkpoint-storage-local-file-2.3.7.jar
+checkpoint-storage-api-2.3.8.jar
+checkpoint-storage-local-file-2.3.8.jar
 clickhouse-cli-client-0.3.2-patch11-shaded.jar
 clickhouse-grpc-client-0.3.2-patch11-shaded.jar
 clickhouse-http-client-0.3.2-patch11-shaded.jar
@@ -112,22 +112,22 @@ protostuff-api-1.8.0.jar
 protostuff-collectionschema-1.8.0.jar
 protostuff-core-1.8.0.jar
 protostuff-runtime-1.8.0.jar
-seatunnel-api-2.3.7.jar
-seatunnel-common-2.3.7.jar
-seatunnel-config-base-2.3.7.jar
-seatunnel-config-shade-2.3.7.jar
-seatunnel-core-starter-2.3.7.jar
-seatunnel-engine-client-2.3.7.jar
-seatunnel-engine-common-2.3.7.jar
-seatunnel-engine-core-2.3.7.jar
-seatunnel-guava-2.3.7-optional.jar
-seatunnel-jackson-2.3.7-optional.jar
-seatunnel-plugin-discovery-2.3.7.jar
-seatunnel-transforms-v2-2.3.7.jar
-seatunnel-config-sql-2.3.7.jar
-seatunnel-hazelcast-shade-2.3.7-optional.jar
-serializer-api-2.3.7.jar
-serializer-protobuf-2.3.7.jar
+seatunnel-api-2.3.8.jar
+seatunnel-common-2.3.8.jar
+seatunnel-config-base-2.3.8.jar
+seatunnel-config-shade-2.3.8.jar
+seatunnel-core-starter-2.3.8.jar
+seatunnel-engine-client-2.3.8.jar
+seatunnel-engine-common-2.3.8.jar
+seatunnel-engine-core-2.3.8.jar
+seatunnel-guava-2.3.8-optional.jar
+seatunnel-jackson-2.3.8-optional.jar
+seatunnel-plugin-discovery-2.3.8.jar
+seatunnel-transforms-v2-2.3.8.jar
+seatunnel-config-sql-2.3.8.jar
+seatunnel-hazelcast-shade-2.3.8-optional.jar
+serializer-api-2.3.8.jar
+serializer-protobuf-2.3.8.jar
 swagger-annotations-2.2.14.jar
 commons-codec-1.11.jar
 commons-compress-1.20.jar
@@ -141,6 +141,13 @@ security-206.jar
 snappy-java-1.1.8.4.jar
 zstd-jni-1.5.2-1.jar
 commons-csv-1.10.0.jar
+simpleclient-0.16.0.jar
+simpleclient_common-0.16.0.jar
+simpleclient_hotspot-0.16.0.jar
+simpleclient_httpserver-0.16.0.jar
+simpleclient_tracer_common-0.16.0.jar
+simpleclient_tracer_otel-0.16.0.jar
+simpleclient_tracer_otel_agent-0.16.0.jar
 
 
 
