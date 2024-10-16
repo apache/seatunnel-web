@@ -98,7 +98,7 @@ public class SeaTunnelOptionRuleWrapper {
         return FormOptionSort.sortFormStructure(formStructureBuilder.build());
     }
 
-    private static Object getDefaultValue(Option<?> option) {
+    private static String getDefaultValue(Option<?> option) {
         Object defValue = option.defaultValue();
         if (defValue == null) {
             return null;
@@ -106,7 +106,7 @@ public class SeaTunnelOptionRuleWrapper {
         if (String.class.equals(option.typeReference().getType())) {
             return PlaceholderUtil.escapePlaceholders(defValue.toString());
         }
-        return defValue;
+        return defValue.toString();
     }
 
     private static List<AbstractFormOption> wrapperOptionOptions(
