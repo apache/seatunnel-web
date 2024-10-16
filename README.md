@@ -206,6 +206,25 @@ Now ,let me show you how to use it.
 #### Virtual Tables manage
 ![img.png](docs/images/VirtualImage.png)
 
+### Features
+
+#### 1 Configuration Placeholders
+Placeholders are used in configurations to represent values that will be dynamically substituted at runtime or during processing.
+They enhance configuration flexibility and reusability by allowing specific values to be injected as needed.
+
+##### 1.1 Placeholder Format
+\${p1:v1}: p1 is a placeholder for a configuration value. If the p1 value is not provided at execution time, the default value v1 is used.
+\${p1}: If the p1 value is not provided at execution time, the execution will fail with an error.
+
+##### 1.2 Escaping Placeholders
+To escape placeholders, add a backslash before the placeholder. For example, \\\${p1:v1} or \\\${p1}.
+This is necessary when you want to pass the placeholder as-is to the engine without replacing the value in Seatunnel-web.
+
+##### 1.3 How Seatunnel-web Handles Placeholders
+During job execution, before sending the job to the engine, Seatunnel-web replaces the actual values in placeholders. This ensures that the actual executed job is recorded in Seatunnel-web history.
+
+NOTE: This feature is currently useful when execution is done through the API. The UI does not provide an option to pass placeholder values.
+
 ### Upgrades
 #### 1. Upgrade from 1.0.1 or before to 1.0.2 or after.
 Execute the following SQL to upgrade the database:
