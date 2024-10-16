@@ -207,3 +207,30 @@ sh bin/seatunnel-backend-daemon.sh start
 
 #### 虚拟表
 ![img.png](docs/images/VirtualImage.png)
+
+### 功能
+
+#### 1 配置占位符
+占位符用于配置中，表示将在运行时或处理过程中动态替换的值。
+它们允许根据需要注入特定值，从而增强配置灵活性和可重用性。
+
+#### 1.1 占位符格式
+\${p1:v1}：p1 是配置值的占位符。如果在执行时未提供 p1 值，则使用默认值 v1。
+\${p1}：如果在执行时未提供 p1 值，则执行将失败并出现错误。
+
+#### 1.2 转义占位符
+要转义占位符，请在占位符前添加反斜杠。例如，\\\${p1:v1} 或 \\\${p1}。
+当您想将占位符按原样传递给引擎而不替换 Seatunnel-web 中的值时，这是必需的。
+
+##### 1.3 Seatunnel-web 如何处理占位符
+在作业执行期间，在将作业发送到引擎之前，Seatunnel-web 会替换占位符中的实际值。这可确保实际执行的作业记录在 Seatunnel-web 历史记录中。
+
+注意：此功能目前在通过 API 执行时很有用。UI 不提供传递占位符值的选项。
+
+### 升级
+#### 1. 从 1.0.1 或之前版本升级到 1.0.2 或之后版本。
+执行以下 SQL 升级数据库：
+
+```ALTER TABLE `t_st_job_instance` ADD COLUMN `error_message` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;```
+
+
