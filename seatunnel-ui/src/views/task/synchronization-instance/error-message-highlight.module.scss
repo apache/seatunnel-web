@@ -15,31 +15,17 @@
  * limitations under the License.
  */
 
-export default {
-  instance_id: 'Instance Id',
-  job_id: 'Job Id',
-  tasks: 'Tasks',
-  search: 'Search',
-  success: 'Success',
-  fail: 'Fail',
-  stop: 'Stop',
-  running: 'Running',
-  unknown: 'Unknown',
-  unpublished: 'Unpublished',
-  published: 'Published',
-  task_name: 'Task Name',
-  state: 'State',
-  run_frequency: 'Run Frequency',
-  once: 'Once',
-  crontab: 'Crontab',
-  start_time: 'Start Time',
-  end_time: 'End Time',
-  last_total_bytes: 'Last Total Bytes',
-  last_total_records: 'Last Total Records',
-  rerun: 'Rerun',
-  kill: 'Kill',
-  operation: 'Operation',
-  view_log: 'View Log',
-  log: 'Log',
-  view: 'View',
-}
+ .errorMessageContainer {
+   max-height: 400px;
+   overflow-y: auto;
+   white-space: pre-wrap; /* Preserver formatting */
+   background-color: #f4f4f4;
+   padding: 10px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-family: monospace;
+   text-align: left;
+   margin: 0 auto;
+   width: 1000px;
+   max-width: 100%;
+ }

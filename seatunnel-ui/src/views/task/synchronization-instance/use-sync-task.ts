@@ -38,7 +38,7 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { ITaskState } from '@/common/types'
 import { tasksState } from '@/common/common'
-import { NIcon, NSpin, NTooltip } from 'naive-ui'
+import { NButton, NIcon, NPopover, NSpin, NTooltip } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import {
   querySyncTaskInstancePaging,
@@ -53,6 +53,7 @@ import {
   forcedSuccessByIds
 } from '@/service/sync-task-instance'
 import { getRemainTime } from '@/utils/time'
+import ErrorMessageHighlight from './error-message-highlight'
 
 export function useSyncTask(syncTaskType = 'BATCH') {
   const { t } = useI18n()
@@ -77,6 +78,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     limit: ref(1000),
     taskName: ref(''),
     executeUser: ref(''),
+    errorMessage: ref(''),
     host: ref(''),
     stateType: null as null | string,
     syncTaskType,
@@ -143,6 +145,30 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         title: t('project.synchronization_instance.state'),
         key: 'jobStatus',
         ...COLUMN_WIDTH_CONFIG['state']
+      },
+      {
+        title: t('project.synchronization_instance.error_message'),
+        key: 'parameter',
+        ...COLUMN_WIDTH_CONFIG['state'],
+        render: (row: any) => {
+          return row.errorMessage
+            ? h(
+                NPopover,
+                { trigger: 'click' },
+                {
+                  trigger: () =>
+                    h(NButton, { text: true }, {
+                      default: () => t('tasks.view')
+                    }),
+                    default: () =>
+                      h(ErrorMessageHighlight, {
+                        params:
+                          row.errorMessage
+                      })
+                }
+                )
+            : '--'
+          }
       },
       {
         title: t('project.synchronization_instance.start_time'),
