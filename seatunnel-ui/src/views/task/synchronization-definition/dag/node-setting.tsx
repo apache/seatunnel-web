@@ -37,7 +37,7 @@ const props = {
     default: false
   },
   nodeInfo: {
-    type: Object as PropType<NodeInfo>,
+    type: Object as any,
     default: {}
   }
 }
