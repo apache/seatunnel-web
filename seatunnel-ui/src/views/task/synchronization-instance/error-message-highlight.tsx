@@ -15,31 +15,35 @@
  * limitations under the License.
  */
 
-export default {
-  instance_id: 'Instance Id',
-  job_id: 'Job Id',
-  tasks: 'Tasks',
-  search: 'Search',
-  success: 'Success',
-  fail: 'Fail',
-  stop: 'Stop',
-  running: 'Running',
-  unknown: 'Unknown',
-  unpublished: 'Unpublished',
-  published: 'Published',
-  task_name: 'Task Name',
-  state: 'State',
-  run_frequency: 'Run Frequency',
-  once: 'Once',
-  crontab: 'Crontab',
-  start_time: 'Start Time',
-  end_time: 'End Time',
-  last_total_bytes: 'Last Total Bytes',
-  last_total_records: 'Last Total Records',
-  rerun: 'Rerun',
-  kill: 'Kill',
-  operation: 'Operation',
-  view_log: 'View Log',
-  log: 'Log',
-  view: 'View',
+import { defineComponent, PropType, h } from 'vue'
+import { NText } from 'naive-ui'
+import { isBoolean, isNumber, isPlainObject } from 'lodash'
+import styles from './error-message-highlight.module.scss'
+
+const props = {
+  params: {
+    type: String as PropType<string>,
+    default: ''
+  }
 }
+
+const ErrorMessageHighlight = defineComponent({
+  name: 'ErrorMessageHighlight',
+  props,
+  render(props: { params: string }) {
+    return (
+      <pre class={styles['json-highlight']}>
+        {syntaxHighlight(props.params)}
+      </pre>
+    )
+  }
+})
+
+const syntaxHighlight = (message: string) => {
+   return h('div', {
+       class: styles.errorMessageContainer,
+       innerHTML: message
+   });
+}
+
+export default ErrorMessageHighlight

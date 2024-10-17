@@ -35,10 +35,10 @@ export const COLUMN_WIDTH_CONFIG = {
     }
   },
   link_name: {
-    width: 240
+    width: 180
   },
   state: {
-    width: 120
+    width: 80
   },
   type: {
     width: 130
