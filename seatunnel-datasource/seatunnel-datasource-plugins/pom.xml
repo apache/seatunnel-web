@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.apache.seatunnel</groupId>
         <artifactId>seatunnel-datasource</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>seatunnel-datasource-plugins</artifactId>
@@ -52,9 +52,4 @@
         <hive.version>3.1.3</hive.version>
         <hadoop.version>3.1.0</hadoop.version>
     </properties>
-
-
-  <scm>
-    <tag>1.0.2</tag>
-  </scm>
 </project>

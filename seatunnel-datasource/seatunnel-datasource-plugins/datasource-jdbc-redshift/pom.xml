@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.apache.seatunnel</groupId>
         <artifactId>seatunnel-datasource-plugins</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>datasource-jdbc-redshift</artifactId>
@@ -75,9 +75,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-  <scm>
-    <tag>1.0.2</tag>
-  </scm>
 </project>
