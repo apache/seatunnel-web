@@ -41,7 +41,7 @@ SeaTunnel是下一代超高性能、分布式、海量数据集成工具。它�
 ##### 2.1.1 从源代码构建和部署
 * 从 https://seatunnel.apache.org/download 或 https://github.com/apache/seatunnel.git 获取源包
 * 请按照 [从源码构建 SeaTunnel 来构建 SeaTunnel](https://seatunnel.apache.org/zh-CN/docs/start-v2/locally/deployment/#从源码构建seatunnel)。
-* 在构建之后，需要设置一个环境变量`ST_WEB_BASEDIR_PATH`来表示数据源shade包的位置。将使用自定义类加载器来基于此加载数据源shade包。例如:`ST_WEB_BASEDIR_PATH=/seatunnel-web-dist/target/apache-seatunnel-web-1.0.2-SNAPSHOT/`
+* 在构建之后，需要设置一个环境变量`ST_WEB_BASEDIR_PATH`来表示数据源shade包的位置。将使用自定义类加载器来基于此加载数据源shade包。例如:`ST_WEB_BASEDIR_PATH=/seatunnel-web-dist/target/apache-seatunnel-web-1.0.3-SNAPSHOT/`
 然后你可以在`${Your_code_dir}/seatunnel-dist/target`下获取安装包，例如:`apache-seatunnel-2.3.8-bin.tar.gz`。
 * 执行`tar -zxvf apache-seatunnel-2.3.8-bin.tar.gz`解压安装包。
 * 运行`cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d`运行SeaTunnel Zeta Engine Server。
