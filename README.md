@@ -43,7 +43,7 @@ You have two ways to get the SeaTunnel installer package. Build from source code
 ##### 2.1.1 Build from source code and deploy
 * Get the source package from https://seatunnel.apache.org/download or https://github.com/apache/seatunnel.git
 * Please follow [Build SeaTunnel From Source Code](https://seatunnel.apache.org/docs/start-v2/locally/deployment#build-seatunnel-from-source-code) to build the SeaTunnel. 
-* After building, it is necessary to set an environment variable `ST_WEB_BASEDIR_PATH` to represent the location of the data source shade package. A custom class loader will be used to load the data source shade package based on this. For example: `ST_WEB_BASEDIR_PATH=/seatunnel-web-dist/target/apache-seatunnel-web-1.0.2-SNAPSHOT/`
+* After building, it is necessary to set an environment variable `ST_WEB_BASEDIR_PATH` to represent the location of the data source shade package. A custom class loader will be used to load the data source shade package based on this. For example: `ST_WEB_BASEDIR_PATH=/seatunnel-web-dist/target/apache-seatunnel-web-1.0.3-SNAPSHOT/`
 * Then you can get the installer package in `${Your_code_dir}/seatunnel-dist/target`, For example:`apache-seatunnel-2.3.8-bin.tar.gz`
 * Run `tar -zxvf apache-seatunnel-2.3.8-bin.tar.gz` to unzip the installer package.
 * Run `cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
