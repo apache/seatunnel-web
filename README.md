@@ -18,6 +18,14 @@ So, What we are?
 An open-source web console to manage your seatunnel-script, and would push them to any scheduling-system easily.
 Click it if your want to know more about our design. 👉🏻[Design](https://github.com/apache/seatunnel/issues/1947)
 
+## Compatibility
+
+| SeaTunnel Web Version | SeaTunnel Version      | Doc                                                                          |
+|-----------------------|------------------------|------------------------------------------------------------------------------|
+| 1.0.3-SNAPSHOT        | 2.3.8 / 2.3.9-SNAPSHOT | [Docs](https://github.com/apache/seatunnel-web/blob/main/README.md)          |
+| 1.0.2                 | 2.3.8                  | [Docs](https://github.com/apache/seatunnel-web/blob/1.0.2-release/README.md) |
+| 1.0.1                 | 2.3.3                  | [Docs](https://github.com/apache/seatunnel-web/blob/1.0.1-release/README.md) |
+| 1.0.0                 | 2.3.3                  | [Docs](https://github.com/apache/seatunnel-web/blob/1.0.0-release/README.md) |
 
 ## How to start
 
