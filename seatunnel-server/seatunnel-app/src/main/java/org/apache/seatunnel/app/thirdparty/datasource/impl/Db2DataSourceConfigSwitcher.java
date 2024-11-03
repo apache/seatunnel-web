@@ -42,9 +42,6 @@ import static org.apache.seatunnel.app.domain.request.connector.BusinessMode.DAT
 public class Db2DataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitcher {
 
     private static final String QUERY_KEY = "query";
-
-    private static final String GENERATE_SINK_SQL = "generate_sink_sql";
-
     private static final String URL_KEY = "url";
 
     // for catalog
@@ -109,16 +106,6 @@ public class Db2DataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitche
 
                 connectorConfig =
                         connectorConfig.withValue(QUERY_KEY, ConfigValueFactory.fromAnyRef(sql));
-            } else if (pluginType.equals(PluginType.SINK)) {
-
-                List<String> tableFields = selectTableFields.getTableFields();
-
-                String sql = generateDb2(tableFields, databaseName, tableName);
-
-                connectorConfig =
-                        connectorConfig.withValue(QUERY_KEY, ConfigValueFactory.fromAnyRef(sql));
-            } else {
-                throw new UnsupportedOperationException("Unsupported plugin type: " + pluginType);
             }
 
             return super.mergeDatasourceConfig(
@@ -185,10 +172,6 @@ public class Db2DataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitche
         return generateSql(tableFields, database, null, table);
     }
 
-    protected String generateDb2(List<String> tableFields, String database, String table) {
-        return generateSinkSql(tableFields, database, null, table);
-    }
-
     protected String generateSql(
             List<String> tableFields, String database, String schema, String table) {
         StringBuilder sb = new StringBuilder();
@@ -199,40 +182,13 @@ public class Db2DataSourceConfigSwitcher extends BaseJdbcDataSourceConfigSwitche
                 sb.append(", ");
             }
         }
-        sb.append(" FROM ").append(quoteIdentifier(table));
+        sb.append(" FROM ").append(quoteIdentifier(database) + "." + quoteIdentifier(table));
 
         return sb.toString();
     }
 
     protected String quoteIdentifier(String identifier) {
         return "\"" + identifier + "\"";
-    }
-
-    protected String generateSinkSql(
-            List<String> tableFields, String database, String schema, String table) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(quoteIdentifier(table)).append(" (");
-
-        // Append column names
-        for (int i = 0; i < tableFields.size(); i++) {
-            sb.append(quoteIdentifier(tableFields.get(i)));
-            if (i < tableFields.size() - 1) {
-                sb.append(", ");
-            }
-        }
-
-        sb.append(") VALUES (");
-
-        // Append placeholders
-        for (int i = 0; i < tableFields.size(); i++) {
-            sb.append("?");
-            if (i < tableFields.size() - 1) {
-                sb.append(", ");
-            }
-        }
-
-        sb.append(");");
-        return sb.toString();
     }
 
     @Override

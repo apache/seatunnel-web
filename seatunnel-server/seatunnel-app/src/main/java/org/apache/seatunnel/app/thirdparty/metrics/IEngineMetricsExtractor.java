@@ -18,6 +18,7 @@ package org.apache.seatunnel.app.thirdparty.metrics;
 
 import org.apache.seatunnel.app.dal.entity.JobInstanceHistory;
 import org.apache.seatunnel.app.dal.entity.JobMetrics;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import lombok.NonNull;
 
@@ -37,11 +38,9 @@ public interface IEngineMetricsExtractor {
     /** contains finished, failed, canceled */
     boolean isJobEnd(@NonNull String jobEngineId);
 
-    boolean isJobEndStatus(@NonNull String jobStatus);
-
     List<Map<String, String>> getClusterHealthMetrics();
 
-    String getJobStatus(@NonNull String jobEngineId);
+    JobStatus getJobStatus(@NonNull String jobEngineId);
 
     /** Obtain all running task metrics in the engine cluster */
     Map<Long, HashMap<Integer, JobMetrics>> getAllRunningJobMetrics();

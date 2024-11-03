@@ -17,11 +17,15 @@
 
 package org.apache.seatunnel.app.domain.request.job;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class JobDAG {
 
     private List<Edge> edges;

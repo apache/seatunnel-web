@@ -24,10 +24,11 @@
         <result column="engine_name" jdbcType="VARCHAR" property="engineName"/>
         <result column="engine_version" jdbcType="VARCHAR" property="engineVersion"/>
         <result column="job_engine_id" jdbcType="VARCHAR" property="jobEngineId"/>
+        <result column="error_message" jdbcType="VARCHAR" property="errorMessage"/>
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , `job_define_id`, `job_status`, `job_config`, `engine_name`, `engine_version`, `job_engine_id`
+        , `job_define_id`, `job_status`, `job_config`, `engine_name`, `engine_version`, `job_engine_id`,`error_message`
     </sql>
 
     <select id="queryJobInstanceListPaging" resultType="org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto">
@@ -43,13 +44,18 @@
             <if test="endTime != null">
                 AND (end_time <![CDATA[ <=]]> #{endTime} or end_time is null)
             </if>
-            <if test="jobDefineId != null">
-                AND job_define_id = #{jobDefineId}
+            <if test="jobDefineName != null">
+                AND job_define_id in (select x.id from t_st_job_definition x where x.name LIKE concat('%', #{jobDefineName}, '%'))
             </if>
             <if test="jobMode != null">
                 AND job_type = #{jobMode}
             </if>
         </where>
         ORDER BY create_time DESC
+    </select>
+    <select id="getJobExecutionStatus" resultType="org.apache.seatunnel.app.dal.entity.JobInstance">
+        SELECT `job_status`, `error_message`
+        FROM t_st_job_instance t
+        WHERE t.id = #{jobInstanceId}
     </select>
 </mapper>

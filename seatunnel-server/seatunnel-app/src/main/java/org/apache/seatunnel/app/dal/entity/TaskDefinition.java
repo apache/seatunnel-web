@@ -17,13 +17,18 @@
 
 package org.apache.seatunnel.app.dal.entity;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.common.Flag;
 import org.apache.seatunnel.app.common.Priority;
 import org.apache.seatunnel.app.common.TaskTimeoutStrategy;
 import org.apache.seatunnel.app.common.TimeoutFlag;
 import org.apache.seatunnel.app.domain.model.Property;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -32,9 +37,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Strings;
 
 import java.util.Date;
@@ -73,8 +75,8 @@ public class TaskDefinition {
     private String taskType;
 
     /** user defined parameters */
-    @JsonDeserialize(using = JSONUtils.JsonDataDeserializer.class)
-    @JsonSerialize(using = JSONUtils.JsonDataSerializer.class)
+    @JsonDeserialize(using = JsonUtils.JsonDataDeserializer.class)
+    @JsonSerialize(using = JsonUtils.JsonDataSerializer.class)
     private String taskParams;
 
     /** user defined parameter list */
@@ -230,9 +232,9 @@ public class TaskDefinition {
     }
 
     public List<Property> getTaskParamList() {
-        JsonNode localParams = JSONUtils.parseObject(taskParams).findValue("localParams");
+        JsonNode localParams = JsonUtils.parseObject(taskParams).findValue("localParams");
         if (localParams != null) {
-            taskParamList = JSONUtils.toList(localParams.toString(), Property.class);
+            taskParamList = JsonUtils.toList(localParams.toString(), Property.class);
         }
 
         return taskParamList;
@@ -248,12 +250,12 @@ public class TaskDefinition {
 
     public Map<String, String> getTaskParamMap() {
         if (taskParamMap == null && !Strings.isNullOrEmpty(taskParams)) {
-            JsonNode localParams = JSONUtils.parseObject(taskParams).findValue("localParams");
+            JsonNode localParams = JsonUtils.parseObject(taskParams).findValue("localParams");
 
             // If a jsonNode is null, not only use !=null, but also it should use the isNull method
             // to be estimated.
             if (localParams != null && !localParams.isNull()) {
-                List<Property> propList = JSONUtils.toList(localParams.toString(), Property.class);
+                List<Property> propList = JsonUtils.toList(localParams.toString(), Property.class);
 
                 if (CollectionUtils.isNotEmpty(propList)) {
                     taskParamMap = new HashMap<>();
@@ -379,7 +381,12 @@ public class TaskDefinition {
     }
 
     public String getDependence() {
-        return JSONUtils.getNodeString(this.taskParams, Constants.DEPENDENCE);
+        try {
+            JsonNode jsonNode = JsonUtils.stringToJsonNode(this.taskParams);
+            return JsonUtils.findValue(jsonNode, Constants.DEPENDENCE);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getModifyBy() {

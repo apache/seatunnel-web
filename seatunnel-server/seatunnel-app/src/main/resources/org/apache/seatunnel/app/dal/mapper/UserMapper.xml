@@ -36,7 +36,7 @@
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.apache.seatunnel.app.dal.entity.User"
             useGeneratedKeys="true">
         insert into `user` (username, password, status, type)
-                value (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+                values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
                        #{type,jdbcType=TINYINT})
     </insert>
     <update id="updateByPrimaryKey">
@@ -99,7 +99,7 @@
     <select id="queryEnabledUsers" resultType="org.apache.seatunnel.app.dal.entity.User">
         select
         <include refid="Base_Column_List"/>
-        from user
+        from `user`
         where status = 0
     </select>
 </mapper>

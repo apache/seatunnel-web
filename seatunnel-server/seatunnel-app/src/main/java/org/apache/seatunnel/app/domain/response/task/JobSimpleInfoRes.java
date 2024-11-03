@@ -17,6 +17,8 @@
 
 package org.apache.seatunnel.app.domain.response.task;
 
+import org.apache.seatunnel.engine.core.job.JobStatus;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -40,7 +42,7 @@ public class JobSimpleInfoRes {
     private String jobName;
 
     @ApiModelProperty(value = "job status", dataType = "String")
-    private String jobStatus;
+    private JobStatus jobStatus;
 
     @ApiModelProperty(value = "job plan", dataType = "String")
     private String jobPlan;

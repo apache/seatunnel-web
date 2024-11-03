@@ -105,6 +105,7 @@ interface TotalList {
   delayTime: number
   retryInterval: number
   endTime: string
+  errorMessage: string
 }
 
 interface TaskInstancesRes {

@@ -40,5 +40,6 @@ export default {
   kill: 'Kill',
   operation: 'Operation',
   view_log: 'View Log',
-  log: 'Log'
+  log: 'Log',
+  view: 'View',
 }

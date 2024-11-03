@@ -20,6 +20,7 @@ package org.apache.seatunnel.app.service.impl;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.engine.Engine;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.service.IJobExecutorService;
@@ -27,9 +28,9 @@ import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
+import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
-import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.engine.client.SeaTunnelClient;
 import org.apache.seatunnel.engine.client.job.ClientJobExecutionEnvironment;
 import org.apache.seatunnel.engine.client.job.ClientJobProxy;
@@ -37,7 +38,9 @@ import org.apache.seatunnel.engine.common.config.ConfigProvider;
 import org.apache.seatunnel.engine.common.config.JobConfig;
 import org.apache.seatunnel.engine.common.config.SeaTunnelConfig;
 import org.apache.seatunnel.engine.common.config.YamlSeaTunnelConfigBuilder;
+import org.apache.seatunnel.engine.core.job.JobResult;
 import org.apache.seatunnel.engine.core.job.JobStatus;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import org.springframework.stereotype.Service;
 
@@ -51,7 +54,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -64,17 +67,26 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     @Resource private IJobInstanceDao jobInstanceDao;
 
     @Override
-    public Result<Long> jobExecute(Integer userId, Long jobDefineId) {
+    public Result<Long> jobExecute(Integer userId, Long jobDefineId, JobExecParam executeParam) {
 
         JobExecutorRes executeResource =
-                jobInstanceService.createExecuteResource(userId, jobDefineId);
+                jobInstanceService.createExecuteResource(userId, jobDefineId, executeParam);
         String jobConfig = executeResource.getJobConfig();
 
         String configFile = writeJobConfigIntoConfFile(jobConfig, jobDefineId);
 
-        Long jobInstanceId =
-                executeJobBySeaTunnel(userId, configFile, executeResource.getJobInstanceId());
-        return Result.success(jobInstanceId);
+        try {
+            executeJobBySeaTunnel(userId, configFile, executeResource.getJobInstanceId());
+            return Result.success(executeResource.getJobInstanceId());
+        } catch (RuntimeException e) {
+            Result<Long> failure =
+                    Result.failure(SeatunnelErrorEnum.JOB_EXEC_SUBMISSION_ERROR, e.getMessage());
+            // Even though job execution submission failed, we still need to return the
+            // jobInstanceId to the user
+            // as the job instance has been created in the database.
+            failure.setData(executeResource.getJobInstanceId());
+            return failure;
+        }
     }
 
     public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
@@ -100,35 +112,40 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         return filePath;
     }
 
-    public Long executeJobBySeaTunnel(Integer userId, String filePath, Long jobInstanceId) {
+    private void executeJobBySeaTunnel(Integer userId, String filePath, Long jobInstanceId) {
         Common.setDeployMode(DeployMode.CLIENT);
         JobConfig jobConfig = new JobConfig();
         jobConfig.setName(jobInstanceId + "_job");
-        SeaTunnelClient seaTunnelClient = createSeaTunnelClient();
+        SeaTunnelClient seaTunnelClient;
+        ClientJobProxy clientJobProxy;
         try {
+            seaTunnelClient = createSeaTunnelClient();
             SeaTunnelConfig seaTunnelConfig = new YamlSeaTunnelConfigBuilder().build();
             ClientJobExecutionEnvironment jobExecutionEnv =
                     seaTunnelClient.createExecutionContext(filePath, jobConfig, seaTunnelConfig);
-            final ClientJobProxy clientJobProxy = jobExecutionEnv.execute();
+            clientJobProxy = jobExecutionEnv.execute();
+        } catch (Throwable e) {
+            log.error("Job execution submission failed.", e);
             JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-            jobInstance.setJobEngineId(Long.toString(clientJobProxy.getJobId()));
+            jobInstance.setJobStatus(JobStatus.FAILED);
+            jobInstance.setEndTime(new Date());
+            String jobInstanceErrorMessage = JobUtils.getJobInstanceErrorMessage(e.getMessage());
+            jobInstance.setErrorMessage(jobInstanceErrorMessage);
             jobInstanceDao.update(jobInstance);
-
-            CompletableFuture.runAsync(
-                    () -> {
-                        waitJobFinish(
-                                clientJobProxy,
-                                userId,
-                                jobInstanceId,
-                                Long.toString(clientJobProxy.getJobId()),
-                                seaTunnelClient);
-                    });
-
-        } catch (ExecutionException | InterruptedException e) {
-            ExceptionUtils.getMessage(e);
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage(), e);
         }
-        return jobInstanceId;
+        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+        jobInstance.setJobEngineId(Long.toString(clientJobProxy.getJobId()));
+        jobInstanceDao.update(jobInstance);
+        CompletableFuture.runAsync(
+                () -> {
+                    waitJobFinish(
+                            clientJobProxy,
+                            userId,
+                            jobInstanceId,
+                            Long.toString(clientJobProxy.getJobId()),
+                            seaTunnelClient);
+                });
     }
 
     public void waitJobFinish(
@@ -138,41 +155,41 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             String jobEngineId,
             SeaTunnelClient seaTunnelClient) {
         ExecutorService executor = Executors.newFixedThreadPool(1);
-        CompletableFuture<JobStatus> future =
-                CompletableFuture.supplyAsync(clientJobProxy::waitForJobComplete, executor);
+        CompletableFuture<JobResult> future =
+                CompletableFuture.supplyAsync(clientJobProxy::waitForJobCompleteV2, executor);
+        JobResult jobResult = new JobResult(JobStatus.FAILED, "");
         try {
-            log.info("future.get before");
-            JobStatus jobStatus = future.get();
-
+            jobResult = future.get();
             executor.shutdown();
         } catch (InterruptedException e) {
+            jobResult.setError(e.getMessage());
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
+            jobResult.setError(e.getMessage());
             throw new RuntimeException(e);
         } finally {
             seaTunnelClient.close();
             log.info("and jobInstanceService.complete begin");
-            jobInstanceService.complete(userId, jobInstanceId, jobEngineId);
+            jobInstanceService.complete(userId, jobInstanceId, jobEngineId, jobResult);
         }
     }
 
     private SeaTunnelClient createSeaTunnelClient() {
         ClientConfig clientConfig = ConfigProvider.locateAndGetClientConfig();
-        clientConfig.setClusterName(clientConfig.getClusterName());
         return new SeaTunnelClient(clientConfig);
     }
 
     @Override
     public Result<Void> jobPause(Integer userId, Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        if (Objects.equals(
-                getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId()), "RUNNING")) {
+        if (getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId())
+                == JobStatus.RUNNING) {
             pauseJobInEngine(jobInstance.getJobEngineId());
         }
         return Result.success();
     }
 
-    private String getJobStatusFromEngine(@NonNull JobInstance jobInstance, String jobEngineId) {
+    private JobStatus getJobStatusFromEngine(@NonNull JobInstance jobInstance, String jobEngineId) {
 
         Engine engine = new Engine(jobInstance.getEngineName(), jobInstance.getEngineVersion());
 

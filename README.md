@@ -18,6 +18,14 @@ So, What we are?
 An open-source web console to manage your seatunnel-script, and would push them to any scheduling-system easily.
 Click it if your want to know more about our design. 👉🏻[Design](https://github.com/apache/seatunnel/issues/1947)
 
+## Compatibility
+
+| SeaTunnel Web Version | SeaTunnel Version      | Doc                                                                          |
+|-----------------------|------------------------|------------------------------------------------------------------------------|
+| 1.0.3-SNAPSHOT        | 2.3.8 / 2.3.9-SNAPSHOT | [Docs](https://github.com/apache/seatunnel-web/blob/main/README.md)          |
+| 1.0.2                 | 2.3.8                  | [Docs](https://github.com/apache/seatunnel-web/blob/1.0.2-release/README.md) |
+| 1.0.1                 | 2.3.3                  | [Docs](https://github.com/apache/seatunnel-web/blob/1.0.1-release/README.md) |
+| 1.0.0                 | 2.3.3                  | [Docs](https://github.com/apache/seatunnel-web/blob/1.0.0-release/README.md) |
 
 ## How to start
 
@@ -42,18 +50,18 @@ You have two ways to get the SeaTunnel installer package. Build from source code
 
 ##### 2.1.1 Build from source code and deploy
 * Get the source package from https://seatunnel.apache.org/download or https://github.com/apache/seatunnel.git
-* Build installer package use maven command `./mvnw -U -T 1C clean install -DskipTests -D"maven.test.skip"=true -D"maven.javadoc.skip"=true -D"checkstyle.skip"=true -D"license.skipAddThirdParty" `
-* After building, it is necessary to set an environment variable `ST_WEB_BASEDIR_PATH` to represent the location of the data source shade package. A custom class loader will be used to load the data source shade package based on this. For example: `ST_WEB_BASEDIR_PATH=/seatunnel-web-dist/target/apache-seatunnel-web-1.0.0-SNAPSHOT/`
-* Then you can get the installer package in `${Your_code_dir}/seatunnel-dist/target`, For example:`apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz`
-* Run `tar -zxvf apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz` to unzip the installer package.
-* Run `cd apache-seatunnel-2.3.3-SNAPSHOT & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
+* Please follow [Build SeaTunnel From Source Code](https://seatunnel.apache.org/docs/start-v2/locally/deployment#build-seatunnel-from-source-code) to build the SeaTunnel. 
+* After building, it is necessary to set an environment variable `ST_WEB_BASEDIR_PATH` to represent the location of the data source shade package. A custom class loader will be used to load the data source shade package based on this. For example: `ST_WEB_BASEDIR_PATH=/seatunnel-web-dist/target/apache-seatunnel-web-1.0.3-SNAPSHOT/`
+* Then you can get the installer package in `${Your_code_dir}/seatunnel-dist/target`, For example:`apache-seatunnel-2.3.8-bin.tar.gz`
+* Run `tar -zxvf apache-seatunnel-2.3.8-bin.tar.gz` to unzip the installer package.
+* Run `cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
 * Please confirm that port 5801 is being monitored by the SeaTunnelServer process. 
 
 ##### 2.1.2 Download installer package and deploy
 The other way to install SeaTunnel Zeta Engine Server is download the installer package from https://seatunnel.apache.org/download and deploy.
 
-* Download and install connector plugin(Some third-party dependency packages will also be automatically downloaded and installed during this process, such as hadoop jar). You can get the step from https://seatunnel.apache.org/docs/2.3.2/start-v2/locally/deployment.
-* Run `cd apache-seatunnel-2.3.2 & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
+* Download and install connector plugin(Some third-party dependency packages will also be automatically downloaded and installed during this process, such as hadoop jar). You can get the step from https://seatunnel.apache.org/docs/start-v2/locally/deployment.
+* Run `cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d` to run the SeaTunnel Zeta Engine Server.
 
 #### 2.2 Init database 
 
@@ -76,12 +84,10 @@ sh build.sh code
 #### 2.4 Config application and Run SeaTunnel Web Backend Server
 
 1. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml` Fill in the database connection information
-2. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: SeaTunnel.
-
-![img.png](docs/images/application_config.png)
-
-2. Copy `apache-seatunnel-2.3.3-SNAPSHOT/connectors/plugin-mapping.properties` file to `seatunnel-web/seatunnel-server/seatunnel-app/src/main/resources` dir.
-3. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started. Notice that, you must set `-DSEATUNNEL_HOME=${your_seatunnel_install_path}` like this:
+  ![img.png](docs/images/application_config.png)
+2. Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: https://github.com/apache/seatunnel(Notice that cannot be too short).
+3. Copy `apache-seatunnel-2.3.8/connectors/plugin-mapping.properties` file to `seatunnel-web/seatunnel-server/seatunnel-app/src/main/resources` dir.
+4. Run `seatunnel-server/seatunnel-app/src/main/java/org/apache/seatunnel/app/SeatunnelApplication.java` If there are no errors reported, the seatunnel web backend service is successfully started. Notice that, you must set `-DSEATUNNEL_HOME=${your_seatunnel_install_path}` like this:
 
 ![img.png](docs/images/idea_st_home.png)
 
@@ -121,21 +127,21 @@ You have two ways to get the SeaTunnel installer package. Build from source code
 ##### 3.1.1 Build from source code
 * Get the source package from https://seatunnel.apache.org/download or https://github.com/apache/seatunnel.git
 * Build installer package use maven command `./mvnw -U -T 1C clean install -DskipTests -D"maven.test.skip"=true -D"maven.javadoc.skip"=true -D"checkstyle.skip"=true -D"license.skipAddThirdParty" `
-* Then you can get the installer package in `${Your_code_dir}/seatunnel-dist/target`, For example:`apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz`
+* Then you can get the installer package in `${Your_code_dir}/seatunnel-dist/target`, For example:`apache-seatunnel-2.3.8-bin.tar.gz`
 
 ##### 3.1.2 Download installer package
 The other way to get SeaTunnel Zeta Engine Server installer package is download the installer package from https://seatunnel.apache.org/download and install plugins online.
 
-* Download and install connector plugin(Some third-party dependency packages will also be automatically downloaded and installed during this process, such as hadoop jar). You can get the step from https://seatunnel.apache.org/docs/2.3.2/start-v2/locally/deployment.
-* After completing the previous step, you will receive an installation package that can be used to install SeaTunnel Zeta Engine Server on the server. Run `tar -zcvf apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz apache-seatunnel-2.3.3-SNAPSHOT` 
+* Download and install connector plugin(Some third-party dependency packages will also be automatically downloaded and installed during this process, such as hadoop jar). You can get the step from https://seatunnel.apache.org/docs/start-v2/locally/deployment.
+* After completing the previous step, you will receive an installation package that can be used to install SeaTunnel Zeta Engine Server on the server. Run `tar -zcvf apache-seatunnel-2.3.8-bin.tar.gz apache-seatunnel-2.3.8` 
 
 ##### 3.1.3 Deploy SeaTunnel Zeta Server
-After 3.1.1 or 3.1.2 you can get an installer package `apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz`, Then you can copy it to you server node and deploy reference https://seatunnel.apache.org/docs/seatunnel-engine/deployment.
+After 3.1.1 or 3.1.2 you can get an installer package `apache-seatunnel-2.3.8-bin.tar.gz`, Then you can copy it to you server node and deploy reference https://seatunnel.apache.org/docs/seatunnel-engine/deployment.
 
 ##### 3.1.4 Deploy SeaTunnel Zeta Client In SeaTunnel Web Run Node
 If you use SeaTunnel Web, you need deploy a SeaTunnel Zeta Client in the SeaTunnel Web run Node. **If you run SeaTunnel Zeta Server and SeaTunnel Web in same node, you can skip this step**.
 
-* Copy `apache-seatunnel-2.3.3-SNAPSHOT-bin.tar.gz` to the SeaTunnel Web node and unzip it **in the same path of SeaTunnel Zeta Server node**.
+* Copy `apache-seatunnel-2.3.8-bin.tar.gz` to the SeaTunnel Web node and unzip it **in the same path of SeaTunnel Zeta Server node**.
 * Set `SEATUNNEL_HOME` to environment variable like SeaTunnel Zeta Server node.
 * Config `hazelcast-client.yaml` reference https://seatunnel.apache.org/docs/seatunnel-engine/deployment#6-config-seatunnel-engine-client
 * Run `$SEATUNNEL_HOME/bin/seatunnel.sh --config $SEATUNNEL_HOME/config/v2.batch.config.template`, If this job run finished, it indicates successful client deployment.
@@ -172,11 +178,12 @@ tar -zxvf apache-seatunnel-web-${project.version}.tar.gz
 #### 3.5 Config application and Run SeaTunnel Web Backend Server
 
 * Edit `apache-seatunnel-web-${project.version}/conf/application.yml` Fill in the database connection information and DS interface related information in the file.
+* Edit `seatunnel-server/seatunnel-app/src/main/resources/application.yml`, add `jwt.secretKey` value. Eg: https://github.com/apache/seatunnel(Notice that cannot be too short).
 
 ![image](docs/images/application_config.png)
 
 * Copy `$SEATUNNEL_HOME/config/hazelcast-client.yaml` to `apache-seatunnel-web-${project.version}/conf/`
-* Copy `apache-seatunnel-2.3.3-SNAPSHOT/connectors/plugin-mapping.properties` file to `apache-seatunnel-web-${project.version}/conf/` dir.
+* Copy `apache-seatunnel-2.3.8/connectors/plugin-mapping.properties` file to `apache-seatunnel-web-${project.version}/conf/` dir.
 
 #### 3.6 Start SeaTunnel Web
 
@@ -206,3 +213,28 @@ Now ,let me show you how to use it.
 
 #### Virtual Tables manage
 ![img.png](docs/images/VirtualImage.png)
+
+### Features
+
+#### 1 Configuration Placeholders
+Placeholders are used in configurations to represent values that will be dynamically substituted at runtime or during processing.
+They enhance configuration flexibility and reusability by allowing specific values to be injected as needed.
+
+##### 1.1 Placeholder Format
+\${p1:v1}: p1 is a placeholder for a configuration value. If the p1 value is not provided at execution time, the default value v1 is used.
+\${p1}: If the p1 value is not provided at execution time, the execution will fail with an error.
+
+##### 1.2 Escaping Placeholders
+To escape placeholders, add a backslash before the placeholder. For example, \\\${p1:v1} or \\\${p1}.
+This is necessary when you want to pass the placeholder as-is to the engine without replacing the value in Seatunnel-web.
+
+##### 1.3 How Seatunnel-web Handles Placeholders
+During job execution, before sending the job to the engine, Seatunnel-web replaces the actual values in placeholders. This ensures that the actual executed job is recorded in Seatunnel-web history.
+
+NOTE: This feature is currently useful when execution is done through the API. The UI does not provide an option to pass placeholder values.
+
+### Upgrades
+#### 1. Upgrade from 1.0.1 or before to 1.0.2 or after.
+Execute the following SQL to upgrade the database:
+
+```ALTER TABLE `t_st_job_instance` ADD COLUMN `error_message` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;```

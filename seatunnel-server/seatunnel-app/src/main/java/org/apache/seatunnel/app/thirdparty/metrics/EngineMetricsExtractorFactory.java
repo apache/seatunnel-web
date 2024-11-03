@@ -16,6 +16,7 @@
  */
 package org.apache.seatunnel.app.thirdparty.metrics;
 
+import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.domain.response.engine.Engine;
 import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineMetricsExtractor;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -31,7 +32,7 @@ public class EngineMetricsExtractorFactory {
     private final Engine engine;
 
     public IEngineMetricsExtractor getEngineMetricsExtractor() {
-        if (engine.getName().equals("SeaTunnel")) {
+        if (engine.getName() == EngineType.SeaTunnel) {
             return SeaTunnelEngineMetricsExtractor.getInstance();
         }
 

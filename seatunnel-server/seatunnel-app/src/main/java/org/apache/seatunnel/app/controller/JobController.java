@@ -18,9 +18,13 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.service.IJobService;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +52,28 @@ public class JobController {
             @RequestBody JobCreateReq jobCreateRequest)
             throws JsonProcessingException {
         return Result.success(jobCRUDService.createJob(userId, jobCreateRequest));
+    }
+
+    @PutMapping("/update/{jobVersionId}")
+    @ApiOperation(
+            value = "Update a job, all the existing ids should be passed in the request.",
+            httpMethod = "PUT")
+    public Result<Void> updateJob(
+            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
+            @ApiParam(value = "jobVersionId", required = true) @PathVariable long jobVersionId,
+            @RequestBody JobCreateReq jobCreateReq)
+            throws JsonProcessingException {
+        jobCRUDService.updateJob(userId, jobVersionId, jobCreateReq);
+        return Result.success();
+    }
+
+    @GetMapping("/get/{jobVersionId}")
+    @ApiOperation(value = "Get a job detail.", httpMethod = "GET")
+    public Result<JobRes> getJob(
+            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
+            @ApiParam(value = "jobVersionId", required = true) @PathVariable long jobVersionId)
+            throws JsonProcessingException {
+        JobRes jobRes = jobCRUDService.getJob(userId, jobVersionId);
+        return Result.success(jobRes);
     }
 }

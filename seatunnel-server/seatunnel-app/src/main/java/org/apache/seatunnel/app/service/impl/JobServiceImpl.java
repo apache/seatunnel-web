@@ -17,17 +17,20 @@
 package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
-import org.apache.seatunnel.app.domain.request.connector.JobMode;
 import org.apache.seatunnel.app.domain.request.job.Edge;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
+import org.apache.seatunnel.app.domain.request.job.JobTaskInfo;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.service.IJobConfigService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobService;
 import org.apache.seatunnel.app.service.IJobTaskService;
+import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.ParamValidationException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -91,21 +94,44 @@ public class JobServiceImpl implements IJobService {
                     SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL, "description");
         }
         jobReq.setDescription(jobConfig.getDescription());
-        String jobMode = (String) jobConfig.getEnv().get("job.mode");
-        if (StringUtils.isEmpty(jobMode)) {
-            throw new ParamValidationException(
-                    SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL, "job.mode");
-        }
-        if (JobMode.BATCH.name().equals(jobMode)) {
-            jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
-        } else if (JobMode.STREAM.name().equals(jobMode)) {
-            jobReq.setJobType(BusinessMode.DATA_REPLICA);
-        } else {
+        try {
+            JobMode jobMode = JobMode.valueOf((String) jobConfig.getEnv().get("job.mode"));
+            if (JobMode.BATCH == jobMode) {
+                jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
+            } else if (JobMode.STREAMING == jobMode) {
+                jobReq.setJobType(BusinessMode.DATA_REPLICA);
+            } else {
+                throw new ParamValidationException(
+                        SeatunnelErrorEnum.INVALID_PARAM,
+                        "job.mode",
+                        "job.mode should be either BATCH or STREAMING");
+            }
+        } catch (Exception e) {
             throw new ParamValidationException(
                     SeatunnelErrorEnum.INVALID_PARAM,
                     "job.mode",
-                    "job.mode should be either BATCH or STREAM");
+                    "job.mode should be either BATCH or STREAMING");
         }
         return jobReq;
+    }
+
+    @Override
+    public void updateJob(Integer userId, long jobVersionId, JobCreateReq jobCreateReq)
+            throws JsonProcessingException {
+        jobConfigService.updateJobConfig(userId, jobVersionId, jobCreateReq.getJobConfig());
+        List<PluginConfig> pluginConfigs = jobCreateReq.getPluginConfigs();
+        if (pluginConfigs != null) {
+            for (PluginConfig pluginConfig : pluginConfigs) {
+                jobTaskService.saveSingleTask(jobVersionId, pluginConfig);
+            }
+        }
+        jobTaskService.saveJobDAG(jobVersionId, jobCreateReq.getJobDAG());
+    }
+
+    @Override
+    public JobRes getJob(Integer userId, long jobVersionId) throws JsonProcessingException {
+        JobConfigRes jobConfig = jobConfigService.getJobConfig(jobVersionId);
+        JobTaskInfo taskConfig = jobTaskService.getTaskConfig(jobVersionId);
+        return new JobRes(jobConfig, taskConfig.getPlugins(), new JobDAG(taskConfig.getEdges()));
     }
 }

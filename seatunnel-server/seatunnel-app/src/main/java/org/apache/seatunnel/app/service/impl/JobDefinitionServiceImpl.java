@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
+import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
 import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
@@ -31,6 +32,7 @@ import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -41,12 +43,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 
 import javax.annotation.Resource;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,8 +59,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
         implements IJobDefinitionService {
 
     private static final String DEFAULT_VERSION = "1.0";
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Resource(name = "jobDefinitionDaoImpl")
     private IJobDefinitionDao jobDefinitionDao;
@@ -86,17 +84,21 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .updateUserId(userId)
                         .jobType(jobReq.getJobType().name())
                         .build());
-        jobVersionDao.createVersion(
-                JobVersion.builder()
-                        .jobId(uuid)
-                        .createUserId(userId)
-                        .updateUserId(userId)
-                        .name(DEFAULT_VERSION)
-                        .id(uuid)
-                        .engineName(EngineType.SeaTunnel.name())
-                        .jobMode(JobMode.BATCH.name())
-                        .engineVersion("2.3.0")
-                        .build());
+        JobVersion.JobVersionBuilder builder = JobVersion.builder();
+        builder.jobId(uuid)
+                .createUserId(userId)
+                .updateUserId(userId)
+                .name(DEFAULT_VERSION)
+                .id(uuid)
+                .engineName(EngineType.SeaTunnel)
+                .engineVersion("2.3.8");
+        if (BusinessMode.DATA_INTEGRATION.equals(jobReq.getJobType())) {
+            builder.jobMode(JobMode.BATCH);
+        } else if (BusinessMode.DATA_REPLICA.equals(jobReq.getJobType())) {
+            builder.jobMode(JobMode.STREAMING);
+        }
+        jobVersionDao.createVersion(builder.build());
+
         return uuid;
     }
 
@@ -193,16 +195,11 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .map(JobTask::getDataSourceOption)
                         .distinct()
                         .map(
-                                option -> {
-                                    try {
-                                        return StringUtils.isEmpty(option)
+                                option ->
+                                        StringUtils.isEmpty(option)
                                                 ? null
-                                                : OBJECT_MAPPER.readValue(
-                                                        option, DataSourceOption.class);
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                })
+                                                : JsonUtils.parseObject(
+                                                        option, DataSourceOption.class))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
         return options.stream().anyMatch(option -> option.getTables().contains(tableName));

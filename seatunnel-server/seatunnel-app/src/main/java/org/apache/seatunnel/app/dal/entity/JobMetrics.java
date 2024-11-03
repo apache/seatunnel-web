@@ -16,6 +16,8 @@
  */
 package org.apache.seatunnel.app.dal.entity;
 
+import org.apache.seatunnel.engine.core.job.JobStatus;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -65,7 +67,7 @@ public class JobMetrics {
     private long recordDelay;
 
     @TableField("status")
-    private String status;
+    private JobStatus status;
 
     @TableField("create_user_id")
     private Integer createUserId;

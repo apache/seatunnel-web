@@ -26,9 +26,7 @@ public class Db2OptionRule {
             Options.key("url")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "jdbc url, eg:"
-                                    + " jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8");
+                    .withDescription("jdbc url, eg:" + " jdbc:db2://localhost:50000/databaseName");
 
     public static final Option<String> USER =
             Options.key("user").stringType().noDefaultValue().withDescription("jdbc user");

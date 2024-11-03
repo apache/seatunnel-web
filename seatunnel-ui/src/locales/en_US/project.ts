@@ -1144,6 +1144,7 @@ export default {
     cancel: 'Cancel',
     delete: 'Delete',
     delete_confirm: 'Delete?',
+    error_message: 'Error'
   },
   menu: {
     fav: 'Favorites',

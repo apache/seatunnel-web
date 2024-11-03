@@ -19,19 +19,30 @@ package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.app.dal.entity.JobLine;
 import org.apache.seatunnel.app.dal.entity.JobTask;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
+import org.apache.seatunnel.engine.core.job.JobResult;
 
 import lombok.NonNull;
 
 import java.util.List;
 
 public interface IJobInstanceService {
-    JobExecutorRes createExecuteResource(@NonNull Integer userId, @NonNull Long jobDefineId);
+    JobExecutorRes createExecuteResource(
+            @NonNull Integer userId, @NonNull Long jobDefineId, JobExecParam executeParam);
 
-    String generateJobConfig(Long jobId, List<JobTask> tasks, List<JobLine> lines, String envStr);
+    String generateJobConfig(
+            Long jobId,
+            List<JobTask> tasks,
+            List<JobLine> lines,
+            String envStr,
+            JobExecParam executeParam);
 
     JobExecutorRes getExecuteResource(@NonNull Long jobEngineId);
 
     void complete(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
+            @NonNull Integer userId,
+            @NonNull Long jobInstanceId,
+            @NonNull String jobEngineId,
+            JobResult jobResult);
 }

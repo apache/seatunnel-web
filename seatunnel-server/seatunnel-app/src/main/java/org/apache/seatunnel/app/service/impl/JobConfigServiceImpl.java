@@ -16,7 +16,6 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
-import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
@@ -26,6 +25,7 @@ import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobConfigService;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
@@ -35,18 +35,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.Resource;
 
-import java.io.IOException;
-import java.util.Map;
-
 @Service
 public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJobConfigService {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private static final String JOB_MODE = "job.mode";
 
     @Resource private IJobVersionDao jobVersionDao;
@@ -57,20 +50,20 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
     public JobConfigRes getJobConfig(long jobVersionId) throws JsonProcessingException {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_DETAIL, 0);
         JobVersion jobVersion = jobVersionDao.getVersionById(jobVersionId);
+        if (jobVersion == null) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "job version not found.");
+        }
         JobDefinition jobDefinition = jobDefinitionDao.getJob(jobVersion.getJobId());
         JobConfigRes jobConfigRes = new JobConfigRes();
         jobConfigRes.setName(jobDefinition.getName());
         jobConfigRes.setId(jobVersion.getId());
         jobConfigRes.setDescription(jobDefinition.getDescription());
-        try {
-            jobConfigRes.setEnv(
-                    StringUtils.isEmpty(jobVersion.getEnv())
-                            ? null
-                            : OBJECT_MAPPER.readValue(jobVersion.getEnv(), Map.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        jobConfigRes.setEngine(EngineType.valueOf(jobVersion.getEngineName()));
+        jobConfigRes.setEnv(
+                StringUtils.isEmpty(jobVersion.getEnv())
+                        ? null
+                        : JsonUtils.toMap(jobVersion.getEnv(), String.class, Object.class));
+        jobConfigRes.setEngine(jobVersion.getEngineName());
         return jobConfigRes;
     }
 
@@ -80,6 +73,10 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
             throws JsonProcessingException {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_UPDATE, 0);
         JobVersion version = jobVersionDao.getVersionById(jobVersionId);
+        if (version == null) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "job version not found.");
+        }
         JobDefinition jobDefinition = new JobDefinition();
         jobDefinition.setId(version.getJobId());
         jobDefinition.setUpdateUserId(userId);
@@ -92,10 +89,10 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
                     JobVersion.builder()
                             .jobId(version.getJobId())
                             .id(version.getId())
-                            .jobMode(jobMode.name())
-                            .engineName(jobConfig.getEngine().name())
+                            .jobMode(jobMode)
+                            .engineName(jobConfig.getEngine())
                             .updateUserId(userId)
-                            .env(OBJECT_MAPPER.writeValueAsString(jobConfig.getEnv()))
+                            .env(JsonUtils.toJsonString(jobConfig.getEnv()))
                             .build());
         } else {
             throw new SeatunnelException(SeatunnelErrorEnum.ILLEGAL_STATE, "job mode is not set");

@@ -41,7 +41,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="seatunnel-web" />
         <appender-ref ref="console" />
     </root>

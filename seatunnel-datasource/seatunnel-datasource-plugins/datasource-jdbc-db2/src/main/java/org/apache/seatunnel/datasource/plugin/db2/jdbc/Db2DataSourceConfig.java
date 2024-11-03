@@ -38,7 +38,16 @@ public class Db2DataSourceConfig {
                     .build();
 
     public static final Set<String> DB2_SYSTEM_DATABASES =
-            Sets.newHashSet("information_schema", "mysql", "performance_schema", "sys");
+            Sets.newHashSet(
+                    "SYSTOOLS",
+                    "SYSCAT",
+                    "SYSIBM",
+                    "SYSIBMADM",
+                    "SYSSTAT",
+                    "SYSPROC",
+                    "SYSFUN",
+                    "SYSPUBLIC",
+                    "SYSIBMTS");
 
     public static final OptionRule OPTION_RULE =
             OptionRule.builder()

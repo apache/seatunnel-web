@@ -82,6 +82,11 @@ public enum SeatunnelErrorEnum {
             "load job state from engine error",
             "load job statue from engine [%s] error, error msg is [%s]"),
     UNSUPPORTED_ENGINE(40003, "unsupported engine", "unsupported engine [%s] version [%s]"),
+    JOB_EXEC_SUBMISSION_ERROR(40004, "Job execution submission error.", "%s"),
+    LOAD_ENGINE_METRICS_ERROR(
+            40005, "load engine metrics error", "load engine metrics error. error msg is [%s]"),
+    JOB_NO_VALUE_FOUND_FOR_PLACEHOLDER(
+            40006, "No value found for placeholder", "No value found for placeholder: [%s]"),
 
     JOB_RUN_GENERATE_UUID_ERROR(50001, "generate uuid error", "generate uuid error"),
     /* datasource and virtual table */
@@ -128,6 +133,7 @@ public enum SeatunnelErrorEnum {
     MISSING_PARAM(1777000, "param miss [{0}]", "param miss [{0}]"),
     PARAM_CAN_NOT_BE_NULL(60018, "", "param [%s] can not be null or empty"),
     INVALID_PARAM(60019, "", "param [%s] is invalid. %s"),
+    RESOURCE_NOT_FOUND(404, "", "%s"),
     ;
 
     private final int code;
