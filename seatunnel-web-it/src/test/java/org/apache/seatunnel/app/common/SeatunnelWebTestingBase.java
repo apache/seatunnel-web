@@ -19,7 +19,7 @@ package org.apache.seatunnel.app.common;
 import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -30,12 +30,13 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class SeatunnelWebTestingBase {
     protected final String baseUrl = "http://localhost:8802/seatunnel/api/v1";
 
     protected Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(userLoginReq);
+        String requestBody = JsonUtils.toJsonString(userLoginReq);
         String response = sendRequest(url("user/login"), requestBody, "POST");
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<UserSimpleInfoRes>>() {});
@@ -71,7 +72,7 @@ public class SeatunnelWebTestingBase {
             connection.setDoOutput(true);
             if (requestBody != null) {
                 try (OutputStream os = connection.getOutputStream()) {
-                    byte[] input = requestBody.getBytes("utf-8");
+                    byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
                     os.write(input, 0, input.length);
                 }
             }

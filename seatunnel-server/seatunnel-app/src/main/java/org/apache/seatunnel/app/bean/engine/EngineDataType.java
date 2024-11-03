@@ -28,6 +28,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -68,7 +69,11 @@ public class EngineDataType {
         T_INT_ARRAY("array<int>", ArrayType.INT_ARRAY_TYPE),
         T_LONG_ARRAY("array<bigint>", ArrayType.LONG_ARRAY_TYPE),
         T_FLOAT_ARRAY("array<float>", ArrayType.FLOAT_ARRAY_TYPE),
-        T_DOUBLE_ARRAY("array<double>", ArrayType.DOUBLE_ARRAY_TYPE);
+        T_DOUBLE_ARRAY("array<double>", ArrayType.DOUBLE_ARRAY_TYPE),
+        T_VARCHAR("varchar", BasicType.STRING_TYPE),
+        T_CHAR("char", BasicType.STRING_TYPE),
+        T_INTEGER("integer", BasicType.INT_TYPE),
+        T_DECIMAL_DEFAULT("decimal", BasicType.DOUBLE_TYPE);
 
         @Getter private final String name;
         @Getter private final SeaTunnelDataType<?> RawType;
@@ -85,7 +90,7 @@ public class EngineDataType {
 
         @Override
         public SeaTunnelDataType<?> toSeaTunnelType(String field, String connectorDataType) {
-            return DATA_TYPE_MAP.get(connectorDataType).getRawType();
+            return DATA_TYPE_MAP.get(connectorDataType.toLowerCase(Locale.ROOT)).getRawType();
         }
 
         @Override

@@ -17,17 +17,17 @@
 
 package org.apache.seatunnel.app.parameters;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.node.ArrayNode;
+
 import org.apache.seatunnel.app.common.Direct;
 import org.apache.seatunnel.app.domain.model.Property;
 import org.apache.seatunnel.app.domain.model.ResourceInfo;
 import org.apache.seatunnel.app.parameters.resource.ResourceParametersHelper;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,7 +121,7 @@ public abstract class AbstractParameters implements IParameters {
         if (StringUtils.isEmpty(varPool)) {
             this.varPool = new ArrayList<>();
         } else {
-            this.varPool = JSONUtils.toList(varPool, Property.class);
+            this.varPool = JsonUtils.toList(varPool, Property.class);
         }
     }
 
@@ -165,9 +165,9 @@ public abstract class AbstractParameters implements IParameters {
 
     public List<Map<String, String>> getListMapByString(String json) {
         List<Map<String, String>> allParams = new ArrayList<>();
-        ArrayNode paramsByJson = JSONUtils.parseArray(json);
+        ArrayNode paramsByJson = JsonUtils.parseArray(json);
         for (JsonNode jsonNode : paramsByJson) {
-            Map<String, String> param = JSONUtils.toMap(jsonNode.toString());
+            Map<String, String> param = JsonUtils.toMap(jsonNode.toString());
             allParams.add(param);
         }
         return allParams;

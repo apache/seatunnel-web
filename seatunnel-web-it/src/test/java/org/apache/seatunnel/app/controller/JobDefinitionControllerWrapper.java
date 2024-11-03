@@ -23,7 +23,8 @@ import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<Long> createJobDefinition(JobReq jobReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(jobReq);
+        String requestBody = JsonUtils.toJsonString(jobReq);
         String response = sendRequest(url("job/definition"), requestBody, "POST");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<Long>>() {});
     }
@@ -48,7 +49,7 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
     }
 
     public Result<PageInfo<JobDefinitionRes>> getJobDefinition(
-            String searchName, Integer pageNo, Integer pageSize) {
+            String searchName, Integer pageNo, Integer pageSize, JobMode jobMode) {
         String response =
                 sendRequest(
                         urlWithParam("job/definition?")
@@ -57,7 +58,9 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
                                 + "&pageNo="
                                 + pageNo
                                 + "&pageSize="
-                                + pageSize);
+                                + pageSize
+                                + "&jobMode="
+                                + jobMode);
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<PageInfo<JobDefinitionRes>>>() {});
     }

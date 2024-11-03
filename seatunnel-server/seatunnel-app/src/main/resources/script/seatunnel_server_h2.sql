@@ -40,6 +40,12 @@ CREATE TABLE role (
 );
 
 -- ----------------------------
+-- Records of role
+-- ----------------------------
+INSERT INTO role (type, role_name, description) VALUES (0, 'ADMIN_ROLE', 'Admin User');
+INSERT INTO role (type, role_name, description) VALUES (1, 'NORMAL_ROLE', 'Normal User');
+
+-- ----------------------------
 -- Table structure for role_user_relation
 -- ----------------------------
 DROP TABLE IF EXISTS role_user_relation;
@@ -99,6 +105,7 @@ CREATE TABLE t_st_job_instance (
                                    update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                    end_time TIMESTAMP(3) DEFAULT NULL,
                                    job_type VARCHAR(50) NOT NULL,
+                                   error_message VARCHAR(4096) DEFAULT NULL,
                                    PRIMARY KEY (id)
 );
 

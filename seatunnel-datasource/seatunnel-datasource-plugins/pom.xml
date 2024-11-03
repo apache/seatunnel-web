@@ -51,5 +51,9 @@
         <module>datasource-postgresql-cdc</module>
 
     </modules>
+    <properties>
+        <hive.version>3.1.3</hive.version>
+        <hadoop.version>3.1.0</hadoop.version>
+    </properties>
 
 </project>

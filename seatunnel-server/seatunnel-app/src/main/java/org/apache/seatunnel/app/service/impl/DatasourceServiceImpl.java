@@ -570,17 +570,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
         datasourceList.forEach(
                 datasource -> {
-                    DatasourceDetailRes datasourceDetailRes = new DatasourceDetailRes();
-                    datasourceDetailRes.setId(datasource.getId().toString());
-                    datasourceDetailRes.setDatasourceName(datasource.getDatasourceName());
-                    datasourceDetailRes.setPluginName(datasource.getPluginName());
-                    datasourceDetailRes.setPluginVersion(datasource.getPluginVersion());
-                    datasourceDetailRes.setDescription(datasource.getDescription());
-                    datasourceDetailRes.setCreateTime(datasource.getCreateTime());
-                    datasourceDetailRes.setUpdateTime(datasource.getUpdateTime());
-                    Map<String, String> config = JsonUtils.toMap(datasource.getDatasourceConfig());
-                    datasourceDetailRes.setDatasourceConfig(config);
-                    datasourceDetailResList.add(datasourceDetailRes);
+                    datasourceDetailResList.add(getDatasourceDetailRes(datasource));
                 });
         return datasourceDetailResList;
     }
@@ -599,6 +589,10 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceName);
         }
+        return getDatasourceDetailRes(datasource);
+    }
+
+    private static DatasourceDetailRes getDatasourceDetailRes(Datasource datasource) {
         DatasourceDetailRes datasourceDetailRes = new DatasourceDetailRes();
         datasourceDetailRes.setId(datasource.getId().toString());
         datasourceDetailRes.setDatasourceName(datasource.getDatasourceName());
@@ -612,7 +606,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                 JsonUtils.toMap(datasource.getDatasourceConfig(), String.class, String.class);
         // convert option rule
         datasourceDetailRes.setDatasourceConfig(datasourceConfig);
-
         return datasourceDetailRes;
     }
 
@@ -624,21 +617,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId);
         }
-        DatasourceDetailRes datasourceDetailRes = new DatasourceDetailRes();
-        datasourceDetailRes.setId(datasource.getId().toString());
-        datasourceDetailRes.setDatasourceName(datasource.getDatasourceName());
-        datasourceDetailRes.setPluginName(datasource.getPluginName());
-        datasourceDetailRes.setPluginVersion(datasource.getPluginVersion());
-        datasourceDetailRes.setDescription(datasource.getDescription());
-        datasourceDetailRes.setCreateTime(datasource.getCreateTime());
-        datasourceDetailRes.setUpdateTime(datasource.getUpdateTime());
-
-        Map<String, String> datasourceConfig =
-                JsonUtils.toMap(datasource.getDatasourceConfig(), String.class, String.class);
-        // convert option rule
-        datasourceDetailRes.setDatasourceConfig(datasourceConfig);
-
-        return datasourceDetailRes;
+        return getDatasourceDetailRes(datasource);
     }
 
     @Override

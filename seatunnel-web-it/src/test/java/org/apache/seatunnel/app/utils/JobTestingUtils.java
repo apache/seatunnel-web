@@ -18,23 +18,30 @@ package org.apache.seatunnel.app.utils;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.controller.JobConfigControllerWrapper;
+import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobDefinitionControllerWrapper;
 import org.apache.seatunnel.app.controller.JobMetricsControllerWrapper;
 import org.apache.seatunnel.app.controller.JobTaskControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
 import org.apache.seatunnel.app.domain.request.job.Edge;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
+import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
+import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.response.job.JobTaskCheckRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JobUtils {
+public class JobTestingUtils {
     private static JobMetricsControllerWrapper jobMetricsControllerWrapper =
             new JobMetricsControllerWrapper();
     private static JobConfigControllerWrapper jobConfigControllerWrapper =
@@ -45,6 +52,7 @@ public class JobUtils {
             new JobTaskControllerWrapper();
     private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper =
             new SeatunnelDatasourceControllerWrapper();
+    private static JobControllerWrapper jobControllerWrapper = new JobControllerWrapper();
     private static final long TIMEOUT = 60; // 1 minute
     private static final long INTERVAL = 2; // 1 second
 
@@ -95,9 +103,9 @@ public class JobUtils {
             return false;
         }
         switch (metrics.getStatus()) {
-            case "FINISHED":
-            case "CANCELED":
-            case "FAILED":
+            case FINISHED:
+            case CANCELED:
+            case FAILED:
                 return true;
             default:
                 return false;
@@ -105,6 +113,10 @@ public class JobUtils {
     }
 
     public static Long createJob(String jobName) {
+        return createJob(jobName, false);
+    }
+
+    public static Long createJob(String jobName, boolean shouldExecutionFail) {
         Long jobId = jobDefinitionControllerWrapper.createJobDefinition(jobName);
         JobConfig jobConfig = jobConfigControllerWrapper.populateJobConfigObject(jobName);
         // jobVersionId is same as jobId
@@ -120,9 +132,18 @@ public class JobUtils {
         String consoleDatasourceId =
                 seatunnelDatasourceControllerWrapper.createConsoleDatasource("console_" + jobName);
 
-        String sourcePluginId =
-                jobTaskControllerWrapper.createFakeSourcePlugin(
-                        fakeSourceDatasourceId, jobVersionId);
+        String sourcePluginId;
+        if (shouldExecutionFail) {
+            sourcePluginId =
+                    jobTaskControllerWrapper.createFakeSourcePluginThatFails(
+                            fakeSourceDatasourceId, jobVersionId);
+
+        } else {
+            sourcePluginId =
+                    jobTaskControllerWrapper.createFakeSourcePlugin(
+                            fakeSourceDatasourceId, jobVersionId);
+        }
+
         String transPluginId = jobTaskControllerWrapper.createReplaceTransformPlugin(jobVersionId);
         String sinkPluginId =
                 jobTaskControllerWrapper.createConsoleSinkPlugin(consoleDatasourceId, jobVersionId);
@@ -137,5 +158,54 @@ public class JobUtils {
                 jobTaskControllerWrapper.saveJobDAG(jobVersionId, jobDAG);
         assertTrue(jobTaskCheckResResult.isSuccess());
         return jobVersionId;
+    }
+
+    public static JobCreateReq populateMySQLJobCreateReqFromFile() {
+        String filePath = "src/test/resources/jobs/mysql_source_mysql_sink.json";
+        String jsonContent;
+        try {
+            jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return JsonUtils.parseObject(jsonContent, JobCreateReq.class);
+    }
+
+    public static JobCreateReq populateJobCreateReqFromFile(
+            String jobName, String fsdSourceName, String csSourceName) {
+        String filePath = "src/test/resources/jobs/fake_source_console_job.json";
+        String jsonContent;
+        try {
+            jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        JobCreateReq jobCreateReq = JsonUtils.parseObject(jsonContent, JobCreateReq.class);
+        jobCreateReq.getJobConfig().setName(jobName);
+        jobCreateReq.getJobConfig().setDescription(jobName + " description");
+        setSourceIds(jobCreateReq, fsdSourceName, csSourceName);
+        return jobCreateReq;
+    }
+
+    private static void setSourceIds(
+            JobCreateReq jobCreateReq, String fsdSourceName, String csSourceName) {
+        // Set the data source id for the plugin configs
+        String fakeSourceDataSourceId =
+                seatunnelDatasourceControllerWrapper.createFakeSourceDatasource(fsdSourceName);
+        String consoleDataSourceId =
+                seatunnelDatasourceControllerWrapper.createConsoleDatasource(csSourceName);
+        for (PluginConfig pluginConfig : jobCreateReq.getPluginConfigs()) {
+            if (pluginConfig.getName().equals("source-fake-source")) {
+                pluginConfig.setDataSourceId(Long.parseLong(fakeSourceDataSourceId));
+            } else if (pluginConfig.getName().equals("sink-console")) {
+                pluginConfig.setDataSourceId(Long.parseLong(consoleDataSourceId));
+            }
+        }
+    }
+
+    public static Long createJob(JobCreateReq jobCreateReq) {
+        Result<Long> jobCreateResult = jobControllerWrapper.createJob(jobCreateReq);
+        assertTrue(jobCreateResult.isSuccess());
+        return jobCreateResult.getData();
     }
 }

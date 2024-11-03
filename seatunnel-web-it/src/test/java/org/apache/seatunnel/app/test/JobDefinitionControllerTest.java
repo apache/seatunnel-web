@@ -19,8 +19,11 @@ package org.apache.seatunnel.app.test;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobDefinitionControllerWrapper;
+import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
+import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JobDefinitionControllerTest {
     private static final SeaTunnelWebCluster seaTunnelWebCluster = new SeaTunnelWebCluster();
     private static JobDefinitionControllerWrapper jobDefinitionControllerWrapper;
-    private static String uniqueId = "_" + System.currentTimeMillis();
+    private static final String uniqueId = "_" + System.currentTimeMillis();
 
     @BeforeAll
     public static void setUp() {
@@ -61,7 +64,30 @@ public class JobDefinitionControllerTest {
         String job3 = "job3" + uniqueId;
         long jobId = jobDefinitionControllerWrapper.createJobDefinition(job3);
         Result<PageInfo<JobDefinitionRes>> result =
-                jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10);
+                jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10, JobMode.BATCH);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getData().getData().size());
+        assertEquals(jobId, result.getData().getData().get(0).getId());
+
+        result = jobDefinitionControllerWrapper.getJobDefinition(job3, 1, 10, JobMode.STREAMING);
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getData().getData().size());
+
+        // Create STREAMING job and check if it is returned when queried with STREAMING mode
+        String job31 = "stream_3" + uniqueId;
+        JobReq jobReq = new JobReq();
+        jobReq.setName(job31);
+        jobReq.setDescription(job31 + " description");
+        jobReq.setJobType(BusinessMode.DATA_REPLICA);
+        Result<Long> jobDefinition = jobDefinitionControllerWrapper.createJobDefinition(jobReq);
+        assertTrue(jobDefinition.isSuccess());
+        jobId = jobDefinition.getData();
+
+        result = jobDefinitionControllerWrapper.getJobDefinition(job31, 1, 10, JobMode.BATCH);
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getData().getData().size());
+
+        result = jobDefinitionControllerWrapper.getJobDefinition(job31, 1, 10, JobMode.STREAMING);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getData().getData().size());
         assertEquals(jobId, result.getData().getData().get(0).getId());

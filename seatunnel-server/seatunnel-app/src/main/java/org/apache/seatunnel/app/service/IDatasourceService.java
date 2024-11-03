@@ -207,7 +207,7 @@ public interface IDatasourceService {
     /**
      * query all datasource by type
      *
-     * @param type @see com.whaleops.datasource.plugin.api.DatasourcePluginTypeEnum
+     * @param type @see org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum
      * @return List DataSourcePluginInfo
      */
     List<DataSourcePluginInfo> queryAllDatasourcesByType(Integer type);

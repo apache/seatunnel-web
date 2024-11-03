@@ -15,10 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.request.connector;
-
-public enum JobMode {
-    BATCH,
-
-    STREAM;
-}
+ .errorMessageContainer {
+   max-height: 400px;
+   overflow-y: auto;
+   white-space: pre-wrap; /* Preserver formatting */
+   background-color: #f4f4f4;
+   padding: 10px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-family: monospace;
+   text-align: left;
+   margin: 0 auto;
+   width: 1000px;
+   max-width: 100%;
+ }

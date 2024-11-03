@@ -20,12 +20,16 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
-import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
+import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
-import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.app.utils.JobTestingUtils;
+import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import org.junit.jupiter.api.AfterAll;
@@ -35,12 +39,12 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobControllerTest {
     private static final SeaTunnelWebCluster seaTunnelWebCluster = new SeaTunnelWebCluster();
-    private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper;
     private static JobControllerWrapper jobControllerWrapper;
     private static JobExecutorControllerWrapper jobExecutorControllerWrapper;
     private static final String uniqueId = "_" + System.currentTimeMillis();
@@ -48,7 +52,6 @@ public class JobControllerTest {
     @BeforeAll
     public static void setUp() {
         seaTunnelWebCluster.start();
-        seatunnelDatasourceControllerWrapper = new SeatunnelDatasourceControllerWrapper();
         jobControllerWrapper = new JobControllerWrapper();
         jobExecutorControllerWrapper = new JobExecutorControllerWrapper();
     }
@@ -56,43 +59,28 @@ public class JobControllerTest {
     @Test
     public void createJobWithSingleAPI_shouldExecuteSuccessfully() {
         String jobName = "jobWithSingleAPI" + uniqueId;
-        JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
-        jobCreateReq.getJobConfig().setName(jobName);
-        jobCreateReq.getJobConfig().setDescription(jobName + " description");
-        setSourceIds(jobCreateReq, "fake_source_ds1" + uniqueId, "console_ds1" + uniqueId);
-
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create" + uniqueId, "console_create" + uniqueId);
         Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(job.isSuccess());
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(job.getData());
         assertTrue(result.isSuccess());
         assertTrue(result.getData() > 0);
         Result<List<JobPipelineDetailMetricsRes>> listResult =
-                JobUtils.waitForJobCompletion(result.getData());
+                JobTestingUtils.waitForJobCompletion(result.getData());
         assertEquals(1, listResult.getData().size());
-        assertEquals("FINISHED", listResult.getData().get(0).getStatus());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
         assertEquals(5, listResult.getData().get(0).getReadRowCount());
         assertEquals(5, listResult.getData().get(0).getWriteRowCount());
     }
 
-    private void setSourceIds(
-            JobCreateReq jobCreateReq, String fsdSourceName, String csSourceName) {
-        // Set the data source id for the plugin configs
-        String fakeSourceDataSourceId =
-                seatunnelDatasourceControllerWrapper.createFakeSourceDatasource(fsdSourceName);
-        String consoleDataSourceId =
-                seatunnelDatasourceControllerWrapper.createConsoleDatasource(csSourceName);
-        for (PluginConfig pluginConfig : jobCreateReq.getPluginConfigs()) {
-            if (pluginConfig.getName().equals("source-fake-source")) {
-                pluginConfig.setDataSourceId(Long.parseLong(fakeSourceDataSourceId));
-            } else if (pluginConfig.getName().equals("sink-console")) {
-                pluginConfig.setDataSourceId(Long.parseLong(consoleDataSourceId));
-            }
-        }
-    }
-
     @Test
     public void createJobWithSingleAPI_ValidateInput() {
-        JobCreateReq jobCreateReq = jobControllerWrapper.populateJobCreateReqFromFile();
+        String jobName = "jobWithSingleAPI2" + uniqueId;
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create_2" + uniqueId, "console_create_2" + uniqueId);
         JobConfig jobConfig = jobCreateReq.getJobConfig();
         jobConfig.setName("");
         Result<Long> result = jobControllerWrapper.createJob(jobCreateReq);
@@ -100,7 +88,7 @@ public class JobControllerTest {
         assertEquals(SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL.getCode(), result.getCode());
         assertEquals("param [name] can not be null or empty", result.getMsg());
 
-        String jobName = "jobValidation" + uniqueId;
+        jobName = "jobValidation" + uniqueId;
         jobConfig.setName(jobName);
         jobConfig.setDescription(null);
         result = jobControllerWrapper.createJob(jobCreateReq);
@@ -112,23 +100,113 @@ public class JobControllerTest {
         jobConfig.getEnv().put("job.mode", "");
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isFailed());
-        assertEquals(SeatunnelErrorEnum.PARAM_CAN_NOT_BE_NULL.getCode(), result.getCode());
-        assertEquals("param [job.mode] can not be null or empty", result.getMsg());
+        assertEquals(SeatunnelErrorEnum.INVALID_PARAM.getCode(), result.getCode());
+        assertEquals(
+                "param [job.mode] is invalid. job.mode should be either BATCH or STREAMING",
+                result.getMsg());
 
         jobConfig.getEnv().put("job.mode", "InvalidJobMode");
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isFailed());
         assertEquals(SeatunnelErrorEnum.INVALID_PARAM.getCode(), result.getCode());
         assertEquals(
-                "param [job.mode] is invalid. job.mode should be either BATCH or STREAM",
+                "param [job.mode] is invalid. job.mode should be either BATCH or STREAMING",
                 result.getMsg());
 
-        jobConfig.getEnv().put("job.mode", "BATCH");
-        setSourceIds(jobCreateReq, "fake_source_ds2" + uniqueId, "console_ds2" + uniqueId);
+        jobConfig.getEnv().put("job.mode", JobMode.BATCH);
+        // setSourceIds(jobCreateReq, "fake_source_create2" + uniqueId, "console_create2" +
+        // uniqueId);
         result = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getCode());
         assertNotNull(result.getData());
+    }
+
+    @Test
+    public void testUpdateJob_ForValidAndInvalidScenarios() {
+        String jobName = "updateJob_single_api" + uniqueId;
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create_3" + uniqueId, "console_create_3" + uniqueId);
+
+        Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
+        assertTrue(job.isSuccess());
+
+        Result<JobRes> getJobResponse = jobControllerWrapper.getJob(job.getData());
+        assertTrue(getJobResponse.isSuccess());
+        JobRes jobRes = getJobResponse.getData();
+        assertNotNull(jobRes.getJobConfig());
+        assertNotNull(jobRes.getJobConfig());
+        assertNotNull(jobRes.getJobDAG());
+
+        assertEquals(jobName, jobRes.getJobConfig().getName());
+        assertEquals(
+                jobCreateReq.getPluginConfigs().get(0).getName(),
+                jobRes.getPluginConfigs().get(0).getName());
+        assertEquals(
+                jobCreateReq.getPluginConfigs().get(1).getName(),
+                jobRes.getPluginConfigs().get(1).getName());
+
+        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        String jobName2 = "updateJob_single_api2" + uniqueId;
+        jobUpdateReq.getJobConfig().setName(jobName2);
+        jobUpdateReq.getJobConfig().setDescription(jobName2 + " description");
+
+        Result<Void> jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
+        assertTrue(jobUpdateResult.isSuccess());
+
+        Result<JobRes> getJobResponse2 = jobControllerWrapper.getJob(job.getData());
+        assertTrue(getJobResponse2.isSuccess());
+        JobRes jobRes2 = getJobResponse2.getData();
+        assertEquals(jobName2, jobRes2.getJobConfig().getName());
+        assertEquals(
+                jobUpdateReq.getPluginConfigs().get(0).getName(),
+                jobRes2.getPluginConfigs().get(0).getName());
+        assertEquals(
+                jobUpdateReq.getPluginConfigs().get(1).getName(),
+                jobRes2.getPluginConfigs().get(1).getName());
+
+        // Handle error scenarios
+
+        // Invalid job instance id
+        Result<JobRes> invalidJobInstanceIdResponse = jobControllerWrapper.getJob(123L);
+        assertFalse(invalidJobInstanceIdResponse.isSuccess());
+        assertEquals(
+                SeatunnelErrorEnum.RESOURCE_NOT_FOUND.getCode(),
+                invalidJobInstanceIdResponse.getCode());
+
+        Result<Void> result = jobControllerWrapper.updateJob(123L, jobUpdateReq);
+        assertFalse(result.isSuccess());
+        assertEquals(SeatunnelErrorEnum.RESOURCE_NOT_FOUND.getCode(), result.getCode());
+
+        // While doing job update some configuration is wrong.
+        jobUpdateReq.getJobDAG().getEdges().get(0).setInputPluginId("InvalidInputPluginId");
+        jobUpdateReq.getJobDAG().getEdges().get(0).setTargetPluginId("InvalidTargetPluginId");
+        jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
+        assertFalse(jobUpdateResult.isSuccess());
+        assertEquals(SeatunnelErrorEnum.ERROR_CONFIG.getCode(), jobUpdateResult.getCode());
+    }
+
+    private JobCreateReq convertJobResToJobCreateReq(JobRes jobRes) {
+        JobCreateReq jobCreateReq = new JobCreateReq();
+
+        // Assuming JobRes contains JobConfigRes and List<PluginConfig> and JobDAG
+        JobConfigRes jobConfigRes = jobRes.getJobConfig();
+        List<PluginConfig> pluginConfigs = jobRes.getPluginConfigs();
+        JobDAG jobDAG = jobRes.getJobDAG();
+
+        // Populate JobCreateReq with data from JobRes
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setName(jobConfigRes.getName());
+        jobConfig.setDescription(jobConfigRes.getDescription());
+        jobConfig.setEnv(jobConfigRes.getEnv());
+        jobConfig.setEngine(jobConfigRes.getEngine());
+
+        jobCreateReq.setJobConfig(jobConfig);
+        jobCreateReq.setPluginConfigs(pluginConfigs);
+        jobCreateReq.setJobDAG(jobDAG);
+
+        return jobCreateReq;
     }
 
     @AfterAll

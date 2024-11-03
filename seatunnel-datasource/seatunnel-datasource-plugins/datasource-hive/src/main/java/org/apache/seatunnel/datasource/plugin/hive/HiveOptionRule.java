@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
-package com.whaleops.datasource.datasource.plugin.hive;
+package org.apache.seatunnel.datasource.plugin.hive;
 
 import org.apache.seatunnel.api.configuration.Option;
 import org.apache.seatunnel.api.configuration.Options;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
+
+import java.util.Map;
 
 public class HiveOptionRule {
 
@@ -59,6 +61,19 @@ public class HiveOptionRule {
                     .noDefaultValue()
                     .withDescription("jdbc hive_site_path");
 
+    public static final Option<Map<String, String>> HADOOP_CONF =
+            Options.key("hive.hadoop.conf")
+                    .mapType()
+                    .noDefaultValue()
+                    .withDescription("Properties in hadoop conf in the format of key-value pairs");
+
+    public static final Option<String> HADOOP_CONF_PATH =
+            Options.key("hive.hadoop.conf-path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription(
+                            "The specified loading path for the 'core-site.xml', 'hdfs-site.xml' files");
+
     public static OptionRule optionRule() {
         return OptionRule.builder()
                 .required(METASTORE_URI)
@@ -67,6 +82,8 @@ public class HiveOptionRule {
                 .optional(KERBEROS_KEYTAB_PATH)
                 .optional(HDFS_SITE_PATH)
                 .optional(HIVE_SITE_PATH)
+                .optional(HADOOP_CONF)
+                .optional(HADOOP_CONF_PATH)
                 .build();
     }
 
@@ -74,7 +91,4 @@ public class HiveOptionRule {
         // todo
         return OptionRule.builder().build();
     }
-
-    public static final Option<String> TABLE_NAME =
-            Options.key("table").stringType().noDefaultValue().withDescription("hive table");
 }

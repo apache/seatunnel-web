@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.mapper.JobInstanceMapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.common.constants.JobMode;
 
 import org.springframework.stereotype.Repository;
 
@@ -70,11 +71,11 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
             IPage<JobInstance> page,
             Date startTime,
             Date endTime,
-            Long jobDefineId,
-            String jobMode) {
+            String jobDefineName,
+            JobMode jobMode) {
         IPage<SeaTunnelJobInstanceDto> jobInstanceIPage =
                 jobInstanceMapper.queryJobInstanceListPaging(
-                        page, startTime, endTime, jobDefineId, jobMode);
+                        page, startTime, endTime, jobDefineName, jobMode);
         return jobInstanceIPage;
     }
 
@@ -87,5 +88,15 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
         }
 
         return jobInstances;
+    }
+
+    @Override
+    public JobInstance getJobExecutionStatus(@NonNull Long jobInstanceId) {
+        return jobInstanceMapper.getJobExecutionStatus(jobInstanceId);
+    }
+
+    @Override
+    public void deleteById(@NonNull Long jobInstanceId) {
+        jobInstanceMapper.deleteById(jobInstanceId);
     }
 }

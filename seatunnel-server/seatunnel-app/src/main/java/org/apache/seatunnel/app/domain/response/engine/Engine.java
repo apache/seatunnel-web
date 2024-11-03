@@ -16,12 +16,14 @@
  */
 package org.apache.seatunnel.app.domain.response.engine;
 
+import org.apache.seatunnel.app.common.EngineType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class Engine {
-    private String name;
+    private EngineType name;
     private String version;
 }

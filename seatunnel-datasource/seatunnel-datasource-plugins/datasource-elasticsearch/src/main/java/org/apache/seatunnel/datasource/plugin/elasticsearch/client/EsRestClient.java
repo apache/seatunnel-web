@@ -18,7 +18,6 @@
 package org.apache.seatunnel.datasource.plugin.elasticsearch.client;
 
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.JsonNode;
-import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
@@ -62,8 +61,6 @@ public class EsRestClient implements AutoCloseable {
 
     private final RestClient restClient;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private EsRestClient(RestClient restClient) {
         this.restClient = restClient;
     }
@@ -71,9 +68,9 @@ public class EsRestClient implements AutoCloseable {
     public static EsRestClient createInstance(Config pluginConfig) {
         try {
             List<String> hosts =
-                    OBJECT_MAPPER.readValue(
+                    JsonUtils.toList(
                             pluginConfig.getString(ElasticSearchOptionRule.HOSTS.key()),
-                            List.class);
+                            String.class);
             Optional<String> username = Optional.empty();
             Optional<String> password = Optional.empty();
             if (pluginConfig.hasPath(ElasticSearchOptionRule.USERNAME.key())) {
@@ -209,7 +206,7 @@ public class EsRestClient implements AutoCloseable {
                                             keystorePassword,
                                             truststorePath,
                                             truststorePassword);
-                            sslContext.ifPresent(e -> httpClientBuilder.setSSLContext(e));
+                            sslContext.ifPresent(httpClientBuilder::setSSLContext);
                         } else {
                             SSLContext sslContext =
                                     SSLContexts.custom()
@@ -233,15 +230,13 @@ public class EsRestClient implements AutoCloseable {
         try {
             Response response = restClient.performRequest(request);
             String result = EntityUtils.toString(response.getEntity());
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(result);
-            JsonNode versionNode = jsonNode.get("version");
+            String version = JsonUtils.findValue(JsonUtils.stringToJsonNode(result), "version");
+            String number = JsonUtils.findValue(JsonUtils.stringToJsonNode(version), "number");
+            String distribution =
+                    JsonUtils.findValue(JsonUtils.stringToJsonNode(version), "distribution");
             return ElasticsearchClusterInfo.builder()
-                    .clusterVersion(versionNode.get("number").asText())
-                    .distribution(
-                            Optional.ofNullable(versionNode.get("distribution"))
-                                    .map(JsonNode::asText)
-                                    .orElse(null))
+                    .clusterVersion(number)
+                    .distribution(Optional.ofNullable(distribution).orElse(null))
                     .build();
         } catch (IOException e) {
             throw new ResponseException("fail to get elasticsearch version.", e);

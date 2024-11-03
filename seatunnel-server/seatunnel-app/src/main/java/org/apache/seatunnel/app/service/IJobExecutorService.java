@@ -18,10 +18,11 @@
 package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 
 public interface IJobExecutorService {
 
-    Result<Long> jobExecute(Integer userId, Long jobDefineId);
+    Result<Long> jobExecute(Integer userId, Long jobDefineId, JobExecParam executeParam);
 
     Result<Void> jobPause(Integer userId, Long jobInstanceId);
 

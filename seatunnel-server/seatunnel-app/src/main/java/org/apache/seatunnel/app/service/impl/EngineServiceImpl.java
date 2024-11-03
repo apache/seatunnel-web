@@ -17,6 +17,7 @@
 package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.bean.engine.EngineDataType;
+import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.domain.response.engine.Engine;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IEngineService;
@@ -36,7 +37,7 @@ public class EngineServiceImpl extends SeatunnelBaseServiceImpl implements IEngi
                             Lists.newArrayList(
                                     //        new Engine("Spark", "2.4.0"),
                                     //        new Engine("Flink", "1.13.6"),
-                                    new Engine("SeaTunnel", "2.3.6")));
+                                    new Engine(EngineType.SeaTunnel, "2.3.8")));
 
     @Override
     public List<Engine> listSupportEngines() {

@@ -85,7 +85,7 @@ export function hanldleRecoverJob(id: number): any {
 
 export function hanldleDelJob(id: number): any {
   return axios({
-    url: `/job/executor/del?jobInstanceId=${id}`,
-    method: 'get'
+    url: `/job/executor/delete?jobInstanceId=${id}`,
+    method: 'delete'
   })
 }

@@ -15,15 +15,18 @@
  * limitations under the License.
  */
 
-package com.whaleops.datasource.datasource.plugin.hive;
+package org.apache.seatunnel.datasource.plugin.hive;
 
-import com.google.common.collect.Sets;
+import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
+import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
 
-import java.util.Set;
+public class HiveConfig {
 
-public class HiveConstants {
-
-    public static final Set<String> HIVE_SYSTEM_DATABASES =
-            Sets.newHashSet(
-                    "information_schema", "mysql", "performance_schema", "sys", "test", "hivedb");
+    public static final DataSourcePluginInfo HIVE_DATASOURCE_PLUGIN_INFO =
+            DataSourcePluginInfo.builder()
+                    .name(HiveConstants.PLUGIN_NAME)
+                    .icon(HiveConstants.PLUGIN_NAME)
+                    .version("1.0.0")
+                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
+                    .build();
 }

@@ -71,6 +71,24 @@
             </includes>
             <outputDirectory>.</outputDirectory>
         </fileSet>
+        <!-- maven wrapper tools -->
+        <fileSet>
+            <directory>${basedir}/.././</directory>
+            <includes>
+                <include>mvnw</include>
+                <include>mvnw.cmd</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/.././</directory>
+            <includes>
+                <include>.mvn/wrapper/maven-wrapper.properties</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>

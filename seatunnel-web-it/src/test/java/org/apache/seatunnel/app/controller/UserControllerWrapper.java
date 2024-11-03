@@ -22,20 +22,20 @@ import org.apache.seatunnel.app.domain.request.user.AddUserReq;
 import org.apache.seatunnel.app.domain.request.user.UpdateUserReq;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
-import org.apache.seatunnel.app.utils.JSONUtils;
+import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class UserControllerWrapper extends SeatunnelWebTestingBase {
 
     public Result<AddUserRes> addUser(AddUserReq addUserReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(addUserReq);
+        String requestBody = JsonUtils.toJsonString(addUserReq);
         String response = sendRequest(url("user"), requestBody, "POST");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<AddUserRes>>() {});
     }
 
     public Result<Void> updateUser(String userId, UpdateUserReq updateUserReq) {
-        String requestBody = JSONUtils.toPrettyJsonString(updateUserReq);
+        String requestBody = JsonUtils.toJsonString(updateUserReq);
         String response = sendRequest(url("user/" + userId), requestBody, "PUT");
         return JSONTestUtils.parseObject(response, Result.class);
     }
