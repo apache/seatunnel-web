@@ -103,6 +103,10 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     private static final String DAG_PARSING_MODE = "dag-parsing.mode";
 
+    private static final String WHERE_CONDITION = "where_condition";
+
+    private static final String QUERY = "query";
+
     @Resource private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
 
     @Resource private IDatasourceService datasourceService;
@@ -233,6 +237,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                             businessMode,
                                             config,
                                             optionRule);
+                            mergeConfig = appendWhereClauseToQuery(mergeConfig);
                             sourceMap
                                     .get(task.getConnectorType())
                                     .add(filterEmptyValue(mergeConfig));
@@ -328,6 +333,19 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                                         .setOriginComments(false));
         String jobConfig = SeaTunnelConfigUtil.generateConfig(env, sources, transforms, sinks);
         return JobUtils.replaceJobConfigPlaceholders(jobConfig, executeParam);
+    }
+
+    private Config appendWhereClauseToQuery(Config mergeConfig) {
+        String where_condition = mergeConfig.getString(WHERE_CONDITION);
+        if (where_condition != null && !where_condition.isEmpty()) {
+            String query = mergeConfig.getString(QUERY);
+            String queryWithWhereClause = query + " " + where_condition;
+            mergeConfig =
+                    mergeConfig.withValue(
+                            QUERY, ConfigValueFactory.fromAnyRef(queryWithWhereClause));
+            mergeConfig = mergeConfig.withoutPath(WHERE_CONDITION);
+        }
+        return mergeConfig;
     }
 
     @Override
