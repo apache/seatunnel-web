@@ -18,10 +18,10 @@
 package org.apache.seatunnel.datasource.plugin.oracle.jdbc;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
+import org.apache.seatunnel.common.utils.SeaTunnelException;
 import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
-import org.apache.seatunnel.datasource.plugin.api.utils.JdbcUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -170,10 +170,19 @@ public class OracleDataSourceChannel implements DataSourceChannel {
             @NonNull String database,
             @NonNull String table) {
         List<TableField> tableFields = new ArrayList<>();
-        try (Connection connection = getConnection(requestParams, database)) {
+        try (Connection connection = getConnection(requestParams)) {
             DatabaseMetaData metaData = connection.getMetaData();
             String primaryKey = getPrimaryKey(metaData, database, table);
-            try (ResultSet resultSet = metaData.getColumns(database, null, table, null)) {
+            String[] split = table.split("\\.");
+            if (split.length != 2) {
+                throw new SeaTunnelException(
+                        "The tableName for oracle must be schemaName.tableName, but tableName is "
+                                + table);
+            }
+
+            String schemaName = split[0];
+            String tableName = split[1];
+            try (ResultSet resultSet = metaData.getColumns(database, schemaName, tableName, null)) {
                 while (resultSet.next()) {
                     TableField tableField = new TableField();
                     String columnName = resultSet.getString("COLUMN_NAME");
@@ -215,16 +224,9 @@ public class OracleDataSourceChannel implements DataSourceChannel {
 
     private Connection getConnection(Map<String, String> requestParams)
             throws SQLException, ClassNotFoundException {
-        return getConnection(requestParams, null);
-    }
-
-    private Connection getConnection(Map<String, String> requestParams, String databaseName)
-            throws SQLException, ClassNotFoundException {
         checkNotNull(requestParams.get(OracleOptionRule.DRIVER.key()));
         checkNotNull(requestParams.get(OracleOptionRule.URL.key()), "Jdbc url cannot be null");
-        String url =
-                JdbcUtils.replaceDatabase(
-                        requestParams.get(OracleOptionRule.URL.key()), databaseName);
+        String url = requestParams.get(OracleOptionRule.URL.key());
         if (requestParams.containsKey(OracleOptionRule.USER.key())) {
             String username = requestParams.get(OracleOptionRule.USER.key());
             String password = requestParams.get(OracleOptionRule.PASSWORD.key());
