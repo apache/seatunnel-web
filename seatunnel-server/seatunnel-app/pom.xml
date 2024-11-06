@@ -44,6 +44,12 @@
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
             <artifactId>seatunnel-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.seatunnel</groupId>
+                    <artifactId>seatunnel-config-base</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
