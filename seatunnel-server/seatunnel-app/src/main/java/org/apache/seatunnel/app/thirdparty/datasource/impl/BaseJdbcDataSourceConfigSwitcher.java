@@ -139,12 +139,12 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
                 List<String> tableFields = selectTableFields.getTableFields();
 
                 String sql = tableFieldsToSql(tableFields, databaseName, tableName);
-
-                String where_condition = connectorConfig.getString(WHERE_CONDITION);
-
-                if (where_condition != null && !where_condition.isEmpty()) {
-                    sql = sql + " " + where_condition;
-                    connectorConfig = connectorConfig.withoutPath(WHERE_CONDITION);
+                if (connectorConfig.hasPath(WHERE_CONDITION)) {
+                    String where_condition = connectorConfig.getString(WHERE_CONDITION);
+                    if (where_condition != null && !where_condition.isEmpty()) {
+                        sql = sql + " " + where_condition;
+                        connectorConfig = connectorConfig.withoutPath(WHERE_CONDITION);
+                    }
                 }
 
                 connectorConfig =
