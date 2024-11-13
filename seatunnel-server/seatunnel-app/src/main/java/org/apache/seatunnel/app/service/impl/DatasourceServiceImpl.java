@@ -37,6 +37,7 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
+import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
@@ -53,6 +54,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -93,6 +95,9 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     protected static final String DEFAULT_DATASOURCE_PLUGIN_VERSION = "1.0.0";
 
+    @Value("${datasource.encryption.type:default}")
+    private String datasourceEncryptionType;
+
     @Override
     public String createDatasource(
             Integer userId,
@@ -113,6 +118,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(
                     SeatunnelErrorEnum.DATASOURCE_PRAM_NOT_ALLOWED_NULL, "datasourceConfig");
         }
+        ConfigShadeUtil.encryptData(datasourceConfig, datasourceEncryptionType);
         String datasourceConfigStr = JsonUtils.toJsonString(datasourceConfig);
         Datasource datasource =
                 Datasource.builder()
@@ -171,6 +177,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         datasource.setUpdateTime(new Date());
         datasource.setDescription(description);
         if (MapUtils.isNotEmpty(datasourceConfig)) {
+            ConfigShadeUtil.encryptData(datasourceConfig, datasourceEncryptionType);
             String configJson = JsonUtils.toJsonString(datasourceConfig);
             datasource.setDatasourceConfig(configJson);
         }
@@ -208,6 +215,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             String pluginVersion,
             Map<String, String> datasourceConfig) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TEST_CONNECT, userId);
+        ConfigShadeUtil.decryptData(datasourceConfig, datasourceEncryptionType);
         return DataSourceClientFactory.getDataSourceClient()
                 .checkDataSourceConnectivity(pluginName, datasourceConfig);
     }
@@ -227,6 +235,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         String configJson = datasource.getDatasourceConfig();
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(configJson, String.class, String.class);
+        ConfigShadeUtil.decryptData(datasourceConfig, datasourceEncryptionType);
         String pluginName = datasource.getPluginName();
         return DataSourceClientFactory.getDataSourceClient()
                 .checkDataSourceConnectivity(pluginName, datasourceConfig);
@@ -276,6 +285,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             Map<String, String> datasourceConfig =
                     JsonUtils.toMap(config, String.class, String.class);
 
+            ConfigShadeUtil.decryptData(datasourceConfig, datasourceEncryptionType);
             return DataSourceClientFactory.getDataSourceClient()
                     .getDatabases(pluginName, datasourceConfig);
         }
@@ -435,6 +445,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                                                     datasource.getDatasourceConfig(),
                                                     String.class,
                                                     String.class);
+                                    ConfigShadeUtil.decryptData(datasourceConfig, datasourceEncryptionType);
                                     datasourceRes.setDatasourceConfig(datasourceConfig);
                                     datasourceRes.setCreateUserId(datasource.getCreateUserId());
                                     datasourceRes.setUpdateUserId(datasource.getUpdateUserId());
@@ -504,7 +515,10 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId);
         }
         String configJson = datasource.getDatasourceConfig();
-        return JsonUtils.toMap(configJson, String.class, String.class);
+        Map<String, String> datasourceConfig =
+                JsonUtils.toMap(configJson, String.class, String.class);
+        ConfigShadeUtil.decryptData(datasourceConfig, datasourceEncryptionType);
+        return datasourceConfig;
     }
 
     @Override
@@ -604,6 +618,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(datasource.getDatasourceConfig(), String.class, String.class);
+        ConfigShadeUtil.decryptData(datasourceConfig, datasourceEncryptionType);
         // convert option rule
         datasourceDetailRes.setDatasourceConfig(datasourceConfig);
         return datasourceDetailRes;
