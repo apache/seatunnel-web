@@ -50,10 +50,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -63,6 +65,14 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Service
 public class JobExecutorServiceImpl implements IJobExecutorService {
+    public static final String DIR_PROFILE = "profile";
+    public static final String USER_DIR = getUserDir();
+    public static final String DOT_CONF = ".conf";
+
+    private static String getUserDir() {
+        return "user.dir";
+    }
+
     @Resource private IJobInstanceService jobInstanceService;
     @Resource private IJobInstanceDao jobInstanceDao;
 
@@ -90,20 +100,15 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     public String writeJobConfigIntoConfFile(String jobConfig, Long jobDefineId) {
-        String projectRoot = System.getProperty("user.dir");
-        String filePath =
-                projectRoot + File.separator + "profile" + File.separator + jobDefineId + ".conf";
+        String projectRoot = System.getProperty(USER_DIR);
+        String dirPath = projectRoot + File.separator + DIR_PROFILE;
+        String filePath = dirPath + File.separator + jobDefineId + DOT_CONF;
         try {
-            File file = new File(filePath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-            }
 
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            Path path = Paths.get(dirPath);
+            Files.createDirectories(path);
 
-            bufferedWriter.write(jobConfig);
-            bufferedWriter.close();
+            Files.write(Paths.get(filePath), jobConfig.getBytes(), StandardOpenOption.APPEND);
 
             log.info("File created and content written successfully.");
         } catch (IOException e) {
