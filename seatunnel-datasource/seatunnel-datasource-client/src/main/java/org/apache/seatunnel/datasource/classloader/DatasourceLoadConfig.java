@@ -106,6 +106,8 @@ public class DatasourceLoadConfig {
         classLoaderFactoryName.put(
                 "CONSOLE",
                 "org.apache.seatunnel.datasource.plugin.console.ConsoleDataSourceFactory");
+        classLoaderFactoryName.put(
+                "DORIS", "org.apache.seatunnel.datasource.plugin.doris.DorisDataSourceFactory");
 
         classLoaderJarName.put("JDBC-ORACLE", "datasource-jdbc-oracle-");
         classLoaderJarName.put("JDBC-CLICKHOUSE", "datasource-jdbc-clickhouse-");
@@ -130,6 +132,7 @@ public class DatasourceLoadConfig {
         classLoaderJarName.put("JDBC-HIVE", "datasource-jdbc-hive-");
         classLoaderJarName.put("FAKESOURCE", "datasource-fakesource-");
         classLoaderJarName.put("CONSOLE", "datasource-console-");
+        classLoaderJarName.put("DORIS", "datasource-doris-");
     }
 
     public static final Set<String> pluginSet =
@@ -151,7 +154,8 @@ public class DatasourceLoadConfig {
                     "MongoDB",
                     "JDBC-Db2",
                     "FakeSource",
-                    "Console");
+                    "Console",
+                    "DORIS");
 
     public static Map<String, DatasourceClassLoader> datasourceClassLoaders = new HashMap<>();
 

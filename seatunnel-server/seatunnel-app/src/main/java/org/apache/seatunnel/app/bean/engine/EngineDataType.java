@@ -59,6 +59,7 @@ public class EngineDataType {
         T_LOCAL_DATE("date", LocalTimeType.LOCAL_DATE_TYPE),
         T_LOCAL_TIME("time", LocalTimeType.LOCAL_TIME_TYPE),
         T_LOCAL_DATE_TIME("timestamp", LocalTimeType.LOCAL_DATE_TIME_TYPE),
+        T_DATE_TIME("datetime", LocalTimeType.LOCAL_DATE_TIME_TYPE),
 
         T_PRIMITIVE_BYTE_ARRAY("bytes", PrimitiveByteArrayType.INSTANCE),
 
