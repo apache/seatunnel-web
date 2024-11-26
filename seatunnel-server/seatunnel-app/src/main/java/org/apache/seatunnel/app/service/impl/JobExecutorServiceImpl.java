@@ -65,13 +65,9 @@ import java.util.concurrent.Executors;
 @Slf4j
 @Service
 public class JobExecutorServiceImpl implements IJobExecutorService {
-    public static final String DIR_PROFILE = "profile";
-    public static final String USER_DIR = getUserDir();
-    public static final String DOT_CONF = ".conf";
-
-    private static String getUserDir() {
-        return "user.dir";
-    }
+    private static final String DIR_PROFILE = "profile";
+    private static final String USER_DIR = "user.dir";
+    private static final String DOT_CONF = ".conf";
 
     @Resource private IJobInstanceService jobInstanceService;
     @Resource private IJobInstanceDao jobInstanceDao;
@@ -108,7 +104,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
             Path path = Paths.get(dirPath);
             Files.createDirectories(path);
 
-            Files.write(Paths.get(filePath), jobConfig.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(filePath), jobConfig.getBytes(), StandardOpenOption.CREATE);
 
             log.info("File created and content written successfully.");
         } catch (IOException e) {
