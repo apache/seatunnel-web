@@ -39,9 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.Resource;
 
 import java.io.IOException;
 

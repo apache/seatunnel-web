@@ -23,7 +23,7 @@ import org.apache.seatunnel.app.dal.mapper.RoleUserRelationMapper;
 
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 @Repository
 public class RoleUserRelationDaoImpl implements IRoleUserRelationDao {

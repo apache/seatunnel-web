@@ -41,8 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.HashMap;
 import java.util.List;
