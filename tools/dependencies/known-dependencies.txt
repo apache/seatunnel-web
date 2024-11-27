@@ -74,8 +74,11 @@ spring-core-5.3.20.jar
 spring-expression-5.3.20.jar
 spring-jcl-5.3.20.jar
 spring-jdbc-5.3.20.jar
+spring-ldap-core-3.2.3.jar
 spring-plugin-core-1.2.0.RELEASE.jar
 spring-plugin-metadata-1.2.0.RELEASE.jar
+spring-security-core-6.3.0.jar
+spring-security-ldap-6.3.0.jar
 spring-tx-5.3.20.jar
 spring-web-5.3.20.jar
 spring-webmvc-5.3.20.jar

@@ -31,6 +31,13 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  # please add below details when you configure ldap
+  ldap:
+    url:
+    search:
+      base:
+      filter:
+      domain:
 
 jwt:
   expireTime: 86400
