@@ -61,6 +61,8 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
     private static final String BASE_URL = "base-url";
     private static final String CATALOG_SCHEMA = "schema";
 
+    private static final String WHERE_CONDITION = "where_condition";
+
     private static final Option<String> DATABASE_SCHEMA =
             Options.key("database_schema")
                     .stringType()
@@ -137,6 +139,13 @@ public abstract class BaseJdbcDataSourceConfigSwitcher extends AbstractDataSourc
                 List<String> tableFields = selectTableFields.getTableFields();
 
                 String sql = tableFieldsToSql(tableFields, databaseName, tableName);
+                if (connectorConfig.hasPath(WHERE_CONDITION)) {
+                    String where_condition = connectorConfig.getString(WHERE_CONDITION);
+                    if (where_condition != null && !where_condition.isEmpty()) {
+                        sql = sql + " " + where_condition;
+                        connectorConfig = connectorConfig.withoutPath(WHERE_CONDITION);
+                    }
+                }
 
                 connectorConfig =
                         connectorConfig.withValue(QUERY_KEY, ConfigValueFactory.fromAnyRef(sql));
