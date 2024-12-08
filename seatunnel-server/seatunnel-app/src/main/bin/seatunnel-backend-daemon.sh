@@ -74,7 +74,7 @@ stop() {
 
 #status
 status() {
-  pid=$(jcmd | grep -i 'seatunnel-app-.*jar' | grep -v grep | awk '{print $1}')
+  pid=$(jcmd | grep -i 'org.apache.seatunnel.app.SeatunnelApplication' | grep -v grep | awk '{print $1}')
   if [ -n "$pid" ]; then
     echo "seatunnel is running"
   else
