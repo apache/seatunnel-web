@@ -72,7 +72,7 @@ const DagSidebar = defineComponent({
               class="task-item-info ml-auto inline-block"
               title={'Drag Source into Canvas and Double Click to Setup Configurations'}
             >
-             <InfoCircleOutlined width="17px" height="17px" />
+             <InfoCircleOutlined style={{width:'17px', height:'17px'}} />
             </span>
           </div>
           <div
@@ -88,7 +88,7 @@ const DagSidebar = defineComponent({
               class="task-item-info ml-auto inline-block"
               title={'Drag Sink into Canvas and Double Click to Setup Configurations'}
             >
-              <InfoCircleOutlined width="17px" height="17px" />
+              <InfoCircleOutlined style={{width:'17px', height:'17px'}} />
             </span>
           </div>
           {this.transforms.length > 0 && (
@@ -133,7 +133,7 @@ const DagSidebar = defineComponent({
                     class="task-item-info ml-auto inline-block"
                     title={'Drag '+ item.name +' into Canvas and Double Click to Setup Configurations'}
                   >
-                    <InfoCircleOutlined width="17px" height="17px" />
+                    <InfoCircleOutlined style={{width:'17px', height:'17px'}} />
                   </span>
                 </div>
               )
