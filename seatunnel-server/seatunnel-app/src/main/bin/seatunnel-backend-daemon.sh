@@ -35,7 +35,7 @@ check() {
 
 # start
 start() {
-  echo "starting seatunnel..."
+  echo "starting seatunnel-web..."
 
   check
 
@@ -58,27 +58,27 @@ start() {
   -cp "$WORKDIR/../conf":"$WORKDIR/../libs/*":"$WORKDIR/../datasource/*" \
   $SPRING_OPTS \
   org.apache.seatunnel.app.SeatunnelApplication >> "${LOGDIR}/seatunnel.out" 2>&1 &
-  echo "seatunnel started"
+  echo "seatunnel-web started"
 }
 # stop
 stop() {
-  echo "stopping seatunnel..."
+  echo "stopping seatunnel-web..."
   pid=$(jcmd | grep -i 'org.apache.seatunnel.app.SeatunnelApplication' | grep -v grep | awk '{print $1}')
   if [ -n "$pid" ]; then
     kill -15 $pid
-    echo "seatunnel stopped"
+    echo "seatunnel-web stopped"
   else
-    echo "seatunnel is not running"
+    echo "seatunnel-web is not running"
   fi
 }
 
 #status
 status() {
-  pid=$(jcmd | grep -i 'seatunnel-app-.*jar' | grep -v grep | awk '{print $1}')
+  pid=$(jcmd | grep -i 'org.apache.seatunnel.app.SeatunnelApplication' | grep -v grep | awk '{print $1}')
   if [ -n "$pid" ]; then
-    echo "seatunnel is running"
+    echo "seatunnel-web is running"
   else
-    echo "seatunnel is not running"
+    echo "seatunnel-web is not running"
   fi
 }
 
