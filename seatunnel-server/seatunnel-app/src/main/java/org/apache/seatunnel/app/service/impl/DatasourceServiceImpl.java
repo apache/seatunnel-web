@@ -59,8 +59,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
