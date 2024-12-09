@@ -65,13 +65,16 @@
             <artifactId>datasource-jdbc-starrocks</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
             <artifactId>datasource-kafka</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.seatunnel</groupId>
+            <artifactId>datasource-pulsar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.seatunnel</groupId>
             <artifactId>datasource-elasticsearch</artifactId>
