@@ -23,6 +23,7 @@ import SinkImg from '../images/sink.png'
 import FieldMapperImg from '../images/field-mapper.png'
 import FilterEventTypeImg from '../images/filter-event-type.png'
 import ReplaceImg from '../images/replace.png'
+import JsonPathImg from '../images/json-path.png'
 import SplitImg from '../images/spilt.png'
 import CopyImg from '../images/copy.png'
 import SqlImg from '../images/sql.png'
@@ -52,6 +53,8 @@ const Node = defineComponent({
       icon.value = CopyImg
     } else if (type === 'transform' && connectorType === 'Sql') {
       icon.value = SqlImg
+    } else if (type === 'transform' && connectorType === 'JsonPath') {
+      icon.value = JsonPathImg
     }
 
     return () => (
