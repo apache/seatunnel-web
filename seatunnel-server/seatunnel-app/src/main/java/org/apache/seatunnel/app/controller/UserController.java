@@ -40,8 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import jakarta.annotation.Resource;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 @RequestMapping("/seatunnel/api/v1/user")

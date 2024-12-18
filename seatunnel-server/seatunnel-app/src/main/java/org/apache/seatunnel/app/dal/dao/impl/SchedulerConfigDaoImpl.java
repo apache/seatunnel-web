@@ -23,7 +23,7 @@ import org.apache.seatunnel.app.dal.mapper.SchedulerConfigMapper;
 
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.Objects;
 
