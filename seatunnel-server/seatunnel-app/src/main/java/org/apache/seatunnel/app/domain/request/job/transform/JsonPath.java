@@ -17,13 +17,23 @@
 
 package org.apache.seatunnel.app.domain.request.job.transform;
 
-public enum Transform {
-    REPLACE,
-    COPY,
-    MULTIFIELDSPLIT,
-    FIELDMAPPER,
-    FILTERROWKIND,
-    SPLIT,
-    SQL,
-    JSONPATH
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class JsonPath extends TransformOption {
+
+    private List<JsonPathColumn> columns;
+}
+
+@Data
+class JsonPathColumn {
+    private String src_field;
+    private String path;
+    private String destField;
+    private String destType;
+    private String columnErrorHandleWay;
 }

@@ -123,6 +123,7 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                                 .toUpperCase());
 
         if (businessMode.equals(BusinessMode.DATA_INTEGRATION)) {
+
             return connectorCache.getTransform().stream()
                     .filter(
                             connectorInfo -> {
@@ -133,7 +134,8 @@ public class ConnectorServiceImpl extends SeatunnelBaseServiceImpl implements IC
                                         || pluginName.equals("Replace")
                                         || pluginName.equals("Copy")
                                         || pluginName.equals("MultiFieldSplit")
-                                        || pluginName.equals("Sql");
+                                        || pluginName.equals("Sql")
+                                        || pluginName.equals("JsonPath");
                             })
                     .collect(Collectors.toList());
         }
