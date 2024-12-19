@@ -655,4 +655,6 @@ public final class Constants {
     public static final int DEFAULT_ALERT_GROUP_ID = 1;
 
     public static final String TASK_ID = "taskId";
+
+    public static final String LDAP = "ldap";
 }
