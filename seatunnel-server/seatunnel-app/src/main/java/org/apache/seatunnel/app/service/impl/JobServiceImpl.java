@@ -47,6 +47,9 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class JobServiceImpl implements IJobService {
@@ -61,14 +64,31 @@ public class JobServiceImpl implements IJobService {
             throws JsonProcessingException {
         JobReq jobDefinition = getJobDefinition(jobCreateRequest.getJobConfig());
         long jobId = jobService.createJob(userId, jobDefinition);
+        createTasks(userId, jobCreateRequest, jobId);
+        return jobId;
+    }
+
+    private void createTasks(int userId, JobCreateReq jobCreateRequest, long jobId)
+            throws JsonProcessingException {
         List<PluginConfig> pluginConfig = jobCreateRequest.getPluginConfigs();
+        Set<String> edgeIds =
+                jobCreateRequest.getJobDAG().getEdges().stream()
+                        .flatMap(
+                                edge ->
+                                        Stream.of(
+                                                edge.getInputPluginId(), edge.getTargetPluginId()))
+                        .collect(Collectors.toSet());
         Map<String, String> pluginNameVsPluginId = new HashMap<>();
         if (pluginConfig != null) {
             for (PluginConfig config : pluginConfig) {
-                String pluginId = String.valueOf(CodeGenerateUtils.getInstance().genCode());
-                config.setPluginId(pluginId);
+                String pluginIdKey =
+                        edgeIds.contains(config.getName())
+                                ? config.getName()
+                                : config.getPluginId();
+                String newPluginId = String.valueOf(CodeGenerateUtils.getInstance().genCode());
+                config.setPluginId(newPluginId);
                 jobTaskService.saveSingleTask(jobId, config);
-                pluginNameVsPluginId.put(config.getName(), pluginId);
+                pluginNameVsPluginId.put(pluginIdKey, newPluginId);
             }
         }
         jobConfigService.updateJobConfig(userId, jobId, jobCreateRequest.getJobConfig());
@@ -80,7 +100,6 @@ public class JobServiceImpl implements IJobService {
             edge.setTargetPluginId(pluginNameVsPluginId.get(edge.getTargetPluginId()));
         }
         jobTaskService.saveJobDAG(jobId, jobDAG);
-        return jobId;
     }
 
     private JobReq getJobDefinition(JobConfig jobConfig) {
@@ -118,14 +137,8 @@ public class JobServiceImpl implements IJobService {
     @Override
     public void updateJob(Integer userId, long jobVersionId, JobCreateReq jobCreateReq)
             throws JsonProcessingException {
-        jobConfigService.updateJobConfig(userId, jobVersionId, jobCreateReq.getJobConfig());
-        List<PluginConfig> pluginConfigs = jobCreateReq.getPluginConfigs();
-        if (pluginConfigs != null) {
-            for (PluginConfig pluginConfig : pluginConfigs) {
-                jobTaskService.saveSingleTask(jobVersionId, pluginConfig);
-            }
-        }
-        jobTaskService.saveJobDAG(jobVersionId, jobCreateReq.getJobDAG());
+        jobTaskService.deleteTaskByVersionId(jobVersionId);
+        createTasks(userId, jobCreateReq, jobVersionId);
     }
 
     @Override
