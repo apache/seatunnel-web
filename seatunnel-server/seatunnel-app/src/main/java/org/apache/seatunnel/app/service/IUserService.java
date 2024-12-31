@@ -39,5 +39,5 @@ public interface IUserService {
 
     void disable(int id);
 
-    UserSimpleInfoRes login(UserLoginReq req);
+    UserSimpleInfoRes login(UserLoginReq req, String authType);
 }
