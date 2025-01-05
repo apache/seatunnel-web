@@ -40,6 +40,11 @@ import type { NodeType } from './types'
 
 import { debounce } from 'lodash'
 
+interface TableOption {
+  label: string | string
+  value: string | string
+}
+
 const ConfigurationForm = defineComponent({
   name: 'ConfigurationForm',
   props: {
@@ -90,7 +95,7 @@ const ConfigurationForm = defineComponent({
             
             // If there are no results after searching, add user input as a custom value to the options
             if (state.tableOptions.length === 0) {
-              state.tableOptions.push({
+              (state.tableOptions as TableOption[]).push({
                 label: tableName,
                 value: tableName
               })
@@ -100,7 +105,7 @@ const ConfigurationForm = defineComponent({
           }
         } catch (err) {
           // If the interface call fails, also use user input as a custom value
-          state.tableOptions.push({
+          (state.tableOptions as TableOption[]).push({
             label: tableName,
             value: tableName
           })
