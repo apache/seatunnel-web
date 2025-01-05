@@ -1098,7 +1098,7 @@ export default {
     sql_content_label: 'sql',
     sql_content_label_placeholder: 'please input the SQL statement',
     query_validate: 'please input the SQL statement',
-
+    target_name_tips: 'Please enter or select table name',
   },
   synchronization_instance: {
     pipeline_id: 'Pipeline Id',

@@ -78,13 +78,40 @@ const ConfigurationForm = defineComponent({
       emit('tableNameChange', state.model)
     }
 
-    
-    const prevQueryTableName = ref('');
-    const onTableSearch = debounce((tableName: any) => {
-      // rely on database
-      if(state.model.database && prevQueryTableName.value !== tableName) {
-        getTableOptions(state.model.database, tableName)
-        prevQueryTableName.value = tableName
+    const prevQueryTableName = ref('')
+    const onTableSearch = debounce(async (tableName: any) => {
+      // If it is a sink node and there is input content.
+      if (props.nodeType === 'sink' && tableName) {
+        try {
+          // rely on database
+          if (state.model.database && prevQueryTableName.value !== tableName) {
+            await getTableOptions(state.model.database, tableName)
+            prevQueryTableName.value = tableName
+            
+            // If there are no results after searching, add user input as a custom value to the options
+            if (state.tableOptions.length === 0) {
+              state.tableOptions.push({
+                label: tableName,
+                value: tableName
+              })
+              // Update selected values
+              state.model.tableName = tableName
+            }
+          }
+        } catch (err) {
+          // If the interface call fails, also use user input as a custom value
+          state.tableOptions.push({
+            label: tableName,
+            value: tableName
+          })
+          state.model.tableName = tableName
+        }
+      } else {
+        // The source node maintains its original logic
+        if (state.model.database && prevQueryTableName.value !== tableName) {
+          getTableOptions(state.model.database, tableName)
+          prevQueryTableName.value = tableName
+        }
       }
     }, 1000)
 
@@ -214,7 +241,12 @@ const ConfigurationForm = defineComponent({
                   onSearch={onTableSearch}
                   remote
                   virtualScroll
-                  />
+                  clearable
+                  tag={props.nodeType === 'sink'}
+                  showArrow={true}
+                  allowInput={props.nodeType === 'sink'}
+                  placeholder={t('project.synchronization_definition.target_name_tips')}
+                />
               </NFormItem>
             )}
 
