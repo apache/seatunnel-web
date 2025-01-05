@@ -24,6 +24,7 @@ import org.apache.seatunnel.shade.com.typesafe.config.Config;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.elasticsearch.ElasticSearchOptionRule;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -252,27 +253,7 @@ public class EsRestClient implements AutoCloseable {
     }
 
     public List<String> listIndex() {
-        String endpoint = "/_cat/indices?format=json";
-        Request request = new Request("GET", endpoint);
-        try {
-            Response response = restClient.performRequest(request);
-            if (response == null) {
-                throw new ResponseException("GET " + endpoint + " response null");
-            }
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                String entity = EntityUtils.toString(response.getEntity());
-                return JsonUtils.toList(entity, Map.class).stream()
-                        .map(map -> map.get("index").toString())
-                        .collect(Collectors.toList());
-            } else {
-                throw new ResponseException(
-                        String.format(
-                                "GET %s response status code=%d",
-                                endpoint, response.getStatusLine().getStatusCode()));
-            }
-        } catch (IOException ex) {
-            throw new ResponseException(ex);
-        }
+        return this.listIndex(null);
     }
 
     public void dropIndex(String tableName) {
@@ -364,5 +345,42 @@ public class EsRestClient implements AutoCloseable {
             }
         }
         return mapping;
+    }
+
+    public List<String> listIndex(String filterName) {
+        String endpoint = "/_cat/indices?format=json";
+        Request request = new Request("GET", endpoint);
+        try {
+            Response response = restClient.performRequest(request);
+            if (response == null) {
+                throw new ResponseException("GET " + endpoint + " response null");
+            }
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                String entity = EntityUtils.toString(response.getEntity());
+                List<String> indices =
+                        JsonUtils.toList(entity, Map.class).stream()
+                                .map(map -> map.get("index").toString())
+                                .collect(Collectors.toList());
+
+                if (StringUtils.isNotEmpty(filterName)) {
+                    indices =
+                            indices.stream()
+                                    .filter(
+                                            index ->
+                                                    index.toLowerCase()
+                                                            .contains(filterName.toLowerCase()))
+                                    .collect(Collectors.toList());
+                }
+
+                return indices;
+            } else {
+                throw new ResponseException(
+                        String.format(
+                                "GET %s response status code=%d",
+                                endpoint, response.getStatusLine().getStatusCode()));
+            }
+        } catch (IOException ex) {
+            throw new ResponseException(ex);
+        }
     }
 }
