@@ -80,6 +80,9 @@ const ConfigurationForm = defineComponent({
 
     const onTableChange = (tableName: any) => {
       state.model.tableName = tableName
+      if (props.nodeType === 'sink' && state.model.database) {
+        getTableOptions(state.model.database, '')
+      }
       emit('tableNameChange', state.model)
     }
 
@@ -94,22 +97,35 @@ const ConfigurationForm = defineComponent({
             prevQueryTableName.value = tableName
             
             // If there are no results after searching, add user input as a custom value to the options
-            if (state.tableOptions.length === 0) {
-              (state.tableOptions as TableOption[]).push({
-                label: tableName,
-                value: tableName
-              })
-              // Update selected values
-              state.model.tableName = tableName
+            const existingOption = state.tableOptions.find(
+              (option: TableOption) => option.value === tableName
+            )
+            
+            if (!existingOption) {
+              state.tableOptions = [
+                ...state.tableOptions,
+                {
+                  label: tableName,
+                  value: tableName
+                }
+              ]
             }
           }
         } catch (err) {
           // If the interface call fails, also use user input as a custom value
-          (state.tableOptions as TableOption[]).push({
-            label: tableName,
-            value: tableName
-          })
-          state.model.tableName = tableName
+          const existingOption = state.tableOptions.find(
+            (option: TableOption) => option.value === tableName
+          )
+          
+          if (!existingOption) {
+            state.tableOptions = [
+              ...state.tableOptions,
+              {
+                label: tableName,
+                value: tableName
+              }
+            ]
+          }
         }
       } else {
         // The source node maintains its original logic
