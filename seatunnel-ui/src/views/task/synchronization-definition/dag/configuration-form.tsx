@@ -36,14 +36,8 @@ import {
   getSceneModeOptions
 } from './use-configuration-form'
 import { useI18n } from 'vue-i18n'
-import type { NodeType } from './types'
-
+import type { NodeType, TableOption, State } from './types'
 import { debounce } from 'lodash'
-
-interface TableOption {
-  label: string | string
-  value: string | string
-}
 
 const ConfigurationForm = defineComponent({
   name: 'ConfigurationForm',
@@ -102,13 +96,11 @@ const ConfigurationForm = defineComponent({
             )
             
             if (!existingOption) {
-              state.tableOptions = [
-                ...state.tableOptions,
-                {
-                  label: tableName,
-                  value: tableName
-                }
-              ]
+              const newOption: TableOption = {
+                label: tableName,
+                value: tableName
+              }
+              state.tableOptions = [...state.tableOptions, newOption]
             }
           }
         } catch (err) {
@@ -118,13 +110,11 @@ const ConfigurationForm = defineComponent({
           )
           
           if (!existingOption) {
-            state.tableOptions = [
-              ...state.tableOptions,
-              {
-                label: tableName,
-                value: tableName
-              }
-            ]
+            const newOption: TableOption = {
+              label: tableName,
+              value: tableName
+            }
+            state.tableOptions = [...state.tableOptions, newOption]
           }
         }
       } else {
