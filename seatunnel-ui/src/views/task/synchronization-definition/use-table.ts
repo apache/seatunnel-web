@@ -55,6 +55,8 @@ export function useTable() {
 
   const message = useMessage()
 
+  const loadingStates = ref(new Map())
+
   const createColumns = (variables: any) => {
     variables.columns = [
       {
@@ -103,10 +105,12 @@ export function useTable() {
               },
               icon: h(EditOutlined)
             },
-            
             {
               text: t('project.synchronization_definition.start'),
-              onClick: (row: any) => void handleRun(row),
+              onClick: (row: any) => {
+                if (loadingStates.value.get(row.id)) return
+                handleRun(row)
+              },
               icon: h(PlayCircleOutlined)
             },
             {
@@ -116,8 +120,7 @@ export function useTable() {
               popTips: t('security.token.delete_confirm')
             }
           ]
-        },
-        
+        }
       )
     ]
   }
@@ -138,6 +141,9 @@ export function useTable() {
   }
 
   const handleRun = (row: any) => {
+    // Prevent duplicate task submissions
+    loadingStates.value.set(row.id, true)
+   
     executeJob(row.id).then((res: any) => {
       message.success(t('project.synchronization_definition.start_success'))
       router.push({
@@ -149,6 +155,7 @@ export function useTable() {
       })
     }).catch((error) => {
       message.error(t('project.synchronization_definition.start_failed'))
+      loadingStates.value.set(row.id, false)
     })
   }
 
