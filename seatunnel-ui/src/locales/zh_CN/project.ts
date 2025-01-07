@@ -1063,9 +1063,9 @@ export default {
     segmented_fields_placeholder: '如分割出来两个字段，可以填写 field1, field2',
     copy_field: '复制字段',
     check_model: '请检查模型信息',
-    sql_content_label: 'sql',
-    sql_content_label_placeholder: '请输入sql语句',
-    query_validate: '请输入sql语句',
+    sql_content_label: 'SQL',
+    sql_content_label_placeholder: '请输入SQL语句',
+    query_validate: '请输入SQL语句',
     target_name_tips: '请输入或选择表名(必填)'
   },
   synchronization_instance: {

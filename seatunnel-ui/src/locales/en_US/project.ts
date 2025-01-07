@@ -1095,7 +1095,7 @@ export default {
     segmented_fields_placeholder: 'If two fields are separated, you can fill in field1, field2',
     copy_field: 'Copy Field',
     check_model: 'Please check the model information',
-    sql_content_label: 'sql',
+    sql_content_label: 'SQL',
     sql_content_label_placeholder: 'please input the SQL statement',
     query_validate: 'please input the SQL statement',
     target_name_tips: 'Please enter or select table name',

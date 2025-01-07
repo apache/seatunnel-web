@@ -15,30 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
-
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
-
-import lombok.NonNull;
-
-import java.util.List;
-
-public interface IJobDefinitionDao {
-
-    void add(JobDefinition job);
-
-    JobDefinition getJob(long id);
-
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJobList(@NonNull String name);
-
-    JobDefinition getJobByName(@NonNull String name);
-
-    void delete(long id);
+export default {
+  replace: {
+    replace_field_value: '需要替换的字段',
+    replace_field_placeholder: '请输入要替换的字段',
+    pattern_value: '将被替换的旧字符串',
+    pattern_placeholder: '请输入要被替换的旧字符串',
+    replacement_value: '用于替换的新字符串',
+    replacement_placeholder: '请输入用于替换的新字符串',
+    is_regex_value: '是否使用正则匹配'
+  },
+  jsonpath: {
+    columns_value: '解析字段',
+    columns_placeholder: '需要解析的字段数组',
+    row_error_handle_way_value: '列发生错误时的处理方式'
+  }
 }

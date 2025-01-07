@@ -29,6 +29,7 @@ import project from '@/locales/zh_CN/project'
 import hook from '@/locales/zh_CN/hook'
 import common from '@/locales/zh_CN/common'
 import security from '@/locales/zh_CN/security'
+import transforms from '@/locales/zh_CN/transforms'
 
 export default {
   security,
@@ -44,5 +45,6 @@ export default {
   virtual_tables,
   theme,
   project,
-  hook
+  hook,
+  transforms
 }

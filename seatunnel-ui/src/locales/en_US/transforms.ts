@@ -15,30 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
-
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
-
-import lombok.NonNull;
-
-import java.util.List;
-
-public interface IJobDefinitionDao {
-
-    void add(JobDefinition job);
-
-    JobDefinition getJob(long id);
-
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJobList(@NonNull String name);
-
-    JobDefinition getJobByName(@NonNull String name);
-
-    void delete(long id);
+export default {
+  replace: {
+    replace_field_value: 'Replace Field',
+    replace_field_placeholder: 'Please enter the field to be replaced',
+    pattern_value: 'Pattern',
+    pattern_placeholder: 'Please enter the old string to be replaced',
+    replacement_value: 'Replacement',
+    replacement_placeholder: 'Please enter a new string for replacement',
+    is_regex_value: 'Is Regex'
+  },
+  jsonpath: {
+    columns_value: 'Columns',
+    columns_placeholder: 'Field array that needs to be parsed',
+    row_error_handle_way_value: 'Row Error Handle Way'
+  }
 }
