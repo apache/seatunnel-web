@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import type { SelectOption } from 'naive-ui'
+
 export type NodeType = 'source' | 'sink' | 'transform'
 export type OptionType = 'datasource' | 'database' | 'table'
 export type { TableColumns } from 'naive-ui/es/data-table/src/interface'
@@ -59,3 +61,23 @@ export type InputPlugin = {
   type: NodeType
 }
 export type NodeInfo = { [key: string]: any }
+
+export interface TableOption {
+  label: string;
+  value: string;
+}
+
+export interface State {
+  model: any;
+  rules: any;
+  loading: boolean;
+  tableLoading: boolean;
+  databaseLoading: boolean;
+  datasourceLoading: boolean;
+  formStructure: any[];
+  formName: string;
+  formLocales: any;
+  datasourceOptions: SelectOption[];
+  databaseOptions: SelectOption[];
+  tableOptions: TableOption[];
+}
