@@ -46,5 +46,8 @@ export default {
   theme,
   project,
   hook,
-  transforms
+  transforms,
+  dag: {
+    nodeConfigHint: '双击节点进行配置。配置完成后，连接每个节点的端点到其他节点。'
+  }
 }
