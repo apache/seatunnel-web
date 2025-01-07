@@ -29,6 +29,7 @@ import project from '@/locales/en_US/project'
 import hook from '@/locales/en_US/hook'
 import common from '@/locales/en_US/common'
 import security from '@/locales/en_US/security'
+import transforms from '@/locales/en_US/transforms'
 
 export default {
   security,
@@ -44,5 +45,6 @@ export default {
   virtual_tables,
   theme,
   project,
-  hook
+  hook,
+  transforms
 }
