@@ -29,6 +29,7 @@ import type { Router } from 'vue-router'
 import type { JobType } from './dag/types'
 import { COLUMN_WIDTH_CONFIG } from '@/common/column-width-config'
 import { useTableLink } from '@/hooks'
+import { useMessage } from 'naive-ui'
 
 export function useTable() {
   const { t } = useI18n()
@@ -51,6 +52,8 @@ export function useTable() {
     DATA_REPLICA: 'whole_library_sync',
     DATA_INTEGRATION: 'data_integration'
   } as { [key in JobType]: string }
+
+  const message = useMessage()
 
   const createColumns = (variables: any) => {
     variables.columns = [
@@ -135,12 +138,17 @@ export function useTable() {
   }
 
   const handleRun = (row: any) => {
-    executeJob(row.id).then(() => {
-      getTableData({
-        pageSize: variables.pageSize,
-        pageNo: variables.page,
-        searchName: variables.searchName
+    executeJob(row.id).then((res: any) => {
+      message.success(t('project.synchronization_definition.start_success'))
+      router.push({
+        path: `/task/synchronization-instance/${row.id}`,
+        query: {
+          jobInstanceId: res,
+          taskName: row.name
+        }
       })
+    }).catch((error) => {
+      message.error(t('project.synchronization_definition.start_failed'))
     })
   }
 
