@@ -49,7 +49,7 @@ const DynamicFormItem = defineComponent({
   name: 'DynamicFormItem',
   props,
   setup(props) {
-    const { t } = useI18n()
+    const { t, te } = useI18n()
 
     if (props.locales) {
       useI18n().mergeLocaleMessage('zh_CN', {
@@ -70,8 +70,15 @@ const DynamicFormItem = defineComponent({
       return value.map((v) => field === v).indexOf(false) < 0
     }
 
+    const getTranslation = (name: string, label: string, suffix: string) => {
+      const key = `transforms.${name.toLowerCase()}.${label}_${suffix}`
+      return te(key) ? t(key) : ''
+    }
+
     return {
       t,
+      te,
+      getTranslation,
       formatClass,
       formItemDisabled
     }
@@ -88,7 +95,7 @@ const DynamicFormItem = defineComponent({
                 )
               : true) && (
               <NFormItemGi
-                label={this.t(f.label)}
+                label={this.t(this.getTranslation(this.name, f.label, 'value') || this.t(f.label))}
                 path={f.field}
                 span={f.span || 24}
               >
@@ -98,7 +105,11 @@ const DynamicFormItem = defineComponent({
                       this.name,
                       f.field
                     )}`}
-                    placeholder={f.placeholder ? this.t(f.placeholder) : ''}
+                    placeholder={
+                      f.placeholder 
+                        ? (this.getTranslation(this.name, f.label, 'placeholder') || this.t(f.placeholder))
+                        : ''
+                    }
                     v-model={[(this.model as any)[f.field], 'value']}
                     clearable={f.clearable}
                     type={f.inputType}
