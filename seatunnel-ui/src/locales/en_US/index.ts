@@ -46,5 +46,8 @@ export default {
   theme,
   project,
   hook,
-  transforms
+  transforms,
+  dag: {
+    nodeConfigHint: 'Double click to configure. After configure, Connect each node ends to another.'
+  }
 }
