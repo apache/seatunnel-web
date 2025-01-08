@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.dal.dao;
 
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.domain.response.PageInfo;
+import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 
 import lombok.NonNull;
 
@@ -32,7 +33,8 @@ public interface IJobDefinitionDao {
 
     void updateJob(JobDefinition jobDefinition);
 
-    PageInfo<JobDefinition> getJob(String name, Integer pageNo, Integer pageSize, String jobMode);
+    PageInfo<JobDefinitionRes> getJob(
+            String name, Integer pageNo, Integer pageSize, String jobMode);
 
     List<JobDefinition> getJobList(@NonNull String name);
 
