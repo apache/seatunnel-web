@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
 import { DagSidebar } from './sidebar'
 import { DagCanvas } from './canvas'
 import { DagToolbar } from './toolbar'
@@ -32,7 +32,7 @@ const SynchronizationDefinitionDag = defineComponent({
       type: '',
       name: ''
     }
-    const { t } = useI18n()
+    const { t, locale } = useI18n()
     const { state, detailInit, onDelete, onSave } = useDagDetail()
     const handelDragstart = (type: any, name: any) => {
       tempNode.type = type
@@ -85,7 +85,21 @@ const SynchronizationDefinitionDag = defineComponent({
           result.nodesAndEdges.edges
         )
       }
+      document.documentElement.style.setProperty(
+        '--node-config-hint',
+        `"${t('dag.nodeConfigHint')}"`
+      )
     })
+
+    watch(
+      () => locale.value,
+      () => {
+        document.documentElement.style.setProperty(
+          '--node-config-hint',
+          `"${t('dag.nodeConfigHint')}"`
+        )
+      }
+    )
 
     return () => (
       <NSpin show={state.loading}>
