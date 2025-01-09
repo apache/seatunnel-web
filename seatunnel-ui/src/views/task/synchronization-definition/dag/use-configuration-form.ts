@@ -32,7 +32,8 @@ import {
   findSink
 } from '@/service/sync-task-definition'
 import { useSynchronizationDefinitionStore } from '@/store/synchronization-definition'
-import type { NodeType } from './types'
+import type { NodeType, TableOption, State } from './types'
+import type { SelectOption } from 'naive-ui'
 
 export const useConfigurationForm = (
   nodeType: NodeType,
@@ -56,7 +57,24 @@ export const useConfigurationForm = (
     query: ''
   }
 
-  const state = reactive({
+  const state = reactive<{
+    model: typeof initialModel;
+    loading: boolean;
+    datasourceOptions: any[];
+    datasourceLoading: boolean;
+    databaseOptions: any[];
+    databaseLoading: boolean;
+    tableOptions: TableOption[];
+    tableLoading: boolean;
+    formStructure: any[];
+    formLocales: any;
+    formName: string;
+    formLoading: boolean;
+    inputTableData: any[];
+    outputTableData: any[];
+    tableColumnsLoading: boolean;
+    rules: any;
+  }>({
     model: cloneDeep(initialModel),
     loading: false,
     datasourceOptions: [],
