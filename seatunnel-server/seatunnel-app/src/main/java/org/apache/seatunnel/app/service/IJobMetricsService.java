@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.service;
 
 import org.apache.seatunnel.app.dal.entity.JobInstance;
+import org.apache.seatunnel.app.dal.entity.JobMetricsHistory;
 import org.apache.seatunnel.app.domain.response.metrics.JobDAG;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineSummaryMetricsRes;
@@ -40,6 +41,9 @@ public interface IJobMetricsService {
     List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
             @NonNull Integer userId, @NonNull Long jobInstanceId);
 
+    public List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
+            @NonNull JobInstance jobInstance);
+
     JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId)
             throws JsonProcessingException;
 
@@ -56,4 +60,12 @@ public interface IJobMetricsService {
             @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
             @NonNull List<Long> jobInstanceIdList,
             @NonNull JobMode jobMode);
+
+    /**
+     * Get job metrics history data
+     *
+     * @param jobInstanceId job instance id
+     * @return List of metrics data points
+     */
+    List<JobMetricsHistory> getJobMetricsHistory(@NonNull Long jobInstanceId);
 }

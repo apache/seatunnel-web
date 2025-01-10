@@ -23,6 +23,8 @@ import org.apache.seatunnel.app.dal.dao.IJobMetricsDao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.entity.JobInstanceHistory;
 import org.apache.seatunnel.app.dal.entity.JobMetrics;
+import org.apache.seatunnel.app.dal.entity.JobMetricsHistory;
+import org.apache.seatunnel.app.dal.mapper.JobMetricsHistoryMapper;
 import org.apache.seatunnel.app.domain.response.engine.Engine;
 import org.apache.seatunnel.app.domain.response.metrics.JobDAG;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
@@ -46,6 +48,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
@@ -69,6 +72,8 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     @Resource private IJobInstanceHistoryDao jobInstanceHistoryDao;
 
     @Resource private IJobInstanceDao jobInstanceDao;
+
+    @Autowired private JobMetricsHistoryMapper jobMetricsHistoryMapper;
 
     @Override
     public List<JobPipelineSummaryMetricsRes> getJobPipelineSummaryMetrics(
@@ -489,6 +494,19 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     @Override
+    public List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
+            @NonNull JobInstance jobInstance) {
+        if (JobUtils.isJobEndStatus(jobInstance.getJobStatus())) {
+            return new ArrayList<>();
+        }
+        List<JobMetrics> jobPipelineDetailMetrics =
+                getJobMetricsFromEngine(jobInstance, jobInstance.getJobEngineId());
+        return jobPipelineDetailMetrics.stream()
+                .map(this::wrapperJobMetrics)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId) {
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DAG, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
@@ -699,5 +717,10 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             log.info("003list={}", list);
             jobMetricsDao.getJobMetricsMapper().insertBatchMetrics(list);
         }
+    }
+
+    @Override
+    public List<JobMetricsHistory> getJobMetricsHistory(@NonNull Long jobInstanceId) {
+        return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceId(jobInstanceId);
     }
 }
