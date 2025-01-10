@@ -15,64 +15,25 @@
  * limitations under the License.
  */
 
-.right-panel {
-  max-height: calc(100vh - 235px);
-  overflow: auto;
+package org.apache.seatunnel.app.domain.request.job.transform;
 
-  h4 {
-    margin: 0;
-  }
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-  .n-space {
-    padding: 14px 16px;
-  }
+import java.util.List;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class JsonPath extends TransformOption {
+
+    private List<JsonPathColumn> columns;
 }
 
-.left-panel {
-  min-height: calc(100vh - 235px);
-
-  .workflow-dag {
-    display: flex;
-    height: calc(100vh - 275px);
-
-    .container {
-      height: 100%;
-      width: 100%;
-    }
-
-    .dag-container {
-      height: 100%;
-      width: 100%;
-    }
-
-    .minimap {
-      position: absolute;
-      right: 50px;
-      bottom: 45px;
-      border: dashed 1px #e4e4e4;
-      z-index: 9000;
-    }
-  }
-}
-
-.info-item {
-  margin-bottom: 16px;
-  
-  h4 {
-    font-size: 13px;
-    color: #8c8c8c;
-    margin: 0 0 6px 0;
-    font-weight: 500;
-    
-    strong {
-      color: #262626;
-    }
-  }
-  
-  p {
-    font-size: 14px;
-    color: #595959;
-    margin: 0;
-    line-height: 1.2;
-  }
+@Data
+class JsonPathColumn {
+    private String src_field;
+    private String path;
+    private String destField;
+    private String destType;
+    private String columnErrorHandleWay;
 }

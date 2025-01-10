@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.mapper.JobMapper;
 import org.apache.seatunnel.app.domain.response.PageInfo;
+import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,9 +57,9 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
     }
 
     @Override
-    public PageInfo<JobDefinition> getJob(
+    public PageInfo<JobDefinitionRes> getJob(
             String searchName, Integer pageNo, Integer pageSize, String jobMode) {
-        IPage<JobDefinition> jobDefinitionIPage;
+        IPage<JobDefinitionRes> jobDefinitionIPage;
         if (StringUtils.isEmpty(jobMode)) {
             jobDefinitionIPage =
                     jobMapper.queryJobListPaging(new Page<>(pageNo, pageSize), searchName);
@@ -67,7 +68,7 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
                     jobMapper.queryJobListPagingWithJobMode(
                             new Page<>(pageNo, pageSize), searchName, jobMode);
         }
-        PageInfo<JobDefinition> jobs = new PageInfo<>();
+        PageInfo<JobDefinitionRes> jobs = new PageInfo<>();
         jobs.setData(jobDefinitionIPage.getRecords());
         jobs.setPageSize(pageSize);
         jobs.setPageNo(pageNo);

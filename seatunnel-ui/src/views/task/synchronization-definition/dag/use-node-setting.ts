@@ -241,6 +241,18 @@ export function useNodeSettingModal(
           tableName: tableInfo[0].tableName,
           fields: resultSchema.outputTableData
         }]
+      }else if(props.nodeInfo.connectorType === 'JsonPath') {
+        const resultSchema = modelRef.value.getOutputSchema()
+        const tableInfo = resultSchema.allTableData[0].tableInfos
+        transformOptions.columns = {
+          "sourceFieldName": resultSchema.outputTableData[0]?.name || null,
+          "columns": values.columns
+        }
+        modelOutputTableData = [{
+          database: tableInfo[0].database,
+          tableName: tableInfo[0].tableName,
+          fields: resultSchema.outputTableData
+        }]
       }
 
       await saveTaskDefinitionItem(

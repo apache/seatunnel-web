@@ -15,64 +15,19 @@
  * limitations under the License.
  */
 
-.right-panel {
-  max-height: calc(100vh - 235px);
-  overflow: auto;
-
-  h4 {
-    margin: 0;
-  }
-
-  .n-space {
-    padding: 14px 16px;
-  }
-}
-
-.left-panel {
-  min-height: calc(100vh - 235px);
-
-  .workflow-dag {
-    display: flex;
-    height: calc(100vh - 275px);
-
-    .container {
-      height: 100%;
-      width: 100%;
-    }
-
-    .dag-container {
-      height: 100%;
-      width: 100%;
-    }
-
-    .minimap {
-      position: absolute;
-      right: 50px;
-      bottom: 45px;
-      border: dashed 1px #e4e4e4;
-      z-index: 9000;
-    }
-  }
-}
-
-.info-item {
-  margin-bottom: 16px;
-  
-  h4 {
-    font-size: 13px;
-    color: #8c8c8c;
-    margin: 0 0 6px 0;
-    font-weight: 500;
-    
-    strong {
-      color: #262626;
-    }
-  }
-  
-  p {
-    font-size: 14px;
-    color: #595959;
-    margin: 0;
-    line-height: 1.2;
+export default {
+  replace: {
+    replace_field_value: 'Replace Field',
+    replace_field_placeholder: 'Please enter the field to be replaced',
+    pattern_value: 'Pattern',
+    pattern_placeholder: 'Please enter the old string to be replaced',
+    replacement_value: 'Replacement',
+    replacement_placeholder: 'Please enter a new string for replacement',
+    is_regex_value: 'Is Regex'
+  },
+  jsonpath: {
+    columns_value: 'Columns',
+    columns_placeholder: 'Field array that needs to be parsed',
+    row_error_handle_way_value: 'Row Error Handle Way'
   }
 }

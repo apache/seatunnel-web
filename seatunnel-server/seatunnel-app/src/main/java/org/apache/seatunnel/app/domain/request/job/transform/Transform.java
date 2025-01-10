@@ -24,5 +24,6 @@ public enum Transform {
     FIELDMAPPER,
     FILTERROWKIND,
     SPLIT,
-    SQL
+    SQL,
+    JSONPATH
 }

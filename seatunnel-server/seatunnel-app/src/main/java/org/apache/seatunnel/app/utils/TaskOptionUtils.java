@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.utils;
 
 import org.apache.seatunnel.app.domain.request.job.transform.CopyTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.FieldMapperTransformOptions;
+import org.apache.seatunnel.app.domain.request.job.transform.JsonPathTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.SQLTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.SplitTransformOptions;
 import org.apache.seatunnel.app.domain.request.job.transform.Transform;
@@ -47,6 +48,9 @@ public class TaskOptionUtils {
                         transformOptionsStr, CopyTransformOptions.class);
             case SQL:
                 return convertTransformStrToOptions(transformOptionsStr, SQLTransformOptions.class);
+            case JSONPATH:
+                return convertTransformStrToOptions(
+                        transformOptionsStr, JsonPathTransformOptions.class);
             case FILTERROWKIND:
             case REPLACE:
             default:

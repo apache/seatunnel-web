@@ -25,6 +25,7 @@ import SinkImg from '../images/sink.png'
 import FieldMapperImg from '../images/field-mapper.png'
 import FilterEventTypeImg from '../images/filter-event-type.png'
 import ReplaceImg from '../images/replace.png'
+import JsonPathImg from '../images/json-path.png'
 import SplitImg from '../images/spilt.png'
 import CopyImg from '../images/copy.png'
 import SqlImg from '../images/sql.png'
@@ -112,6 +113,8 @@ const DagSidebar = defineComponent({
                 item.icon = CopyImg
               } else if (item.name === 'Sql') {
                 item.icon = SqlImg
+              } else if (item.name === 'JsonPath') {
+                item.icon = JsonPathImg
               }
 
               return (

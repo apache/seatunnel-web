@@ -15,64 +15,19 @@
  * limitations under the License.
  */
 
-.right-panel {
-  max-height: calc(100vh - 235px);
-  overflow: auto;
-
-  h4 {
-    margin: 0;
-  }
-
-  .n-space {
-    padding: 14px 16px;
-  }
-}
-
-.left-panel {
-  min-height: calc(100vh - 235px);
-
-  .workflow-dag {
-    display: flex;
-    height: calc(100vh - 275px);
-
-    .container {
-      height: 100%;
-      width: 100%;
-    }
-
-    .dag-container {
-      height: 100%;
-      width: 100%;
-    }
-
-    .minimap {
-      position: absolute;
-      right: 50px;
-      bottom: 45px;
-      border: dashed 1px #e4e4e4;
-      z-index: 9000;
-    }
-  }
-}
-
-.info-item {
-  margin-bottom: 16px;
-  
-  h4 {
-    font-size: 13px;
-    color: #8c8c8c;
-    margin: 0 0 6px 0;
-    font-weight: 500;
-    
-    strong {
-      color: #262626;
-    }
-  }
-  
-  p {
-    font-size: 14px;
-    color: #595959;
-    margin: 0;
-    line-height: 1.2;
+export default {
+  replace: {
+    replace_field_value: '需要替换的字段',
+    replace_field_placeholder: '请输入要替换的字段',
+    pattern_value: '将被替换的旧字符串',
+    pattern_placeholder: '请输入要被替换的旧字符串',
+    replacement_value: '用于替换的新字符串',
+    replacement_placeholder: '请输入用于替换的新字符串',
+    is_regex_value: '是否使用正则匹配'
+  },
+  jsonpath: {
+    columns_value: '解析字段',
+    columns_placeholder: '需要解析的字段数组',
+    row_error_handle_way_value: '列发生错误时的处理方式'
   }
 }
