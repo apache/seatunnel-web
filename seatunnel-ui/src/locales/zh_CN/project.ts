@@ -290,6 +290,13 @@ export default {
     dependent_chain_condition_title: '以下工作流不满足执行条件'
   },
   task: {
+    metrics: {
+      read_row_count: '读取数据量趋势',
+      write_row_count: '写入数据量趋势',
+      read_qps: '读取QPS趋势',
+      write_qps: '写入QPS趋势',
+      record_delay: '数据延迟趋势(秒)'
+    },
     cancel_full_screen: '取消全屏',
     enter_full_screen: '全屏',
     current_task_settings: '当前任务设置',
@@ -1113,7 +1120,8 @@ export default {
     confirm: '确定',
     cancel: '取消',
     delete: '删除',
-    delete_confirm: '确定删除吗?'
+    delete_confirm: '确定删除吗?',
+    task_metrics: '任务监控'
   },
   menu: {
     fav: '收藏组件',

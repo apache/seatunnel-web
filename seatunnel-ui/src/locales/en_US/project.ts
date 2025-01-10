@@ -293,6 +293,13 @@ export default {
       'The following workflow do not meet the execution conditions'
   },
   task: {
+    metrics: {
+      read_row_count: 'Read Data Trend',
+      write_row_count: 'Write Data Trend',
+      read_qps: 'Read QPS Trend',
+      write_qps: 'Write QPS Trend',
+      record_delay: 'Data Delay Trend(s)'
+    },
     cancel_full_screen: 'Cancel full screen',
     enter_full_screen: 'Enter full screen',
     current_task_settings: 'Current task settings',
@@ -1146,7 +1153,8 @@ export default {
     cancel: 'Cancel',
     delete: 'Delete',
     delete_confirm: 'Delete?',
-    error_message: 'Error'
+    error_message: 'Error',
+    task_metrics: 'Task Monitor'
   },
   menu: {
     fav: 'Favorites',

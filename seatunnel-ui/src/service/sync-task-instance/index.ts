@@ -89,3 +89,12 @@ export function hanldleDelJob(id: number): any {
     method: 'delete'
   })
 }
+
+export function queryJobMetricsHistory(params: { jobInstanceId: string | number }): any {
+  return axios({
+    url: '/job/metrics/history',
+    method: 'get',
+    timeout: 60000,
+    params
+  })
+}

@@ -18,10 +18,13 @@
 package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.app.dal.entity.JobMetricsHistory;
 import org.apache.seatunnel.app.domain.response.metrics.JobDAG;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineSummaryMetricsRes;
 import org.apache.seatunnel.app.service.IJobMetricsService;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
+import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,5 +70,15 @@ public class JobMetricsController {
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId)
             throws IOException {
         return Result.success(jobMetricsService.getJobPipelineSummaryMetrics(jobInstanceId));
+    }
+
+    @GetMapping("/history")
+    public Result<List<JobMetricsHistory>> getJobMetricsHistory(
+            @RequestParam("jobInstanceId") Long jobInstanceId) {
+        if (jobInstanceId == null) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.UNKNOWN, "jobInstanceId cannot be null");
+        }
+        return Result.success(jobMetricsService.getJobMetricsHistory(jobInstanceId));
     }
 }

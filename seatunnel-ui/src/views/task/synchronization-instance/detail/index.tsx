@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue'
 import { RunningInstance } from './running-instance'
 import { TaskDefinition } from './task-definition'
+import { TaskMetrics } from './task-metrics'
 import {
   NBreadcrumb,
   NBreadcrumbItem,
@@ -70,19 +71,21 @@ const SynchronizationInstanceDetail = defineComponent({
         <NTabs type='segment'>
           <NTabPane
             name='task-definition'
-            tab={this.t(
-              'project.synchronization_instance.sync_task_definition'
-            )}
+            tab={this.t('project.synchronization_instance.sync_task_definition')}
           >
             <TaskDefinition />
           </NTabPane>
           <NTabPane
             name='running-instance'
-            tab={this.t(
-              'project.synchronization_instance.data_pipeline_running_instance'
-            )}
+            tab={this.t('project.synchronization_instance.data_pipeline_running_instance')}
           >
             <RunningInstance />
+          </NTabPane>
+          <NTabPane
+            name='task-metrics'
+            tab={this.t('project.synchronization_instance.task_metrics')}
+          >
+            <TaskMetrics />
           </NTabPane>
         </NTabs>
       </NSpace>
