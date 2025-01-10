@@ -25,6 +25,7 @@ import SinkImg from '../images/sink.png'
 import FieldMapperImg from '../images/field-mapper.png'
 import FilterEventTypeImg from '../images/filter-event-type.png'
 import ReplaceImg from '../images/replace.png'
+import JsonPathImg from '../images/json-path.png'
 import SplitImg from '../images/spilt.png'
 import CopyImg from '../images/copy.png'
 import SqlImg from '../images/sql.png'
@@ -72,7 +73,7 @@ const DagSidebar = defineComponent({
               class="task-item-info ml-auto inline-block"
               title={'Drag Source into Canvas and Double Click to Setup Configurations'}
             >
-             <InfoCircleOutlined width="17px" height="17px" />
+             <InfoCircleOutlined style={{width:'17px', height:'17px'}} />
             </span>
           </div>
           <div
@@ -88,7 +89,7 @@ const DagSidebar = defineComponent({
               class="task-item-info ml-auto inline-block"
               title={'Drag Sink into Canvas and Double Click to Setup Configurations'}
             >
-              <InfoCircleOutlined width="17px" height="17px" />
+              <InfoCircleOutlined style={{width:'17px', height:'17px'}} />
             </span>
           </div>
           {this.transforms.length > 0 && (
@@ -112,6 +113,8 @@ const DagSidebar = defineComponent({
                 item.icon = CopyImg
               } else if (item.name === 'Sql') {
                 item.icon = SqlImg
+              } else if (item.name === 'JsonPath') {
+                item.icon = JsonPathImg
               }
 
               return (
@@ -133,7 +136,7 @@ const DagSidebar = defineComponent({
                     class="task-item-info ml-auto inline-block"
                     title={'Drag '+ item.name +' into Canvas and Double Click to Setup Configurations'}
                   >
-                    <InfoCircleOutlined width="17px" height="17px" />
+                    <InfoCircleOutlined style={{width:'17px', height:'17px'}} />
                   </span>
                 </div>
               )

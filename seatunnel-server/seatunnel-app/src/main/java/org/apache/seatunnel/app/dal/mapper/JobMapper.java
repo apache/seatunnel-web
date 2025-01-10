@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
+import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -28,10 +29,10 @@ import java.util.List;
 
 public interface JobMapper extends BaseMapper<JobDefinition> {
 
-    IPage<JobDefinition> queryJobListPaging(
+    IPage<JobDefinitionRes> queryJobListPaging(
             IPage<JobDefinition> page, @Param("searchName") String searchName);
 
-    IPage<JobDefinition> queryJobListPagingWithJobMode(
+    IPage<JobDefinitionRes> queryJobListPagingWithJobMode(
             IPage<JobDefinition> page,
             @Param("searchName") String searchName,
             @Param("jobMode") String jobMode);

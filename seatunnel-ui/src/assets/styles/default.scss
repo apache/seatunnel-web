@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
- $box-node-content: "Double click to configure. After configure, Connect each node ends to another.";
-
 .x6-graph-scroller {
   overflow: hidden !important;
   &:hover {
@@ -35,7 +33,7 @@
 .x6-widget-selection-box.x6-widget-selection-box-node:hover {
   position: relative;
   &::before {
-    content: $box-node-content;
+    content: var(--node-config-hint);
     width: 210px;
     height: 40px;
     background: #eeecec;

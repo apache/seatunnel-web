@@ -350,6 +350,8 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                                 Collections.singletonList(sqlTransformOptions.getSql()));
                     }
                     break;
+                case JSONPATH:
+                    break;
                 case FILTERROWKIND:
                 case REPLACE:
                 default:

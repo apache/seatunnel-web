@@ -15,30 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.dal.dao;
+package org.apache.seatunnel.app.domain.request.job.transform;
 
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
+import lombok.Data;
 
-import lombok.NonNull;
+@Data
+public class JsonPathTransformOptions implements TransformOptions {
 
-import java.util.List;
-
-public interface IJobDefinitionDao {
-
-    void add(JobDefinition job);
-
-    JobDefinition getJob(long id);
-
-    void updateJob(JobDefinition jobDefinition);
-
-    PageInfo<JobDefinitionRes> getJob(
-            String name, Integer pageNo, Integer pageSize, String jobMode);
-
-    List<JobDefinition> getJobList(@NonNull String name);
-
-    JobDefinition getJobByName(@NonNull String name);
-
-    void delete(long id);
+    private JsonPath jsonPath;
 }
