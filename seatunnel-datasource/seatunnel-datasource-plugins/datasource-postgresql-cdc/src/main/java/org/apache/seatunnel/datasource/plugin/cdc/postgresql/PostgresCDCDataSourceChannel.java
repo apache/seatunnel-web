@@ -107,7 +107,7 @@ public class PostgresCDCDataSourceChannel implements DataSourceChannel {
 
     protected boolean checkJdbcConnectivity(Map<String, String> requestParams) {
         try (Connection connection = init(requestParams);
-             Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
 
             try (ResultSet resultSet = statement.executeQuery("SELECT 1")) {
                 return resultSet.next();
@@ -137,10 +137,10 @@ public class PostgresCDCDataSourceChannel implements DataSourceChannel {
     protected List<String> getDataBaseNames(Map<String, String> requestParams) throws SQLException {
         List<String> dbNames = new ArrayList<>();
         try (Connection connection = init(requestParams);
-             PreparedStatement statement =
-                     connection.prepareStatement(
-                             "SELECT datname FROM pg_database WHERE datistemplate = false;");
-             ResultSet re = statement.executeQuery()) {
+                PreparedStatement statement =
+                        connection.prepareStatement(
+                                "SELECT datname FROM pg_database WHERE datistemplate = false;");
+                ResultSet re = statement.executeQuery()) {
             while (re.next()) {
                 String dbName = re.getString("datname");
                 if (StringUtils.isNotBlank(dbName)) {
@@ -193,7 +193,7 @@ public class PostgresCDCDataSourceChannel implements DataSourceChannel {
                         requestParams.get(PostgresCDCOptionRule.BASE_URL.key()), dbName));
         try (Connection connection = init(requestParams)) {
             try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(queryWhere.toString())) {
+                    ResultSet resultSet = statement.executeQuery(queryWhere.toString())) {
                 while (resultSet.next()) {
                     String schemaName = resultSet.getString("table_schema");
                     String tableName = resultSet.getString("table_name");
