@@ -98,8 +98,7 @@ public class SeaTunnelEngineMetricsExtractor implements IEngineMetricsExtractor 
                 return new ArrayList<>();
             }
 
-            JsonNode jsonNode =
-                    JsonUtils.stringToJsonNode(seaTunnelEngineProxy.getMetricsContent(jobEngineId));
+            JsonNode jsonNode = JsonUtils.stringToJsonNode(metricsContent);
             LinkedHashMap<Integer, JobMetrics> metricsMap =
                     extractMetrics(jobPipelineStatus, jsonNode);
             return Arrays.asList(metricsMap.values().toArray(new JobMetrics[0]));
