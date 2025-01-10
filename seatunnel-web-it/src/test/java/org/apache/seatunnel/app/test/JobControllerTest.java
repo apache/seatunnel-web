@@ -20,6 +20,8 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
+import org.apache.seatunnel.app.domain.request.connector.SceneMode;
+import org.apache.seatunnel.app.domain.request.job.Edge;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
@@ -29,6 +31,7 @@ import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
 import org.apache.seatunnel.common.constants.JobMode;
+import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
@@ -36,7 +39,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -185,6 +192,93 @@ public class JobControllerTest {
         jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
         assertFalse(jobUpdateResult.isSuccess());
         assertEquals(SeatunnelErrorEnum.ERROR_CONFIG.getCode(), jobUpdateResult.getCode());
+    }
+
+    @Test
+    public void testUpdateJob_AddNewTask() {
+        String jobName = "updateJob_single_api_add_task" + uniqueId;
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create_4" + uniqueId, "console_create_4" + uniqueId);
+
+        Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
+        assertTrue(job.isSuccess());
+        JobTestingUtils.executeJobAndVerifySuccess(job.getData());
+
+        Result<JobRes> getJobResponse = jobControllerWrapper.getJob(job.getData());
+        assertTrue(getJobResponse.isSuccess());
+        JobRes jobRes = getJobResponse.getData();
+
+        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        jobUpdateReq.getPluginConfigs().add(getCopyTransformPlugin());
+
+        List<Edge> edges = new ArrayList<>();
+        edges.add(new Edge("source-fake-source", "transform-replace"));
+        edges.add(new Edge("transform-replace", "transform-copy"));
+        edges.add(new Edge("transform-copy", "sink-console"));
+        JobDAG jobDAG = new JobDAG(edges);
+        jobUpdateReq.setJobDAG(jobDAG);
+        String jobName2 = "updateJob_single_api_add_task_up" + uniqueId;
+        jobUpdateReq.getJobConfig().setName(jobName2);
+        jobUpdateReq.getJobConfig().setDescription(jobName2 + " description");
+
+        Result<Void> jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
+        assertTrue(jobUpdateResult.isSuccess());
+        JobTestingUtils.executeJobAndVerifySuccess(job.getData());
+    }
+
+    @Test
+    public void testUpdateJob_RemoveTask() {
+        String jobName = "updateJob_single_api_remove_task" + uniqueId;
+        JobCreateReq jobCreateReq =
+                JobTestingUtils.populateJobCreateReqFromFile(
+                        jobName, "fake_source_create_5" + uniqueId, "console_create_5" + uniqueId);
+
+        Result<Long> job = jobControllerWrapper.createJob(jobCreateReq);
+        assertTrue(job.isSuccess());
+        JobTestingUtils.executeJobAndVerifySuccess(job.getData());
+
+        Result<JobRes> getJobResponse = jobControllerWrapper.getJob(job.getData());
+        assertTrue(getJobResponse.isSuccess());
+        JobRes jobRes = getJobResponse.getData();
+
+        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        jobUpdateReq
+                .getPluginConfigs()
+                .removeIf(pluginConfig -> "transform-replace".equals(pluginConfig.getName()));
+
+        List<Edge> edges = new ArrayList<>();
+        edges.add(new Edge("source-fake-source", "sink-console"));
+        JobDAG jobDAG = new JobDAG(edges);
+        jobUpdateReq.setJobDAG(jobDAG);
+
+        Result<Void> jobUpdateResult = jobControllerWrapper.updateJob(job.getData(), jobUpdateReq);
+        assertTrue(jobUpdateResult.isSuccess());
+        JobTestingUtils.executeJobAndVerifySuccess(job.getData());
+    }
+
+    private PluginConfig getCopyTransformPlugin() {
+        String transPluginId = "copy" + System.currentTimeMillis();
+        Map<String, Object> transOptions = new HashMap<>();
+        transOptions.put(
+                "copyList",
+                Arrays.asList(
+                        new HashMap<String, String>() {
+                            {
+                                put("sourceFieldName", "name");
+                                put("targetFieldName", "name_copy");
+                            }
+                        }));
+        return PluginConfig.builder()
+                .pluginId(transPluginId)
+                .name("transform-copy")
+                .type(PluginType.TRANSFORM)
+                .connectorType("Copy")
+                .transformOptions(transOptions)
+                .outputSchema(null)
+                .sceneMode(SceneMode.SINGLE_TABLE)
+                .config("{\"query\":\"\"}")
+                .build();
     }
 
     private JobCreateReq convertJobResToJobCreateReq(JobRes jobRes) {

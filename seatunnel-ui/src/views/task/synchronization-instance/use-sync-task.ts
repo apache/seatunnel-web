@@ -16,7 +16,7 @@
  */
 
 import { h, reactive, ref } from 'vue'
-import { endOfToday, format, startOfToday } from 'date-fns'
+import { endOfToday, format, startOfToday, subDays } from 'date-fns'
 import { useTableLink, useTableOperation } from '@/hooks'
 import {
   AlignLeftOutlined,
@@ -85,7 +85,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     checkedRowKeys: [] as Array<RowKey>,
     buttonList: [],
     datePickerRange: [
-      format(startOfToday(), 'yyyy-MM-dd HH:mm:ss'),
+      format(subDays(startOfToday(), 30), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
     ]
   })
@@ -295,7 +295,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     variables.host = ''
     variables.stateType = null
     variables.datePickerRange = [
-      format(startOfToday(), 'yyyy-MM-dd HH:mm:ss'),
+      format(subDays(startOfToday(), 30), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
     ]
   }

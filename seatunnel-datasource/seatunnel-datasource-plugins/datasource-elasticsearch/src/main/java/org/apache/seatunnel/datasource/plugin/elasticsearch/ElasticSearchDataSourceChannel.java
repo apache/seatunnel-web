@@ -60,9 +60,10 @@ public class ElasticSearchDataSourceChannel implements DataSourceChannel {
             String database,
             Map<String, String> option) {
         databaseCheck(database);
+
         try (EsRestClient client =
                 EsRestClient.createInstance(ConfigFactory.parseMap(requestParams))) {
-            return client.listIndex();
+            return client.listIndex(option.get("filterName"));
         }
     }
 

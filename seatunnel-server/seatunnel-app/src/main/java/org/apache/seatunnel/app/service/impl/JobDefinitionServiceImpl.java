@@ -119,36 +119,7 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         SeatunnelErrorEnum.ILLEGAL_STATE, "Unsupported JobMode");
             }
         }
-        PageInfo<JobDefinition> jobDefinitionPageInfo =
-                jobDefinitionDao.getJob(searchName, pageNo, pageSize, jobMode);
-        List<Integer> userIds =
-                jobDefinitionPageInfo.getData().stream()
-                        .map(JobDefinition::getCreateUserId)
-                        .collect(Collectors.toList());
-        userIds.addAll(
-                jobDefinitionPageInfo.getData().stream()
-                        .map(JobDefinition::getUpdateUserId)
-                        .collect(Collectors.toList()));
-        List<JobDefinitionRes> jobDefinitionResList = new ArrayList<>();
-        for (int i = 0; i < jobDefinitionPageInfo.getData().size(); i++) {
-            JobDefinition jobDefinition = jobDefinitionPageInfo.getData().get(i);
-            JobDefinitionRes jobDefinitionRes = new JobDefinitionRes();
-            jobDefinitionRes.setId(jobDefinition.getId());
-            jobDefinitionRes.setName(jobDefinition.getName());
-            jobDefinitionRes.setDescription(jobDefinition.getDescription());
-            jobDefinitionRes.setJobType(jobDefinition.getJobType());
-            jobDefinitionRes.setCreateUserId(jobDefinition.getCreateUserId());
-            jobDefinitionRes.setUpdateUserId(jobDefinitionRes.getUpdateUserId());
-            jobDefinitionRes.setCreateTime(jobDefinition.getCreateTime());
-            jobDefinitionRes.setUpdateTime(jobDefinition.getUpdateTime());
-            jobDefinitionResList.add(jobDefinitionRes);
-        }
-        PageInfo<JobDefinitionRes> pageInfo = new PageInfo<>();
-        pageInfo.setPageNo(jobDefinitionPageInfo.getPageNo());
-        pageInfo.setPageSize(jobDefinitionPageInfo.getPageSize());
-        pageInfo.setTotalCount(jobDefinitionPageInfo.getTotalCount());
-        pageInfo.setData(jobDefinitionResList);
-        return pageInfo;
+        return jobDefinitionDao.getJob(searchName, pageNo, pageSize, jobMode);
     }
 
     @Override

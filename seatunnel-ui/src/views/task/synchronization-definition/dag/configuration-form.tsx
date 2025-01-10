@@ -36,8 +36,7 @@ import {
   getSceneModeOptions
 } from './use-configuration-form'
 import { useI18n } from 'vue-i18n'
-import type { NodeType } from './types'
-
+import type { NodeType, TableOption, State } from './types'
 import { debounce } from 'lodash'
 
 const ConfigurationForm = defineComponent({
@@ -75,16 +74,55 @@ const ConfigurationForm = defineComponent({
 
     const onTableChange = (tableName: any) => {
       state.model.tableName = tableName
+      if (props.nodeType === 'sink' && state.model.database) {
+        getTableOptions(state.model.database, '')
+      }
       emit('tableNameChange', state.model)
     }
 
-    
-    const prevQueryTableName = ref('');
-    const onTableSearch = debounce((tableName: any) => {
-      // rely on database
-      if(state.model.database && prevQueryTableName.value !== tableName) {
-        getTableOptions(state.model.database, tableName)
-        prevQueryTableName.value = tableName
+    const prevQueryTableName = ref('')
+    const onTableSearch = debounce(async (tableName: any) => {
+      // If it is a sink node and there is input content.
+      if (props.nodeType === 'sink' && tableName) {
+        try {
+          // rely on database
+          if (state.model.database && prevQueryTableName.value !== tableName) {
+            await getTableOptions(state.model.database, tableName)
+            prevQueryTableName.value = tableName
+
+            // If there are no results after searching, add user input as a custom value to the options
+            const existingOption = state.tableOptions.find(
+                (option: TableOption) => option.value === tableName
+            )
+
+            if (!existingOption) {
+              const newOption: TableOption = {
+                label: tableName,
+                value: tableName
+              }
+              state.tableOptions = [...state.tableOptions, newOption]
+            }
+          }
+        } catch (err) {
+          // If the interface call fails, also use user input as a custom value
+          const existingOption = state.tableOptions.find(
+              (option: TableOption) => option.value === tableName
+          )
+
+          if (!existingOption) {
+            const newOption: TableOption = {
+              label: tableName,
+              value: tableName
+            }
+            state.tableOptions = [...state.tableOptions, newOption]
+          }
+        }
+      } else {
+        // The source node maintains its original logic
+        if (state.model.database && prevQueryTableName.value !== tableName) {
+          getTableOptions(state.model.database, tableName)
+          prevQueryTableName.value = tableName
+        }
       }
     }, 1000)
 
@@ -214,7 +252,12 @@ const ConfigurationForm = defineComponent({
                   onSearch={onTableSearch}
                   remote
                   virtualScroll
-                  />
+                  clearable
+                  tag={props.nodeType === 'sink'}
+                  showArrow={true}
+                  allowInput={props.nodeType === 'sink'}
+                  placeholder={t('project.synchronization_definition.target_name_tips')}
+                />
               </NFormItem>
             )}
 

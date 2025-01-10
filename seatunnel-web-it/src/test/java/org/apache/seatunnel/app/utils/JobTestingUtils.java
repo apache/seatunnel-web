@@ -20,6 +20,7 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.controller.JobConfigControllerWrapper;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobDefinitionControllerWrapper;
+import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.JobMetricsControllerWrapper;
 import org.apache.seatunnel.app.controller.JobTaskControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
@@ -31,6 +32,7 @@ import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.response.job.JobTaskCheckRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.common.utils.JsonUtils;
+import org.apache.seatunnel.engine.core.job.JobStatus;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,20 +41,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobTestingUtils {
-    private static JobMetricsControllerWrapper jobMetricsControllerWrapper =
+    private static final JobMetricsControllerWrapper jobMetricsControllerWrapper =
             new JobMetricsControllerWrapper();
-    private static JobConfigControllerWrapper jobConfigControllerWrapper =
+    private static final JobConfigControllerWrapper jobConfigControllerWrapper =
             new JobConfigControllerWrapper();
-    private static JobDefinitionControllerWrapper jobDefinitionControllerWrapper =
+    private static final JobDefinitionControllerWrapper jobDefinitionControllerWrapper =
             new JobDefinitionControllerWrapper();
-    private static JobTaskControllerWrapper jobTaskControllerWrapper =
+    private static final JobTaskControllerWrapper jobTaskControllerWrapper =
             new JobTaskControllerWrapper();
-    private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper =
+    private static final SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper =
             new SeatunnelDatasourceControllerWrapper();
-    private static JobControllerWrapper jobControllerWrapper = new JobControllerWrapper();
+    private static final JobControllerWrapper jobControllerWrapper = new JobControllerWrapper();
+    private static final JobExecutorControllerWrapper jobExecutorControllerWrapper =
+            new JobExecutorControllerWrapper();
     private static final long TIMEOUT = 60; // 1 minute
     private static final long INTERVAL = 2; // 1 second
 
@@ -207,5 +212,22 @@ public class JobTestingUtils {
         Result<Long> jobCreateResult = jobControllerWrapper.createJob(jobCreateReq);
         assertTrue(jobCreateResult.isSuccess());
         return jobCreateResult.getData();
+    }
+
+    public static void executeJobAndVerifySuccess(long jobVersionId) {
+        executeJobAndVerifySuccess(jobVersionId, 5, 5);
+    }
+
+    public static void executeJobAndVerifySuccess(
+            long jobVersionId, long expectedReadRowCount, long expectedWriteRowCount) {
+        Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() > 0);
+        Result<List<JobPipelineDetailMetricsRes>> listResult =
+                JobTestingUtils.waitForJobCompletion(result.getData());
+        assertEquals(1, listResult.getData().size());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
+        assertEquals(expectedReadRowCount, listResult.getData().get(0).getReadRowCount());
+        assertEquals(expectedWriteRowCount, listResult.getData().get(0).getWriteRowCount());
     }
 }

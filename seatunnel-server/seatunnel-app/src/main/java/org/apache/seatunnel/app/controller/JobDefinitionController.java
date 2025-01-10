@@ -25,6 +25,7 @@ import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobTaskService;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +61,11 @@ public class JobDefinitionController {
             @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @RequestBody JobReq jobReq)
             throws CodeGenerateUtils.CodeGenerateException {
-        return Result.success(jobService.createJob(userId, jobReq));
+        if (jobService.getJob(jobReq.getName()).isEmpty()) {
+            return Result.success(jobService.createJob(userId, jobReq));
+        } else {
+            return Result.failure(SeatunnelErrorEnum.TASK_NAME_ALREADY_EXISTS);
+        }
     }
 
     @GetMapping

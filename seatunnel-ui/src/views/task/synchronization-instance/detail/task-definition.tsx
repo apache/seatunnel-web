@@ -109,29 +109,27 @@ const TaskDefinition = defineComponent({
         </NGi>
         <NGi span='4'>
           <NCard class={styles['right-panel']}>
-            <NSpace vertical>
-              <div>
-                <h4>{this.t('project.synchronization_instance.task_name')}</h4>
-                <p>{this.jobConfig.name}</p>
-              </div>
-              <div>
-                <h4>
-                  {this.t('project.synchronization_instance.description')}
-                </h4>
-                <p>{this.jobConfig.description}</p>
-              </div>
-              <div>
-                <h4>{this.t('project.synchronization_instance.engine')}</h4>
-                <p>{this.jobConfig.engine}</p>
-              </div>
-              {this.formatData().map((i: any) => (
-                <div>
-                  <h4>{i.label}</h4>
-                  <p>{i.value}</p>
+              <NSpace vertical>
+                <div class={styles['info-item']}>
+                  <h4><strong>{this.t('project.synchronization_instance.task_name')}</strong></h4>
+                  <p>{this.jobConfig.name}</p>
                 </div>
-              ))}
-            </NSpace>
-          </NCard>
+                <div class={styles['info-item']}>
+                  <h4><strong>{this.t('project.synchronization_instance.description')}</strong></h4>
+                  <p>{this.jobConfig.description || '-'}</p>
+                </div>
+                <div class={styles['info-item']}>
+                  <h4><strong>{this.t('project.synchronization_instance.engine')}</strong></h4>
+                  <p>{this.jobConfig.engine}</p>
+                </div>
+                {this.formatData().map((i: any) => (
+                  <div class={styles['info-item']}>
+                    <h4><strong>{i.label}</strong></h4>
+                    <p>{i.value || '-'}</p>
+                  </div>
+                ))}
+              </NSpace>
+            </NCard>
         </NGi>
       </NGrid>
     )
