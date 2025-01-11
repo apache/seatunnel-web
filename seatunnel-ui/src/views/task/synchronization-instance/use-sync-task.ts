@@ -138,7 +138,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       },
       {
         title: t('project.synchronization_instance.execute_user'),
-        key: 'createUserId',
+        key: 'username',
         ...COLUMN_WIDTH_CONFIG['state']
       },
       {

@@ -21,7 +21,6 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.Status;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
@@ -93,7 +92,8 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         if (CollectionUtils.isEmpty(records)) {
             return result;
         }
-        populateExecutionMetricsData(userId, jobMode, records);
+        addRunningTimeToResult(records);
+        jobPipelineSummaryMetrics(records, jobMode, userId);
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
         pageInfo.setTotalList(records);
         result.setData(pageInfo);
@@ -102,7 +102,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
 
     private void populateExecutionMetricsData(
             Integer userId, JobMode jobMode, List<SeaTunnelJobInstanceDto> records) {
-        addJobDefineNameToResult(records);
         addRunningTimeToResult(records);
         jobPipelineSummaryMetrics(records, jobMode, userId);
     }
@@ -122,16 +121,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
                 long endTimeSecond = jobInstanceDto.getEndTime().toInstant().getEpochSecond();
                 runningTime = Math.abs(endTimeSecond - createTimeSecond);
                 jobInstanceDto.setRunningTime(runningTime);
-            }
-        }
-    }
-
-    private void addJobDefineNameToResult(List<SeaTunnelJobInstanceDto> records) {
-        for (SeaTunnelJobInstanceDto jobInstanceDto : records) {
-            JobDefinition jobDefinition =
-                    jobDefinitionService.getJobDefinitionByJobId(jobInstanceDto.getJobDefineId());
-            if (jobDefinition != null) {
-                jobInstanceDto.setJobDefineName(jobDefinition.getName());
             }
         }
     }
