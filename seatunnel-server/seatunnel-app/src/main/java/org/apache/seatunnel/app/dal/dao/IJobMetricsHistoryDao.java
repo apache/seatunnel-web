@@ -2,6 +2,7 @@ package org.apache.seatunnel.app.dal.dao;
 
 import org.apache.seatunnel.app.dal.entity.JobMetricsHistory;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IJobMetricsHistoryDao {
@@ -16,4 +17,8 @@ public interface IJobMetricsHistoryDao {
 
     /** 根据作业实例ID和管道ID获取监控历史记录 */
     List<JobMetricsHistory> getByJobInstanceIdAndPipelineId(Long jobInstanceId, Integer pipelineId);
+
+    /** 根据作业实例ID和时间范围查询监控历史记录 */
+    List<JobMetricsHistory> getByJobInstanceIdAndTimeRange(
+            Long jobInstanceId, Date startTime, Date endTime);
 }

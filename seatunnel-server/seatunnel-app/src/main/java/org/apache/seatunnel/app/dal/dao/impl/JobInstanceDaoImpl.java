@@ -80,6 +80,11 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
     }
 
     @Override
+    public List<JobInstance> getAllRunningJobInstance() {
+        return jobInstanceMapper.getAllRunningJobInstance();
+    }
+
+    @Override
     public List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList) {
         ArrayList<JobInstance> jobInstances = new ArrayList<>();
         for (long jobInstanceId : jobInstanceIdList) {

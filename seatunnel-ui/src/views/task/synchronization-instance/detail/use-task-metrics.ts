@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
 import * as echarts from 'echarts'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { format, subDays, subHours, subMinutes } from 'date-fns'
 import { 
   queryJobMetricsHistory,
   querySyncTaskInstanceDag,
@@ -29,8 +30,45 @@ import {
 
 export function useTaskMetrics() {
   const route = useRoute()
-  const { t } = useI18n()  // 使用 i18n
+  const { t } = useI18n()
   
+  const timeOptions = [
+    {
+      label: t('project.metrics.last_1_minute'),
+      value: '1min',
+      getTime: () => [subMinutes(new Date(), 1), new Date()]
+    },
+    {
+      label: t('project.metrics.last_10_minutes'),
+      value: '10min',
+      getTime: () => [subMinutes(new Date(), 10), new Date()]
+    },
+    {
+      label: t('project.metrics.last_1_hour'),
+      value: '1hour',
+      getTime: () => [subHours(new Date(), 1), new Date()]
+    },
+    {
+      label: t('project.metrics.last_3_hours'),
+      value: '3hours',
+      getTime: () => [subHours(new Date(), 3), new Date()]
+    },
+    {
+      label: t('project.metrics.last_1_day'),
+      value: '1day',
+      getTime: () => [subDays(new Date(), 1), new Date()]
+    },
+    {
+      label: t('project.metrics.last_7_days'),
+      value: '7days',
+      getTime: () => [subDays(new Date(), 7), new Date()]
+    },
+    {
+      label: t('project.metrics.custom_time'),
+      value: 'custom'
+    }
+  ]
+
   const variables = reactive({
     readRowCountChartRef: ref(),
     writeRowCountChartRef: ref(),
@@ -42,11 +80,27 @@ export function useTaskMetrics() {
     readQpsChart: null as echarts.ECharts | null,
     writeQpsChart: null as echarts.ECharts | null,
     delayChart: null as echarts.ECharts | null,
-    metricsData: [] as any[]
+    metricsData: [] as any[],
+    dateRange: null as [number, number] | null,
+    selectedTimeOption: '1hour',
+    showDatePicker: false,
+    timeOptions
   })
 
+  const formatTimeToString = (timestamp: number): string => {
+    return format(timestamp, 'yyyy-MM-dd HH:mm:ss')
+  }
+
   const formatTimeData = (data: any[]) => {
-    return data.map(item => new Date(item.createTime).toLocaleTimeString('en-US', { hour12: false }))
+    return data.map(item => {
+      try {
+        const date = new Date(item.createTime)
+        return format(date, 'HH:mm:ss')
+      } catch (err) {
+        console.error('Error formatting time:', err)
+        return ''
+      }
+    })
   }
 
   const getChartOption = (title: string, data: any[], key: string): EChartsOption => ({
@@ -84,32 +138,26 @@ export function useTaskMetrics() {
           value = Math.round(value)
         }
         
-        // 格式化完整的日期时间
-        const date = new Date(variables.metricsData[params.dataIndex].createTime)
-        const fullDateTime = date.toLocaleString(['zh-CN', 'en-US'], {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        })
-        .replace(/\//g, '-')  // 将斜杠替换为横杠
-        .replace(/,/g, '')    // 移除英文环境下的逗号
-
-        return `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
-          <div style="color: #8c8c8c; font-size: 12px; margin-bottom: 4px">
-            ${fullDateTime}
-          </div>
-          <div style="display: flex; align-items: center">
-            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: ${params.color}; margin-right: 8px"></span>
-            <span style="font-weight: 500">${value}</span>
-          </div>
-          <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px">
-            ${title}
-          </div>
-        </div>`
+        try {
+          const date = new Date(variables.metricsData[params.dataIndex].createTime)
+          const fullDateTime = format(date, 'yyyy-MM-dd HH:mm:ss')
+          
+          return `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+            <div style="color: #8c8c8c; font-size: 12px; margin-bottom: 4px">
+              ${fullDateTime}
+            </div>
+            <div style="display: flex; align-items: center">
+              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: ${params.color}; margin-right: 8px"></span>
+              <span style="font-weight: 500">${value}</span>
+            </div>
+            <div style="font-size: 12px; color: #8c8c8c; margin-top: 4px">
+              ${title}
+            </div>
+          </div>`
+        } catch (err) {
+          console.error('Error formatting tooltip time:', err)
+          return ''
+        }
       }
     },
     grid: {
@@ -206,20 +254,29 @@ export function useTaskMetrics() {
   })
 
   const initCharts = () => {
-    if (variables.readRowCountChartRef) {
-      variables.readRowCountChart = echarts.init(variables.readRowCountChartRef)
-    }
-    if (variables.writeRowCountChartRef) {
-      variables.writeRowCountChart = echarts.init(variables.writeRowCountChartRef)
-    }
-    if (variables.readQpsChartRef) {
-      variables.readQpsChart = echarts.init(variables.readQpsChartRef)
-    }
-    if (variables.writeQpsChartRef) {
-      variables.writeQpsChart = echarts.init(variables.writeQpsChartRef)
-    }
-    if (variables.delayChartRef) {
-      variables.delayChart = echarts.init(variables.delayChartRef)
+    try {
+      if (variables.readRowCountChartRef) {
+        variables.readRowCountChart?.dispose()
+        variables.readRowCountChart = echarts.init(variables.readRowCountChartRef)
+      }
+      if (variables.writeRowCountChartRef) {
+        variables.writeRowCountChart?.dispose()
+        variables.writeRowCountChart = echarts.init(variables.writeRowCountChartRef)
+      }
+      if (variables.readQpsChartRef) {
+        variables.readQpsChart?.dispose()
+        variables.readQpsChart = echarts.init(variables.readQpsChartRef)
+      }
+      if (variables.writeQpsChartRef) {
+        variables.writeQpsChart?.dispose()
+        variables.writeQpsChart = echarts.init(variables.writeQpsChartRef)
+      }
+      if (variables.delayChartRef) {
+        variables.delayChart?.dispose()
+        variables.delayChart = echarts.init(variables.delayChartRef)
+      }
+    } catch (err) {
+      console.error('Failed to initialize charts:', err)
     }
   }
 
@@ -229,9 +286,16 @@ export function useTaskMetrics() {
 
   const updateCharts = async () => {
     try {
-      const res = await queryJobMetricsHistory({
+      const params: any = {
         jobInstanceId: route.query.jobInstanceId as string
-      })
+      }
+      
+      if (variables.dateRange) {
+        params.startTime = format(variables.dateRange[0], 'yyyy-MM-dd HH:mm:ss')
+        params.endTime = format(variables.dateRange[1], 'yyyy-MM-dd HH:mm:ss')
+      }
+
+      const res = await queryJobMetricsHistory(params)
       variables.metricsData = res
 
       if (variables.readRowCountChart) {
@@ -264,9 +328,41 @@ export function useTaskMetrics() {
     }
   }
 
+  const handleTimeOptionChange = (value: string) => {
+    variables.selectedTimeOption = value
+    
+    if (value === 'custom') {
+      variables.showDatePicker = true
+      return
+    }
+    
+    variables.showDatePicker = false
+    const option = timeOptions.find(opt => opt.value === value)
+    if (option && option.getTime) {
+      const [start, end] = option.getTime()
+      variables.dateRange = [start.getTime(), end.getTime()]
+      updateCharts()
+    }
+  }
+
+  const handleDateRangeChange = (value: [number, number] | null) => {
+    variables.dateRange = value
+    variables.selectedTimeOption = 'custom'
+    if (value) {
+      updateCharts()
+    }
+  }
+
+  // 初始化时设置默认时间范围为最近1小时
+  onMounted(() => {
+    handleTimeOptionChange('1hour')
+  })
+
   return {
     variables,
     initCharts,
-    updateCharts
+    updateCharts,
+    handleDateRangeChange,
+    handleTimeOptionChange
   }
 } 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -37,5 +38,12 @@ public class JobMetricsHistoryDaoImpl implements IJobMetricsHistoryDao {
             Long jobInstanceId, Integer pipelineId) {
         return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceIdAndPipelineId(
                 jobInstanceId, pipelineId);
+    }
+
+    @Override
+    public List<JobMetricsHistory> getByJobInstanceIdAndTimeRange(
+            Long jobInstanceId, Date startTime, Date endTime) {
+        return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceIdAndTimeRange(
+                jobInstanceId, startTime, endTime);
     }
 }
