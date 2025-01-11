@@ -65,4 +65,7 @@ public interface IJobMetricsService {
      * @return List of metrics data points
      */
     List<JobMetricsHistory> getJobMetricsHistory(@NonNull Long jobInstanceId);
+
+    List<JobMetricsHistory> getJobMetricsHistory(
+            Long jobInstanceId, String startTime, String endTime);
 }

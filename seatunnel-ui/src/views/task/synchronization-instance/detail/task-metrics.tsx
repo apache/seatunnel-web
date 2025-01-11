@@ -15,18 +15,21 @@
  * limitations under the License.
  */
 
-import { defineComponent, onMounted, onUnmounted } from 'vue'
-import { NCard, NGrid, NGi } from 'naive-ui'
+import { defineComponent, onMounted, onUnmounted, nextTick } from 'vue'
+import { NCard, NGrid, NGi, NSpace, NDatePicker, NSelect } from 'naive-ui'
 import { useTaskMetrics } from './use-task-metrics'
 import styles from './task-metrics.module.scss'
+import { useI18n } from 'vue-i18n'
 
 const TaskMetrics = defineComponent({
   name: 'TaskMetrics',
   setup() {
-    const { variables, initCharts, updateCharts } = useTaskMetrics()
+    const { variables, initCharts, updateCharts, handleDateRangeChange, handleTimeOptionChange } = useTaskMetrics()
     let timer: ReturnType<typeof setInterval>
+    const { t } = useI18n()
 
-    onMounted(() => {
+    onMounted(async () => {
+      await nextTick()
       initCharts()
       updateCharts()
       timer = setInterval(() => {
@@ -38,51 +41,109 @@ const TaskMetrics = defineComponent({
       if (timer) {
         clearInterval(timer)
       }
+      variables.readRowCountChart?.dispose()
+      variables.writeRowCountChart?.dispose()
+      variables.readQpsChart?.dispose()
+      variables.writeQpsChart?.dispose()
+      variables.delayChart?.dispose()
     })
 
-    return { variables }
+    return { 
+      variables, 
+      handleDateRangeChange,
+      handleTimeOptionChange,
+      t
+    }
   },
   render() {
     return (
-      <NGrid x-gap='12' cols='2'>
-        <NGi>
-          <NCard>
-            <div
-              ref={(el) => (this.variables.readRowCountChartRef = el)}
-              class={styles.chart}
-            />
-          </NCard>
-        </NGi>
-        <NGi>
-          <NCard>
-            <div
-              ref={(el) => (this.variables.writeRowCountChartRef = el)}
-              class={styles.chart}
-            />
-          </NCard>
-        </NGi>
-        <NGi>
-          <NCard>
-            <div
-              ref={(el) => (this.variables.readQpsChartRef = el)}
-              class={styles.chart}
-            />
-          </NCard>
-        </NGi>
-        <NGi>
-          <NCard>
-            <div
-              ref={(el) => (this.variables.writeQpsChartRef = el)}
-              class={styles.chart}
-            />
-          </NCard>
-        </NGi>
-        <NGi span='2'>
-          <NCard>
-            <div
-              ref={(el) => (this.variables.delayChartRef = el)}
-              class={styles.chart}
-            />
+      <NGrid x-gap={12} cols={2}>
+        <NGi span={2}>
+          <NCard
+            title={this.t('project.metrics.metrics_title')}
+            headerStyle={{ padding: '16px 20px' }}
+            contentStyle={{ padding: '4px 20px 20px' }}
+          >
+            {{
+              header: () => (
+                <NSpace justify="space-between" align="center" style="width: 100%">
+                  <span class="n-card-header__main">
+                    {this.t('project.metrics.metrics_title')}
+                  </span>
+                  <NSpace align="center">
+                    <NSelect
+                      value={this.variables.selectedTimeOption}
+                      options={this.variables.timeOptions}
+                      onUpdateValue={this.handleTimeOptionChange}
+                      style={{ width: '150px' }}
+                    />
+                    {this.variables.showDatePicker && (
+                      <NDatePicker
+                        type="datetimerange"
+                        value={this.variables.dateRange}
+                        onUpdateValue={this.handleDateRangeChange}
+                        clearable
+                        defaultTime={['00:00:00', '23:59:59']}
+                        valueFormat="timestamp"
+                        actions={['clear', 'confirm']}
+                        style={{ width: '320px' }}
+                        placeholder={[
+                          this.t('project.metrics.start_time'),
+                          this.t('project.metrics.end_time')
+                        ]}
+                        placement="bottom-end"
+                        size="small"
+                        to={false}
+                      />
+                    )}
+                  </NSpace>
+                </NSpace>
+              ),
+              default: () => (
+                <NGrid x-gap={12} y-gap={12} cols={2}>
+                  <NGi>
+                    <NCard>
+                      <div
+                        ref={(el) => (this.variables.readRowCountChartRef = el)}
+                        class={styles.chart}
+                      />
+                    </NCard>
+                  </NGi>
+                  <NGi>
+                    <NCard>
+                      <div
+                        ref={(el) => (this.variables.writeRowCountChartRef = el)}
+                        class={styles.chart}
+                      />
+                    </NCard>
+                  </NGi>
+                  <NGi>
+                    <NCard>
+                      <div
+                        ref={(el) => (this.variables.readQpsChartRef = el)}
+                        class={styles.chart}
+                      />
+                    </NCard>
+                  </NGi>
+                  <NGi>
+                    <NCard>
+                      <div
+                        ref={(el) => (this.variables.writeQpsChartRef = el)}
+                        class={styles.chart}
+                      />
+                    </NCard>
+                  </NGi>
+                  <NGi span={2}>
+                    <NCard>
+                      <div
+                        ref={(el) => (this.variables.delayChartRef = el)}
+                        class={styles.chart}
+                      />
+                    </NCard>
+                  </NGi>
+                </NGrid>
+              )
+            }}
           </NCard>
         </NGi>
       </NGrid>

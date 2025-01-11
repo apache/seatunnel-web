@@ -1155,5 +1155,17 @@ export default {
   all_project: '全部项目',
   next_step: '下一步',
   pre_step: '上一步',
-  project_name: '项目名称'
+  project_name: '项目名称',
+  metrics: {
+    last_1_minute: '最近1分钟',
+    last_10_minutes: '最近10分钟',
+    last_1_hour: '最近1小时',
+    last_3_hours: '最近3小时',
+    last_1_day: '最近1天',
+    last_7_days: '最近7天',
+    custom_time: '自定义时间',
+    start_time: '开始时间',
+    end_time: '结束时间',
+    metrics_title: '任务指标'
+  }
 }

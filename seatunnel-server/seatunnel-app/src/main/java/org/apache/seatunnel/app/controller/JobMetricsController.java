@@ -74,11 +74,14 @@ public class JobMetricsController {
 
     @GetMapping("/history")
     public Result<List<JobMetricsHistory>> getJobMetricsHistory(
-            @RequestParam("jobInstanceId") Long jobInstanceId) {
+            @RequestParam("jobInstanceId") Long jobInstanceId,
+            @RequestParam(value = "startTime", required = false) String startTime,
+            @RequestParam(value = "endTime", required = false) String endTime) {
         if (jobInstanceId == null) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.UNKNOWN, "jobInstanceId cannot be null");
         }
-        return Result.success(jobMetricsService.getJobMetricsHistory(jobInstanceId));
+        return Result.success(
+                jobMetricsService.getJobMetricsHistory(jobInstanceId, startTime, endTime));
     }
 }

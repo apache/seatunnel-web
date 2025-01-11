@@ -58,6 +58,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -703,7 +705,26 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     @Override
-    public List<JobMetricsHistory> getJobMetricsHistory(@NonNull Long jobInstanceId) {
+    @NonNull public List<JobMetricsHistory> getJobMetricsHistory(@NonNull Long jobInstanceId) {
         return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceId(jobInstanceId);
+    }
+
+    @Override
+    public List<JobMetricsHistory> getJobMetricsHistory(
+            Long jobInstanceId, String startTime, String endTime) {
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date start = sdf.parse(startTime);
+                Date end = sdf.parse(endTime);
+                return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceIdAndTimeRange(
+                        jobInstanceId, start, end);
+            } catch (ParseException e) {
+                log.error("Parse time error", e);
+                throw new SeatunnelException(
+                        SeatunnelErrorEnum.ILLEGAL_STATE, "Invalid time format");
+            }
+        }
+        return getJobMetricsHistory(jobInstanceId); // 复用无参方法
     }
 }

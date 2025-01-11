@@ -21,7 +21,6 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +46,8 @@ public class MonitorTaskScheduler {
 
     private final ConcurrentHashMap<Long, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
 
+    private final Object mapLock = new Object();
+
     public MonitorTaskScheduler() {
         // 创建线程池
         this.executorService =
@@ -69,8 +70,7 @@ public class MonitorTaskScheduler {
     public void updateJobInstance() {
         try {
             log.info("开始更新任务实例信息...");
-            List<JobInstance> allJobInstance =
-                    jobInstanceDao.getAllJobInstance(Arrays.asList(16261985715328L));
+            List<JobInstance> allJobInstance = jobInstanceDao.getAllRunningJobInstance();
 
             Map<Long, JobInstance> newInstanceMap =
                     allJobInstance.stream()
@@ -80,8 +80,10 @@ public class MonitorTaskScheduler {
                                             instance -> instance,
                                             (existing, replacement) -> replacement));
 
-            jobInstanceMap.clear();
-            jobInstanceMap.putAll(newInstanceMap);
+            synchronized (mapLock) {
+                jobInstanceMap.clear();
+                jobInstanceMap.putAll(newInstanceMap);
+            }
 
             log.info("任务实例信息更新完成，当前共有 {} 个实例", jobInstanceMap.size());
         } catch (Exception e) {
@@ -90,57 +92,62 @@ public class MonitorTaskScheduler {
     }
 
     public JobInstance getJobInstance(Long jobInstanceId) {
-        return jobInstanceMap.get(jobInstanceId);
+        synchronized (mapLock) {
+            return jobInstanceMap.get(jobInstanceId);
+        }
     }
 
     public List<JobInstance> getAllJobInstances() {
-        return new ArrayList<>(jobInstanceMap.values());
+        synchronized (mapLock) {
+            return new ArrayList<>(jobInstanceMap.values());
+        }
     }
 
     @Scheduled(fixedDelay = 5000) // 每5秒执行一次
     public void scheduleTasks() {
-        jobInstanceMap
-                .values()
-                .forEach(
-                        jobInstance -> {
-                            if (jobInstance.getJobStatus() != JobStatus.RUNNING) {
-                                return;
-                            }
-                            try {
-                                executorService.submit(
-                                        () -> {
-                                            try {
-                                                Long jobInstanceId = jobInstance.getId();
-                                                List<JobPipelineDetailMetricsRes> metricsResList =
-                                                        jobMetricsService
-                                                                .getJobPipelineDetailMetricsRes(
-                                                                        jobInstance);
+        List<JobInstance> instances;
+        synchronized (mapLock) {
+            instances = new ArrayList<>(jobInstanceMap.values());
+        }
 
-                                                if (metricsResList != null
-                                                        && !metricsResList.isEmpty()) {
-                                                    List<JobMetricsHistory> historyList =
-                                                            metricsResList.stream()
-                                                                    .map(
-                                                                            metrics ->
-                                                                                    convertToJobMetricsHistory(
-                                                                                            metrics,
-                                                                                            jobInstanceId))
-                                                                    .collect(Collectors.toList());
+        instances.forEach(
+                jobInstance -> {
+                    if (jobInstance.getJobStatus() != JobStatus.RUNNING) {
+                        return;
+                    }
+                    try {
+                        executorService.submit(
+                                () -> {
+                                    try {
+                                        Long jobInstanceId = jobInstance.getId();
+                                        List<JobPipelineDetailMetricsRes> metricsResList =
+                                                jobMetricsService.getJobPipelineDetailMetricsRes(
+                                                        jobInstance);
 
-                                                    jobMetricsHistoryDao.insertBatch(historyList);
-                                                    log.info(
-                                                            "成功保存作业 {} 的监控指标，共 {} 条记录",
-                                                            jobInstanceId,
-                                                            historyList.size());
-                                                }
-                                            } catch (Exception e) {
-                                                log.error("保存作业监控指标异常", e);
-                                            }
-                                        });
-                            } catch (Exception e) {
-                                log.error("任务调度异常", e);
-                            }
-                        });
+                                        if (metricsResList != null && !metricsResList.isEmpty()) {
+                                            List<JobMetricsHistory> historyList =
+                                                    metricsResList.stream()
+                                                            .map(
+                                                                    metrics ->
+                                                                            convertToJobMetricsHistory(
+                                                                                    metrics,
+                                                                                    jobInstanceId))
+                                                            .collect(Collectors.toList());
+
+                                            jobMetricsHistoryDao.insertBatch(historyList);
+                                            log.info(
+                                                    "成功保存作业 {} 的监控指标，共 {} 条记录",
+                                                    jobInstanceId,
+                                                    historyList.size());
+                                        }
+                                    } catch (Exception e) {
+                                        log.error("保存作业监控指标异常", e);
+                                    }
+                                });
+                    } catch (Exception e) {
+                        log.error("任务调度异常", e);
+                    }
+                });
     }
 
     private JobMetricsHistory convertToJobMetricsHistory(
