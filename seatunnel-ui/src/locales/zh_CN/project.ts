@@ -1066,7 +1066,9 @@ export default {
     sql_content_label: 'SQL',
     sql_content_label_placeholder: '请输入SQL语句',
     query_validate: '请输入SQL语句',
-    target_name_tips: '请输入或选择表名(必填)'
+    target_name_tips: '请输入或选择表名(必填)',
+    start_success: '启动成功',
+    start_failed: '启动失败'
   },
   synchronization_instance: {
     pipeline_id: 'Pipeline ID',
