@@ -67,4 +67,17 @@
         and pipeline_id = #{pipelineId}
         order by create_time desc
     </select>
+
+    <select id="queryJobMetricsHistoryByInstanceIdAndTimeRange" resultType="org.apache.seatunnel.app.dal.entity.JobMetricsHistory">
+        SELECT *
+        FROM t_st_job_metrics_history
+        WHERE job_instance_id = #{jobInstanceId}
+        <if test="startTime != null">
+            AND create_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time &lt;= #{endTime}
+        </if>
+        ORDER BY create_time ASC
+    </select>
 </mapper> 
