@@ -112,14 +112,11 @@ public class SeatunnelDatasourceController extends BaseController {
                 paramType = "query")
     })
     @PostMapping("/create")
-    Result<String> createDatasource(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestBody DatasourceReq req) {
+    Result<String> createDatasource(@RequestBody DatasourceReq req) {
         String datasourceConfig = req.getDatasourceConfig();
         Map<String, String> stringStringMap = JsonUtils.toMap(datasourceConfig);
         return Result.success(
                 datasourceService.createDatasource(
-                        loginUser.getId(),
                         req.getDatasourceName(),
                         req.getPluginName(),
                         DEFAULT_PLUGIN_VERSION,
@@ -143,15 +140,10 @@ public class SeatunnelDatasourceController extends BaseController {
                 paramType = "query")
     })
     @PostMapping("/check/connect")
-    Result<Boolean> testConnect(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestBody DatasourceCheckReq req) {
+    Result<Boolean> testConnect(@RequestBody DatasourceCheckReq req) {
         return Result.success(
                 datasourceService.testDatasourceConnectionAble(
-                        loginUser.getId(),
-                        req.getPluginName(),
-                        DEFAULT_PLUGIN_VERSION,
-                        req.getDatasourceConfig()));
+                        req.getPluginName(), DEFAULT_PLUGIN_VERSION, req.getDatasourceConfig()));
     }
 
     @ApiOperation(value = "update datasource", notes = "update datasource")
@@ -177,14 +169,11 @@ public class SeatunnelDatasourceController extends BaseController {
     })
     @PutMapping("/{id}")
     Result<Boolean> updateDatasource(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @PathVariable("id") String id,
-            @RequestBody DatasourceReq req) {
+            @PathVariable("id") String id, @RequestBody DatasourceReq req) {
         Map<String, String> stringStringMap = JsonUtils.toMap(req.getDatasourceConfig());
         Long datasourceId = Long.parseLong(id);
         return Result.success(
                 datasourceService.updateDatasource(
-                        loginUser.getId(),
                         datasourceId,
                         req.getDatasourceName(),
                         req.getDescription(),
@@ -193,11 +182,9 @@ public class SeatunnelDatasourceController extends BaseController {
 
     @ApiOperation(value = "delete datasource by id", notes = "delete datasource by id")
     @DeleteMapping("/{id}")
-    Result<Boolean> deleteDatasource(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @PathVariable("id") String id) {
+    Result<Boolean> deleteDatasource(@PathVariable("id") String id) {
         Long datasourceId = Long.parseLong(id);
-        return Result.success(datasourceService.deleteDatasource(loginUser.getId(), datasourceId));
+        return Result.success(datasourceService.deleteDatasource(datasourceId));
     }
 
     @ApiOperation(value = "get datasource detail", notes = "get datasource detail")
@@ -210,10 +197,8 @@ public class SeatunnelDatasourceController extends BaseController {
                 paramType = "query"),
     })
     @GetMapping("/{id}")
-    Result<DatasourceDetailRes> getDatasource(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @PathVariable("id") String id) {
-        return Result.success(datasourceService.queryDatasourceDetailById(loginUser.getId(), id));
+    Result<DatasourceDetailRes> getDatasource(@PathVariable("id") String id) {
+        return Result.success(datasourceService.queryDatasourceDetailById(id));
     }
 
     @ApiOperation(value = "get datasource list", notes = "get datasource list")
@@ -245,14 +230,12 @@ public class SeatunnelDatasourceController extends BaseController {
     })
     @GetMapping("/list")
     Result<PageInfo<DatasourceRes>> getDatasourceList(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestParam("searchVal") String searchVal,
             @RequestParam("pluginName") String pluginName,
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam("pageSize") Integer pageSize) {
         PageInfo<DatasourceRes> datasourceResPageInfo =
-                datasourceService.queryDatasourceList(
-                        loginUser.getId(), searchVal, pluginName, pageNo, pageSize);
+                datasourceService.queryDatasourceList(searchVal, pluginName, pageNo, pageSize);
         if (CollectionUtils.isNotEmpty(datasourceResPageInfo.getData())) {
             Map<Integer, String> userIdNameMap = userIdNameMap();
             datasourceResPageInfo
@@ -361,7 +344,6 @@ public class SeatunnelDatasourceController extends BaseController {
 
     @PostMapping("/schemas")
     Result<List<DatabaseTableFields>> getMultiTableFields(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestParam("datasourceId") String datasourceId,
             @RequestBody List<DatabaseTables> tableNames) {
         DatasourceDetailRes res = datasourceService.queryDatasourceDetailById(datasourceId);
