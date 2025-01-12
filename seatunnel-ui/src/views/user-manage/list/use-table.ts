@@ -17,14 +17,16 @@
 
 import { reactive, ref, h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NSpace, NButton } from 'naive-ui'
+import { NSpace, NButton, NTooltip } from 'naive-ui'
 import { userList, userDelete, userEnable, userDisable } from '@/service/user'
 import { getTableColumn } from '@/common/table'
 import type { ResponseTable } from '@/service/types'
 import type { UserDetail } from '@/service/user/types'
+import { useUserStore } from '@/store/user'
 
 export function useTable() {
   const { t } = useI18n()
+  const userStore = useUserStore()
   const state = reactive({
     columns: [],
     tableData: [],
@@ -56,8 +58,11 @@ export function useTable() {
       {
         title: t('user_manage.operation'),
         key: 'operation',
-        render: (row: UserDetail) =>
-          h(NSpace, null, {
+        render: (row: UserDetail) => {
+          const currentUser = userStore.getUserInfo as UserDetail
+          const isCurrentUser = Boolean(currentUser?.id && row?.id && currentUser.id === row.id)
+
+          return h(NSpace, null, {
             default: () => [
               h(
                 NButton,
@@ -76,11 +81,18 @@ export function useTable() {
               ),
               h(
                 NButton,
-                { text: true, onClick: () => handleDelete(row) },
-                { default: () => t('user_manage.delete') }
+                {
+                  text: true,
+                  disabled: isCurrentUser,
+                  onClick: () => handleDelete(row)
+                },
+                {
+                  default: () => t('user_manage.delete')
+                }
               )
             ]
           })
+        }
       }
     ]
   }
