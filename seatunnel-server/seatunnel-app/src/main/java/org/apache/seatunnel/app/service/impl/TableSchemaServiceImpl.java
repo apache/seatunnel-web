@@ -40,9 +40,8 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.Resource;
 
 import java.io.IOException;
 import java.net.URL;

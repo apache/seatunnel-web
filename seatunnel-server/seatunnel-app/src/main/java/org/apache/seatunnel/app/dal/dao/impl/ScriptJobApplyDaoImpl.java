@@ -25,7 +25,7 @@ import org.apache.seatunnel.app.domain.dto.job.ScriptJobApplyDto;
 
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.util.List;
 import java.util.Objects;

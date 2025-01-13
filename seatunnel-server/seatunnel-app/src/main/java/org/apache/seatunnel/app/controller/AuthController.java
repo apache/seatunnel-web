@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jakarta.annotation.Resource;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 @RequestMapping("/seatunnel/api/v1/auth")

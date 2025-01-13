@@ -33,7 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import java.io.IOException;
 import java.util.List;
