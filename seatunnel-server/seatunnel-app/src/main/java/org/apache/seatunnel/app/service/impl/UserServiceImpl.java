@@ -17,7 +17,9 @@
 
 package org.apache.seatunnel.app.service.impl;
 
+import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.common.UserTokenStatusEnum;
+import org.apache.seatunnel.app.config.ConfiguredAuthenticationProvider;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
@@ -37,7 +39,11 @@ import org.apache.seatunnel.app.utils.PasswordUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +66,8 @@ public class UserServiceImpl implements IUserService {
     @Value("${user.default.passwordSalt:seatunnel}")
     private String defaultSalt;
 
+    @Autowired private ConfiguredAuthenticationProvider configuredAuthenticationProvider;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AddUserRes add(AddUserReq addReq) {
@@ -75,6 +83,7 @@ public class UserServiceImpl implements IUserService {
                         .password(PasswordUtils.encryptWithSalt(defaultSalt, addReq.getPassword()))
                         .status(addReq.getStatus())
                         .type(addReq.getType())
+                        .authProvider(Constants.AUTHENTICATION_PROVIDER_DB)
                         .build();
 
         final int userId = userDaoImpl.add(dto);
@@ -139,16 +148,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserSimpleInfoRes login(UserLoginReq req) {
-
-        final String username = req.getUsername();
-        final String password = PasswordUtils.encryptWithSalt(defaultSalt, req.getPassword());
-
-        final User user = userDaoImpl.checkPassword(username, password);
-        if (Objects.isNull(user)) {
-            throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
+    public UserSimpleInfoRes login(UserLoginReq req, String authType) {
+        User user = null;
+        if (Constants.AUTHENTICATION_PROVIDER_LDAP.equalsIgnoreCase(authType)) {
+            user = ldapAuthentication(req);
+        } else {
+            user = dbAuthentication(req);
         }
-
         UserSimpleInfoRes translate = translate(user);
         final String token = jwtUtils.genToken(translate.toMap());
         translate.setToken(token);
@@ -160,8 +166,43 @@ public class UserServiceImpl implements IUserService {
                         .userId(user.getId())
                         .build();
         userDaoImpl.insertLoginLog(logDto);
-
         return translate;
+    }
+
+    private User ldapAuthentication(UserLoginReq req) {
+        String username = req.getUsername();
+        String password = req.getPassword();
+        Authentication authenticationRequest =
+                new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            configuredAuthenticationProvider.authenticate(authenticationRequest);
+        } catch (AuthenticationException ex) {
+            throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
+        }
+
+        if (userDaoImpl.getByName(username) == null) {
+            // 2. add a new user.
+            final UpdateUserDto dto =
+                    UpdateUserDto.builder()
+                            .id(null)
+                            .username(username)
+                            .password("")
+                            .authProvider(Constants.AUTHENTICATION_PROVIDER_LDAP)
+                            .build();
+            userDaoImpl.add(dto);
+        }
+        return userDaoImpl.getByName(username);
+    }
+
+    private User dbAuthentication(UserLoginReq req) {
+        final String password = PasswordUtils.encryptWithSalt(defaultSalt, req.getPassword());
+        final User user =
+                userDaoImpl.checkPassword(
+                        req.getUsername(), password, Constants.AUTHENTICATION_PROVIDER_DB);
+        if (Objects.isNull(user)) {
+            throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
+        }
+        return user;
     }
 
     private UserSimpleInfoRes translate(User user) {

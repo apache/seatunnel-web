@@ -19,6 +19,12 @@ server:
   port: 8801
 
 spring:
+  ldap:
+    url: ldap://localhost:389
+    search:
+      base: ou=people,dc=example,dc=com
+      filter: (uid={0})
+      domain: example.com
   application:
     name: seatunnel
   jackson:

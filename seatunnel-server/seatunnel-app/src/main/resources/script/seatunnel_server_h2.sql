@@ -219,6 +219,7 @@ CREATE TABLE "user" (
                       type TINYINT NOT NULL,
                       create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                       update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                      auth_provider varchar(10) NOT NULL DEFAULT 'DB',
                       PRIMARY KEY (id)
 );
 
