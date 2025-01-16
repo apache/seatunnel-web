@@ -19,7 +19,6 @@ package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.common.UserTokenStatusEnum;
-import org.apache.seatunnel.app.config.ConfiguredAuthenticationProvider;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
@@ -33,27 +32,28 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 import org.apache.seatunnel.app.security.JwtUtils;
+import org.apache.seatunnel.app.security.authentication.strategy.IAuthenticationStrategy;
+import org.apache.seatunnel.app.security.authentication.strategy.impl.DBAuthenticationStrategy;
+import org.apache.seatunnel.app.security.authentication.strategy.impl.LDAPAuthenticationStrategy;
 import org.apache.seatunnel.app.service.IRoleService;
 import org.apache.seatunnel.app.service.IUserService;
 import org.apache.seatunnel.app.utils.PasswordUtils;
 import org.apache.seatunnel.server.common.PageData;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED;
 
 @Component
 public class UserServiceImpl implements IUserService {
@@ -66,7 +66,17 @@ public class UserServiceImpl implements IUserService {
     @Value("${user.default.passwordSalt:seatunnel}")
     private String defaultSalt;
 
-    @Autowired private ConfiguredAuthenticationProvider configuredAuthenticationProvider;
+    private final Map<String, IAuthenticationStrategy> strategies = new HashMap<>();
+
+    @Autowired private DBAuthenticationStrategy dbAuthenticationStrategy;
+
+    @Autowired private LDAPAuthenticationStrategy ldapAuthenticationStrategy;
+
+    @PostConstruct
+    public void init() {
+        strategies.put(Constants.AUTHENTICATION_PROVIDER_DB, dbAuthenticationStrategy);
+        strategies.put(Constants.AUTHENTICATION_PROVIDER_LDAP, ldapAuthenticationStrategy);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -149,12 +159,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserSimpleInfoRes login(UserLoginReq req, String authType) {
-        User user = null;
-        if (Constants.AUTHENTICATION_PROVIDER_LDAP.equalsIgnoreCase(authType)) {
-            user = ldapAuthentication(req);
-        } else {
-            user = dbAuthentication(req);
+        if (!strategies.containsKey(authType)) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.INVALID_AUTHENTICATION_PROVIDER, authType);
         }
+        IAuthenticationStrategy strategy = strategies.get(authType);
+        User user = strategy.authenticate(req);
         UserSimpleInfoRes translate = translate(user);
         final String token = jwtUtils.genToken(translate.toMap());
         translate.setToken(token);
@@ -167,42 +177,6 @@ public class UserServiceImpl implements IUserService {
                         .build();
         userDaoImpl.insertLoginLog(logDto);
         return translate;
-    }
-
-    private User ldapAuthentication(UserLoginReq req) {
-        String username = req.getUsername();
-        String password = req.getPassword();
-        Authentication authenticationRequest =
-                new UsernamePasswordAuthenticationToken(username, password);
-        try {
-            configuredAuthenticationProvider.authenticate(authenticationRequest);
-        } catch (AuthenticationException ex) {
-            throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
-        }
-
-        if (userDaoImpl.getByName(username) == null) {
-            // 2. add a new user.
-            final UpdateUserDto dto =
-                    UpdateUserDto.builder()
-                            .id(null)
-                            .username(username)
-                            .password("")
-                            .authProvider(Constants.AUTHENTICATION_PROVIDER_LDAP)
-                            .build();
-            userDaoImpl.add(dto);
-        }
-        return userDaoImpl.getByName(username);
-    }
-
-    private User dbAuthentication(UserLoginReq req) {
-        final String password = PasswordUtils.encryptWithSalt(defaultSalt, req.getPassword());
-        final User user =
-                userDaoImpl.checkPassword(
-                        req.getUsername(), password, Constants.AUTHENTICATION_PROVIDER_DB);
-        if (Objects.isNull(user)) {
-            throw new SeatunnelException(USERNAME_PASSWORD_NO_MATCHED);
-        }
-        return user;
     }
 
     private UserSimpleInfoRes translate(User user) {

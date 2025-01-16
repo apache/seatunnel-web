@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @Slf4j
-public class ConfiguredAuthenticationProvider implements AuthenticationProvider {
+public class SeatunnelLdapAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired LdapAuthenticationBuilder ldapAuthenticationBuilder;
 
