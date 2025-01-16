@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.common.UserTokenStatusEnum;
+import org.apache.seatunnel.app.config.SeatunnelAuthenticationProvidersConfig;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
@@ -74,10 +75,21 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired private LDAPAuthenticationStrategy ldapAuthenticationStrategy;
 
+    @Autowired
+    private SeatunnelAuthenticationProvidersConfig seatunnelAuthenticationProvidersConfig;
+
     @PostConstruct
     public void init() {
-        strategies.put(Constants.AUTHENTICATION_PROVIDER_DB, dbAuthenticationStrategy);
-        strategies.put(Constants.AUTHENTICATION_PROVIDER_LDAP, ldapAuthenticationStrategy);
+        if (seatunnelAuthenticationProvidersConfig
+                .getProviders()
+                .contains(Constants.AUTHENTICATION_PROVIDER_DB)) {
+            strategies.put(Constants.AUTHENTICATION_PROVIDER_DB, dbAuthenticationStrategy);
+        }
+        if (seatunnelAuthenticationProvidersConfig
+                .getProviders()
+                .contains(Constants.AUTHENTICATION_PROVIDER_LDAP)) {
+            strategies.put(Constants.AUTHENTICATION_PROVIDER_LDAP, ldapAuthenticationStrategy);
+        }
     }
 
     @Override

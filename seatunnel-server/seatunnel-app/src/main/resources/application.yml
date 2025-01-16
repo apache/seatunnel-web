@@ -44,6 +44,12 @@ jwt:
   secretKey:
   algorithm: HS256
 
+seatunnel:
+  authentication:
+    providers:
+      - DB
+      #- LDAP # LDAP authentication is disabled by default
+
 ---
 spring:
   config:
