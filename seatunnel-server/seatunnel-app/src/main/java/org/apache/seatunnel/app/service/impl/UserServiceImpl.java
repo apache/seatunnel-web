@@ -42,6 +42,8 @@ import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -159,11 +161,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserSimpleInfoRes login(UserLoginReq req, String authType) {
-        if (!strategies.containsKey(authType)) {
+        if (StringUtils.isNotEmpty(authType) && !strategies.containsKey(authType)) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.INVALID_AUTHENTICATION_PROVIDER, authType);
         }
-        IAuthenticationStrategy strategy = strategies.get(authType);
+        IAuthenticationStrategy strategy =
+                strategies.getOrDefault(authType, dbAuthenticationStrategy);
         User user = strategy.authenticate(req);
         UserSimpleInfoRes translate = translate(user);
         final String token = jwtUtils.genToken(translate.toMap());
