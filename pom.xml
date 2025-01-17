@@ -100,7 +100,7 @@
         <jsoup.version>1.14.3</jsoup.version>
         <jwt.version>0.10.7</jwt.version>
         <cron-utils.version>9.1.6</cron-utils.version>
-        <commons-io.version>2.11.0</commons-io.version>
+        <commons-io.version>2.14.0</commons-io.version>
         <jsr305.version>3.0.0</jsr305.version>
         <auto-service-annotation.version>1.0.1</auto-service-annotation.version>
         <hadoop-aws.version>3.1.4</hadoop-aws.version>
