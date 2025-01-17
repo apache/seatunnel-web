@@ -73,10 +73,8 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
             Date endTime,
             String jobDefineName,
             JobMode jobMode) {
-        IPage<SeaTunnelJobInstanceDto> jobInstanceIPage =
-                jobInstanceMapper.queryJobInstanceListPaging(
-                        page, startTime, endTime, jobDefineName, jobMode);
-        return jobInstanceIPage;
+        return jobInstanceMapper.queryJobInstanceListPaging(
+                page, startTime, endTime, jobDefineName, jobMode);
     }
 
     @Override

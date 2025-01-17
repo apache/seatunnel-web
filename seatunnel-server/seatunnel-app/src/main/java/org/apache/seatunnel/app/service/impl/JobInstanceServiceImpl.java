@@ -177,7 +177,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         Map<String, List<Config>> sinkMap = new LinkedHashMap<>();
         Map<String, JobLine> inputLines =
                 lines.stream()
-                        .collect(Collectors.toMap(JobLine::getInputPluginId, Function.identity()));
+                        .collect(
+                                Collectors.toMap(
+                                        JobLine::getInputPluginId,
+                                        Function.identity(),
+                                        (existing, replacement) -> existing));
         Map<String, JobLine> targetLines =
                 lines.stream()
                         .collect(Collectors.toMap(JobLine::getTargetPluginId, Function.identity()));
@@ -484,7 +488,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     private Config addTableName(String tableName, JobLine jobLine, Config config) {
         return config.withValue(
-                tableName, ConfigValueFactory.fromAnyRef("Table" + jobLine.getId()));
+                tableName, ConfigValueFactory.fromAnyRef("Table" + jobLine.getInputPluginId()));
     }
 
     private Config filterEmptyValue(Config config) {
