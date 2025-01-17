@@ -25,7 +25,7 @@
     <artifactId>datasource-kafka</artifactId>
 
     <properties>
-        <kafka.client.version>3.4.0</kafka.client.version>
+        <kafka.client.version>3.7.1</kafka.client.version>
     </properties>
 
     <dependencies>
