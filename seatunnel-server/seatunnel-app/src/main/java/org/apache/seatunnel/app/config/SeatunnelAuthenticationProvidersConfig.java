@@ -26,7 +26,7 @@ import java.util.List;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "seatunnel.authentication")
+@ConfigurationProperties(prefix = "spring.authentication")
 public class SeatunnelAuthenticationProvidersConfig {
     private List<String> providers = new ArrayList<>();
 }
