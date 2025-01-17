@@ -52,6 +52,7 @@ public class UserDaoImpl implements IUserDao {
         user.setPassword(dto.getPassword());
         user.setType((byte) dto.getType());
         user.setStatus((byte) dto.getStatus());
+        user.setAuthProvider(dto.getAuthProvider());
 
         userMapper.insert(user);
         return user.getId();
@@ -114,8 +115,8 @@ public class UserDaoImpl implements IUserDao {
     }
 
     @Override
-    public User checkPassword(String username, String password) {
-        return userMapper.selectByNameAndPasswd(username, password);
+    public User checkPassword(String username, String password, String authProvider) {
+        return userMapper.selectByNameAndPasswd(username, password, authProvider);
     }
 
     @Override

@@ -28,4 +28,5 @@ public class UpdateUserDto {
     private String password;
     private int status;
     private int type;
+    private String authProvider;
 }
