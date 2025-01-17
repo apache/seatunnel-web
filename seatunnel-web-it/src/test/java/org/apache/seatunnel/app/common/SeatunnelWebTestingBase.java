@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Map;
 
 public class SeatunnelWebTestingBase {
@@ -43,7 +44,9 @@ public class SeatunnelWebTestingBase {
     public Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq, String authType) {
         String requestBody = JsonUtils.toJsonString(userLoginReq);
         Map<String, String> headers =
-                authType != null ? Map.of("X-Seatunnel-Auth-Type", authType) : null;
+                authType != null
+                        ? Collections.singletonMap("X-Seatunnel-Auth-Type", authType)
+                        : null;
         String response = sendRequest(url("user/login"), requestBody, "POST", headers);
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<UserSimpleInfoRes>>() {});
