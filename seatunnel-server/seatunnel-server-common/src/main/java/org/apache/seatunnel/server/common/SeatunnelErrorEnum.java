@@ -32,8 +32,8 @@ public enum SeatunnelErrorEnum {
 
     USERNAME_PASSWORD_NO_MATCHED(
             10007,
-            "username and password no matched",
-            "The user name and password do not match, please check your input"),
+            "username and password not matched or user is disabled.",
+            "The user name and password do not match or user is disabled, please check your input"),
 
     TOKEN_ILLEGAL(10008, "token illegal", "The token is expired or invalid, please login again."),
     INVALID_AUTHENTICATION_PROVIDER(
