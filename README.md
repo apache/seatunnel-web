@@ -242,7 +242,7 @@ Execute the following SQL to upgrade the database:
 #### 2. Upgrade from 1.0.2 or before to 1.0.3 or after.
 - Execute the following SQL to upgrade the database:
   ```
-    ALTER TABLE `user` ADD COLUMN `auth_provider` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;
+    ALTER TABLE `user` ADD COLUMN `auth_provider` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'DB';
   ```
 - Enabling LDAP Support,
   - For LDAP support, you need to add the LDAP server configurations and include LDAP in the list of authentication providers in the application.yml file. 

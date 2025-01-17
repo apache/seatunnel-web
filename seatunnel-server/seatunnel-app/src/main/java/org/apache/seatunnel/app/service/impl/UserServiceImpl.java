@@ -80,14 +80,11 @@ public class UserServiceImpl implements IUserService {
 
     @PostConstruct
     public void init() {
-        if (seatunnelAuthenticationProvidersConfig
-                .getProviders()
-                .contains(Constants.AUTHENTICATION_PROVIDER_DB)) {
+        List<String> providers = seatunnelAuthenticationProvidersConfig.getProviders();
+        if (providers.isEmpty() || providers.contains(Constants.AUTHENTICATION_PROVIDER_DB)) {
             strategies.put(Constants.AUTHENTICATION_PROVIDER_DB, dbAuthenticationStrategy);
         }
-        if (seatunnelAuthenticationProvidersConfig
-                .getProviders()
-                .contains(Constants.AUTHENTICATION_PROVIDER_LDAP)) {
+        if (providers.contains(Constants.AUTHENTICATION_PROVIDER_LDAP)) {
             strategies.put(Constants.AUTHENTICATION_PROVIDER_LDAP, ldapAuthenticationStrategy);
         }
     }
@@ -173,12 +170,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserSimpleInfoRes login(UserLoginReq req, String authType) {
-        if (StringUtils.isNotEmpty(authType) && !strategies.containsKey(authType)) {
+        authType = StringUtils.isEmpty(authType) ? Constants.AUTHENTICATION_PROVIDER_DB : authType;
+        if (!strategies.containsKey(authType)) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.INVALID_AUTHENTICATION_PROVIDER, authType);
         }
-        IAuthenticationStrategy strategy =
-                strategies.getOrDefault(authType, dbAuthenticationStrategy);
+        IAuthenticationStrategy strategy = strategies.get(authType);
         User user = strategy.authenticate(req);
         UserSimpleInfoRes translate = translate(user);
         final String token = jwtUtils.genToken(translate.toMap());
