@@ -96,7 +96,7 @@
         select
         <include refid="Base_Column_List"/>
         from `user`
-        where username = #{username,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR} and auth_provider = #{authProvider,jdbcType=VARCHAR}
+        where status = 0 and username = #{username,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR} and auth_provider = #{authProvider,jdbcType=VARCHAR}
     </select>
     <select id="queryEnabledUsers" resultType="org.apache.seatunnel.app.dal.entity.User">
         select

@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.domain.request.user.UpdateUserReq;
 import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -145,6 +147,36 @@ public class UserControllerTest {
                 userControllerWrapper.login(loginReq, "INVALID_AUTH_TYPE");
         assertTrue(loginResult.isFailed());
         assertEquals("Invalid authentication provider [INVALID_AUTH_TYPE]", loginResult.getMsg());
+    }
+
+    @Test
+    public void disabledUser_shouldNotBeAbleToLogin() {
+        String user = "disabledUser" + uniqueId.get();
+        String pass = "pass7";
+        AddUserReq addUserReq = getAddUserReq(user, pass);
+        Result<AddUserRes> result = userControllerWrapper.addUser(addUserReq);
+        assertTrue(result.isSuccess());
+
+        // Disable the user
+        UpdateUserReq updateUserReq = new UpdateUserReq();
+        updateUserReq.setUsername(user);
+        updateUserReq.setUserId(result.getData().getId());
+        updateUserReq.setPassword(pass);
+        updateUserReq.setStatus((byte) 1);
+        updateUserReq.setType((byte) 0);
+        Result<Void> disableUserResult =
+                userControllerWrapper.updateUser(
+                        Long.toString(result.getData().getId()), updateUserReq);
+        assertTrue(disableUserResult.isSuccess());
+
+        // Attempt to login with the disabled user
+        UserLoginReq loginReq = new UserLoginReq();
+        loginReq.setUsername(user);
+        loginReq.setPassword(pass);
+        Result<UserSimpleInfoRes> loginResult = userControllerWrapper.login(loginReq);
+        assertFalse(loginResult.isSuccess());
+        assertEquals(
+                SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED.getCode(), loginResult.getCode());
     }
 
     @AfterAll
