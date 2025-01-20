@@ -31,13 +31,23 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
 
 public class SeatunnelWebTestingBase {
     protected final String baseUrl = "http://localhost:8802/seatunnel/api/v1";
 
-    protected Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq) {
+    public Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq) {
+        return login(userLoginReq, null);
+    }
+
+    public Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq, String authType) {
         String requestBody = JsonUtils.toJsonString(userLoginReq);
-        String response = sendRequest(url("user/login"), requestBody, "POST");
+        Map<String, String> headers =
+                authType != null
+                        ? Collections.singletonMap("X-Seatunnel-Auth-Type", authType)
+                        : null;
+        String response = sendRequest(url("user/login"), requestBody, "POST", headers);
         return JSONTestUtils.parseObject(
                 response, new TypeReference<Result<UserSimpleInfoRes>>() {});
     }
@@ -51,10 +61,15 @@ public class SeatunnelWebTestingBase {
     }
 
     protected String sendRequest(String url) {
-        return sendRequest(url, null, "GET");
+        return sendRequest(url, null, "GET", null);
     }
 
     protected String sendRequest(String url, String requestBody, String httpMethod) {
+        return sendRequest(url, requestBody, httpMethod, null);
+    }
+
+    protected String sendRequest(
+            String url, String requestBody, String httpMethod, Map<String, String> headers) {
         HttpURLConnection connection = null;
         try {
             URL urlObject = new URL(url);
@@ -68,6 +83,11 @@ public class SeatunnelWebTestingBase {
             connection.setRequestProperty("Content-Type", "application/json");
             if (!url.endsWith("user/login?")) {
                 connection.setRequestProperty("token", TokenProvider.getToken());
+            }
+            if (headers != null && !headers.isEmpty()) {
+                for (Map.Entry<String, String> header : headers.entrySet()) {
+                    connection.setRequestProperty(header.getKey(), header.getValue());
+                }
             }
             connection.setDoOutput(true);
             if (requestBody != null) {

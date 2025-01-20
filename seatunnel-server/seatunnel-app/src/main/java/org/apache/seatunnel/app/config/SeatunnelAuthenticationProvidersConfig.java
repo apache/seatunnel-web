@@ -14,28 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.config;
 
-package org.apache.seatunnel.app.dal.entity;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-public class User {
-    private Integer id;
-
-    private String username;
-
-    private String password;
-
-    private Byte status;
-
-    private Byte type;
-
-    private Date createTime;
-
-    private Date updateTime;
-
-    private String authProvider;
+@Configuration
+@ConfigurationProperties(prefix = "spring.authentication")
+public class SeatunnelAuthenticationProvidersConfig {
+    private List<String> providers = new ArrayList<>();
 }

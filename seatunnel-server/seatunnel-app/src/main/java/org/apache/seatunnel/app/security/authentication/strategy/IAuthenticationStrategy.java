@@ -14,30 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.security.authentication.strategy;
 
-package org.apache.seatunnel.app.service;
-
-import org.apache.seatunnel.app.domain.request.user.AddUserReq;
-import org.apache.seatunnel.app.domain.request.user.UpdateUserReq;
-import org.apache.seatunnel.app.domain.request.user.UserListReq;
+import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
-import org.apache.seatunnel.app.domain.response.PageInfo;
-import org.apache.seatunnel.app.domain.response.user.AddUserRes;
-import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 
-public interface IUserService {
-
-    AddUserRes add(AddUserReq addReq);
-
-    void update(UpdateUserReq updateReq);
-
-    void delete(int id);
-
-    PageInfo<UserSimpleInfoRes> list(UserListReq userListReq);
-
-    void enable(int id);
-
-    void disable(int id);
-
-    UserSimpleInfoRes login(UserLoginReq req, String authType);
+public interface IAuthenticationStrategy {
+    User authenticate(UserLoginReq req);
 }

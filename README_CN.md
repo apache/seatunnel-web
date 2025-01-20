@@ -231,4 +231,27 @@ sh bin/seatunnel-backend-daemon.sh start
 
 ```ALTER TABLE `t_st_job_instance` ADD COLUMN `error_message` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;```
 
-
+#### 2. 从1.0.2或更早版本升级到1.0.3或更高版本。
+- 执行以下SQL语句以升级数据库：
+  ```
+    ALTER TABLE `user` ADD COLUMN `auth_provider` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'DB';
+  ```
+- 启用LDAP支持，
+  - 要启用LDAP支持，您需要在`application.yml`文件中添加LDAP服务器配置，并将LDAP包含在认证提供者列表中。
+  - 如果未定义任何认证提供者，将使用默认的DB策略，不需要做任何更改。
+  - 以下是认证提供者和LDAP服务器设置的示例配置。
+    ```
+     # sample application.yaml
+     spring:
+       ldap:
+         url: ldap://localhost:389
+         search:
+         base: ou=people,dc=example,dc=com
+         filter: (uid={0})
+         domain: example.com
+    seatunnel:
+      authentication:
+        providers:
+          - DB
+          - LDAP
+    ``` 
