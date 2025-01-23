@@ -32,6 +32,10 @@ connector-datasource-mapper:
       dataSources:
         - MySQL-CDC
 
+    Doris:
+      dataSources:
+        - Doris
+
     Kafka:
       dataSources:
         - Kafka
@@ -222,6 +226,15 @@ connector-datasource-mapper:
       sceneMode:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
+
+    Doris:
+      businessMode:
+        - DATA_INTEGRATION
+        - DATA_REPLICA
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
+        - SPLIT_TABLE
 
     StarRocks:
       businessMode:
