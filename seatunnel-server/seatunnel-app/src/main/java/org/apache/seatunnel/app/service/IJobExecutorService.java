@@ -22,9 +22,9 @@ import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 
 public interface IJobExecutorService {
 
-    Result<Long> jobExecute(Integer userId, Long jobDefineId, JobExecParam executeParam);
+    Result<Long> jobExecute(Long jobDefineId, JobExecParam executeParam);
 
-    Result<Void> jobPause(Integer userId, Long jobInstanceId);
+    Result<Void> jobPause(Long jobInstanceId);
 
-    Result<Void> jobStore(Integer userId, Long jobInstanceId);
+    Result<Void> jobStore(Long jobInstanceId);
 }

@@ -14,15 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.app.domain.request.job.JobConfig;
-import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+package org.apache.seatunnel.app.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.seatunnel.app.dal.entity.User;
+import org.apache.seatunnel.app.security.UserContext;
 
-public interface IJobConfigService {
-    JobConfigRes getJobConfig(long jobVersionIdId) throws JsonProcessingException;
+public class ServletUtils {
 
-    void updateJobConfig(long jobVersionId, JobConfig jobConfig) throws JsonProcessingException;
+    public static User getCurrentUser() {
+        return UserContext.getUser();
+    }
+
+    public static Integer getCurrentUserId() {
+        return getCurrentUser().getId();
+    }
 }

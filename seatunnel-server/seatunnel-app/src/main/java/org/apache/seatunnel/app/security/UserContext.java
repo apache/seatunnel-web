@@ -14,15 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seatunnel.app.service;
+package org.apache.seatunnel.app.security;
 
-import org.apache.seatunnel.app.domain.request.job.JobConfig;
-import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+import org.apache.seatunnel.app.dal.entity.User;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+public class UserContext {
+    private static final ThreadLocal<User> userHolder = new ThreadLocal<>();
 
-public interface IJobConfigService {
-    JobConfigRes getJobConfig(long jobVersionIdId) throws JsonProcessingException;
+    public static void setUser(User user) {
+        userHolder.set(user);
+    }
 
-    void updateJobConfig(long jobVersionId, JobConfig jobConfig) throws JsonProcessingException;
+    public static User getUser() {
+        User user = userHolder.get();
+        if (user == null) {
+            throw new RuntimeException("User context not found");
+        }
+        return user;
+    }
+
+    public static void clear() {
+        userHolder.remove();
+    }
 }

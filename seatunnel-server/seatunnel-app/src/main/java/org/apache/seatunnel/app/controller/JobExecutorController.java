@@ -31,7 +31,6 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,22 +56,20 @@ public class JobExecutorController {
     @PostMapping("/execute")
     @ApiOperation(value = "Execute synchronization tasks", httpMethod = "POST")
     public Result<Long> jobExecutor(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobDefineId", required = true) @RequestParam("jobDefineId")
                     Long jobDefineId,
             @RequestBody(required = false) JobExecParam executeParam) {
-        return jobExecutorService.jobExecute(userId, jobDefineId, executeParam);
+        return jobExecutorService.jobExecute(jobDefineId, executeParam);
     }
 
     @GetMapping("/resource")
     @ApiOperation(value = "get the resource for job executor", httpMethod = "GET")
     public Result<JobExecutorRes> resource(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "Job define id", required = true) @RequestParam Long jobDefineId)
             throws IOException {
         try {
             JobExecutorRes executeResource =
-                    jobInstanceService.createExecuteResource(userId, jobDefineId, null);
+                    jobInstanceService.createExecuteResource(jobDefineId, null);
             return Result.success(executeResource);
         } catch (Exception e) {
             log.error("Get the resource for job executor error", e);
@@ -82,39 +79,34 @@ public class JobExecutorController {
 
     @GetMapping("/pause")
     public Result<Void> jobPause(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
-        return jobExecutorService.jobPause(userId, jobInstanceId);
+        return jobExecutorService.jobPause(jobInstanceId);
     }
 
     @GetMapping("/restore")
     public Result<Void> jobRestore(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
-        return jobExecutorService.jobStore(userId, jobInstanceId);
+        return jobExecutorService.jobStore(jobInstanceId);
     }
 
     @GetMapping("/status")
     @ApiOperation(value = "get job execution status", httpMethod = "GET")
     Result<JobExecutionStatus> getJobExecutionStatus(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
-        return taskInstanceService.getJobExecutionStatus(userId, jobInstanceId);
+        return taskInstanceService.getJobExecutionStatus(jobInstanceId);
     }
 
     @GetMapping("/detail")
     @ApiOperation(value = "get job execution status and some more details", httpMethod = "GET")
     Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
-        return taskInstanceService.getJobExecutionDetail(userId, jobInstanceId);
+        return taskInstanceService.getJobExecutionDetail(jobInstanceId);
     }
 
     @DeleteMapping("/delete")
     @ApiOperation(value = "Deletes given job instance id", httpMethod = "DELETE")
     Result<Void> deleteJobInstance(
-            @ApiParam(value = "userId", required = true) @RequestAttribute("userId") Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {
-        return taskInstanceService.deleteJobInstanceById(userId, jobInstanceId);
+        return taskInstanceService.deleteJobInstanceById(jobInstanceId);
     }
 }

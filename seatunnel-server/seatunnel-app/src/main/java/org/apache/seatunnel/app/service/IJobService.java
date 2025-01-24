@@ -23,10 +23,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface IJobService {
 
-    long createJob(int userId, JobCreateReq jobCreateRequest) throws JsonProcessingException;
+    long createJob(JobCreateReq jobCreateRequest) throws JsonProcessingException;
 
-    void updateJob(Integer userId, long jobId, JobCreateReq jobCreateReq)
-            throws JsonProcessingException;
+    void updateJob(long jobId, JobCreateReq jobCreateReq) throws JsonProcessingException;
 
-    JobRes getJob(Integer userId, long jobId) throws JsonProcessingException;
+    JobRes getJob(long jobId) throws JsonProcessingException;
 }

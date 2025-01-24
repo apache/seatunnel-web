@@ -31,6 +31,7 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
@@ -71,8 +72,8 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     @Transactional
-    public long createJob(int userId, JobReq jobReq)
-            throws CodeGenerateUtils.CodeGenerateException {
+    public long createJob(JobReq jobReq) throws CodeGenerateUtils.CodeGenerateException {
+        Integer userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_CREATE, userId);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         jobDefinitionDao.add(
