@@ -46,6 +46,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
@@ -596,7 +597,12 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         JobInstanceHistory byInstanceId =
                 jobInstanceHistoryDao.getByInstanceId(jobInstance.getId());
         if (byInstanceId == null) {
-            jobInstanceHistoryDao.insert(jobHistoryFromEngine);
+            try {
+                jobInstanceHistoryDao.insert(jobHistoryFromEngine);
+            } catch (DuplicateKeyException e) {
+                // Handle the race condition gracefully
+                jobInstanceHistoryDao.updateJobInstanceHistory(jobHistoryFromEngine);
+            }
         } else {
             jobInstanceHistoryDao.updateJobInstanceHistory(jobHistoryFromEngine);
         }
