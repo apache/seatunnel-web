@@ -62,6 +62,7 @@ import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUt
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
@@ -125,7 +126,8 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public JobExecutorRes createExecuteResource(
-            @NonNull Integer userId, @NonNull Long jobDefineId, JobExecParam executeParam) {
+            @NonNull Long jobDefineId, JobExecParam executeParam) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_RESOURCE, userId);
         log.info(
                 "receive createExecuteResource request, userId:{}, jobDefineId:{}",
@@ -349,13 +351,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public void complete(
-            @NonNull Integer userId,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId,
-            JobResult jobResult) {
+            @NonNull Long jobInstanceId, @NonNull String jobEngineId, JobResult jobResult) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_COMPLETE, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
-        jobMetricsService.syncJobDataToDb(jobInstance, userId, jobEngineId);
+        jobMetricsService.syncJobDataToDb(jobInstance, jobEngineId);
         jobInstance.setJobStatus(jobResult.getStatus());
         jobInstance.setJobEngineId(jobEngineId);
         jobInstance.setUpdateUserId(userId);

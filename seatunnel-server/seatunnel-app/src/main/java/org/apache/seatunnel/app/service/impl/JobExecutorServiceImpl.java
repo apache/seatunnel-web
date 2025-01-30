@@ -42,6 +42,8 @@ import org.apache.seatunnel.engine.core.job.JobResult;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.hazelcast.client.config.ClientConfig;
@@ -65,18 +67,19 @@ import java.util.concurrent.Executors;
 public class JobExecutorServiceImpl implements IJobExecutorService {
     @Resource private IJobInstanceService jobInstanceService;
     @Resource private IJobInstanceDao jobInstanceDao;
+    @Autowired private AsyncTaskExecutor taskExecutor;
 
     @Override
-    public Result<Long> jobExecute(Integer userId, Long jobDefineId, JobExecParam executeParam) {
+    public Result<Long> jobExecute(Long jobDefineId, JobExecParam executeParam) {
 
         JobExecutorRes executeResource =
-                jobInstanceService.createExecuteResource(userId, jobDefineId, executeParam);
+                jobInstanceService.createExecuteResource(jobDefineId, executeParam);
         String jobConfig = executeResource.getJobConfig();
 
         String configFile = writeJobConfigIntoConfFile(jobConfig, jobDefineId);
 
         try {
-            executeJobBySeaTunnel(userId, configFile, executeResource.getJobInstanceId());
+            executeJobBySeaTunnel(configFile, executeResource.getJobInstanceId());
             return Result.success(executeResource.getJobInstanceId());
         } catch (RuntimeException e) {
             Result<Long> failure =
@@ -112,7 +115,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         return filePath;
     }
 
-    private void executeJobBySeaTunnel(Integer userId, String filePath, Long jobInstanceId) {
+    private void executeJobBySeaTunnel(String filePath, Long jobInstanceId) {
         Common.setDeployMode(DeployMode.CLIENT);
         JobConfig jobConfig = new JobConfig();
         jobConfig.setName(jobInstanceId + "_job");
@@ -137,20 +140,20 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         jobInstance.setJobEngineId(Long.toString(clientJobProxy.getJobId()));
         jobInstanceDao.update(jobInstance);
+        // Use Spring thread pool to handle asynchronous user retrieval
         CompletableFuture.runAsync(
                 () -> {
                     waitJobFinish(
                             clientJobProxy,
-                            userId,
                             jobInstanceId,
                             Long.toString(clientJobProxy.getJobId()),
                             seaTunnelClient);
-                });
+                },
+                taskExecutor);
     }
 
     public void waitJobFinish(
             ClientJobProxy clientJobProxy,
-            Integer userId,
             Long jobInstanceId,
             String jobEngineId,
             SeaTunnelClient seaTunnelClient) {
@@ -170,7 +173,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
         } finally {
             seaTunnelClient.close();
             log.info("and jobInstanceService.complete begin");
-            jobInstanceService.complete(userId, jobInstanceId, jobEngineId, jobResult);
+            jobInstanceService.complete(jobInstanceId, jobEngineId, jobResult);
         }
     }
 
@@ -180,7 +183,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     @Override
-    public Result<Void> jobPause(Integer userId, Long jobInstanceId) {
+    public Result<Void> jobPause(Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         if (getJobStatusFromEngine(jobInstance, jobInstance.getJobEngineId())
                 == JobStatus.RUNNING) {
@@ -204,7 +207,7 @@ public class JobExecutorServiceImpl implements IJobExecutorService {
     }
 
     @Override
-    public Result<Void> jobStore(Integer userId, Long jobInstanceId) {
+    public Result<Void> jobStore(Long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
 
         String projectRoot = System.getProperty("user.dir");

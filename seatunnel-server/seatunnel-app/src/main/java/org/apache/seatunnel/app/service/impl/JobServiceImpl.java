@@ -60,15 +60,14 @@ public class JobServiceImpl implements IJobService {
 
     @Override
     @Transactional
-    public long createJob(int userId, JobCreateReq jobCreateRequest)
-            throws JsonProcessingException {
+    public long createJob(JobCreateReq jobCreateRequest) throws JsonProcessingException {
         JobReq jobDefinition = getJobDefinition(jobCreateRequest.getJobConfig());
-        long jobId = jobService.createJob(userId, jobDefinition);
-        createTasks(userId, jobCreateRequest, jobId);
+        long jobId = jobService.createJob(jobDefinition);
+        createTasks(jobCreateRequest, jobId);
         return jobId;
     }
 
-    private void createTasks(int userId, JobCreateReq jobCreateRequest, long jobId)
+    private void createTasks(JobCreateReq jobCreateRequest, long jobId)
             throws JsonProcessingException {
         List<PluginConfig> pluginConfig = jobCreateRequest.getPluginConfigs();
         Set<String> edgeIds =
@@ -91,7 +90,7 @@ public class JobServiceImpl implements IJobService {
                 pluginNameVsPluginId.put(pluginIdKey, newPluginId);
             }
         }
-        jobConfigService.updateJobConfig(userId, jobId, jobCreateRequest.getJobConfig());
+        jobConfigService.updateJobConfig(jobId, jobCreateRequest.getJobConfig());
         JobDAG jobDAG = jobCreateRequest.getJobDAG();
         // Replace the plugin name with plugin id
         List<Edge> edges = jobDAG.getEdges();
@@ -135,14 +134,14 @@ public class JobServiceImpl implements IJobService {
     }
 
     @Override
-    public void updateJob(Integer userId, long jobVersionId, JobCreateReq jobCreateReq)
+    public void updateJob(long jobVersionId, JobCreateReq jobCreateReq)
             throws JsonProcessingException {
         jobTaskService.deleteTaskByVersionId(jobVersionId);
-        createTasks(userId, jobCreateReq, jobVersionId);
+        createTasks(jobCreateReq, jobVersionId);
     }
 
     @Override
-    public JobRes getJob(Integer userId, long jobVersionId) throws JsonProcessingException {
+    public JobRes getJob(long jobVersionId) throws JsonProcessingException {
         JobConfigRes jobConfig = jobConfigService.getJobConfig(jobVersionId);
         JobTaskInfo taskConfig = jobTaskService.getTaskConfig(jobVersionId);
         return new JobRes(jobConfig, taskConfig.getPlugins(), new JobDAG(taskConfig.getEdges()));

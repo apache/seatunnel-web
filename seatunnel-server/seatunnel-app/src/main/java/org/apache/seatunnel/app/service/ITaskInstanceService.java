@@ -26,7 +26,6 @@ import org.apache.seatunnel.common.constants.JobMode;
 public interface ITaskInstanceService<T> {
 
     Result<PageInfo<T>> getSyncTaskInstancePaging(
-            Integer userId,
             String jobDefineName,
             String executorName,
             String stateType,
@@ -36,9 +35,9 @@ public interface ITaskInstanceService<T> {
             Integer pageNo,
             Integer pageSize);
 
-    Result<JobExecutionStatus> getJobExecutionStatus(Integer userId, long jobInstanceId);
+    Result<JobExecutionStatus> getJobExecutionStatus(long jobInstanceId);
 
-    Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(Integer userId, long jobInstanceId);
+    Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(long jobInstanceId);
 
-    Result<Void> deleteJobInstanceById(Integer userId, long jobInstanceId);
+    Result<Void> deleteJobInstanceById(long jobInstanceId);
 }

@@ -71,10 +71,8 @@ public class VirtualTableController extends BaseController {
                 dataType = "VirtualTableReq")
     })
     @PostMapping("/create")
-    Result<String> createVirtualTable(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestBody VirtualTableReq tableReq) {
-        return Result.success(virtualTableService.createVirtualTable(loginUser.getId(), tableReq));
+    Result<String> createVirtualTable(@RequestBody VirtualTableReq tableReq) {
+        return Result.success(virtualTableService.createVirtualTable(tableReq));
     }
 
     @ApiOperation(value = "update virtual table", httpMethod = "PUT")
@@ -92,11 +90,8 @@ public class VirtualTableController extends BaseController {
     })
     @PutMapping("/{id}")
     Result<Boolean> updateVirtualTable(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @PathVariable("id") String id,
-            @RequestBody VirtualTableReq tableReq) {
-        return Result.success(
-                virtualTableService.updateVirtualTable(loginUser.getId(), id, tableReq));
+            @PathVariable("id") String id, @RequestBody VirtualTableReq tableReq) {
+        return Result.success(virtualTableService.updateVirtualTable(id, tableReq));
     }
 
     @ApiOperation(value = "check virtual table valid", httpMethod = "GET")
@@ -131,10 +126,8 @@ public class VirtualTableController extends BaseController {
                 dataType = "String")
     })
     @DeleteMapping("/{id}")
-    Result<Boolean> deleteVirtualTable(
-            @PathVariable("id") String id,
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser) {
-        return Result.success(virtualTableService.deleteVirtualTable(loginUser.getId(), id));
+    Result<Boolean> deleteVirtualTable(@PathVariable("id") String id) {
+        return Result.success(virtualTableService.deleteVirtualTable(id));
     }
 
     @ApiOperation(value = "query virtual table detail by id", httpMethod = "GET")

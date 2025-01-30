@@ -96,8 +96,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         User user = new User();
         user.setUsername((String) map.get("name"));
         user.setId((Integer) map.get("id"));
-        //        user.setStatus((Byte) map.get("status"));
-        //        user.setType((Byte) map.get("type"));
+        log.debug(
+                "Setting user to request attributes: userId={}, username={}",
+                user.getId(),
+                user.getUsername());
         request.setAttribute(Constants.SESSION_USER, user);
         request.setAttribute("userId", userId);
         return true;

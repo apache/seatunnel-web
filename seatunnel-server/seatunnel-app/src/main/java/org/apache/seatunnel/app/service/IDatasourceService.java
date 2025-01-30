@@ -33,7 +33,6 @@ public interface IDatasourceService {
     /**
      * create datasource
      *
-     * @param userId userid
      * @param datasourceName is required //todo datasourceName global is required
      * @param pluginName is required
      * @param pluginVersion is required
@@ -42,7 +41,6 @@ public interface IDatasourceService {
      * @return datasourceId
      */
     String createDatasource(
-            Integer userId,
             String datasourceName,
             String pluginName,
             String pluginVersion,
@@ -53,7 +51,6 @@ public interface IDatasourceService {
     /**
      * update datasource
      *
-     * @param userId userid
      * @param datasourceId datasource id
      * @param datasourceName datasourceName
      * @param description description
@@ -61,7 +58,6 @@ public interface IDatasourceService {
      * @return boolean
      */
     boolean updateDatasource(
-            Integer userId,
             Long datasourceId,
             String datasourceName,
             String description,
@@ -70,66 +66,49 @@ public interface IDatasourceService {
     /**
      * delete datasource
      *
-     * @param userId userId
      * @param datasourceId datasourceId
      * @return boolean
      */
-    boolean deleteDatasource(Integer userId, Long datasourceId);
+    boolean deleteDatasource(Long datasourceId);
 
     /**
      * test datasource is used
      *
-     * @param userId userId
      * @param pluginName pluginName
      * @param pluginVersion pluginVersion default is 1.0.0
      * @param datasourceConfig datasourceConfig
      * @return boolean
      */
     boolean testDatasourceConnectionAble(
-            Integer userId,
-            String pluginName,
-            String pluginVersion,
-            Map<String, String> datasourceConfig);
+            String pluginName, String pluginVersion, Map<String, String> datasourceConfig);
 
     /**
      * test datasource is used
      *
-     * @param userId userId
      * @param datasourceId datasourceId
      * @return boolean
      */
-    boolean testDatasourceConnectionAble(Integer userId, Long datasourceId);
+    boolean testDatasourceConnectionAble(Long datasourceId);
 
     /**
      * checkDatasourceNameUnique
      *
-     * @param userId userId
      * @param datasourceName datasourceName
      * @param dataSourceId dataSourceId
      * @return boolean
      */
-    boolean checkDatasourceNameUnique(Integer userId, String datasourceName, Long dataSourceId);
+    boolean checkDatasourceNameUnique(String datasourceName, Long dataSourceId);
 
     /**
      * queryDatasourceList
      *
-     * @param userId userId
      * @param pluginName pluginName
      * @param pageNo pageNo
      * @param pageSize pageSize
      * @return PageInfo DatasourceRes
      */
     PageInfo<DatasourceRes> queryDatasourceList(
-            Integer userId, String searchVal, String pluginName, Integer pageNo, Integer pageSize);
-
-    /**
-     * datasourceId query detail
-     *
-     * @param userId userId
-     * @param datasourceId datasourceId
-     * @return DatasourceDetailRes
-     */
-    DatasourceDetailRes queryDatasourceDetailById(Integer userId, String datasourceId);
+            String searchVal, String pluginName, Integer pageNo, Integer pageSize);
 
     /**
      * datasourceId query detail

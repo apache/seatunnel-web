@@ -41,6 +41,11 @@ spring:
     providers:
       - DB
       #- LDAP # LDAP authentication is disabled by default
+  async-config:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 100
+
 jwt:
   expireTime: 86400
   # please add key when deploy
