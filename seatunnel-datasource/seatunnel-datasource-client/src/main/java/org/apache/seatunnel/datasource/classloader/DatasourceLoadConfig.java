@@ -51,6 +51,11 @@ public class DatasourceLoadConfig {
                 "JDBC-MYSQL",
                 "org.apache.seatunnel.datasource.plugin.mysql.jdbc.MysqlJdbcDataSourceFactory");
         classLoaderFactoryName.put(
+                "DORIS", "org.apache.seatunnel.datasource.plugin.doris.DorisDataSourceFactory");
+        classLoaderFactoryName.put(
+                "JDBC-DORIS",
+                "org.apache.seatunnel.datasource.plugin.doris.jdbc.DorisJdbcDataSourceFactory");
+        classLoaderFactoryName.put(
                 "ELASTICSEARCH",
                 "org.apache.seatunnel.datasource.plugin.elasticsearch.ElasticSearchDataSourceFactory");
         classLoaderFactoryName.put(
@@ -135,6 +140,7 @@ public class DatasourceLoadConfig {
     public static final Set<String> pluginSet =
             Sets.newHashSet(
                     "JDBC-Mysql",
+                    "Doris",
                     "ElasticSearch",
                     "JDBC-ClickHouse",
                     "Hive",
