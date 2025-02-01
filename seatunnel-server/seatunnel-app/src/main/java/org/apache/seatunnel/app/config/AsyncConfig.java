@@ -32,12 +32,18 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
 
+    private final ThreadPoolProperties threadPoolProperties;
+
+    public AsyncConfig(ThreadPoolProperties threadPoolProperties) {
+        this.threadPoolProperties = threadPoolProperties;
+    }
+
     @Bean
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(100);
+        executor.setCorePoolSize(threadPoolProperties.getCorePoolSize());
+        executor.setMaxPoolSize(threadPoolProperties.getMaxPoolSize());
+        executor.setQueueCapacity(threadPoolProperties.getQueueCapacity());
         executor.setThreadNamePrefix("AsyncThread-");
         executor.setTaskDecorator(new ContextCopyingDecorator());
         executor.initialize();
