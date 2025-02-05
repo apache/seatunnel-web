@@ -25,7 +25,6 @@ import org.apache.seatunnel.common.constants.JobMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +40,6 @@ public class TaskInstanceController {
     @GetMapping("/jobMetrics")
     @ApiOperation(value = "get the jobMetrics list ", httpMethod = "GET")
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(
-            @RequestAttribute(name = "userId") Integer userId,
             @RequestParam(name = "taskName", required = false) String jobDefineName,
             @RequestParam(name = "executorName", required = false) String executorName,
             @RequestParam(name = "stateType", required = false) String stateType,
@@ -51,7 +49,6 @@ public class TaskInstanceController {
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam("pageSize") Integer pageSize) {
         return taskInstanceService.getSyncTaskInstancePaging(
-                userId,
                 jobDefineName,
                 executorName,
                 stateType,

@@ -24,6 +24,7 @@ import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobConfigService;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -69,8 +70,9 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
 
     @Override
     @Transactional
-    public void updateJobConfig(int userId, long jobVersionId, JobConfig jobConfig)
+    public void updateJobConfig(long jobVersionId, JobConfig jobConfig)
             throws JsonProcessingException {
+        Integer userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_UPDATE, 0);
         JobVersion version = jobVersionDao.getVersionById(jobVersionId);
         if (version == null) {

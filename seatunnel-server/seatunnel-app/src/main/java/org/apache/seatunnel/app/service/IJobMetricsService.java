@@ -34,25 +34,20 @@ import java.util.Map;
 
 public interface IJobMetricsService {
 
-    List<JobPipelineSummaryMetricsRes> getJobPipelineSummaryMetrics(
-            @NonNull Integer userId, @NonNull Long jobInstanceId);
+    List<JobPipelineSummaryMetricsRes> getJobPipelineSummaryMetrics(@NonNull Long jobInstanceId);
 
-    List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
-            @NonNull Integer userId, @NonNull Long jobInstanceId);
+    List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(@NonNull Long jobInstanceId);
 
-    JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId)
-            throws JsonProcessingException;
+    JobDAG getJobDAG(@NonNull Long jobInstanceId) throws JsonProcessingException;
 
     ImmutablePair<Long, String> getInstanceIdAndEngineId(@NonNull String key);
 
-    void syncJobDataToDb(
-            @NonNull JobInstance jobInstance, @NonNull Integer userId, @NonNull String jobEngineId);
+    void syncJobDataToDb(@NonNull JobInstance jobInstance, @NonNull String jobEngineId);
 
     JobSummaryMetricsRes getJobSummaryMetrics(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId);
+            @NonNull Long jobInstanceId, @NonNull String jobEngineId);
 
     Map<Long, JobSummaryMetricsRes> getALLJobSummaryMetrics(
-            @NonNull Integer userId,
             @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
             @NonNull List<Long> jobInstanceIdList,
             @NonNull JobMode jobMode);
