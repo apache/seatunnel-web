@@ -39,6 +39,7 @@ import org.apache.seatunnel.app.security.authentication.strategy.impl.LDAPAuthen
 import org.apache.seatunnel.app.service.IRoleService;
 import org.apache.seatunnel.app.service.IUserService;
 import org.apache.seatunnel.app.utils.PasswordUtils;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -135,6 +136,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(int id) {
+        if(ServletUtils.getCurrentUserId() == id){
+            throw new SeatunnelException(SeatunnelErrorEnum.INVALID_OPERATION, "Can't delete yourself");
+        }
         userDaoImpl.delete(id);
         roleServiceImpl.deleteByUserId(id);
     }
