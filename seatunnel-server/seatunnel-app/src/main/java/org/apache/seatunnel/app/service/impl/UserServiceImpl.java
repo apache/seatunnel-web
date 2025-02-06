@@ -136,8 +136,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(int id) {
-        if(ServletUtils.getCurrentUserId() == id){
-            throw new SeatunnelException(SeatunnelErrorEnum.INVALID_OPERATION, "Can't delete yourself");
+        if (ServletUtils.getCurrentUserId() == id) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.INVALID_OPERATION, "Can't delete yourself");
         }
         userDaoImpl.delete(id);
         roleServiceImpl.deleteByUserId(id);
