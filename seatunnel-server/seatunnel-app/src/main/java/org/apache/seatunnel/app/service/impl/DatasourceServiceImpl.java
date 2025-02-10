@@ -37,6 +37,7 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
+import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
@@ -94,6 +95,8 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     protected static final String DEFAULT_DATASOURCE_PLUGIN_VERSION = "1.0.0";
 
+    @Autowired private ConfigShadeUtil configShadeUtil;
+
     @Override
     public String createDatasource(
             String datasourceName,
@@ -114,6 +117,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(
                     SeatunnelErrorEnum.DATASOURCE_PRAM_NOT_ALLOWED_NULL, "datasourceConfig");
         }
+        configShadeUtil.encryptData(datasourceConfig);
         String datasourceConfigStr = JsonUtils.toJsonString(datasourceConfig);
         Datasource datasource =
                 Datasource.builder()
@@ -171,6 +175,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         datasource.setUpdateTime(new Date());
         datasource.setDescription(description);
         if (MapUtils.isNotEmpty(datasourceConfig)) {
+            configShadeUtil.encryptData(datasourceConfig);
             String configJson = JsonUtils.toJsonString(datasourceConfig);
             datasource.setDatasourceConfig(configJson);
         }
@@ -226,6 +231,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         String configJson = datasource.getDatasourceConfig();
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(configJson, String.class, String.class);
+        configShadeUtil.decryptData(datasourceConfig);
         String pluginName = datasource.getPluginName();
         return DataSourceClientFactory.getDataSourceClient()
                 .checkDataSourceConnectivity(pluginName, datasourceConfig);
@@ -274,6 +280,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             Map<String, String> datasourceConfig =
                     JsonUtils.toMap(config, String.class, String.class);
 
+            configShadeUtil.decryptData(datasourceConfig);
             return DataSourceClientFactory.getDataSourceClient()
                     .getDatabases(pluginName, datasourceConfig);
         }
@@ -305,6 +312,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         options.put("filterName", filterName);
         String pluginName = datasource.getPluginName();
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            configShadeUtil.decryptData(datasourceConfig);
             return DataSourceClientFactory.getDataSourceClient()
                     .getTables(pluginName, databaseName, datasourceConfig, options);
         }
@@ -324,6 +332,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         Map<String, String> options = new HashMap<>();
         String pluginName = datasource.getPluginName();
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            configShadeUtil.decryptData(datasourceConfig);
             return DataSourceClientFactory.getDataSourceClient()
                     .getTables(pluginName, databaseName, datasourceConfig, options);
         }
@@ -345,6 +354,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         ITableSchemaService tableSchemaService =
                 (ITableSchemaService) applicationContext.getBean("tableSchemaServiceImpl");
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            configShadeUtil.decryptData(datasourceConfig);
             List<TableField> tableFields =
                     DataSourceClientFactory.getDataSourceClient()
                             .getTableFields(pluginName, datasourceConfig, databaseName, tableName);
@@ -434,6 +444,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                                                     datasource.getDatasourceConfig(),
                                                     String.class,
                                                     String.class);
+                                    configShadeUtil.decryptData(datasourceConfig);
                                     datasourceRes.setDatasourceConfig(datasourceConfig);
                                     datasourceRes.setCreateUserId(datasource.getCreateUserId());
                                     datasourceRes.setUpdateUserId(datasource.getUpdateUserId());
@@ -503,7 +514,10 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId);
         }
         String configJson = datasource.getDatasourceConfig();
-        return JsonUtils.toMap(configJson, String.class, String.class);
+        Map<String, String> datasourceConfig =
+                JsonUtils.toMap(configJson, String.class, String.class);
+        configShadeUtil.decryptData(datasourceConfig);
+        return datasourceConfig;
     }
 
     @Override
@@ -591,7 +605,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         return getDatasourceDetailRes(datasource);
     }
 
-    private static DatasourceDetailRes getDatasourceDetailRes(Datasource datasource) {
+    private DatasourceDetailRes getDatasourceDetailRes(Datasource datasource) {
         DatasourceDetailRes datasourceDetailRes = new DatasourceDetailRes();
         datasourceDetailRes.setId(datasource.getId().toString());
         datasourceDetailRes.setDatasourceName(datasource.getDatasourceName());
@@ -603,6 +617,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(datasource.getDatasourceConfig(), String.class, String.class);
+        configShadeUtil.decryptData(datasourceConfig);
         // convert option rule
         datasourceDetailRes.setDatasourceConfig(datasourceConfig);
         return datasourceDetailRes;
