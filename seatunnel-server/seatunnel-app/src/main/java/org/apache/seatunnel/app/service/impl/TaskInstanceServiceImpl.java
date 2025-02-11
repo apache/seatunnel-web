@@ -85,7 +85,13 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
 
         IPage<SeaTunnelJobInstanceDto> jobInstanceIPage =
                 jobInstanceDao.queryJobInstanceListPaging(
-                        new Page<>(pageNo, pageSize), startDate, endDate, jobDefineName, jobMode);
+                        new Page<>(pageNo, pageSize),
+                        startDate,
+                        endDate,
+                        jobDefineName,
+                        executorName,
+                        stateType,
+                        jobMode);
 
         List<SeaTunnelJobInstanceDto> records = jobInstanceIPage.getRecords();
         if (CollectionUtils.isEmpty(records)) {
