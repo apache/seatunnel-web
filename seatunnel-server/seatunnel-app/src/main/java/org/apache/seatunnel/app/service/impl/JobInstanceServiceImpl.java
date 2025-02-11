@@ -31,6 +31,7 @@ import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.env.ParsingMode;
 import org.apache.seatunnel.app.bean.connector.ConnectorCache;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
+import org.apache.seatunnel.app.config.EncryptionConfig;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.dao.IJobLineDao;
@@ -60,6 +61,7 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
+import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.app.utils.ServletUtils;
@@ -74,6 +76,7 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -95,6 +98,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.seatunnel.app.common.Constants.ENCRYPTION_IDENTIFIER_KEY;
+import static org.apache.seatunnel.app.common.Constants.ENCRYPTION_TYPE_NONE;
 import static org.apache.seatunnel.app.utils.TaskOptionUtils.getTransformOption;
 
 @Service
@@ -123,6 +128,10 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
     @Resource private IJobLineDao jobLineDao;
 
     @Resource private IJobMetricsService jobMetricsService;
+
+    @Autowired private ConfigShadeUtil configShadeUtil;
+
+    @Autowired private EncryptionConfig encryptionConfig;
 
     @Override
     public JobExecutorRes createExecuteResource(
@@ -324,6 +333,14 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         if (sinkMap.size() > 0) {
             sinks = getConnectorConfig(sinkMap);
         }
+
+        if (!encryptionConfig.getType().equals(ENCRYPTION_TYPE_NONE)) {
+            envConfig =
+                    envConfig.withValue(
+                            ENCRYPTION_IDENTIFIER_KEY,
+                            ConfigValueFactory.fromAnyRef(encryptionConfig.getType()));
+        }
+
         String env =
                 envConfig
                         .root()
@@ -575,6 +592,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             String connectorType,
             Map<String, String> config,
             OptionRule optionRule) {
+        configShadeUtil.encryptData(config);
         return parseConfigWithOptionRule(
                 pluginType, connectorType, ConfigFactory.parseMap(config), optionRule);
     }

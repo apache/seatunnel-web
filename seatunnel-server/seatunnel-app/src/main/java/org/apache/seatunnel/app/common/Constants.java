@@ -215,6 +215,7 @@ public final class Constants {
     public static final String COMMON_TASK_TYPE = "common";
 
     public static final String DEFAULT = "default";
+    public static final String ENCRYPTION_TYPE_NONE = "none";
     public static final String PASSWORD = "password";
     public static final String XXXXXX = "******";
     public static final String NULL = "NULL";
@@ -658,4 +659,5 @@ public final class Constants {
 
     public static final String AUTHENTICATION_PROVIDER_LDAP = "LDAP";
     public static final String AUTHENTICATION_PROVIDER_DB = "DB";
+    public static final String ENCRYPTION_IDENTIFIER_KEY = "shade.identifier";
 }
