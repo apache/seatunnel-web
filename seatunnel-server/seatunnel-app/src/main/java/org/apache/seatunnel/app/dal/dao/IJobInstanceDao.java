@@ -45,6 +45,8 @@ public interface IJobInstanceDao {
             Date startTime,
             Date endTime,
             String jobDefineId,
+            String executorName,
+            String stateType,
             JobMode jobMode);
 
     List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList);

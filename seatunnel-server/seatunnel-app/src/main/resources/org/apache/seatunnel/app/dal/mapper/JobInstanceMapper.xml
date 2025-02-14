@@ -49,6 +49,12 @@
             <if test="jobDefineName != null">
                 AND jd.name LIKE concat('%', #{jobDefineName}, '%')
             </if>
+            <if test="executorName != null">
+                AND cu.username LIKE concat('%', #{executorName}, '%')
+            </if>
+            <if test="stateType != null">
+                AND ji.job_status LIKE concat('%', #{stateType}, '%')
+            </if>
             <if test="jobMode != null">
                 AND ji.job_type = #{jobMode}
             </if>
