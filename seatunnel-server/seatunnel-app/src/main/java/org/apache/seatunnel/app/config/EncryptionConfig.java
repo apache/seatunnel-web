@@ -14,15 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seatunnel.app.service;
 
-import org.apache.seatunnel.app.domain.request.job.JobConfig;
-import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
+package org.apache.seatunnel.app.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-public interface IJobConfigService {
-    JobConfigRes getJobConfig(long jobVersionIdId) throws JsonProcessingException;
+import lombok.Data;
 
-    void updateJobConfig(long jobVersionId, JobConfig jobConfig) throws JsonProcessingException;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.apache.seatunnel.app.common.Constants.ENCRYPTION_TYPE_NONE;
+
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "seatunnel-web.datasource.encryption")
+public class EncryptionConfig {
+    private String type = ENCRYPTION_TYPE_NONE;
+    private Set<String> keysToEncrypt = new HashSet<>();
 }

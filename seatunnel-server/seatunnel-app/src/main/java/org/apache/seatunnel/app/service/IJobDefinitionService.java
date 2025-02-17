@@ -31,7 +31,7 @@ import java.util.Map;
 
 public interface IJobDefinitionService {
 
-    long createJob(int userId, JobReq jobReq) throws CodeGenerateUtils.CodeGenerateException;
+    long createJob(JobReq jobReq) throws CodeGenerateUtils.CodeGenerateException;
 
     PageInfo<JobDefinitionRes> getJob(String name, Integer pageNo, Integer pageSize);
 

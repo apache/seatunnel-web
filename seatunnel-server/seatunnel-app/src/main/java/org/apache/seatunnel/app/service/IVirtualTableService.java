@@ -27,12 +27,12 @@ import java.util.List;
 
 public interface IVirtualTableService {
 
-    String createVirtualTable(Integer userId, VirtualTableReq req)
+    String createVirtualTable(VirtualTableReq tableReq)
             throws CodeGenerateUtils.CodeGenerateException;
 
-    Boolean updateVirtualTable(Integer userId, String tableId, VirtualTableReq req);
+    boolean updateVirtualTable(String tableId, VirtualTableReq tableReq);
 
-    Boolean deleteVirtualTable(Integer userId, String tableId);
+    boolean deleteVirtualTable(String tableId);
 
     Boolean checkVirtualTableValid(VirtualTableReq req);
 

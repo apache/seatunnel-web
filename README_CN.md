@@ -51,7 +51,7 @@ SeaTunnel是下一代超高性能、分布式、海量数据集成工具。它�
 下载安装包并部署SeaTunnel Zeta Engine Server的另一种安装方式是从 https://seatunnel.apache.org/download 下载安装包并部署。
 
 * 下载并安装连接器插件(一些第三方依赖包也会在此过程中自动下载并安装，如Hadoop jar)。您可以从 https://seatunnel.apache.org/docs/2.3.8/start-v2/locally/deployment 获得该步骤。
-* 运行`cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d`运行seattunnel Zeta Engine Server。
+* 运行`cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d`运行SeaTunnel Zeta Engine Server。
 #### 2.2 初始化数据库
 
 1. 编辑 `seatunnel-server/seatunnel-app/src/main/resources/script/seatunnel_server_env.sh` 文件, 填写已安装的数据库 address, port, username, and password. 下面是一个例子:

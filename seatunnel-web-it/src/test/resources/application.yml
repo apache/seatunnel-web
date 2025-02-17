@@ -48,6 +48,14 @@ jwt:
   secretKey: https://github.com/apache/seatunnel
   algorithm: HS256
 
+seatunnel-web:
+  datasource:
+    encryption:
+      type: none
+      keys-to-encrypt:
+        - password
+        - auth
+
 ---
 spring:
   application:
