@@ -46,5 +46,7 @@ public interface IJobDefinitionService {
 
     boolean getUsedByDataSourceIdAndVirtualTable(long datasourceId, String tableName);
 
+    String exportJobConfig(long id);
+
     void deleteJob(long id);
 }
