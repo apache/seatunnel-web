@@ -19,11 +19,9 @@ package org.apache.seatunnel.app.service.impl;
 
 import org.apache.seatunnel.app.common.EngineType;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
-import org.apache.seatunnel.app.dal.dao.IJobLineDao;
 import org.apache.seatunnel.app.dal.dao.IJobTaskDao;
 import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
 import org.apache.seatunnel.app.dal.entity.JobDefinition;
-import org.apache.seatunnel.app.dal.entity.JobLine;
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
 import org.apache.seatunnel.app.domain.request.connector.BusinessMode;
@@ -33,7 +31,6 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
-import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
@@ -72,10 +69,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     @Resource(name = "jobVersionDaoImpl")
     private IJobVersionDao jobVersionDao;
-
-    @Resource private IJobLineDao jobLineDao;
-
-    @Resource private IJobInstanceService jobInstanceService;
 
     @Override
     @Transactional
@@ -182,16 +175,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
         return options.stream().anyMatch(option -> option.getTables().contains(tableName));
-    }
-
-    @Override
-    public String exportJobConfig(long id) {
-        JobDefinition job = jobDefinitionDao.getJob(id);
-        JobVersion latestVersion = jobVersionDao.getLatestVersion(job.getId());
-        List<JobTask> tasks = jobTaskDao.getTasksByVersionId(latestVersion.getId());
-        List<JobLine> lines = jobLineDao.getLinesByVersionId(latestVersion.getId());
-        return jobInstanceService.generateJobConfig(
-                job.getId(), tasks, lines, latestVersion.getEnv(), null);
     }
 
     @Override
