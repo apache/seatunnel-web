@@ -40,10 +40,9 @@ public enum DbType {
     REDSHIFT(10, "redshift"),
     DAMENG(11, "dameng"),
     STARROCKS(12, "starrocks"),
-    DORIS(13, "doris"),
-    // todo: this is not a db type....
-    SSH(14, "ssh"),
-    PROXY(15, "proxy"),
+    SSH(13, "ssh"),
+    PROXY(14, "proxy"),
+    DORIS(15, "doris"),
     ;
 
     @EnumValue private final int code;
