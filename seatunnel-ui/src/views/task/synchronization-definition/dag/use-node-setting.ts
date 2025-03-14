@@ -43,14 +43,14 @@ export function useNodeSettingModal(
 
   const formatParams = (values: any) => {
     const params = {
-      pluginId: props.nodeInfo.pluginId,
+      pluginId: props.nodeInfo?.pluginId,
       name: values.name,
-      type: props.nodeInfo.type.toUpperCase(),
+      type: props.nodeInfo?.type.toUpperCase(),
       connectorType:
-        props.nodeInfo.type === 'transform'
-          ? props.nodeInfo.connectorType
+        props.nodeInfo?.type === 'transform'
+          ? props.nodeInfo?.connectorType
           : null
-    } as { [key: string]: any }
+    } as any;
     const config = omit(values, [
       'name',
       'datasourceInstanceId',
@@ -119,8 +119,8 @@ export function useNodeSettingModal(
     
     // Determine whether the current node type is Transform or Sink and there is no previous node.
     if (
-      (props.nodeInfo.type === 'transform' || props.nodeInfo.type === 'sink') &&
-      !props.nodeInfo.predecessorsNodeId
+      (props.nodeInfo?.type === 'transform' || props.nodeInfo?.type === 'sink') &&
+      !props.nodeInfo?.predecessorsNodeId
     ) {
       window.$message.warning(t('project.synchronization_definition.node_prev_check_tips'))
       return false
@@ -138,7 +138,7 @@ export function useNodeSettingModal(
       const values = configurationFormRef.value.getValues()
 
       let modelOutputTableData
-      if (props.nodeInfo.type === 'source') {
+      if (props.nodeInfo?.type === 'source') {
         const resultSchema = modelRef.value.getOutputSchema()
         // check debezium
         if (values.format && values.format === 'COMPATIBLE_DEBEZIUM_JSON') {
@@ -172,13 +172,13 @@ export function useNodeSettingModal(
         }
       }
 
-      if (props.nodeInfo.type === 'transform' && props.nodeInfo.predecessorsNodeId) {
+      if (props.nodeInfo?.type === 'transform' && props.nodeInfo?.predecessorsNodeId) {
         const resultSchema = modelRef.value.getOutputSchema()
         if (resultSchema.allTableData.length) {
           if (
-            props.nodeInfo.connectorType === 'FieldMapper' ||
-            props.nodeInfo.connectorType === 'MultiFieldSplit' ||
-            props.nodeInfo.connectorType === 'Copy'
+            props.nodeInfo?.connectorType === 'FieldMapper' ||
+            props.nodeInfo?.connectorType === 'MultiFieldSplit' ||
+            props.nodeInfo?.connectorType === 'Copy'
           ) {
             const result = resultSchema.allTableData
             if (resultSchema.outputTableData.length) {
@@ -197,7 +197,7 @@ export function useNodeSettingModal(
 
       const transformOptions: any = {}
 
-      if (props.nodeInfo.connectorType === 'FieldMapper') {
+      if (props.nodeInfo?.connectorType === 'FieldMapper') {
         const resultSchema = modelRef.value.getOutputSchema()
         transformOptions.changeOrders = resultSchema.outputTableData.map((o: any, i: number) => {
           return {
@@ -212,7 +212,7 @@ export function useNodeSettingModal(
         const outputTableDataNames = resultSchema.outputTableData.map((o: any) => ({sourceFieldName: o.original_field}))
         const inputTableDataNames = resultSchema.inputTableData.map((o: any) => ({sourceFieldName: o.name}))
         transformOptions.deleteFields = _.xorWith(outputTableDataNames, inputTableDataNames, _.isEqual)
-      } else if (props.nodeInfo.connectorType === 'MultiFieldSplit') {
+      } else if (props.nodeInfo?.connectorType === 'MultiFieldSplit') {
         const resultSchema = modelRef.value.getOutputSchema()
         const hasSeparator = resultSchema.outputTableData.filter((o: any) => o.separator)
         transformOptions.splits = _.uniqWith(hasSeparator.map((o: any) => {
@@ -222,14 +222,14 @@ export function useNodeSettingModal(
             outputFields: _.groupBy(hasSeparator, 'separator')[o.separator].map((h: any) => h.name)
           }
         }), _.isEqual)
-      } else if (props.nodeInfo.connectorType === 'Copy') {
+      } else if (props.nodeInfo?.connectorType === 'Copy') {
         const resultSchema = modelRef.value.getOutputSchema()
         const hasCopyColumn = resultSchema.outputTableData.filter((o: any) => o.copyTimes === -1)
         transformOptions.copyList = hasCopyColumn.map((h: any) => ({
           sourceFieldName: h.original_field,
           targetFieldName: h.name
         }))
-      } else if(props.nodeInfo.connectorType === 'Sql') {
+      } else if(props.nodeInfo?.connectorType === 'Sql') {
         const resultSchema = modelRef.value.getOutputSchema()
         const tableInfo = resultSchema.allTableData[0].tableInfos
         transformOptions.sql = {
@@ -298,9 +298,9 @@ export function useNodeSettingModal(
       datasourceName: node.datasourceName,
       datasourceInstanceId: node.datasourceInstanceId,
       columnSelectable: node.columnSelectable,
-      outputSchema: props.nodeInfo.outputSchema,
+      outputSchema: props.nodeInfo?.outputSchema,
       sceneMode: node.sceneMode ? node.sceneMode : '',
-      transformOptions: props.nodeInfo.transformOptions
+      transformOptions: props.nodeInfo?.transformOptions
     }
 
     if (node.format && node.format === 'COMPATIBLE_DEBEZIUM_JSON') {
