@@ -25,10 +25,8 @@ import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.entity.JobMetricsHistory;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.service.IJobMetricsService;
-import org.apache.seatunnel.app.service.TaskProcessingService;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -50,8 +48,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class MonitorTaskScheduler {
-
-    @Autowired private TaskProcessingService taskProcessingService;
 
     private final ExecutorService executorService;
 
