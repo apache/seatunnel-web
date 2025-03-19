@@ -723,6 +723,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         SeatunnelErrorEnum.ILLEGAL_STATE, "Invalid time format");
             }
         }
-        return getJobMetricsHistory(jobInstanceId); // 复用无参方法
+        return getJobMetricsHistory(jobInstanceId);
     }
 }

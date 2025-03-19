@@ -179,7 +179,7 @@ export function useTaskMetrics() {
       axisLabel: {
         color: '#7F7F7F',
         formatter: (value: string) => {
-          return value.substring(value.indexOf(' ') + 1) // 只显示时间部分
+          return value.substring(value.indexOf(' ') + 1)
         }
       }
     },
@@ -203,7 +203,6 @@ export function useTaskMetrics() {
           if (key.includes('Qps')) {
             return value.toFixed(2)
           }
-          // 对大数字进行格式化
           if (value >= 10000) {
             return (value / 10000).toFixed(1) + 'w'
           }
@@ -281,7 +280,7 @@ export function useTaskMetrics() {
   }
 
   const getChartTitle = (key: string) => {
-    return t(`project.task.metrics.${key}`)  // 修改国际化路径
+    return t(`project.task.metrics.${key}`)
   }
 
   const updateCharts = async () => {
@@ -353,7 +352,6 @@ export function useTaskMetrics() {
     }
   }
 
-  // 初始化时设置默认时间范围为最近1小时
   onMounted(() => {
     handleTimeOptionChange('1hour')
   })
