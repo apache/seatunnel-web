@@ -718,7 +718,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 Date start = sdf.parse(startTime);
                 Date end = sdf.parse(endTime);
                 return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceIdAndTimeRange(
-                        jobInstanceId, start, end);
+                        jobInstanceId, startTime, endTime);
             } catch (ParseException e) {
                 log.error("Parse time error", e);
                 throw new SeatunnelException(
