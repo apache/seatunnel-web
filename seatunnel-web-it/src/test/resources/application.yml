@@ -31,12 +31,30 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  ldap:
+    url: ldap://localhost:389
+    search:
+      base: ou=people,dc=example,dc=com
+      filter: (uid={0})
+      domain: example.com
+  authentication:
+    providers:
+      - DB
+      #- LDAP # LDAP authentication is disabled by default
 
 jwt:
   expireTime: 86400
   # please add key when deploy
   secretKey: https://github.com/apache/seatunnel
   algorithm: HS256
+
+seatunnel-web:
+  datasource:
+    encryption:
+      type: none
+      keys-to-encrypt:
+        - password
+        - auth
 
 ---
 spring:

@@ -51,7 +51,7 @@ SeaTunnel是下一代超高性能、分布式、海量数据集成工具。它�
 下载安装包并部署SeaTunnel Zeta Engine Server的另一种安装方式是从 https://seatunnel.apache.org/download 下载安装包并部署。
 
 * 下载并安装连接器插件(一些第三方依赖包也会在此过程中自动下载并安装，如Hadoop jar)。您可以从 https://seatunnel.apache.org/docs/2.3.8/start-v2/locally/deployment 获得该步骤。
-* 运行`cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d`运行seattunnel Zeta Engine Server。
+* 运行`cd apache-seatunnel-2.3.8 & sh bin/seatunnel-cluster.sh -d`运行SeaTunnel Zeta Engine Server。
 #### 2.2 初始化数据库
 
 1. 编辑 `seatunnel-server/seatunnel-app/src/main/resources/script/seatunnel_server_env.sh` 文件, 填写已安装的数据库 address, port, username, and password. 下面是一个例子:
@@ -231,4 +231,27 @@ sh bin/seatunnel-backend-daemon.sh start
 
 ```ALTER TABLE `t_st_job_instance` ADD COLUMN `error_message` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL;```
 
-
+#### 2. 从1.0.2或更早版本升级到1.0.3或更高版本。
+- 执行以下SQL语句以升级数据库：
+  ```
+    ALTER TABLE `user` ADD COLUMN `auth_provider` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'DB';
+  ```
+- 启用LDAP支持，
+  - 要启用LDAP支持，您需要在`application.yml`文件中添加LDAP服务器配置，并将LDAP包含在认证提供者列表中。
+  - 如果未定义任何认证提供者，将使用默认的DB策略，不需要做任何更改。
+  - 以下是认证提供者和LDAP服务器设置的示例配置。
+    ```
+     # sample application.yaml
+     spring:
+       ldap:
+         url: ldap://localhost:389
+         search:
+         base: ou=people,dc=example,dc=com
+         filter: (uid={0})
+         domain: example.com
+    seatunnel:
+      authentication:
+        providers:
+          - DB
+          - LDAP
+    ``` 

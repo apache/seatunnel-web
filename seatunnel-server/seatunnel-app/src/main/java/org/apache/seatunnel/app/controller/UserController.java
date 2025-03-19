@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -110,8 +111,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Result<UserSimpleInfoRes> login(@RequestBody UserLoginReq req) {
-        return Result.success(iUserService.login(req));
+    public Result<UserSimpleInfoRes> login(
+            @RequestBody UserLoginReq req,
+            @RequestHeader(value = "X-Seatunnel-Auth-Type", required = false) String authType) {
+        return Result.success(iUserService.login(req, authType));
     }
 
     @PatchMapping("/logout")

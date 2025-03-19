@@ -289,15 +289,25 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
         Map<String, PluginConfig> pluginMap =
                 taskInfo.getPlugins().stream()
                         .collect(Collectors.toMap(PluginConfig::getPluginId, Function.identity()));
-        Map<String, String> edgeMap =
+        Map<String, List<String>> edgeMap =
                 taskInfo.getEdges().stream()
-                        .collect(Collectors.toMap(Edge::getInputPluginId, Edge::getTargetPluginId));
+                        .collect(
+                                Collectors.groupingBy(
+                                        Edge::getInputPluginId,
+                                        Collectors.mapping(
+                                                Edge::getTargetPluginId, Collectors.toList())));
 
         for (PluginConfig config : source) {
-            PluginConfig nextConfig = pluginMap.get(edgeMap.get(config.getPluginId()));
-            JobTaskCheckRes res = checkNextTaskSchema(config, nextConfig, pluginMap, edgeMap);
-            if (res != null) {
-                return res;
+            List<String> nextConfigs = edgeMap.get(config.getPluginId());
+            if (nextConfigs != null) {
+                for (String nextConfigId : nextConfigs) {
+                    PluginConfig nextConfig = pluginMap.get(nextConfigId);
+                    JobTaskCheckRes res =
+                            checkNextTaskSchema(config, nextConfig, pluginMap, edgeMap);
+                    if (res != null) {
+                        return res;
+                    }
+                }
             }
         }
         return null;
@@ -307,7 +317,7 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
             PluginConfig config,
             PluginConfig nextConfig,
             Map<String, PluginConfig> pluginMap,
-            Map<String, String> edgeMap)
+            Map<String, List<String>> edgeMap)
             throws IOException {
         Map<String, Object> options = nextConfig.getTransformOptions();
         if (options != null && !options.isEmpty()) {
@@ -384,12 +394,16 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                 }
             }
         }
-        if (edgeMap.containsKey(nextConfig.getPluginId())) {
-            return checkNextTaskSchema(
-                    nextConfig,
-                    pluginMap.get(edgeMap.get(nextConfig.getPluginId())),
-                    pluginMap,
-                    edgeMap);
+        List<String> nextConfigIds = edgeMap.get(nextConfig.getPluginId());
+        if (nextConfigIds != null) {
+            for (String nextConfigId : nextConfigIds) {
+                JobTaskCheckRes res =
+                        checkNextTaskSchema(
+                                nextConfig, pluginMap.get(nextConfigId), pluginMap, edgeMap);
+                if (res != null) {
+                    return res;
+                }
+            }
         }
         return null;
     }

@@ -30,4 +30,6 @@ public class SeaTunnelJobInstanceDto extends JobInstance {
     private long writeRowCount;
 
     private Long runningTime;
+
+    private String username;
 }

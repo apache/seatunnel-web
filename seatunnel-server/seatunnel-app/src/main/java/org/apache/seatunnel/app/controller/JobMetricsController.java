@@ -27,7 +27,6 @@ import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,32 +50,26 @@ public class JobMetricsController {
     @GetMapping("/detail")
     @ApiOperation(value = "get the job pipeline detail metrics", httpMethod = "GET")
     public Result<List<JobPipelineDetailMetricsRes>> detail(
-            @ApiParam(value = "userId", required = true) @RequestAttribute Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId)
             throws IOException {
 
-        return Result.success(
-                jobMetricsService.getJobPipelineDetailMetricsRes(userId, jobInstanceId));
+        return Result.success(jobMetricsService.getJobPipelineDetailMetricsRes(jobInstanceId));
     }
 
     @GetMapping("/dag")
     @ApiOperation(value = "get the job pipeline dag", httpMethod = "GET")
     public Result<JobDAG> getJobDAG(
-            @ApiParam(value = "userId", required = true) @RequestAttribute Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId)
             throws JsonProcessingException {
-
-        return Result.success(jobMetricsService.getJobDAG(userId, jobInstanceId));
+        return Result.success(jobMetricsService.getJobDAG(jobInstanceId));
     }
 
     @GetMapping("/summary")
     @ApiOperation(value = "get the job pipeline summary metrics", httpMethod = "GET")
     public Result<List<JobPipelineSummaryMetricsRes>> summary(
-            @ApiParam(value = "userId", required = true) @RequestAttribute Integer userId,
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId)
             throws IOException {
-        return Result.success(
-                jobMetricsService.getJobPipelineSummaryMetrics(userId, jobInstanceId));
+        return Result.success(jobMetricsService.getJobPipelineSummaryMetrics(jobInstanceId));
     }
 
     @GetMapping("/history")

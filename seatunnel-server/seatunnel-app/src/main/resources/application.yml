@@ -31,6 +31,20 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  ldap:
+    url: ldap://localhost:389
+    search:
+      base: ou=people,dc=example,dc=com
+      filter: (uid={0})
+      domain: example.com
+  authentication:
+    providers:
+      - DB
+      #- LDAP # LDAP authentication is disabled by default
+  async-config:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 100
 
 jwt:
   expireTime: 86400
@@ -38,6 +52,13 @@ jwt:
   secretKey:
   algorithm: HS256
 
+seatunnel-web:
+  datasource:
+    encryption:
+      type: none
+      keys-to-encrypt:
+        - password
+        - auth
 ---
 spring:
   config:

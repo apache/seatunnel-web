@@ -44,7 +44,9 @@ public interface UserMapper {
     int countBySelective(@Param("user") User user);
 
     User selectByNameAndPasswd(
-            @Param("username") String username, @Param("password") String password);
+            @Param("username") String username,
+            @Param("password") String password,
+            @Param("authProvider") String authProvider);
 
     List<User> queryEnabledUsers();
 }

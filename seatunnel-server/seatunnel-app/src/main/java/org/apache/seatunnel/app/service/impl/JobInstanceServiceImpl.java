@@ -31,6 +31,7 @@ import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.env.ParsingMode;
 import org.apache.seatunnel.app.bean.connector.ConnectorCache;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
+import org.apache.seatunnel.app.config.EncryptionConfig;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.dao.IJobLineDao;
@@ -60,8 +61,10 @@ import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceConfigSwitcherUtils;
 import org.apache.seatunnel.app.thirdparty.transfrom.TransformConfigSwitcherUtils;
+import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
@@ -73,6 +76,7 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -94,6 +98,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.seatunnel.app.common.Constants.ENCRYPTION_IDENTIFIER_KEY;
+import static org.apache.seatunnel.app.common.Constants.ENCRYPTION_TYPE_NONE;
 import static org.apache.seatunnel.app.utils.TaskOptionUtils.getTransformOption;
 
 @Service
@@ -123,9 +129,14 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Resource private IJobMetricsService jobMetricsService;
 
+    @Autowired private ConfigShadeUtil configShadeUtil;
+
+    @Autowired private EncryptionConfig encryptionConfig;
+
     @Override
     public JobExecutorRes createExecuteResource(
-            @NonNull Integer userId, @NonNull Long jobDefineId, JobExecParam executeParam) {
+            @NonNull Long jobDefineId, JobExecParam executeParam) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_RESOURCE, userId);
         log.info(
                 "receive createExecuteResource request, userId:{}, jobDefineId:{}",
@@ -177,7 +188,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         Map<String, List<Config>> sinkMap = new LinkedHashMap<>();
         Map<String, JobLine> inputLines =
                 lines.stream()
-                        .collect(Collectors.toMap(JobLine::getInputPluginId, Function.identity()));
+                        .collect(
+                                Collectors.toMap(
+                                        JobLine::getInputPluginId,
+                                        Function.identity(),
+                                        (existing, replacement) -> existing));
         Map<String, JobLine> targetLines =
                 lines.stream()
                         .collect(Collectors.toMap(JobLine::getTargetPluginId, Function.identity()));
@@ -318,6 +333,14 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
         if (sinkMap.size() > 0) {
             sinks = getConnectorConfig(sinkMap);
         }
+
+        if (!encryptionConfig.getType().equals(ENCRYPTION_TYPE_NONE)) {
+            envConfig =
+                    envConfig.withValue(
+                            ENCRYPTION_IDENTIFIER_KEY,
+                            ConfigValueFactory.fromAnyRef(encryptionConfig.getType()));
+        }
+
         String env =
                 envConfig
                         .root()
@@ -345,13 +368,11 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public void complete(
-            @NonNull Integer userId,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId,
-            JobResult jobResult) {
+            @NonNull Long jobInstanceId, @NonNull String jobEngineId, JobResult jobResult) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_COMPLETE, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
-        jobMetricsService.syncJobDataToDb(jobInstance, userId, jobEngineId);
+        jobMetricsService.syncJobDataToDb(jobInstance, jobEngineId);
         jobInstance.setJobStatus(jobResult.getStatus());
         jobInstance.setJobEngineId(jobEngineId);
         jobInstance.setUpdateUserId(userId);
@@ -484,7 +505,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
 
     private Config addTableName(String tableName, JobLine jobLine, Config config) {
         return config.withValue(
-                tableName, ConfigValueFactory.fromAnyRef("Table" + jobLine.getId()));
+                tableName, ConfigValueFactory.fromAnyRef("Table" + jobLine.getInputPluginId()));
     }
 
     private Config filterEmptyValue(Config config) {
@@ -571,6 +592,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
             String connectorType,
             Map<String, String> config,
             OptionRule optionRule) {
+        configShadeUtil.encryptData(config);
         return parseConfigWithOptionRule(
                 pluginType, connectorType, ConfigFactory.parseMap(config), optionRule);
     }

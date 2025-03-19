@@ -37,6 +37,8 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
+import org.apache.seatunnel.app.utils.ConfigShadeUtil;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
@@ -93,15 +95,17 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     protected static final String DEFAULT_DATASOURCE_PLUGIN_VERSION = "1.0.0";
 
+    @Autowired private ConfigShadeUtil configShadeUtil;
+
     @Override
     public String createDatasource(
-            Integer userId,
             String datasourceName,
             String pluginName,
             String pluginVersion,
             String description,
             Map<String, String> datasourceConfig)
             throws CodeGenerateUtils.CodeGenerateException {
+        Integer userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_CREATE, userId);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         boolean unique = datasourceDao.checkDatasourceNameUnique(datasourceName, 0L);
@@ -113,6 +117,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(
                     SeatunnelErrorEnum.DATASOURCE_PRAM_NOT_ALLOWED_NULL, "datasourceConfig");
         }
+        configShadeUtil.encryptData(datasourceConfig);
         String datasourceConfigStr = JsonUtils.toJsonString(datasourceConfig);
         Datasource datasource =
                 Datasource.builder()
@@ -140,7 +145,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public boolean updateDatasource(
-            Integer userId,
             Long datasourceId,
             String datasourceName,
             String description,
@@ -149,7 +153,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                 SeatunnelFuncPermissionKeyConstant.DATASOURCE_UPDATE,
                 SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
                 Collections.singletonList(datasourceId),
-                userId);
+                ServletUtils.getCurrentUserId());
         if (datasourceId == null) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.DATASOURCE_PRAM_NOT_ALLOWED_NULL, "datasourceId");
@@ -167,10 +171,11 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                         SeatunnelErrorEnum.DATASOURCE_NAME_ALREADY_EXISTS, datasourceName);
             }
         }
-        datasource.setUpdateUserId(userId);
+        datasource.setUpdateUserId(ServletUtils.getCurrentUserId());
         datasource.setUpdateTime(new Date());
         datasource.setDescription(description);
         if (MapUtils.isNotEmpty(datasourceConfig)) {
+            configShadeUtil.encryptData(datasourceConfig);
             String configJson = JsonUtils.toJsonString(datasourceConfig);
             datasource.setDatasourceConfig(configJson);
         }
@@ -178,13 +183,13 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public boolean deleteDatasource(Integer userId, Long datasourceId) {
+    public boolean deleteDatasource(Long datasourceId) {
         // check role permission
         funcAndResourcePermissionCheck(
                 SeatunnelFuncPermissionKeyConstant.DATASOURCE_DELETE,
                 SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
                 Collections.singletonList(datasourceId),
-                userId);
+                ServletUtils.getCurrentUserId());
         // check has job task has used this datasource
         List<JobTask> jobTaskList = jobTaskDao.getJobTaskByDataSourceId(datasourceId);
         if (!CollectionUtils.isEmpty(jobTaskList)) {
@@ -203,22 +208,21 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public boolean testDatasourceConnectionAble(
-            Integer userId,
-            String pluginName,
-            String pluginVersion,
-            Map<String, String> datasourceConfig) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TEST_CONNECT, userId);
+            String pluginName, String pluginVersion, Map<String, String> datasourceConfig) {
+        funcPermissionCheck(
+                SeatunnelFuncPermissionKeyConstant.DATASOURCE_TEST_CONNECT,
+                ServletUtils.getCurrentUserId());
         return DataSourceClientFactory.getDataSourceClient()
                 .checkDataSourceConnectivity(pluginName, datasourceConfig);
     }
 
     @Override
-    public boolean testDatasourceConnectionAble(Integer userId, Long datasourceId) {
+    public boolean testDatasourceConnectionAble(Long datasourceId) {
         funcAndResourcePermissionCheck(
                 SeatunnelFuncPermissionKeyConstant.DATASOURCE_TEST_CONNECT,
                 SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
                 Collections.singletonList(datasourceId),
-                userId);
+                ServletUtils.getCurrentUserId());
         Datasource datasource = datasourceDao.selectDatasourceById(datasourceId);
         if (datasource == null) {
             throw new SeatunnelException(
@@ -227,6 +231,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         String configJson = datasource.getDatasourceConfig();
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(configJson, String.class, String.class);
+        configShadeUtil.decryptData(datasourceConfig);
         String pluginName = datasource.getPluginName();
         return DataSourceClientFactory.getDataSourceClient()
                 .checkDataSourceConnectivity(pluginName, datasourceConfig);
@@ -255,8 +260,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public boolean checkDatasourceNameUnique(
-            Integer userId, String datasourceName, Long dataSourceId) {
+    public boolean checkDatasourceNameUnique(String datasourceName, Long dataSourceId) {
         if (StringUtils.isNotBlank(datasourceName)) {
             return datasourceDao.checkDatasourceNameUnique(datasourceName, dataSourceId);
         }
@@ -276,6 +280,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             Map<String, String> datasourceConfig =
                     JsonUtils.toMap(config, String.class, String.class);
 
+            configShadeUtil.decryptData(datasourceConfig);
             return DataSourceClientFactory.getDataSourceClient()
                     .getDatabases(pluginName, datasourceConfig);
         }
@@ -307,6 +312,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         options.put("filterName", filterName);
         String pluginName = datasource.getPluginName();
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            configShadeUtil.decryptData(datasourceConfig);
             return DataSourceClientFactory.getDataSourceClient()
                     .getTables(pluginName, databaseName, datasourceConfig, options);
         }
@@ -326,6 +332,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         Map<String, String> options = new HashMap<>();
         String pluginName = datasource.getPluginName();
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            configShadeUtil.decryptData(datasourceConfig);
             return DataSourceClientFactory.getDataSourceClient()
                     .getTables(pluginName, databaseName, datasourceConfig, options);
         }
@@ -347,6 +354,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         ITableSchemaService tableSchemaService =
                 (ITableSchemaService) applicationContext.getBean("tableSchemaServiceImpl");
         if (BooleanUtils.isNotTrue(checkIsSupportVirtualTable(pluginName))) {
+            configShadeUtil.decryptData(datasourceConfig);
             List<TableField> tableFields =
                     DataSourceClientFactory.getDataSourceClient()
                             .getTableFields(pluginName, datasourceConfig, databaseName, tableName);
@@ -389,7 +397,8 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public PageInfo<DatasourceRes> queryDatasourceList(
-            Integer userId, String searchVal, String pluginName, Integer pageNo, Integer pageSize) {
+            String searchVal, String pluginName, Integer pageNo, Integer pageSize) {
+        Integer userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_LIST, userId);
         Page<Datasource> page = new Page<>(pageNo, pageSize);
         PageInfo<DatasourceRes> pageInfo = new PageInfo<>();
@@ -435,6 +444,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                                                     datasource.getDatasourceConfig(),
                                                     String.class,
                                                     String.class);
+                                    configShadeUtil.decryptData(datasourceConfig);
                                     datasourceRes.setDatasourceConfig(datasourceConfig);
                                     datasourceRes.setCreateUserId(datasource.getCreateUserId());
                                     datasourceRes.setUpdateUserId(datasource.getUpdateUserId());
@@ -504,7 +514,10 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId);
         }
         String configJson = datasource.getDatasourceConfig();
-        return JsonUtils.toMap(configJson, String.class, String.class);
+        Map<String, String> datasourceConfig =
+                JsonUtils.toMap(configJson, String.class, String.class);
+        configShadeUtil.decryptData(datasourceConfig);
+        return datasourceConfig;
     }
 
     @Override
@@ -592,7 +605,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         return getDatasourceDetailRes(datasource);
     }
 
-    private static DatasourceDetailRes getDatasourceDetailRes(Datasource datasource) {
+    private DatasourceDetailRes getDatasourceDetailRes(Datasource datasource) {
         DatasourceDetailRes datasourceDetailRes = new DatasourceDetailRes();
         datasourceDetailRes.setId(datasource.getId().toString());
         datasourceDetailRes.setDatasourceName(datasource.getDatasourceName());
@@ -604,6 +617,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(datasource.getDatasourceConfig(), String.class, String.class);
+        configShadeUtil.decryptData(datasourceConfig);
         // convert option rule
         datasourceDetailRes.setDatasourceConfig(datasourceConfig);
         return datasourceDetailRes;
@@ -618,17 +632,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId);
         }
         return getDatasourceDetailRes(datasource);
-    }
-
-    @Override
-    public DatasourceDetailRes queryDatasourceDetailById(Integer userId, String datasourceId) {
-        // check user
-        funcAndResourcePermissionCheck(
-                SeatunnelFuncPermissionKeyConstant.DATASOURCE_DETAIL,
-                SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
-                Collections.singletonList(Long.parseLong(datasourceId)),
-                userId);
-        return this.queryDatasourceDetailById(datasourceId);
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.apache.seatunnel.app.thirdparty.engine.SeaTunnelEngineProxy;
 import org.apache.seatunnel.app.thirdparty.metrics.EngineMetricsExtractorFactory;
 import org.apache.seatunnel.app.thirdparty.metrics.IEngineMetricsExtractor;
 import org.apache.seatunnel.app.utils.JobUtils;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.engine.core.job.JobStatus;
@@ -50,6 +51,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.dao.DuplicateKeyException;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -79,17 +81,18 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
     @Override
     public List<JobPipelineSummaryMetricsRes> getJobPipelineSummaryMetrics(
-            @NonNull Integer userId, @NonNull Long jobInstanceId) {
+            @NonNull Long jobInstanceId) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_METRICS_SUMMARY, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        List<JobMetrics> jobPipelineDetailMetrics =
-                getJobPipelineDetailMetrics(jobInstance, userId);
+        List<JobMetrics> jobPipelineDetailMetrics = getJobPipelineDetailMetrics(jobInstance);
         return summaryMetrics(jobPipelineDetailMetrics);
     }
 
     @Override
     public JobSummaryMetricsRes getJobSummaryMetrics(
-            @NonNull Integer userId, @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
+            @NonNull Long jobInstanceId, @NonNull String jobEngineId) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_METRICS_SUMMARY, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         Engine engine = new Engine(jobInstance.getEngineName(), jobInstance.getEngineVersion());
@@ -97,8 +100,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 (new EngineMetricsExtractorFactory(engine)).getEngineMetricsExtractor();
         JobStatus jobStatus = engineMetricsExtractor.getJobStatus(jobEngineId);
 
-        List<JobMetrics> jobPipelineDetailMetrics =
-                getJobPipelineDetailMetrics(jobInstance, userId);
+        List<JobMetrics> jobPipelineDetailMetrics = getJobPipelineDetailMetrics(jobInstance);
         long readCount =
                 jobPipelineDetailMetrics.stream().mapToLong(JobMetrics::getReadRowCount).sum();
         long writeCount =
@@ -110,12 +112,11 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
     @Override
     public Map<Long, JobSummaryMetricsRes> getALLJobSummaryMetrics(
-            @NonNull Integer userId,
             @NonNull Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
             @NonNull List<Long> jobInstanceIdList,
             @NonNull JobMode jobMode) {
         log.info("jobInstanceIdAndJobEngineIdMap={}", jobInstanceIdAndJobEngineIdMap);
-
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_METRICS_SUMMARY, userId);
         List<JobInstance> allJobInstance = jobInstanceDao.getAllJobInstance(jobInstanceIdList);
         if (allJobInstance.isEmpty()) {
@@ -134,14 +135,12 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             result =
                     getMatricsListIfTaskTypeIsBatch(
                             allJobInstance,
-                            userId,
                             allRunningJobMetricsFromEngine,
                             jobInstanceIdAndJobEngineIdMap);
         } else if (JobMode.STREAMING == jobMode) {
             result =
                     getMatricsListIfTaskTypeIsStreaming(
                             allJobInstance,
-                            userId,
                             allRunningJobMetricsFromEngine,
                             jobInstanceIdAndJobEngineIdMap);
         }
@@ -152,7 +151,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
     private Map<Long, JobSummaryMetricsRes> getMatricsListIfTaskTypeIsBatch(
             List<JobInstance> allJobInstance,
-            Integer userId,
             Map<Long, HashMap<Integer, JobMetrics>> allRunningJobMetricsFromEngine,
             Map<Long, Long> jobInstanceIdAndJobEngineIdMap) {
 
@@ -181,8 +179,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                     modifyAndUpdateJobInstanceAndJobMetrics(
                             jobInstance,
                             allRunningJobMetricsFromEngine,
-                            jobInstanceIdAndJobEngineIdMap,
-                            userId);
+                            jobInstanceIdAndJobEngineIdMap);
 
                 } else {
                     log.info(
@@ -190,7 +187,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                     JobSummaryMetricsRes jobMetricsFromDb =
                             getJobSummaryMetricsResByDb(
                                     jobInstance,
-                                    userId,
                                     Long.toString(
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
@@ -211,7 +207,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 JobSummaryMetricsRes jobMetricsFromDb =
                         getJobSummaryMetricsResByDb(
                                 jobInstance,
-                                userId,
                                 Long.toString(
                                         jobInstanceIdAndJobEngineIdMap.get(jobInstance.getId())));
                 log.info("jobStatus=finish oe canceled,JobSummaryMetricsRes={}", jobMetricsFromDb);
@@ -225,8 +220,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     private void modifyAndUpdateJobInstanceAndJobMetrics(
             JobInstance jobInstance,
             Map<Long, HashMap<Integer, JobMetrics>> allRunningJobMetricsFromEngine,
-            Map<Long, Long> jobInstanceIdAndJobEngineIdMap,
-            Integer userId) {
+            Map<Long, Long> jobInstanceIdAndJobEngineIdMap) {
         jobInstance.setJobStatus(JobStatus.RUNNING);
         HashMap<Integer, JobMetrics> jobMetricsFromEngine =
                 allRunningJobMetricsFromEngine.get(
@@ -236,7 +230,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
         if (jobMetricsFromDb.isEmpty()) {
             log.info("002jobMetricsFromDb == null");
-            syncMetricsToDbRunning(jobInstance, userId, jobMetricsFromEngine);
+            syncMetricsToDbRunning(jobInstance, jobMetricsFromEngine);
             jobInstanceDao.update(jobInstance);
         } else {
             jobMetricsFromDb.forEach(
@@ -259,7 +253,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
     private Map<Long, JobSummaryMetricsRes> getMatricsListIfTaskTypeIsStreaming(
             List<JobInstance> allJobInstance,
-            Integer userId,
             Map<Long, HashMap<Integer, JobMetrics>> allRunningJobMetricsFromEngine,
             Map<Long, Long> jobInstanceIdAndJobEngineIdMap) {
 
@@ -276,7 +269,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                     JobSummaryMetricsRes jobMetricsFromDb =
                             getJobSummaryMetricsResByDb(
                                     jobInstance,
-                                    userId,
                                     Long.toString(
                                             jobInstanceIdAndJobEngineIdMap.get(
                                                     jobInstance.getId())));
@@ -296,8 +288,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         modifyAndUpdateJobInstanceAndJobMetrics(
                                 jobInstance,
                                 allRunningJobMetricsFromEngine,
-                                jobInstanceIdAndJobEngineIdMap,
-                                userId);
+                                jobInstanceIdAndJobEngineIdMap);
 
                         // Return data from the front-end
                         JobSummaryMetricsRes jobMetricsFromEngineRes =
@@ -311,7 +302,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         JobSummaryMetricsRes jobMetricsFromDb =
                                 getJobSummaryMetricsResByDb(
                                         jobInstance,
-                                        userId,
                                         Long.toString(
                                                 jobInstanceIdAndJobEngineIdMap.get(
                                                         jobInstance.getId())));
@@ -327,8 +317,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         modifyAndUpdateJobInstanceAndJobMetrics(
                                 jobInstance,
                                 allRunningJobMetricsFromEngine,
-                                jobInstanceIdAndJobEngineIdMap,
-                                userId);
+                                jobInstanceIdAndJobEngineIdMap);
                         // Return data from the front-end
                         JobSummaryMetricsRes jobMetricsFromEngineRes =
                                 getRunningJobMetricsFromEngine(
@@ -356,7 +345,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                             JobSummaryMetricsRes jobSummaryMetricsResByDb =
                                     getJobSummaryMetricsResByDb(
                                             jobInstance,
-                                            userId,
                                             String.valueOf(
                                                     jobInstanceIdAndJobEngineIdMap.get(
                                                             jobInstance.getId())));
@@ -365,7 +353,6 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                             List<JobMetrics> jobMetricsFromDb =
                                     getJobMetricsFromDb(
                                             jobInstance,
-                                            userId,
                                             String.valueOf(
                                                     jobInstanceIdAndJobEngineIdMap.get(
                                                             jobInstance.getId())));
@@ -412,8 +399,8 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private JobSummaryMetricsRes getJobSummaryMetricsResByDb(
-            JobInstance jobInstance, Integer userId, String jobEngineId) {
-        List<JobMetrics> jobMetricsFromDb = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
+            JobInstance jobInstance, String jobEngineId) {
+        List<JobMetrics> jobMetricsFromDb = getJobMetricsFromDb(jobInstance, jobEngineId);
         if (!jobMetricsFromDb.isEmpty()) {
             long readCount = jobMetricsFromDb.stream().mapToLong(JobMetrics::getReadRowCount).sum();
             long writeCount =
@@ -464,16 +451,15 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         return engineMetricsExtractor.getMetricsByJobEngineIdRTMap(jobEngineId);
     }
 
-    private List<JobMetrics> getJobPipelineDetailMetrics(
-            @NonNull JobInstance jobInstance, @NonNull Integer userId) {
+    private List<JobMetrics> getJobPipelineDetailMetrics(@NonNull JobInstance jobInstance) {
         List<JobMetrics> jobMetrics;
         if (JobUtils.isJobEndStatus(jobInstance.getJobStatus())) {
-            jobMetrics = getJobMetricsFromDb(jobInstance, userId, jobInstance.getJobEngineId());
+            jobMetrics = getJobMetricsFromDb(jobInstance, jobInstance.getJobEngineId());
             if (CollectionUtils.isEmpty(jobMetrics)) {
                 jobMetrics = getJobMetricsFromEngine(jobInstance, jobInstance.getJobEngineId());
                 if (!jobMetrics.isEmpty()) {
                     // If engine returns some metrics then it makes sens to insert into database
-                    syncMetricsToDb(jobInstance, userId, jobInstance.getJobEngineId());
+                    syncMetricsToDb(jobInstance, jobInstance.getJobEngineId());
                 }
             }
         } else {
@@ -485,11 +471,11 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
     @Override
     public List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
-            @NonNull Integer userId, @NonNull Long jobInstanceId) {
+            @NonNull Long jobInstanceId) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DETAIL, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
-        List<JobMetrics> jobPipelineDetailMetrics =
-                getJobPipelineDetailMetrics(jobInstance, userId);
+        List<JobMetrics> jobPipelineDetailMetrics = getJobPipelineDetailMetrics(jobInstance);
         return jobPipelineDetailMetrics.stream()
                 .map(this::wrapperJobMetrics)
                 .collect(Collectors.toList());
@@ -509,11 +495,12 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     @Override
-    public JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId) {
+    public JobDAG getJobDAG(@NonNull Long jobInstanceId) {
+        int userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DAG, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         String jobEngineId = jobInstance.getJobEngineId();
-        JobInstanceHistory history = getJobHistoryFromDb(jobInstance, userId, jobEngineId);
+        JobInstanceHistory history = getJobHistoryFromDb(jobInstance, jobEngineId);
         if (history != null) {
             String dag = history.getDag();
             return JsonUtils.parseObject(dag, JobDAG.class);
@@ -524,7 +511,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
 
         if (engineMetricsExtractor.isJobEnd(jobEngineId)) {
             syncHistoryJobInfoToDb(jobInstance, jobEngineId);
-            history = getJobHistoryFromDb(jobInstance, userId, jobEngineId);
+            history = getJobHistoryFromDb(jobInstance, jobEngineId);
         } else {
             history = getJobHistoryFromEngine(jobInstance, jobEngineId);
         }
@@ -547,31 +534,25 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private JobInstanceHistory getJobHistoryFromDb(
-            @NonNull JobInstance jobInstance, Integer userId, String jobEngineId) {
+            @NonNull JobInstance jobInstance, String jobEngineId) {
         // relation jobInstanceId and jobEngineId
-        relationJobInstanceAndJobEngineId(jobInstance, userId, jobEngineId);
+        relationJobInstanceAndJobEngineId(jobInstance, jobEngineId);
         return jobInstanceHistoryDao.getByInstanceId(jobInstance.getId());
     }
 
     @Override
-    public void syncJobDataToDb(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull String jobEngineId) {
-        relationJobInstanceAndJobEngineId(jobInstance, userId, jobEngineId);
-        syncMetricsToDb(jobInstance, userId, jobEngineId);
+    public void syncJobDataToDb(@NonNull JobInstance jobInstance, @NonNull String jobEngineId) {
+        relationJobInstanceAndJobEngineId(jobInstance, jobEngineId);
+        syncMetricsToDb(jobInstance, jobEngineId);
         syncHistoryJobInfoToDb(jobInstance, jobEngineId);
         syncCompleteJobInfoToDb(jobInstance);
     }
 
-    private void syncMetricsToDb(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull String jobEngineId) {
+    private void syncMetricsToDb(@NonNull JobInstance jobInstance, @NonNull String jobEngineId) {
         Map<Integer, JobMetrics> jobMetricsFromEngineMap =
                 getJobMetricsFromEngineMap(jobInstance, jobEngineId);
-
-        List<JobMetrics> jobMetricsFromDb = getJobMetricsFromDb(jobInstance, userId, jobEngineId);
+        int userId = ServletUtils.getCurrentUserId();
+        List<JobMetrics> jobMetricsFromDb = getJobMetricsFromDb(jobInstance, jobEngineId);
         if (jobMetricsFromDb.isEmpty()) {
             List<JobMetrics> jobMetricsFromEngine =
                     Arrays.asList(jobMetricsFromEngineMap.values().toArray(new JobMetrics[0]));
@@ -616,7 +597,12 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
         JobInstanceHistory byInstanceId =
                 jobInstanceHistoryDao.getByInstanceId(jobInstance.getId());
         if (byInstanceId == null) {
-            jobInstanceHistoryDao.insert(jobHistoryFromEngine);
+            try {
+                jobInstanceHistoryDao.insert(jobHistoryFromEngine);
+            } catch (DuplicateKeyException e) {
+                // Handle the race condition gracefully
+                jobInstanceHistoryDao.updateJobInstanceHistory(jobHistoryFromEngine);
+            }
         } else {
             jobInstanceHistoryDao.updateJobInstanceHistory(jobHistoryFromEngine);
         }
@@ -628,11 +614,10 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private void relationJobInstanceAndJobEngineId(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull String jobEngineId) {
+            @NonNull JobInstance jobInstance, @NonNull String jobEngineId) {
         // relation jobInstanceId and jobEngineId
         if (StringUtils.isEmpty(jobInstance.getJobEngineId())) {
+            int userId = ServletUtils.getCurrentUserId();
             jobInstance.setJobEngineId(jobEngineId);
             jobInstance.setUpdateUserId(userId);
             jobInstanceDao.update(jobInstance);
@@ -663,12 +648,10 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private List<JobMetrics> getJobMetricsFromDb(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull String jobEngineId) {
+            @NonNull JobInstance jobInstance, @NonNull String jobEngineId) {
 
         // relation jobInstanceId and jobEngineId
-        relationJobInstanceAndJobEngineId(jobInstance, userId, jobEngineId);
+        relationJobInstanceAndJobEngineId(jobInstance, jobEngineId);
 
         // get metrics from db
         return jobMetricsDao.getByInstanceId(jobInstance.getId());
@@ -702,10 +685,8 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
     }
 
     private void syncMetricsToDbRunning(
-            @NonNull JobInstance jobInstance,
-            @NonNull Integer userId,
-            @NonNull Map<Integer, JobMetrics> jobMetricsMap) {
-
+            @NonNull JobInstance jobInstance, @NonNull Map<Integer, JobMetrics> jobMetricsMap) {
+        int userId = ServletUtils.getCurrentUserId();
         ArrayList<JobMetrics> list = new ArrayList<>();
         for (Map.Entry<Integer, JobMetrics> entry : jobMetricsMap.entrySet()) {
             JobMetrics jobMetrics = entry.getValue();

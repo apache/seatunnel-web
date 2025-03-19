@@ -45,7 +45,7 @@ public interface IUserDao {
 
     User getByName(String user);
 
-    User checkPassword(String username, String password);
+    User checkPassword(String username, String password, String authProvider);
 
     long insertLoginLog(UserLoginLogDto dto);
 

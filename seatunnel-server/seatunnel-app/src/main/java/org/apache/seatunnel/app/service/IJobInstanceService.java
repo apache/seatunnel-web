@@ -28,8 +28,7 @@ import lombok.NonNull;
 import java.util.List;
 
 public interface IJobInstanceService {
-    JobExecutorRes createExecuteResource(
-            @NonNull Integer userId, @NonNull Long jobDefineId, JobExecParam executeParam);
+    JobExecutorRes createExecuteResource(@NonNull Long jobDefineId, JobExecParam executeParam);
 
     String generateJobConfig(
             Long jobId,
@@ -40,9 +39,5 @@ public interface IJobInstanceService {
 
     JobExecutorRes getExecuteResource(@NonNull Long jobEngineId);
 
-    void complete(
-            @NonNull Integer userId,
-            @NonNull Long jobInstanceId,
-            @NonNull String jobEngineId,
-            JobResult jobResult);
+    void complete(@NonNull Long jobInstanceId, @NonNull String jobEngineId, JobResult jobResult);
 }

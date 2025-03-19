@@ -24,6 +24,5 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface IJobConfigService {
     JobConfigRes getJobConfig(long jobVersionIdId) throws JsonProcessingException;
 
-    void updateJobConfig(int userId, long jobVersionId, JobConfig jobConfig)
-            throws JsonProcessingException;
+    void updateJobConfig(long jobVersionId, JobConfig jobConfig) throws JsonProcessingException;
 }

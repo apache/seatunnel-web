@@ -21,7 +21,6 @@ import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.Status;
 import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
-import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
@@ -68,7 +67,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
 
     @Override
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getSyncTaskInstancePaging(
-            Integer userId,
             String jobDefineName,
             String executorName,
             String stateType,
@@ -93,7 +91,8 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         if (CollectionUtils.isEmpty(records)) {
             return result;
         }
-        populateExecutionMetricsData(userId, jobMode, records);
+        addRunningTimeToResult(records);
+        jobPipelineSummaryMetrics(records, jobMode);
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
         pageInfo.setTotalList(records);
         result.setData(pageInfo);
@@ -101,10 +100,9 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     }
 
     private void populateExecutionMetricsData(
-            Integer userId, JobMode jobMode, List<SeaTunnelJobInstanceDto> records) {
-        addJobDefineNameToResult(records);
+            JobMode jobMode, List<SeaTunnelJobInstanceDto> records) {
         addRunningTimeToResult(records);
-        jobPipelineSummaryMetrics(records, jobMode, userId);
+        jobPipelineSummaryMetrics(records, jobMode);
     }
 
     private void addRunningTimeToResult(List<SeaTunnelJobInstanceDto> records) {
@@ -126,16 +124,6 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         }
     }
 
-    private void addJobDefineNameToResult(List<SeaTunnelJobInstanceDto> records) {
-        for (SeaTunnelJobInstanceDto jobInstanceDto : records) {
-            JobDefinition jobDefinition =
-                    jobDefinitionService.getJobDefinitionByJobId(jobInstanceDto.getJobDefineId());
-            if (jobDefinition != null) {
-                jobInstanceDto.setJobDefineName(jobDefinition.getName());
-            }
-        }
-    }
-
     public Date dateConverter(String time) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -146,8 +134,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         }
     }
 
-    private void jobPipelineSummaryMetrics(
-            List<SeaTunnelJobInstanceDto> records, JobMode jobMode, Integer userId) {
+    private void jobPipelineSummaryMetrics(List<SeaTunnelJobInstanceDto> records, JobMode jobMode) {
         try {
             ArrayList<Long> jobInstanceIdList = new ArrayList<>();
             HashMap<Long, Long> jobInstanceIdAndJobEngineIdMap = new HashMap<>();
@@ -162,7 +149,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
 
             Map<Long, JobSummaryMetricsRes> jobSummaryMetrics =
                     jobMetricsService.getALLJobSummaryMetrics(
-                            userId, jobInstanceIdAndJobEngineIdMap, jobInstanceIdList, jobMode);
+                            jobInstanceIdAndJobEngineIdMap, jobInstanceIdList, jobMode);
 
             for (SeaTunnelJobInstanceDto taskInstance : records) {
                 if (jobSummaryMetrics.get(taskInstance.getId()) != null) {
@@ -181,7 +168,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     }
 
     @Override
-    public Result<JobExecutionStatus> getJobExecutionStatus(Integer userId, long jobInstanceId) {
+    public Result<JobExecutionStatus> getJobExecutionStatus(long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobExecutionStatus(jobInstanceId);
         if (jobInstance == null) {
             throw new SeatunnelException(
@@ -192,8 +179,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     }
 
     @Override
-    public Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(
-            Integer userId, long jobInstanceId) {
+    public Result<SeaTunnelJobInstanceDto> getJobExecutionDetail(long jobInstanceId) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         if (jobInstance == null) {
             throw new SeatunnelException(
@@ -201,7 +187,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
         }
         SeaTunnelJobInstanceDto executionDetails = convertToDto(jobInstance);
         populateExecutionMetricsData(
-                userId, jobInstance.getJobType(), Collections.singletonList(executionDetails));
+                jobInstance.getJobType(), Collections.singletonList(executionDetails));
         return Result.success(executionDetails);
     }
 
@@ -225,7 +211,7 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     }
 
     @Override
-    public Result<Void> deleteJobInstanceById(Integer userId, long jobInstanceId) {
+    public Result<Void> deleteJobInstanceById(long jobInstanceId) {
         jobInstanceDao.deleteById(jobInstanceId);
         return Result.success();
     }

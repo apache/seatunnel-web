@@ -32,26 +32,28 @@
     </sql>
 
     <select id="queryJobInstanceListPaging" resultType="org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto">
-        SELECT *
-        FROM t_st_job_instance
+        SELECT ji.*, jd.name AS jobDefineName, cu.username AS username
+        FROM t_st_job_instance ji
+        LEFT JOIN t_st_job_definition jd ON ji.job_define_id = jd.id
+        LEFT JOIN `user` cu ON ji.create_user_id = cu.id
         <where>
             <if test="startTime != null">
-                AND create_time <![CDATA[ >=]]> #{startTime}
+                AND ji.create_time <![CDATA[ >=]]> #{startTime}
             </if>
             <if test="endTime == null">
-                AND (end_time is null or end_time <![CDATA[ <=]]> #{endTime})
+                AND (ji.end_time is null or ji.end_time <![CDATA[ <=]]> #{endTime})
             </if>
             <if test="endTime != null">
-                AND (end_time <![CDATA[ <=]]> #{endTime} or end_time is null)
+                AND (ji.end_time <![CDATA[ <=]]> #{endTime} or ji.end_time is null)
             </if>
             <if test="jobDefineName != null">
-                AND job_define_id in (select x.id from t_st_job_definition x where x.name LIKE concat('%', #{jobDefineName}, '%'))
+                AND jd.name LIKE concat('%', #{jobDefineName}, '%')
             </if>
             <if test="jobMode != null">
-                AND job_type = #{jobMode}
+                AND ji.job_type = #{jobMode}
             </if>
         </where>
-        ORDER BY create_time DESC
+        ORDER BY ji.create_time DESC
     </select>
     <select id="getJobExecutionStatus" resultType="org.apache.seatunnel.app.dal.entity.JobInstance">
         SELECT `job_status`, `error_message`

@@ -23,6 +23,7 @@
         <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="auth_provider" jdbcType="VARCHAR" property="authProvider"/>
     </resultMap>
     <sql id="Base_Column_List">
         id,
@@ -31,13 +32,14 @@
         `status`,
         `type`,
         create_time,
-        update_time
+        update_time,
+        auth_provider
     </sql>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.apache.seatunnel.app.dal.entity.User"
             useGeneratedKeys="true">
-        insert into `user` (username, password, status, type)
+        insert into `user` (username, password, status, type, auth_provider)
                 values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-                       #{type,jdbcType=TINYINT})
+                       #{type,jdbcType=TINYINT}, #{authProvider,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey">
         update `user`
@@ -94,7 +96,7 @@
         select
         <include refid="Base_Column_List"/>
         from `user`
-        where username = #{username,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
+        where status = 0 and username = #{username,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR} and auth_provider = #{authProvider,jdbcType=VARCHAR}
     </select>
     <select id="queryEnabledUsers" resultType="org.apache.seatunnel.app.dal.entity.User">
         select

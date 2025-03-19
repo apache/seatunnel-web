@@ -35,6 +35,7 @@ import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -73,38 +74,39 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
     @Autowired private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
 
     @Override
-    public String createVirtualTable(Integer userId, VirtualTableReq req)
-            throws CodeGenerateUtils.CodeGenerateException {
+    public String createVirtualTable(VirtualTableReq tableReq) {
+        Integer userId = ServletUtils.getCurrentUserId();
         funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.VIRTUAL_TABLE_CREATE, userId);
-        // check user has permission to create virtual table
+
         long uuid = CodeGenerateUtils.getInstance().genCode();
-        Long datasourceId = Long.valueOf(req.getDatasourceId());
+        Long datasourceId = Long.valueOf(tableReq.getDatasourceId());
         boolean isUnique =
                 virtualTableDao.checkVirtualTableNameUnique(
-                        req.getTableName(), req.getDatabaseName(), 0L);
+                        tableReq.getTableName(), tableReq.getDatabaseName(), 0L);
         if (!isUnique) {
             throw new SeatunnelException(
-                    SeatunnelErrorEnum.VIRTUAL_TABLE_ALREADY_EXISTS, req.getTableName());
+                    SeatunnelErrorEnum.VIRTUAL_TABLE_ALREADY_EXISTS, tableReq.getTableName());
         }
 
         VirtualTable virtualTable =
                 VirtualTable.builder()
                         .id(uuid)
                         .datasourceId(datasourceId)
-                        .virtualDatabaseName(req.getDatabaseName())
-                        .virtualTableName(req.getTableName())
-                        .description(req.getDescription())
+                        .virtualDatabaseName(tableReq.getDatabaseName())
+                        .virtualTableName(tableReq.getTableName())
+                        .description(tableReq.getDescription())
                         .createTime(new Date())
                         .updateTime(new Date())
                         .createUserId(userId)
                         .updateUserId(userId)
                         .build();
-        if (CollectionUtils.isEmpty(req.getTableFields())) {
+        if (CollectionUtils.isEmpty(tableReq.getTableFields())) {
             throw new SeatunnelException(SeatunnelErrorEnum.VIRTUAL_TABLE_FIELD_EMPTY);
         }
-        String fieldJson = convertTableFields(req.getTableFields());
+        String fieldJson = convertTableFields(tableReq.getTableFields());
         virtualTable.setTableFields(fieldJson);
-        virtualTable.setVirtualTableConfig(JsonUtils.toJsonString(req.getDatabaseProperties()));
+        virtualTable.setVirtualTableConfig(
+                JsonUtils.toJsonString(tableReq.getDatabaseProperties()));
 
         boolean success = virtualTableDao.insertVirtualTable(virtualTable);
         if (!success) {
@@ -134,9 +136,9 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public Boolean updateVirtualTable(
-            @NotNull Integer userId, @NotNull String tableId, VirtualTableReq req) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.VIRTUAL_TABLE_UPDATE, userId);
+    public boolean updateVirtualTable(@NotNull String tableId, VirtualTableReq req) {
+        Integer currentUserId = ServletUtils.getCurrentUserId();
+        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.VIRTUAL_TABLE_UPDATE, currentUserId);
         VirtualTable originalTable = virtualTableDao.selectVirtualTableById(Long.valueOf(tableId));
         if (null == originalTable) {
             throw new SeatunnelException(SeatunnelErrorEnum.VIRTUAL_TABLE_NOT_EXISTS);
@@ -159,7 +161,7 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
                         .virtualTableName(req.getTableName())
                         .description(req.getDescription())
                         .updateTime(new Date())
-                        .updateUserId(userId)
+                        .updateUserId(currentUserId)
                         .build();
         if (CollectionUtils.isNotEmpty(req.getTableFields())) {
             String fieldJson = convertTableFields(req.getTableFields());
@@ -172,9 +174,11 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
     }
 
     @Override
-    public Boolean deleteVirtualTable(@NotNull Integer userId, @NotNull String tableId) {
-        // todo  check has permission and has job using this table
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.VIRTUAL_TABLE_DELETE, userId);
+    public boolean deleteVirtualTable(@NotNull String tableId) {
+        Integer currentUserId = ServletUtils.getCurrentUserId();
+
+        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.VIRTUAL_TABLE_DELETE, currentUserId);
+
         VirtualTable virtualTable = virtualTableDao.selectVirtualTableById(Long.valueOf(tableId));
         if (virtualTable == null) {
             throw new SeatunnelException(SeatunnelErrorEnum.VIRTUAL_TABLE_NOT_EXISTS);
