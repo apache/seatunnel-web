@@ -50,8 +50,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -716,7 +716,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                 Date start = sdf.parse(startTime);
                 Date end = sdf.parse(endTime);
                 return jobMetricsHistoryMapper.queryJobMetricsHistoryByInstanceIdAndTimeRange(
-                        jobInstanceId, start, end);
+                        jobInstanceId, startTime, endTime);
             } catch (ParseException e) {
                 log.error("Parse time error", e);
                 throw new SeatunnelException(

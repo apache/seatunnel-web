@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.seatunnel.app.scheduler;
 
 import org.apache.seatunnel.shade.com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -49,27 +66,30 @@ public class MonitorTaskScheduler {
     private final Object mapLock = new Object();
 
     public MonitorTaskScheduler() {
-        // 创建线程池
+        // Create thread pool
         this.executorService =
                 new ThreadPoolExecutor(
-                        5, // 核心线程数
-                        10, // 最大线程数
-                        60L, // 空闲线程存活时间
+                        5,
+                        10,
+                        60L,
                         TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>(100), // 任务队列
+                        new LinkedBlockingQueue<>(100),
                         new ThreadFactoryBuilder()
                                 .setNameFormat("task-processor-%d")
                                 .setUncaughtExceptionHandler(
-                                        (t, e) -> log.error("线程 {} 发生未捕获异常", t.getName(), e))
+                                        (t, e) ->
+                                                log.error(
+                                                        "Thread {} encountered uncaught exception",
+                                                        t.getName(),
+                                                        e))
                                 .build(),
-                        new ThreadPoolExecutor.CallerRunsPolicy() // 拒绝策略
-                        );
+                        new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
-    @Scheduled(initialDelay = 0, fixedRate = 60000) // 立即开始执行，每60秒执行一次
+    @Scheduled(initialDelay = 0, fixedRate = 60000)
     public void updateJobInstance() {
         try {
-            log.info("开始更新任务实例信息...");
+            log.info("Start updating job instance information...");
             List<JobInstance> allJobInstance = jobInstanceDao.getAllRunningJobInstance();
 
             Map<Long, JobInstance> newInstanceMap =
@@ -85,9 +105,11 @@ public class MonitorTaskScheduler {
                 jobInstanceMap.putAll(newInstanceMap);
             }
 
-            log.info("任务实例信息更新完成，当前共有 {} 个实例", jobInstanceMap.size());
+            log.debug(
+                    "Job instance information updated, current total instances: {}",
+                    jobInstanceMap.size());
         } catch (Exception e) {
-            log.error("更新任务实例信息异常", e);
+            log.error("Error updating job instance information", e);
         }
     }
 
@@ -103,7 +125,7 @@ public class MonitorTaskScheduler {
         }
     }
 
-    @Scheduled(fixedDelay = 5000) // 每5秒执行一次
+    @Scheduled(fixedDelay = 5000)
     public void scheduleTasks() {
         List<JobInstance> instances;
         synchronized (mapLock) {
@@ -135,17 +157,17 @@ public class MonitorTaskScheduler {
                                                             .collect(Collectors.toList());
 
                                             jobMetricsHistoryDao.insertBatch(historyList);
-                                            log.info(
-                                                    "成功保存作业 {} 的监控指标，共 {} 条记录",
+                                            log.debug(
+                                                    "Successfully saved metrics for job {}, total {} records",
                                                     jobInstanceId,
                                                     historyList.size());
                                         }
                                     } catch (Exception e) {
-                                        log.error("保存作业监控指标异常", e);
+                                        log.error("Error saving job metrics", e);
                                     }
                                 });
                     } catch (Exception e) {
-                        log.error("任务调度异常", e);
+                        log.error("Task scheduling error", e);
                     }
                 });
     }
@@ -153,7 +175,7 @@ public class MonitorTaskScheduler {
     private JobMetricsHistory convertToJobMetricsHistory(
             JobPipelineDetailMetricsRes metrics, Long jobInstanceId) {
         return JobMetricsHistory.builder()
-                .id(generateId()) // 需要实现一个生成唯一ID的方法
+                .id(generateId())
                 .jobInstanceId(jobInstanceId)
                 .pipelineId(metrics.getPipelineId())
                 .readRowCount(metrics.getReadRowCount())
@@ -166,19 +188,17 @@ public class MonitorTaskScheduler {
                 .status(metrics.getStatus())
                 .createUserId(-1)
                 .updateUserId(-1)
-                //                .createTime(new Date())
-                //                .updateTime(new Date())
                 .build();
     }
 
     private Long generateId() {
-        // 这里可以使用分布式ID生成器，比如雪花算法
+        // Here you can use a distributed ID generator, such as Snowflake algorithm
         return System.currentTimeMillis();
     }
 
     @PreDestroy
     public void shutdown() {
-        log.info("正在关闭任务调度器...");
+        log.info("Shutting down task scheduler...");
         executorService.shutdown();
         try {
             if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
