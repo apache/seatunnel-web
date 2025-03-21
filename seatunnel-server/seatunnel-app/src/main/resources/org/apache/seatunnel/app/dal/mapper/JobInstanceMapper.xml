@@ -60,4 +60,9 @@
         FROM t_st_job_instance t
         WHERE t.id = #{jobInstanceId}
     </select>
+    <select id="getAllRunningJobInstance" resultType="org.apache.seatunnel.app.dal.entity.JobInstance">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_st_job_instance t
+        WHERE t.job_status = 'RUNNING'
+    </select>
 </mapper>
