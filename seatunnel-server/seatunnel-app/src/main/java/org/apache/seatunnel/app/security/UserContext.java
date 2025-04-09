@@ -18,22 +18,15 @@ package org.apache.seatunnel.app.security;
 
 import org.apache.seatunnel.app.dal.entity.User;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserContext {
-    private static final ThreadLocal<User> userHolder = new ThreadLocal<>();
-
-    public static void setUser(User user) {
-        userHolder.set(user);
-    }
-
-    public static User getUser() {
-        User user = userHolder.get();
-        if (user == null) {
-            throw new RuntimeException("User context not found");
-        }
-        return user;
-    }
-
-    public static void clear() {
-        userHolder.remove();
-    }
+    User user;
+    Long workspaceId;
+    String workspaceName;
 }

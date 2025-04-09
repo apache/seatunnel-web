@@ -15,21 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.dto.user;
+package org.apache.seatunnel.app.service;
 
-import lombok.Builder;
-import lombok.Data;
+import org.apache.seatunnel.app.dal.entity.Workspace;
+import org.apache.seatunnel.app.domain.request.workspace.WorkspaceReq;
 
-@Data
-@Builder
-public class UserLoginLogDto {
-    private Long id;
+import java.util.List;
 
-    private Integer userId;
+public interface WorkspaceService {
+    Long createWorkspace(WorkspaceReq workspaceCreateReq);
 
-    private String token;
+    Workspace getWorkspace(String workspaceName);
 
-    private Boolean tokenStatus;
+    Workspace getWorkspace(Long id);
 
-    private Long workspaceId;
+    boolean updateWorkspace(Long id, WorkspaceReq workspaceReq);
+
+    boolean deleteWorkspace(Long id);
+
+    List<Workspace> getAllWorkspaces();
+
+    Workspace getDefaultWorkspace();
+
+    Long getWorkspaceIdOrDefault(Long workspaceId);
+
+    Long getWorkspaceIdOrCurrent(String workspaceName);
 }

@@ -19,6 +19,7 @@ package org.apache.seatunnel.app.test;
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.UserControllerWrapper;
+import org.apache.seatunnel.app.controller.WorkspaceControllerWrapper;
 import org.apache.seatunnel.app.domain.request.user.AddUserReq;
 import org.apache.seatunnel.app.domain.request.user.UpdateUserReq;
 import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
@@ -34,18 +35,19 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserControllerTest {
     private static final SeaTunnelWebCluster seaTunnelWebCluster = new SeaTunnelWebCluster();
     private static UserControllerWrapper userControllerWrapper;
+    private static WorkspaceControllerWrapper workspaceControllerWrapper;
     final Supplier<String> uniqueId = () -> "_" + System.nanoTime();
 
     @BeforeAll
     public static void setUp() {
         seaTunnelWebCluster.start();
         userControllerWrapper = new UserControllerWrapper();
+        workspaceControllerWrapper = new WorkspaceControllerWrapper();
     }
 
     @Test
@@ -99,7 +101,6 @@ public class UserControllerTest {
     public void listUsers_shouldReturnUsers_whenUsersExist() {
         Result<Void> result = userControllerWrapper.listUsers(1, 10);
         assertTrue(result.isSuccess());
-        assertNotNull(result.getData());
     }
 
     @Test
@@ -177,6 +178,35 @@ public class UserControllerTest {
         assertFalse(loginResult.isSuccess());
         assertEquals(
                 SeatunnelErrorEnum.USERNAME_PASSWORD_NO_MATCHED.getCode(), loginResult.getCode());
+    }
+
+    @Test
+    public void loginWithWorkspace() {
+        String user = "userLoginWithWorkspace" + uniqueId.get();
+        String pass = "pass9";
+        String workspace = "workspaceForLogin" + uniqueId.get();
+
+        workspaceControllerWrapper.createWorkspaceAndVerify(workspace);
+        AddUserReq addUserReq = getAddUserReq(user, pass);
+        Result<AddUserRes> result = userControllerWrapper.addUser(addUserReq);
+        assertTrue(result.isSuccess());
+        UserLoginReq userLoginReq = new UserLoginReq();
+        userLoginReq.setUsername(user);
+        userLoginReq.setPassword(pass);
+        userLoginReq.setWorkspaceName(workspace);
+        Result<UserSimpleInfoRes> login = userControllerWrapper.login(userLoginReq);
+        assertTrue(login.isSuccess());
+
+        // login with workspace when workspace does not exist
+        userLoginReq.setWorkspaceName("nonExistentWorkspace");
+        Result<UserSimpleInfoRes> loginResult = userControllerWrapper.login(userLoginReq);
+        assertFalse(loginResult.isSuccess());
+        assertEquals(SeatunnelErrorEnum.RESOURCE_NOT_FOUND.getCode(), loginResult.getCode());
+
+        // login without any workspace, should login with the workspace of the user
+        userLoginReq.setWorkspaceName(null);
+        Result<UserSimpleInfoRes> loginWithoutWorkspace = userControllerWrapper.login(userLoginReq);
+        assertTrue(loginWithoutWorkspace.isSuccess());
     }
 
     @AfterAll

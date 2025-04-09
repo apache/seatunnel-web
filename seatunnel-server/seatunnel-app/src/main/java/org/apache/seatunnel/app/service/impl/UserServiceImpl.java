@@ -22,6 +22,7 @@ import org.apache.seatunnel.app.common.UserTokenStatusEnum;
 import org.apache.seatunnel.app.config.SeatunnelAuthenticationProvidersConfig;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
+import org.apache.seatunnel.app.dal.entity.Workspace;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
 import org.apache.seatunnel.app.domain.dto.user.UpdateUserDto;
 import org.apache.seatunnel.app.domain.dto.user.UserLoginLogDto;
@@ -38,6 +39,7 @@ import org.apache.seatunnel.app.security.authentication.strategy.impl.DBAuthenti
 import org.apache.seatunnel.app.security.authentication.strategy.impl.LDAPAuthenticationStrategy;
 import org.apache.seatunnel.app.service.IRoleService;
 import org.apache.seatunnel.app.service.IUserService;
+import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.utils.PasswordUtils;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -59,10 +61,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserService {
     @Resource private IUserDao userDaoImpl;
 
     @Resource private IRoleService roleServiceImpl;
+
+    @Resource private WorkspaceService workspaceService;
 
     @Resource private JwtUtils jwtUtils;
 
@@ -178,7 +182,19 @@ public class UserServiceImpl implements IUserService {
         IAuthenticationStrategy strategy = strategies.get(authType);
         User user = strategy.authenticate(req);
         UserSimpleInfoRes translate = translate(user);
-        final String token = jwtUtils.genToken(translate.toMap());
+        Workspace workspace;
+        if (StringUtils.isNotEmpty(req.getWorkspaceName())
+                && !req.getWorkspaceName().equals("default")) {
+            workspace = workspaceService.getWorkspace(req.getWorkspaceName());
+        } else {
+            // get user default workspace
+            workspace = workspaceService.getDefaultWorkspace();
+        }
+
+        Map<String, Object> map = translate.toMap();
+        map.put("workspaceName", workspace.getWorkspaceName());
+        map.put("workspaceId", workspace.getId());
+        final String token = jwtUtils.genToken(map);
         translate.setToken(token);
 
         final UserLoginLogDto logDto =
@@ -186,6 +202,7 @@ public class UserServiceImpl implements IUserService {
                         .token(token)
                         .tokenStatus(UserTokenStatusEnum.ENABLE.enable())
                         .userId(user.getId())
+                        .workspaceId(workspace.getId())
                         .build();
         userDaoImpl.insertLoginLog(logDto);
         return translate;

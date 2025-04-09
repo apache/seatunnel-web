@@ -25,6 +25,7 @@
         <result property="tokenStatus" column="token_status" jdbcType="BOOLEAN"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="workspaceId" column="workspace_id" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -33,25 +34,26 @@
         token,
         token_status,
         create_time,
-        update_time
+        update_time,
+        workspace_id
     </sql>
 
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.apache.seatunnel.app.dal.entity.UserLoginLog"
             useGeneratedKeys="true">
-        insert into `user_login_log` (user_id, token, `token_status`)
-        VALUES (#{userId,jdbcType=INTEGER}, #{token,jdbcType=VARCHAR}, #{tokenStatus,jdbcType=BOOLEAN})
+        insert into `user_login_log` (user_id, token, `token_status`, `workspace_id`)
+        VALUES (#{userId,jdbcType=INTEGER}, #{token,jdbcType=VARCHAR}, #{tokenStatus,jdbcType=BOOLEAN}, #{workspaceId,jdbcType=BIGINT})
     </insert>
 
     <update id="updateStatus">
         update user_login_log
         set token_status = #{enable,jdbcType=BOOLEAN}
-        where user_id = #{userId,jdbcType=INTEGER} and token_status != #{enable}
+        where workspace_id = #{workspaceId} and user_id = #{userId,jdbcType=INTEGER} and token_status != #{enable}
     </update>
     <select id="checkLastTokenEnable" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_login_log
-        where user_id = #{userId,jdbcType=INTEGER}
+        where workspace_id = #{workspaceId} and user_id = #{userId,jdbcType=INTEGER}
         order by id desc
         limit 1
     </select>

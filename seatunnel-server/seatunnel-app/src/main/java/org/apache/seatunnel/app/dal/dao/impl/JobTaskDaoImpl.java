@@ -29,6 +29,8 @@ import javax.annotation.Resource;
 
 import java.util.List;
 
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
+
 @Repository
 public class JobTaskDaoImpl implements IJobTaskDao {
 
@@ -37,12 +39,15 @@ public class JobTaskDaoImpl implements IJobTaskDao {
     @Override
     public List<JobTask> getTasksByVersionId(long jobVersionId) {
         return jobTaskMapper.selectList(
-                Wrappers.lambdaQuery(new JobTask()).eq(JobTask::getVersionId, jobVersionId));
+                Wrappers.lambdaQuery(new JobTask())
+                        .eq(JobTask::getVersionId, jobVersionId)
+                        .eq(JobTask::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public void insertTask(JobTask jobTask) {
         if (jobTask != null) {
+            jobTask.setWorkspaceId(getCurrentWorkspaceId());
             jobTaskMapper.insert(jobTask);
         }
     }
@@ -50,6 +55,7 @@ public class JobTaskDaoImpl implements IJobTaskDao {
     @Override
     public void updateTask(JobTask jobTask) {
         if (jobTask != null) {
+            jobTask.setWorkspaceId(getCurrentWorkspaceId());
             jobTaskMapper.updateById(jobTask);
         }
     }
@@ -59,24 +65,35 @@ public class JobTaskDaoImpl implements IJobTaskDao {
         return jobTaskMapper.selectOne(
                 Wrappers.lambdaQuery(new JobTask())
                         .eq(JobTask::getVersionId, jobVersionId)
-                        .and(i -> i.eq(JobTask::getPluginId, pluginId)));
+                        .eq(JobTask::getPluginId, pluginId)
+                        .eq(JobTask::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public List<JobTask> getJobTaskByDataSourceId(long datasourceId) {
         return jobTaskMapper.selectList(
-                Wrappers.lambdaQuery(new JobTask()).eq(JobTask::getDataSourceId, datasourceId));
+                Wrappers.lambdaQuery(new JobTask())
+                        .eq(JobTask::getDataSourceId, datasourceId)
+                        .eq(JobTask::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public void updateTasks(List<JobTask> jobTasks) {
-        jobTasks.forEach(jobTaskMapper::updateById);
+        Long workspaceId = getCurrentWorkspaceId();
+        jobTasks.forEach(
+                jobTask -> {
+                    jobTask.setWorkspaceId(workspaceId);
+                    jobTaskMapper.updateById(jobTask);
+                });
     }
 
     @Override
     public void deleteTasks(List<Long> jobTaskIds) {
         if (!jobTaskIds.isEmpty()) {
-            jobTaskMapper.deleteBatchIds(jobTaskIds);
+            jobTaskMapper.delete(
+                    Wrappers.lambdaQuery(new JobTask())
+                            .in(JobTask::getId, jobTaskIds)
+                            .eq(JobTask::getWorkspaceId, getCurrentWorkspaceId()));
         }
     }
 
@@ -85,11 +102,15 @@ public class JobTaskDaoImpl implements IJobTaskDao {
         jobTaskMapper.delete(
                 Wrappers.lambdaQuery(new JobTask())
                         .eq(JobTask::getVersionId, jobVersionId)
-                        .and(i -> i.eq(JobTask::getPluginId, pluginId)));
+                        .eq(JobTask::getPluginId, pluginId)
+                        .eq(JobTask::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public void deleteTaskByVersionId(long id) {
-        jobTaskMapper.delete(Wrappers.lambdaQuery(new JobTask()).eq(JobTask::getVersionId, id));
+        jobTaskMapper.delete(
+                Wrappers.lambdaQuery(new JobTask())
+                        .eq(JobTask::getVersionId, id)
+                        .eq(JobTask::getWorkspaceId, getCurrentWorkspaceId()));
     }
 }

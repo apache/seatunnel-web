@@ -53,4 +53,7 @@ public class JobLine {
 
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField("workspace_id")
+    private Long workspaceId;
 }

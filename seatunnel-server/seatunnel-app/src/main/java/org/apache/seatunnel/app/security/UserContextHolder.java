@@ -14,22 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.app.security;
 
-package org.apache.seatunnel.app.domain.dto.user;
+import org.apache.seatunnel.app.dal.entity.User;
 
-import lombok.Builder;
-import lombok.Data;
+public class UserContextHolder {
+    private static final ThreadLocal<UserContext> userContextHolder = new ThreadLocal<>();
 
-@Data
-@Builder
-public class UserLoginLogDto {
-    private Long id;
+    public static void setUserContext(UserContext userContext) {
+        userContextHolder.set(userContext);
+    }
 
-    private Integer userId;
+    public static User getUser() {
+        UserContext userContext = getUserContext();
+        return userContext.getUser();
+    }
 
-    private String token;
+    public static UserContext getUserContext() {
+        UserContext userContext = userContextHolder.get();
+        if (userContext == null) {
+            throw new RuntimeException("User context not found");
+        }
+        return userContext;
+    }
 
-    private Boolean tokenStatus;
-
-    private Long workspaceId;
+    public static void clear() {
+        userContextHolder.remove();
+    }
 }

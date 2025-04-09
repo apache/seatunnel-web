@@ -139,7 +139,7 @@ public enum SeatunnelErrorEnum {
     INVALID_PARAM(60019, "", "param [%s] is invalid. %s"),
     TASK_NAME_ALREADY_EXISTS(60020, "task name already exists", "task [%s] already exists"),
     RESOURCE_NOT_FOUND(404, "", "%s"),
-    ;
+    RESOURCE_ALREADY_EXISTS(60021, "resource already exists", "resource [%s] already exists");
 
     private final int code;
     private final String msg;

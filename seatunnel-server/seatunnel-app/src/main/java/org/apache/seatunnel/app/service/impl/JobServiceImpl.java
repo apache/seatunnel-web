@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class JobServiceImpl implements IJobService {
+public class JobServiceImpl extends SeatunnelBaseServiceImpl implements IJobService {
 
     @Resource private IJobDefinitionService jobService;
     @Resource private IJobTaskService jobTaskService;

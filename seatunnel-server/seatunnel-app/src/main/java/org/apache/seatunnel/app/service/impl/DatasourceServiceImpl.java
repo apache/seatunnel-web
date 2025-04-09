@@ -131,6 +131,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                         .datasourceConfig(datasourceConfigStr)
                         .createTime(new Date())
                         .updateTime(new Date())
+                        .workspaceId(ServletUtils.getCurrentWorkspaceId())
                         .build();
         boolean success = datasourceDao.insertDatasource(datasource);
         if (success) {

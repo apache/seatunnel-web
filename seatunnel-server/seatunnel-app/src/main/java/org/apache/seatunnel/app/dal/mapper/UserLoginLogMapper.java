@@ -26,7 +26,11 @@ import org.apache.ibatis.annotations.Param;
 public interface UserLoginLogMapper {
     int insert(UserLoginLog userLoginLog);
 
-    int updateStatus(@Param("userId") int userId, @Param("enable") boolean enable);
+    int updateStatus(
+            @Param("userId") int userId,
+            @Param("enable") boolean enable,
+            @Param("workspaceId") long workspaceId);
 
-    UserLoginLog checkLastTokenEnable(@Param("userId") Integer userId);
+    UserLoginLog checkLastTokenEnable(
+            @Param("userId") Integer userId, @Param("workspaceId") long workspaceId);
 }

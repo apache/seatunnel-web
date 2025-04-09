@@ -68,8 +68,9 @@ CREATE TABLE `t_st_datasource`  (
   `update_user_id` int(11) NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `t_st_datasource_datasource_name_uindex`(`datasource_name`) USING BTREE
+  UNIQUE INDEX `t_st_datasource_datasource_name_uindex`(`datasource_name`, `workspace_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -85,8 +86,9 @@ CREATE TABLE `t_st_job_definition`  (
   `update_user_id` int(11) NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `name`(`name`) USING BTREE
+  UNIQUE INDEX `name`(`name`, `workspace_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -108,6 +110,7 @@ CREATE TABLE `t_st_job_instance`  (
   `end_time` timestamp(3) NULL DEFAULT NULL,
   `job_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `error_message` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
@@ -120,6 +123,7 @@ CREATE TABLE `t_st_job_instance_history`  (
   `dag` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
@@ -134,8 +138,9 @@ CREATE TABLE `t_st_job_line`  (
   `target_plugin_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `job_line_version_index`(`version_id`) USING BTREE
+  INDEX `job_line_version_index`(`version_id`, `workspace_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -158,6 +163,7 @@ CREATE TABLE `t_st_job_metrics`  (
   `update_user_id` int(20) NULL DEFAULT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
@@ -181,8 +187,9 @@ CREATE TABLE `t_st_job_task`  (
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `job_task_plugin_id_index`(`plugin_id`) USING BTREE
+  INDEX `job_task_plugin_id_index`(`plugin_id`, `workspace_id` ) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -201,6 +208,7 @@ CREATE TABLE `t_st_job_version`  (
   `update_user_id` int(11) NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
@@ -220,6 +228,7 @@ CREATE TABLE `t_st_virtual_table`  (
   `update_user_id` int(11) NOT NULL,
   `create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
@@ -250,6 +259,7 @@ CREATE TABLE `user_login_log`  (
   `token_status` tinyint(1) NOT NULL,
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `workspace_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 106 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -260,3 +270,17 @@ CREATE TABLE `user_login_log`  (
 INSERT INTO `seatunnel`.`user`(`username`,`password`,`status`,`type`) values ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ----------------------------
+-- Workspace related tables
+-- ----------------------------
+CREATE TABLE `workspace`  (
+                         `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                         `workspace_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                         `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                         `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                         `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+                         PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+INSERT INTO `seatunnel`.`workspace`(`workspace_name`,`description`) values ('default', 'default workspace');

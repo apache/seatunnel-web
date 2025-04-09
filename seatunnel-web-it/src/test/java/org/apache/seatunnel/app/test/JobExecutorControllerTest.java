@@ -21,14 +21,18 @@ import org.apache.seatunnel.app.common.SeaTunnelWebCluster;
 import org.apache.seatunnel.app.controller.JobControllerWrapper;
 import org.apache.seatunnel.app.controller.JobExecutorControllerWrapper;
 import org.apache.seatunnel.app.controller.SeatunnelDatasourceControllerWrapper;
+import org.apache.seatunnel.app.controller.UserControllerWrapper;
+import org.apache.seatunnel.app.controller.WorkspaceControllerWrapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
+import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
 import org.apache.seatunnel.engine.core.job.JobStatus;
 
@@ -54,6 +58,8 @@ public class JobExecutorControllerTest {
     private static final String uniqueId = "_" + System.currentTimeMillis();
     private static SeatunnelDatasourceControllerWrapper seatunnelDatasourceControllerWrapper;
     private static JobControllerWrapper jobControllerWrapper;
+    private static WorkspaceControllerWrapper workspaceControllerWrapper;
+    private static UserControllerWrapper userControllerWrapper;
 
     @BeforeAll
     public static void setUp() {
@@ -61,11 +67,34 @@ public class JobExecutorControllerTest {
         jobExecutorControllerWrapper = new JobExecutorControllerWrapper();
         seatunnelDatasourceControllerWrapper = new SeatunnelDatasourceControllerWrapper();
         jobControllerWrapper = new JobControllerWrapper();
+        workspaceControllerWrapper = new WorkspaceControllerWrapper();
+        userControllerWrapper = new UserControllerWrapper();
     }
 
     @Test
     public void executeJob_shouldReturnSuccess_whenValidRequest() {
         String jobName = "execJob" + uniqueId;
+        long jobVersionId = JobTestingUtils.createJob(jobName);
+        Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() > 0);
+        Result<List<JobPipelineDetailMetricsRes>> listResult =
+                JobTestingUtils.waitForJobCompletion(result.getData());
+        assertEquals(1, listResult.getData().size());
+        assertEquals(JobStatus.FINISHED, listResult.getData().get(0).getStatus());
+        assertEquals(5, listResult.getData().get(0).getReadRowCount());
+        assertEquals(5, listResult.getData().get(0).getWriteRowCount());
+    }
+
+    @Test
+    public void executeJobWithWorkspaceLogin() {
+        String userName = "user_exec_job_with_workspace" + uniqueId;
+        String password = "somePass";
+        String workspaceName = "workspace_exec_job_with_workspace" + uniqueId;
+        createWorkspaceAndUser(workspaceName, userName, password);
+        userControllerWrapper.loginAndSetCurrentUser(
+                new UserLoginReq(userName, password, workspaceName));
+        String jobName = "execJob_within_workspace" + uniqueId;
         long jobVersionId = JobTestingUtils.createJob(jobName);
         Result<Long> result = jobExecutorControllerWrapper.jobExecutor(jobVersionId);
         assertTrue(result.isSuccess());
@@ -299,6 +328,12 @@ public class JobExecutorControllerTest {
     @AfterAll
     public static void tearDown() {
         seaTunnelWebCluster.stop();
+    }
+
+    private void createWorkspaceAndUser(String workspaceName, String username, String password) {
+        workspaceControllerWrapper.createWorkspaceAndVerify(workspaceName);
+        Result<AddUserRes> result = userControllerWrapper.addUser(username, password);
+        assertTrue(result.isSuccess());
     }
 
     private String getGenerateJobFile(String jobId) {

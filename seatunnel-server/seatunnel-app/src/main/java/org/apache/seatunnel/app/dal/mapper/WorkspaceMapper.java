@@ -15,21 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.dto.user;
+package org.apache.seatunnel.app.dal.mapper;
 
-import lombok.Builder;
-import lombok.Data;
+import org.apache.seatunnel.app.dal.entity.Workspace;
 
-@Data
-@Builder
-public class UserLoginLogDto {
-    private Long id;
+import org.apache.ibatis.annotations.Param;
 
-    private Integer userId;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-    private String token;
+import java.util.List;
 
-    private Boolean tokenStatus;
+public interface WorkspaceMapper extends BaseMapper<Workspace> {
+    List<Workspace> getWorkspaceByName(@Param("workspaceName") String workspaceName);
 
-    private Long workspaceId;
+    List<String> getWorkspaceNames(String searchName);
 }

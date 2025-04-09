@@ -80,4 +80,7 @@ public class JobInstance {
 
     @TableField("error_message")
     private String errorMessage;
+
+    @TableField("workspace_id")
+    private Long workspaceId;
 }

@@ -25,10 +25,11 @@
         <result column="engine_version" jdbcType="VARCHAR" property="engineVersion"/>
         <result column="job_engine_id" jdbcType="VARCHAR" property="jobEngineId"/>
         <result column="error_message" jdbcType="VARCHAR" property="errorMessage"/>
+        <result column="workspace_id" jdbcType="BIGINT" property="workspaceId"/>
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , `job_define_id`, `job_status`, `job_config`, `engine_name`, `engine_version`, `job_engine_id`,`error_message`
+        , `job_define_id`, `job_status`, `job_config`, `engine_name`, `engine_version`, `job_engine_id`,`error_message`, `workspace_id`
     </sql>
 
     <select id="queryJobInstanceListPaging" resultType="org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto">
@@ -37,6 +38,7 @@
         LEFT JOIN t_st_job_definition jd ON ji.job_define_id = jd.id
         LEFT JOIN `user` cu ON ji.create_user_id = cu.id
         <where>
+            ji.workspace_id = #{workspaceId}
             <if test="startTime != null">
                 AND ji.create_time <![CDATA[ >=]]> #{startTime}
             </if>
@@ -54,10 +56,5 @@
             </if>
         </where>
         ORDER BY ji.create_time DESC
-    </select>
-    <select id="getJobExecutionStatus" resultType="org.apache.seatunnel.app.dal.entity.JobInstance">
-        SELECT `job_status`, `error_message`
-        FROM t_st_job_instance t
-        WHERE t.id = #{jobInstanceId}
     </select>
 </mapper>

@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,15 +42,12 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.apache.seatunnel.app.common.Constants.SESSION_USER;
 
 @RestController
 @RequestMapping("/seatunnel/api/v1/virtual_table")
@@ -103,9 +99,7 @@ public class VirtualTableController extends BaseController {
                 dataType = "VirtualTableReq")
     })
     @GetMapping("/check/valid")
-    Result<Boolean> checkVirtualTableValid(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestBody VirtualTableReq virtualTableReq) {
+    Result<Boolean> checkVirtualTableValid(@RequestBody VirtualTableReq virtualTableReq) {
         return Result.success(virtualTableService.checkVirtualTableValid(virtualTableReq));
     }
 
@@ -139,9 +133,7 @@ public class VirtualTableController extends BaseController {
                 dataType = "String")
     })
     @GetMapping("/{id}")
-    Result<VirtualTableDetailRes> queryVirtualTable(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @PathVariable("id") String id) {
+    Result<VirtualTableDetailRes> queryVirtualTable(@PathVariable("id") String id) {
         // rsp add plugin name
         return Result.success(virtualTableService.queryVirtualTable(id));
     }

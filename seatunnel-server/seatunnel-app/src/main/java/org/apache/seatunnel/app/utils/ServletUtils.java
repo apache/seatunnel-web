@@ -18,15 +18,19 @@
 package org.apache.seatunnel.app.utils;
 
 import org.apache.seatunnel.app.dal.entity.User;
-import org.apache.seatunnel.app.security.UserContext;
+import org.apache.seatunnel.app.security.UserContextHolder;
 
 public class ServletUtils {
 
     public static User getCurrentUser() {
-        return UserContext.getUser();
+        return UserContextHolder.getUser();
     }
 
     public static Integer getCurrentUserId() {
         return getCurrentUser().getId();
+    }
+
+    public static Long getCurrentWorkspaceId() {
+        return UserContextHolder.getUserContext().getWorkspaceId();
     }
 }

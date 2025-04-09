@@ -63,7 +63,7 @@ public class AsyncUserContextTest {
             taskExecutor.shutdown();
         }
         // Clear any remaining user context
-        UserContext.clear();
+        UserContextHolder.clear();
     }
 
     @Test
@@ -85,7 +85,7 @@ public class AsyncUserContextTest {
                     "Setting main thread user context: userId={}, username={}",
                     userId,
                     user.getUsername());
-            UserContext.setUser(user);
+            UserContextHolder.setUserContext(getUserContext(user));
 
             CompletableFuture<Void> future =
                     CompletableFuture.runAsync(
@@ -145,6 +145,12 @@ public class AsyncUserContextTest {
         }
     }
 
+    private UserContext getUserContext(User user) {
+        UserContext userContext = new UserContext();
+        userContext.setUser(user);
+        return userContext;
+    }
+
     @Test
     public void testNestedAsyncCalls() throws Exception {
         log.info("Starting nested async calls test...");
@@ -157,7 +163,7 @@ public class AsyncUserContextTest {
                 "Setting main thread user context: userId={}, username={}",
                 user.getId(),
                 user.getUsername());
-        UserContext.setUser(user);
+        UserContextHolder.setUserContext(getUserContext(user));
 
         CompletableFuture<Void> future =
                 CompletableFuture.runAsync(
@@ -204,7 +210,7 @@ public class AsyncUserContextTest {
         // First user
         User user1 = new User();
         user1.setId(1);
-        UserContext.setUser(user1);
+        UserContextHolder.setUserContext(getUserContext(user1));
         log.info("Setting first user context: userId={}", user1.getId());
 
         // Capture current user to avoid context loss during thread switching
@@ -217,7 +223,7 @@ public class AsyncUserContextTest {
                                         "First user's async task started: threadName={}",
                                         Thread.currentThread().getName());
                                 Thread.sleep(1000);
-                                UserContext.setUser(capturedUser1);
+                                UserContextHolder.setUserContext(getUserContext(capturedUser1));
                                 User currentUser = ServletUtils.getCurrentUser();
                                 log.info(
                                         "First user's async task got user: userId={}",
@@ -227,7 +233,7 @@ public class AsyncUserContextTest {
                                 log.error("First user's async task failed", e);
                                 throw new RuntimeException(e);
                             } finally {
-                                UserContext.clear();
+                                UserContextHolder.clear();
                                 latch.countDown();
                             }
                         },
@@ -236,7 +242,7 @@ public class AsyncUserContextTest {
         // Second user
         User user2 = new User();
         user2.setId(2);
-        UserContext.setUser(user2);
+        UserContextHolder.setUserContext(getUserContext(user2));
         log.info("Setting second user context: userId={}", user2.getId());
 
         // Capture current user to avoid context loss during thread switching
@@ -248,7 +254,7 @@ public class AsyncUserContextTest {
                                 log.info(
                                         "Second user's async task started: threadName={}",
                                         Thread.currentThread().getName());
-                                UserContext.setUser(capturedUser2);
+                                UserContextHolder.setUserContext(getUserContext(capturedUser2));
                                 User currentUser = ServletUtils.getCurrentUser();
                                 log.info(
                                         "Second user's async task got user: userId={}",
@@ -258,7 +264,7 @@ public class AsyncUserContextTest {
                                 log.error("Second user's async task failed", e);
                                 throw new RuntimeException(e);
                             } finally {
-                                UserContext.clear();
+                                UserContextHolder.clear();
                                 latch.countDown();
                             }
                         },
@@ -274,6 +280,6 @@ public class AsyncUserContextTest {
         assertEquals(2, result2);
         log.info("User context isolation test completed");
 
-        UserContext.clear();
+        UserContextHolder.clear();
     }
 }
