@@ -21,6 +21,9 @@ set -
 # usage: seatunnel-backend-daemon.sh <start|stop|status>
 
 WORKDIR=$(cd "$(dirname "$0")" || exit; pwd)
+SEATUNNEL_WEB_HOME=${SEATUNNEL_WEB_HOME:-"$WORKDIR/.."}
+LOGDIR=${LOGDIR:-"${SEATUNNEL_WEB_HOME}/logs"}
+CONFDIR=${CONFDIR:-"${SEATUNNEL_WEB_HOME}/conf"}
 
 # check
 check() {
@@ -39,12 +42,16 @@ start() {
 
   check
 
-  LOGDIR=${WORKDIR}/../logs
   # Create the log directory if it does not exist
   if [ ! -d "$LOGDIR" ]; then
     mkdir -p "$LOGDIR"
   fi
-  JAVA_OPTS="${JAVA_OPTS} -server -Xms1g -Xmx1g -Xmn512m -XX:+PrintGCDetails -Xloggc:${LOGDIR}/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dump.hprof"
+
+  JAVA_MEMORY_OPTS=${JAVA_MEMORY_OPTS:-"-Xms1g -Xmx1g -Xmn512m"}
+  JAVA_GC_OPTS=${JAVA_GC_OPTS:-"-XX:+PrintGCDetails -Xloggc:${LOGDIR}/gc.log"}
+  JAVA_ERROR_OPTS=${JAVA_ERROR_OPTS:-"-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${LOGDIR}/dump.hprof"}
+
+  JAVA_OPTS="${JAVA_OPTS} -server $JAVA_MEMORY_OPTS $JAVA_GC_OPTS $JAVA_ERROR_OPTS"
   SPRING_OPTS="${SPRING_OPTS} -Dspring.config.name=application.yml -Dspring.config.location=classpath:application.yml"
   JAVA_OPTS="${JAVA_OPTS} -Dseatunnel-web.logs.path=${LOGDIR}"
   # check env JAVA_HOME
@@ -53,11 +60,11 @@ start() {
     exit 1
   fi
 
-  echo "$WORKDIR"
-  CLASSPATH="$WORKDIR/../conf:$WORKDIR/../libs/*:$WORKDIR/../datasource/*"
-  if [ -d "$WORKDIR/../ranger-seatunnel-plugin" ]; then
-  CLASSPATH="$CLASSPATH:$WORKDIR/../ranger-seatunnel-plugin/lib/*.jar"
-  CLASSPATH="$CLASSPATH:$WORKDIR/../ranger-seatunnel-plugin/lib/ranger-seatunnel-plugin-impl/*"
+  echo "$SEATUNNEL_WEB_HOME"
+  CLASSPATH="$CONFDIR:$SEATUNNEL_WEB_HOME/libs/*:$SEATUNNEL_WEB_HOME/datasource/*"
+  if [ -d "$SEATUNNEL_WEB_HOME/ranger-seatunnel-plugin" ]; then
+  CLASSPATH="$CLASSPATH:$SEATUNNEL_WEB_HOME/ranger-seatunnel-plugin/lib/*.jar"
+  CLASSPATH="$CLASSPATH:$SEATUNNEL_WEB_HOME/ranger-seatunnel-plugin/lib/ranger-seatunnel-plugin-impl/*"
   fi
 
   nohup $JAVA_HOME/bin/java $JAVA_OPTS \
