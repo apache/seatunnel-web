@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import { format, subDays, subHours, subMinutes } from 'date-fns'
+
 export const getNowDate = (): any => {
   return [
     new Date(new Date().toLocaleDateString()).getTime(),
@@ -53,4 +55,35 @@ export function getRangeShortCuts(t: any) {
     )
   })
   return rangeShortCuts
+}
+
+export const getMetricsRangeShortcuts = (t: any) => {
+  const now = new Date()
+  
+  return [
+    {
+      label: t('project.metrics.last_1_minute'),
+      value: () => [subMinutes(now, 1).getTime(), now.getTime()]
+    },
+    {
+      label: t('project.metrics.last_10_minutes'),
+      value: () => [subMinutes(now, 10).getTime(), now.getTime()]
+    },
+    {
+      label: t('project.metrics.last_1_hour'),
+      value: () => [subHours(now, 1).getTime(), now.getTime()]
+    },
+    {
+      label: t('project.metrics.last_3_hours'),
+      value: () => [subHours(now, 3).getTime(), now.getTime()]
+    },
+    {
+      label: t('project.metrics.last_1_day'),
+      value: () => [subDays(now, 1).getTime(), now.getTime()]
+    },
+    {
+      label: t('project.metrics.last_7_days'),
+      value: () => [subDays(now, 7).getTime(), now.getTime()]
+    }
+  ]
 }
