@@ -25,9 +25,13 @@ import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBase {
@@ -37,6 +41,12 @@ public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBas
         Result<String> result = createDatasource(req);
         assertTrue(result.isSuccess());
         return result.getData();
+    }
+
+    public void createDatasourceExpectingFailure(String datasourceName) {
+        DatasourceReq req = getFakeSourceDatasourceReq(datasourceName);
+        Result<String> result = createDatasource(req);
+        assertEquals(SeatunnelErrorEnum.ACCESS_DENIED.getCode(), result.getCode());
     }
 
     public String createConsoleDatasource(String datasourceName) {
@@ -120,5 +130,18 @@ public class SeatunnelDatasourceControllerWrapper extends SeatunnelWebTestingBas
         req.setDatasourceConfig(
                 "{\"url\":\"jdbc:mysql://localhost:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&allowPublicKeyRetrieval=true\",\"driver\":\"com.mysql.cj.jdbc.Driver\",\"user\":\"someUser\",\"password\":\"somePassword\"}");
         return req;
+    }
+
+    public Result<List<String>> getDatasourceNames(String namePrefix) {
+        String response;
+        if (namePrefix == null) {
+            response = sendRequest(String.format("%s/datasource/names", baseUrl));
+        } else {
+            response =
+                    sendRequest(
+                            String.format(
+                                    "%s/datasource/names?namePrefix=%s", baseUrl, namePrefix));
+        }
+        return JSONTestUtils.parseObject(response, new TypeReference<Result<List<String>>>() {});
     }
 }

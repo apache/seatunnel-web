@@ -31,7 +31,7 @@ import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableFieldRes;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
-import org.apache.seatunnel.app.permission.enums.SeatunnelResourcePermissionModuleEnum;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
@@ -39,6 +39,8 @@ import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
 import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
@@ -106,7 +108,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             Map<String, String> datasourceConfig)
             throws CodeGenerateUtils.CodeGenerateException {
         Integer userId = ServletUtils.getCurrentUserId();
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_CREATE, userId);
+        permCheck(datasourceName, AccessType.CREATE);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         boolean unique = datasourceDao.checkDatasourceNameUnique(datasourceName, 0L);
         if (!unique) {
@@ -135,10 +137,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                         .build();
         boolean success = datasourceDao.insertDatasource(datasource);
         if (success) {
-            resourcePostHandle(
-                    SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
-                    Collections.singletonList(datasource.getId()),
-                    userId);
             return String.valueOf(uuid);
         }
         throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_CREATE_FAILED);
@@ -150,11 +148,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             String datasourceName,
             String description,
             Map<String, String> datasourceConfig) {
-        funcAndResourcePermissionCheck(
-                SeatunnelFuncPermissionKeyConstant.DATASOURCE_UPDATE,
-                SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
-                Collections.singletonList(datasourceId),
-                ServletUtils.getCurrentUserId());
         if (datasourceId == null) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.DATASOURCE_PRAM_NOT_ALLOWED_NULL, "datasourceId");
@@ -172,6 +165,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
                         SeatunnelErrorEnum.DATASOURCE_NAME_ALREADY_EXISTS, datasourceName);
             }
         }
+        permCheck(datasource.getDatasourceName(), AccessType.UPDATE);
         datasource.setUpdateUserId(ServletUtils.getCurrentUserId());
         datasource.setUpdateTime(new Date());
         datasource.setDescription(description);
@@ -185,12 +179,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public boolean deleteDatasource(Long datasourceId) {
-        // check role permission
-        funcAndResourcePermissionCheck(
-                SeatunnelFuncPermissionKeyConstant.DATASOURCE_DELETE,
-                SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
-                Collections.singletonList(datasourceId),
-                ServletUtils.getCurrentUserId());
         // check has job task has used this datasource
         List<JobTask> jobTaskList = jobTaskDao.getJobTaskByDataSourceId(datasourceId);
         if (!CollectionUtils.isEmpty(jobTaskList)) {
@@ -204,6 +192,11 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         if (!jobDefinitionService.getJobVersionByDataSourceId(datasourceId).isEmpty()) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_CAN_NOT_DELETE);
         }
+        Datasource datasource = datasourceDao.selectDatasourceById(datasourceId);
+        if (datasource == null) {
+            return true;
+        }
+        permCheck(datasource.getDatasourceName(), AccessType.DELETE);
         return datasourceDao.deleteDatasourceById(datasourceId);
     }
 
@@ -219,16 +212,12 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public boolean testDatasourceConnectionAble(Long datasourceId) {
-        funcAndResourcePermissionCheck(
-                SeatunnelFuncPermissionKeyConstant.DATASOURCE_TEST_CONNECT,
-                SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
-                Collections.singletonList(datasourceId),
-                ServletUtils.getCurrentUserId());
         Datasource datasource = datasourceDao.selectDatasourceById(datasourceId);
         if (datasource == null) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId.toString());
         }
+        permCheck(datasource.getDatasourceName(), AccessType.EXECUTE);
         String configJson = datasource.getDatasourceConfig();
         Map<String, String> datasourceConfig =
                 JsonUtils.toMap(configJson, String.class, String.class);
@@ -301,7 +290,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     public List<String> queryTableNames(
             String datasourceName, String databaseName, String filterName, Integer size) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TABLE, 0);
         Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceName);
@@ -323,7 +311,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public List<String> queryTableNames(String datasourceName, String databaseName) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TABLE, 0);
         Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceName);
@@ -344,7 +331,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     public List<TableField> queryTableSchema(
             String datasourceName, String databaseName, String tableName) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_TABLE_SCHEMA, 0);
         Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceName);
@@ -399,18 +385,22 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     public PageInfo<DatasourceRes> queryDatasourceList(
             String searchVal, String pluginName, Integer pageNo, Integer pageSize) {
-        Integer userId = ServletUtils.getCurrentUserId();
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_LIST, userId);
         Page<Datasource> page = new Page<>(pageNo, pageSize);
         PageInfo<DatasourceRes> pageInfo = new PageInfo<>();
-        List<Long> ids =
-                availableResourceRange(
-                        SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(), userId);
-        if (org.springframework.util.CollectionUtils.isEmpty(ids)) {
+        IPage<Datasource> datasourceWithoutAuthorization =
+                datasourceDao.selectDatasourceByParam(page, null, searchVal, pluginName);
+
+        List<Long> filteredIds =
+                datasourceWithoutAuthorization.getRecords().stream()
+                        .filter(datasource -> hasReadPerm(datasource.getDatasourceName()))
+                        .map(Datasource::getId)
+                        .collect(Collectors.toList());
+
+        if (org.springframework.util.CollectionUtils.isEmpty(filteredIds)) {
             return pageInfo;
         }
         IPage<Datasource> datasourcePage =
-                datasourceDao.selectDatasourceByParam(page, ids, searchVal, pluginName);
+                datasourceDao.selectDatasourceByParam(page, filteredIds, searchVal, pluginName);
         pageInfo = new PageInfo<>();
         pageInfo.setPageNo((int) datasourcePage.getPages());
         pageInfo.setPageSize((int) datasourcePage.getSize());
@@ -419,15 +409,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
             pageInfo.setData(new ArrayList<>());
             return pageInfo;
         }
-        List<Integer> userIds = new ArrayList<>();
-        datasourcePage
-                .getRecords()
-                .forEach(
-                        datasource -> {
-                            userIds.add(datasource.getCreateUserId());
-                            userIds.add(datasource.getUpdateUserId());
-                        });
-
         List<DatasourceRes> datasourceResList =
                 datasourcePage.getRecords().stream()
                         .map(
@@ -554,11 +535,6 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         if (CollectionUtils.isEmpty(datasourceIds)) {
             return new ArrayList<>();
         }
-        funcAndResourcePermissionCheck(
-                SeatunnelFuncPermissionKeyConstant.DATASOURCE_DETAIL_LIST,
-                SeatunnelResourcePermissionModuleEnum.DATASOURCE.name(),
-                datasourceIds,
-                0);
         List<Long> datasourceIdsLong =
                 datasourceIds.stream().map(Long::parseLong).collect(Collectors.toList());
         List<Datasource> datasourceList = datasourceDao.selectDatasourceByIds(datasourceIdsLong);
@@ -570,22 +546,13 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
         if (CollectionUtils.isEmpty(datasourceList)) {
             return new ArrayList<>();
         }
-        List<Integer> userIds = new ArrayList<>();
-        datasourceList.forEach(
-                datasource -> {
-                    if (null != datasource.getCreateUserId()) {
-                        userIds.add(datasource.getCreateUserId());
-                    }
-                    if (null != datasource.getUpdateUserId()) {
-                        userIds.add(datasource.getUpdateUserId());
-                    }
-                });
         List<DatasourceDetailRes> datasourceDetailResList = new ArrayList<>();
-
-        datasourceList.forEach(
-                datasource -> {
-                    datasourceDetailResList.add(getDatasourceDetailRes(datasource));
-                });
+        datasourceList.stream()
+                .filter(datasource -> hasReadPerm(datasource.getDatasourceName()))
+                .forEach(
+                        datasource -> {
+                            datasourceDetailResList.add(getDatasourceDetailRes(datasource));
+                        });
         return datasourceDetailResList;
     }
 
@@ -597,7 +564,7 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public DatasourceDetailRes queryDatasourceDetailByDatasourceName(String datasourceName) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_DETAIL, 0);
+        permCheck(datasourceName, AccessType.READ);
         Datasource datasource = datasourceDao.queryDatasourceByName(datasourceName);
         // @cc liuli
         if (null == datasource) {
@@ -627,16 +594,32 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     public DatasourceDetailRes queryDatasourceDetailById(String datasourceId) {
         long datasourceIdLong = Long.parseLong(datasourceId);
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.DATASOURCE_DETAIL, 0);
         Datasource datasource = datasourceDao.selectDatasourceById(datasourceIdLong);
         if (null == datasource) {
             throw new SeatunnelException(SeatunnelErrorEnum.DATASOURCE_NOT_FOUND, datasourceId);
         }
+        permCheck(datasource.getDatasourceName(), AccessType.READ);
         return getDatasourceDetailRes(datasource);
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    private void permCheck(String resourceName, AccessType accessType) {
+        permissionCheck(
+                resourceName,
+                ResourceType.DATASOURCE,
+                accessType,
+                UserContextHolder.getAccessInfo());
+    }
+
+    private boolean hasReadPerm(String resourceName) {
+        return hasPermission(
+                resourceName,
+                ResourceType.DATASOURCE,
+                AccessType.READ,
+                UserContextHolder.getAccessInfo());
     }
 }

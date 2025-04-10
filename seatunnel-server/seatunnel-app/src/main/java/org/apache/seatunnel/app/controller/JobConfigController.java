@@ -46,7 +46,7 @@ public class JobConfigController {
             @ApiParam(value = "jobVersionId", required = true) @PathVariable long jobVersionId,
             @ApiParam(value = "jobConfig", required = true) @RequestBody JobConfig jobConfig)
             throws JsonProcessingException {
-        jobConfigService.updateJobConfig(jobVersionId, jobConfig);
+        jobConfigService.updateJobConfig(jobVersionId, jobConfig, false);
         return Result.success();
     }
 
@@ -55,6 +55,6 @@ public class JobConfigController {
     Result<JobConfigRes> getJobConfig(
             @ApiParam(value = "jobVersionId", required = true) @PathVariable long jobVersionId)
             throws JsonProcessingException {
-        return Result.success(jobConfigService.getJobConfig(jobVersionId));
+        return Result.success(jobConfigService.getJobConfig(jobVersionId, false));
     }
 }

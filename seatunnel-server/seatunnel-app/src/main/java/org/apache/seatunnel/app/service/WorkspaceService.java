@@ -37,7 +37,5 @@ public interface WorkspaceService {
 
     Workspace getDefaultWorkspace();
 
-    Long getWorkspaceIdOrDefault(Long workspaceId);
-
     Long getWorkspaceIdOrCurrent(String workspaceName);
 }

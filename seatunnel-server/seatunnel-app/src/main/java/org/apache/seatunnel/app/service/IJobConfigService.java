@@ -22,7 +22,9 @@ import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface IJobConfigService {
-    JobConfigRes getJobConfig(long jobVersionIdId) throws JsonProcessingException;
+    JobConfigRes getJobConfig(long jobVersionIdId, boolean isPermissionChecked)
+            throws JsonProcessingException;
 
-    void updateJobConfig(long jobVersionId, JobConfig jobConfig) throws JsonProcessingException;
+    void updateJobConfig(long jobVersionId, JobConfig jobConfig, boolean isPermissionChecked)
+            throws JsonProcessingException;
 }

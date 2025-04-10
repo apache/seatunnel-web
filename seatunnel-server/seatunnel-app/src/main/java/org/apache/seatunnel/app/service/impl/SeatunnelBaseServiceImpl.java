@@ -16,38 +16,42 @@
  */
 package org.apache.seatunnel.app.service.impl;
 
-import org.apache.seatunnel.app.permission.ISeatunnelPermissonService;
 import org.apache.seatunnel.app.service.ISeatunnelBaseService;
+import org.apache.seatunnel.common.access.AccessInfo;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
+import org.apache.seatunnel.common.access.SeatunnelAccessController;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.annotation.Resource;
 
 @Service
 public class SeatunnelBaseServiceImpl implements ISeatunnelBaseService {
-
-    @Autowired private ISeatunnelPermissonService iSeatunnelPermissonService;
+    @Resource private SeatunnelAccessController seatunnelAccessController;
 
     @Override
     public void funcPermissionCheck(String permissionKey, int userId) {
-        iSeatunnelPermissonService.funcPermissionCheck(permissionKey, userId);
+        // Placeholder method: To be removed after thorough analysis of all references and usages.
     }
 
     @Override
-    public void funcAndResourcePermissionCheck(
-            String permissionKey, String resourceType, List resourceCodes, int userId) {
-        iSeatunnelPermissonService.funcAndResourcePermissionCheck(
-                permissionKey, resourceType, resourceCodes, userId);
+    public void permissionCheck(
+            String resourceName,
+            ResourceType resourceType,
+            AccessType accessType,
+            AccessInfo accessInfo) {
+        seatunnelAccessController.authorizeAccess(
+                resourceName, resourceType, accessType, accessInfo);
     }
 
     @Override
-    public void resourcePostHandle(String sourceType, List resourceCodes, int userId) {
-        iSeatunnelPermissonService.resourcePostHandle(sourceType, resourceCodes, userId);
-    }
-
-    @Override
-    public List availableResourceRange(String resourceType, int userId) {
-        return iSeatunnelPermissonService.availableResourceRange(resourceType, userId);
+    public boolean hasPermission(
+            String resourceName,
+            ResourceType resourceType,
+            AccessType accessType,
+            AccessInfo accessInfo) {
+        return seatunnelAccessController.hasPermission(
+                resourceName, resourceType, accessType, accessInfo);
     }
 }

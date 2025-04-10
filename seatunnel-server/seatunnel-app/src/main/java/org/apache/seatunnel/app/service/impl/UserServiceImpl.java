@@ -34,6 +34,7 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 import org.apache.seatunnel.app.security.JwtUtils;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.security.authentication.strategy.IAuthenticationStrategy;
 import org.apache.seatunnel.app.security.authentication.strategy.impl.DBAuthenticationStrategy;
 import org.apache.seatunnel.app.security.authentication.strategy.impl.LDAPAuthenticationStrategy;
@@ -42,6 +43,8 @@ import org.apache.seatunnel.app.service.IUserService;
 import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.utils.PasswordUtils;
 import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -97,9 +100,9 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AddUserRes add(AddUserReq addReq) {
+        permCheck(addReq.getUsername(), AccessType.CREATE);
         // 1. check duplicate user first
         userDaoImpl.checkUserExists(addReq.getUsername());
-
         // 2. add a new user.
         final UpdateUserDto dto =
                 UpdateUserDto.builder()
@@ -123,6 +126,7 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
 
     @Override
     public void update(UpdateUserReq updateReq) {
+        permCheck(updateReq.getUsername(), AccessType.UPDATE);
         final UpdateUserDto dto =
                 UpdateUserDto.builder()
                         .id(updateReq.getUserId())
@@ -145,6 +149,11 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
             throw new SeatunnelException(
                     SeatunnelErrorEnum.INVALID_OPERATION, "Can't delete yourself");
         }
+        User user = userDaoImpl.getById(id);
+        if (user == null) {
+            return;
+        }
+        permCheck(user.getUsername(), AccessType.DELETE);
         userDaoImpl.delete(id);
         roleServiceImpl.deleteByUserId(id);
     }
@@ -158,7 +167,10 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
                 userDaoImpl.list(dto, userListReq.getRealPageNo(), userListReq.getPageSize());
 
         final List<UserSimpleInfoRes> data =
-                userPageData.getData().stream().map(this::translate).collect(Collectors.toList());
+                userPageData.getData().stream()
+                        .filter(user -> hasReadPerm(user.getUsername()))
+                        .map(this::translate)
+                        .collect(Collectors.toList());
         final PageInfo<UserSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setPageNo(userListReq.getPageNo());
         pageInfo.setPageSize(userListReq.getPageSize());
@@ -170,12 +182,20 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
 
     @Override
     public void enable(int id) {
-        userDaoImpl.enable(id);
+        User user = userDaoImpl.getById(id);
+        if (user != null) {
+            permCheck(user.getUsername(), AccessType.UPDATE);
+            userDaoImpl.enable(id);
+        }
     }
 
     @Override
     public void disable(int id) {
-        userDaoImpl.disable(id);
+        User user = userDaoImpl.getById(id);
+        if (user != null) {
+            permCheck(user.getUsername(), AccessType.UPDATE);
+            userDaoImpl.disable(id);
+        }
     }
 
     @Override
@@ -223,5 +243,18 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
         info.setUpdateTime(user.getUpdateTime());
         info.setName(user.getUsername());
         return info;
+    }
+
+    private void permCheck(String resourceName, AccessType accessType) {
+        permissionCheck(
+                resourceName, ResourceType.USER, accessType, UserContextHolder.getAccessInfo());
+    }
+
+    private boolean hasReadPerm(String resourceName) {
+        return hasPermission(
+                resourceName,
+                ResourceType.USER,
+                AccessType.READ,
+                UserContextHolder.getAccessInfo());
     }
 }

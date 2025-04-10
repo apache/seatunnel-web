@@ -17,6 +17,7 @@
 package org.apache.seatunnel.app.security;
 
 import org.apache.seatunnel.app.dal.entity.User;
+import org.apache.seatunnel.common.access.AccessInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,5 +29,5 @@ import lombok.NoArgsConstructor;
 public class UserContext {
     User user;
     Long workspaceId;
-    String workspaceName;
+    AccessInfo accessInfo;
 }

@@ -54,9 +54,14 @@ start() {
   fi
 
   echo "$WORKDIR"
+  CLASSPATH="$WORKDIR/../conf:$WORKDIR/../libs/*:$WORKDIR/../datasource/*"
+  if [ -d "$WORKDIR/../ranger-seatunnel-plugin" ]; then
+  CLASSPATH="$CLASSPATH:$WORKDIR/../ranger-seatunnel-plugin/lib/*.jar"
+  CLASSPATH="$CLASSPATH:$WORKDIR/../ranger-seatunnel-plugin/lib/ranger-seatunnel-plugin-impl/*"
+  fi
+
   nohup $JAVA_HOME/bin/java $JAVA_OPTS \
-  -cp "$WORKDIR/../conf":"$WORKDIR/../libs/*":"$WORKDIR/../datasource/*" \
-  $SPRING_OPTS \
+  -cp "$CLASSPATH" $SPRING_OPTS \
   org.apache.seatunnel.app.SeatunnelApplication >> "${LOGDIR}/seatunnel.out" 2>&1 &
   echo "seatunnel-web started"
 }

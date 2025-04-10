@@ -14,18 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.common.access;
 
-package org.apache.seatunnel.app.service;
-
-import org.apache.seatunnel.common.access.AccessInfo;
-import org.apache.seatunnel.common.access.AccessType;
-import org.apache.seatunnel.common.access.ResourceType;
-
-public interface ISeatunnelBaseService {
-
-    void funcPermissionCheck(String permissionKey, int userId);
-
-    void permissionCheck(
+public interface SeatunnelAccessController {
+    void authorizeAccess(
             String resourceName,
             ResourceType resourceType,
             AccessType accessType,

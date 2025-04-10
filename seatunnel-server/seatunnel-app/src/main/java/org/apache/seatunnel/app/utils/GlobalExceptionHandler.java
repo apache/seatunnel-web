@@ -18,6 +18,7 @@
 package org.apache.seatunnel.app.utils;
 
 import org.apache.seatunnel.app.common.Result;
+import org.apache.seatunnel.common.access.AccessDeniedException;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginException;
 import org.apache.seatunnel.server.common.ParamValidationException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -87,5 +88,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ParamValidationException.class)
     private Result<String> paramValidationHandler(SeatunnelException e) {
         return Result.failure(e);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    private Result<String> paramValidationHandler(AccessDeniedException e) {
+        return Result.failure(SeatunnelErrorEnum.ACCESS_DENIED, e.getMessage());
     }
 }

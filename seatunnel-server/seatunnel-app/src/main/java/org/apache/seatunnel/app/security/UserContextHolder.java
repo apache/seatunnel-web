@@ -17,6 +17,7 @@
 package org.apache.seatunnel.app.security;
 
 import org.apache.seatunnel.app.dal.entity.User;
+import org.apache.seatunnel.common.access.AccessInfo;
 
 public class UserContextHolder {
     private static final ThreadLocal<UserContext> userContextHolder = new ThreadLocal<>();
@@ -28,6 +29,11 @@ public class UserContextHolder {
     public static User getUser() {
         UserContext userContext = getUserContext();
         return userContext.getUser();
+    }
+
+    public static AccessInfo getAccessInfo() {
+        UserContext userContext = getUserContext();
+        return userContext.getAccessInfo();
     }
 
     public static UserContext getUserContext() {

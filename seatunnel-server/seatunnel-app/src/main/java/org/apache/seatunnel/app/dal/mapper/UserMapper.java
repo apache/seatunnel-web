@@ -49,4 +49,6 @@ public interface UserMapper {
             @Param("authProvider") String authProvider);
 
     List<User> queryEnabledUsers();
+
+    List<String> queryUserNames(@Param("searchName") String searchName);
 }
