@@ -27,6 +27,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import javax.annotation.Resource;
 
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
+
 @Repository
 public class JobInstanceHistoryDaoImpl implements IJobInstanceHistoryDao {
 
@@ -36,16 +38,19 @@ public class JobInstanceHistoryDaoImpl implements IJobInstanceHistoryDao {
     public JobInstanceHistory getByInstanceId(Long jobInstanceId) {
         return jobInstanceHistoryMapper.selectOne(
                 Wrappers.lambdaQuery(new JobInstanceHistory())
-                        .eq(JobInstanceHistory::getId, jobInstanceId));
+                        .eq(JobInstanceHistory::getId, jobInstanceId)
+                        .eq(JobInstanceHistory::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public void insert(JobInstanceHistory jobInstanceHistory) {
+        jobInstanceHistory.setWorkspaceId(getCurrentWorkspaceId());
         jobInstanceHistoryMapper.insert(jobInstanceHistory);
     }
 
     @Override
     public void updateJobInstanceHistory(JobInstanceHistory jobInstanceHistory) {
+        jobInstanceHistory.setWorkspaceId(getCurrentWorkspaceId());
         jobInstanceHistoryMapper.updateById(jobInstanceHistory);
     }
 }

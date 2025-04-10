@@ -16,8 +16,8 @@
  */
 package org.apache.seatunnel.app.config;
 
-import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.security.UserContext;
+import org.apache.seatunnel.app.security.UserContextHolder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,13 +59,13 @@ public class AsyncConfig implements AsyncConfigurer {
         @Override
         public Runnable decorate(Runnable runnable) {
             try {
-                User user = UserContext.getUser();
+                UserContext userContext = UserContextHolder.getUserContext();
                 return () -> {
                     try {
-                        UserContext.setUser(user);
+                        UserContextHolder.setUserContext(userContext);
                         runnable.run();
                     } finally {
-                        UserContext.clear();
+                        UserContextHolder.clear();
                     }
                 };
             } catch (Exception e) {

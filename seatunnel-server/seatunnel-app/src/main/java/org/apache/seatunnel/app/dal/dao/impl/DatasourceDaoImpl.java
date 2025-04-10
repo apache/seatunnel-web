@@ -31,6 +31,8 @@ import javax.annotation.Resource;
 
 import java.util.List;
 
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
+
 @Repository
 public class DatasourceDaoImpl implements IDatasourceDao {
 
@@ -43,23 +45,37 @@ public class DatasourceDaoImpl implements IDatasourceDao {
 
     @Override
     public Datasource selectDatasourceById(Long id) {
-        return datasourceMapper.selectById(id);
+        return datasourceMapper.selectOne(
+                new QueryWrapper<Datasource>()
+                        .eq("id", id)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public boolean deleteDatasourceById(Long id) {
-        return datasourceMapper.deleteById(id) > 0;
+        return datasourceMapper.delete(
+                        new QueryWrapper<Datasource>()
+                                .eq("id", id)
+                                .eq("workspace_id", getCurrentWorkspaceId()))
+                > 0;
     }
 
     @Override
     public Datasource queryDatasourceByName(String name) {
         return datasourceMapper.selectOne(
-                new QueryWrapper<Datasource>().eq("datasource_name", name));
+                new QueryWrapper<Datasource>()
+                        .eq("datasource_name", name)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public boolean updateDatasourceById(Datasource datasource) {
-        return datasourceMapper.updateById(datasource) > 0;
+        return datasourceMapper.update(
+                        datasource,
+                        new QueryWrapper<Datasource>()
+                                .eq("id", datasource.getId())
+                                .eq("workspace_id", getCurrentWorkspaceId()))
+                > 0;
     }
 
     @Override
@@ -67,12 +83,14 @@ public class DatasourceDaoImpl implements IDatasourceDao {
         QueryWrapper<Datasource> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("datasource_name", dataSourceName);
         queryWrapper.ne("id", dataSourceId);
-        return datasourceMapper.selectList(queryWrapper).size() <= 0;
+        queryWrapper.eq("workspace_id", getCurrentWorkspaceId());
+        return datasourceMapper.selectList(queryWrapper).isEmpty();
     }
 
     @Override
     public IPage<Datasource> selectDatasourcePage(Page<Datasource> page) {
-        return datasourceMapper.selectPage(page, new QueryWrapper<Datasource>());
+        return datasourceMapper.selectPage(
+                page, new QueryWrapper<Datasource>().eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
@@ -83,7 +101,10 @@ public class DatasourceDaoImpl implements IDatasourceDao {
             String pluginName) {
 
         QueryWrapper<Datasource> datasourceQueryWrapper = new QueryWrapper<>();
-        datasourceQueryWrapper.in("id", availableDatasourceIds);
+        if (availableDatasourceIds != null) {
+            datasourceQueryWrapper.in("id", availableDatasourceIds);
+        }
+        datasourceQueryWrapper.eq("workspace_id", getCurrentWorkspaceId());
         if (searchVal != null
                 && !searchVal.isEmpty()
                 && pluginName != null
@@ -107,7 +128,12 @@ public class DatasourceDaoImpl implements IDatasourceDao {
 
     @Override
     public String queryDatasourceNameById(Long id) {
-        return datasourceMapper.selectById(id).getDatasourceName();
+        return datasourceMapper
+                .selectOne(
+                        new QueryWrapper<Datasource>()
+                                .eq("id", id)
+                                .eq("workspace_id", getCurrentWorkspaceId()))
+                .getDatasourceName();
     }
 
     @Override
@@ -115,28 +141,37 @@ public class DatasourceDaoImpl implements IDatasourceDao {
         return datasourceMapper.selectList(
                 new QueryWrapper<Datasource>()
                         .eq("plugin_name", pluginName)
-                        .eq("plugin_version", pluginVersion));
+                        .eq("plugin_version", pluginVersion)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public List<Datasource> selectDatasourceByIds(List<Long> ids) {
-        return datasourceMapper.selectBatchIds(ids);
+        return datasourceMapper.selectList(
+                new QueryWrapper<Datasource>()
+                        .in("id", ids)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public List<Datasource> queryAll() {
-        return datasourceMapper.selectList(new QueryWrapper<>());
+        return datasourceMapper.selectList(
+                new QueryWrapper<Datasource>().eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public List<Datasource> selectByIds(List<Long> ids) {
-        return datasourceMapper.selectBatchIds(ids);
+        return datasourceMapper.selectList(
+                new QueryWrapper<Datasource>()
+                        .in("id", ids)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public List<Datasource> selectDatasourceByUserId(int userId) {
-        QueryWrapper<Datasource> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("create_user_id", userId);
-        return datasourceMapper.selectList(queryWrapper);
+        return datasourceMapper.selectList(
+                new QueryWrapper<Datasource>()
+                        .eq("create_user_id", userId)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 }

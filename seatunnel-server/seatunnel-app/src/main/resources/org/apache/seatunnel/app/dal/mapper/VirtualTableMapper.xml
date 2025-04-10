@@ -26,36 +26,19 @@
         <result column="update_user_id" jdbcType="INTEGER" property="updateUserId"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="workspace_id" jdbcType="BIGINT" property="workspaceId"/>
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , datasource_id, virtual_database_name, virtual_table_name, table_fields, description, create_user_id, update_user_id, create_time, update_time
+        , datasource_id, virtual_database_name, virtual_table_name, table_fields, description, create_user_id, update_user_id, create_time, update_time, workspace_id
     </sql>
 
     <select id="checkVirtualTableNameUnique" resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM t_st_virtual_table
-        WHERE id != #{tableId}
+        WHERE workspace_id = #{workspaceId} AND id != #{tableId}
           AND virtual_database_name = #{virtualDatabaseName}
           AND virtual_table_name = #{virtualTableName}
     </select>
-    
-    <select id="selectVirtualTablePageByParam" resultType="org.apache.seatunnel.app.dal.entity.VirtualTable">
-        SELECT
-        a.id
-        , a.datasource_id, a.virtual_database_name, a.virtual_table_name, a.table_fields, a.description, a.create_user_id, a.update_user_id, a.create_time, a.update_time
-        FROM t_st_virtual_table a JOIN t_st_datasource b  on  a.datasource_id = b.id 
-        where 
-        a.datasource_id = b.id
-        <if test="pluginName != null and pluginName != '' ">
-            AND b.plugin_name = #{pluginName}
-        </if>
-        <if test="datasourceName != null and datasourceName != '' ">
-            AND b.datasource_name like concat('%', #{datasourceName}, '%')
-        </if>
 
-        ORDER BY create_time DESC
-    </select>
-
-    
 </mapper>

@@ -26,7 +26,6 @@ import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
 import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
-import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.domain.response.metrics.JobPipelineDetailMetricsRes;
 import org.apache.seatunnel.app.utils.JobTestingUtils;
@@ -154,7 +153,7 @@ public class JobControllerTest {
                 jobCreateReq.getPluginConfigs().get(1).getName(),
                 jobRes.getPluginConfigs().get(1).getName());
 
-        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        JobCreateReq jobUpdateReq = jobControllerWrapper.convertJobResToJobCreateReq(jobRes);
         String jobName2 = "updateJob_single_api2" + uniqueId;
         jobUpdateReq.getJobConfig().setName(jobName2);
         jobUpdateReq.getJobConfig().setDescription(jobName2 + " description");
@@ -209,7 +208,7 @@ public class JobControllerTest {
         assertTrue(getJobResponse.isSuccess());
         JobRes jobRes = getJobResponse.getData();
 
-        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        JobCreateReq jobUpdateReq = jobControllerWrapper.convertJobResToJobCreateReq(jobRes);
         jobUpdateReq.getPluginConfigs().add(getCopyTransformPlugin());
 
         List<Edge> edges = new ArrayList<>();
@@ -242,7 +241,7 @@ public class JobControllerTest {
         assertTrue(getJobResponse.isSuccess());
         JobRes jobRes = getJobResponse.getData();
 
-        JobCreateReq jobUpdateReq = convertJobResToJobCreateReq(jobRes);
+        JobCreateReq jobUpdateReq = jobControllerWrapper.convertJobResToJobCreateReq(jobRes);
         jobUpdateReq
                 .getPluginConfigs()
                 .removeIf(pluginConfig -> "transform-replace".equals(pluginConfig.getName()));
@@ -279,28 +278,6 @@ public class JobControllerTest {
                 .sceneMode(SceneMode.SINGLE_TABLE)
                 .config("{\"query\":\"\"}")
                 .build();
-    }
-
-    private JobCreateReq convertJobResToJobCreateReq(JobRes jobRes) {
-        JobCreateReq jobCreateReq = new JobCreateReq();
-
-        // Assuming JobRes contains JobConfigRes and List<PluginConfig> and JobDAG
-        JobConfigRes jobConfigRes = jobRes.getJobConfig();
-        List<PluginConfig> pluginConfigs = jobRes.getPluginConfigs();
-        JobDAG jobDAG = jobRes.getJobDAG();
-
-        // Populate JobCreateReq with data from JobRes
-        JobConfig jobConfig = new JobConfig();
-        jobConfig.setName(jobConfigRes.getName());
-        jobConfig.setDescription(jobConfigRes.getDescription());
-        jobConfig.setEnv(jobConfigRes.getEnv());
-        jobConfig.setEngine(jobConfigRes.getEngine());
-
-        jobCreateReq.setJobConfig(jobConfig);
-        jobCreateReq.setPluginConfigs(pluginConfigs);
-        jobCreateReq.setJobDAG(jobDAG);
-
-        return jobCreateReq;
     }
 
     @AfterAll

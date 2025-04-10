@@ -15,21 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.dto.user;
+package org.apache.seatunnel.app.dal.entity;
 
-import lombok.Builder;
+import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
-@Builder
-public class UserLoginLogDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Workspace {
     private Long id;
 
-    private Integer userId;
+    @TableField("workspace_name")
+    private String workspaceName;
 
-    private String token;
+    @TableField("description")
+    private String description;
 
-    private Boolean tokenStatus;
+    @TableField("create_time")
+    private Date createTime;
 
-    private Long workspaceId;
+    @TableField("update_time")
+    private Date updateTime;
 }

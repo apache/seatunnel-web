@@ -34,4 +34,6 @@ public class UserLoginLog {
     private Date createTime;
 
     private Date updateTime;
+
+    private Long workspaceId;
 }

@@ -42,14 +42,25 @@ public class SeatunnelWebTestingBase {
     }
 
     public Result<UserSimpleInfoRes> login(UserLoginReq userLoginReq, String authType) {
+        return login(userLoginReq, authType, false);
+    }
+
+    public Result<UserSimpleInfoRes> login(
+            UserLoginReq userLoginReq, String authType, Boolean setAsCurrentUser) {
         String requestBody = JsonUtils.toJsonString(userLoginReq);
         Map<String, String> headers =
                 authType != null
                         ? Collections.singletonMap("X-Seatunnel-Auth-Type", authType)
                         : null;
         String response = sendRequest(url("user/login"), requestBody, "POST", headers);
-        return JSONTestUtils.parseObject(
-                response, new TypeReference<Result<UserSimpleInfoRes>>() {});
+        Result<UserSimpleInfoRes> userSimpleInfoResResult =
+                JSONTestUtils.parseObject(
+                        response, new TypeReference<Result<UserSimpleInfoRes>>() {});
+        if (setAsCurrentUser) {
+            assert userSimpleInfoResResult != null;
+            TokenProvider.setToken(userSimpleInfoResResult.getData().getToken());
+        }
+        return userSimpleInfoResResult;
     }
 
     protected String url(String path) {

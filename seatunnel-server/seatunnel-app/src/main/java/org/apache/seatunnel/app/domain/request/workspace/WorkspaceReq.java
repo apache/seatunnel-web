@@ -15,21 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.domain.dto.user;
+package org.apache.seatunnel.app.domain.request.workspace;
 
-import lombok.Builder;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
+@ApiModel(value = "WorkspaceReq", description = "workspace create request")
 @Data
-@Builder
-public class UserLoginLogDto {
-    private Long id;
+@AllArgsConstructor
+@NoArgsConstructor
+public class WorkspaceReq {
+    @ApiModelProperty(value = "workspace name", required = true, dataType = "String")
+    @NotNull private String workspaceName;
 
-    private Integer userId;
-
-    private String token;
-
-    private Boolean tokenStatus;
-
-    private Long workspaceId;
+    @ApiModelProperty(value = "workspace description", dataType = "String")
+    private String description;
 }

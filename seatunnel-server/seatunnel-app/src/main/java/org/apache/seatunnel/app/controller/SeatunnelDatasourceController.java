@@ -48,7 +48,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,7 +56,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 
@@ -66,8 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.apache.seatunnel.app.common.Constants.SESSION_USER;
 
 @RestController
 @RequestMapping("/seatunnel/api/v1/datasource")
@@ -278,7 +274,6 @@ public class SeatunnelDatasourceController extends BaseController {
     })
     @GetMapping("/support-datasources")
     Result<Map<Integer, List<DataSourcePluginInfo>>> getSupportDatasources(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestParam("showVirtualDataSource") Boolean showVirtualDataSource,
             @RequestParam(value = "source", required = false) String source) {
         Map<Integer, List<DataSourcePluginInfo>> allDatasources =
@@ -301,22 +296,17 @@ public class SeatunnelDatasourceController extends BaseController {
     }
 
     @GetMapping("/dynamic-form")
-    Result<String> getDynamicForm(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestParam("pluginName") String pluginName) {
+    Result<String> getDynamicForm(@RequestParam("pluginName") String pluginName) {
         return Result.success(datasourceService.getDynamicForm(pluginName));
     }
 
     @GetMapping("/databases")
-    Result<List<String>> getDatabases(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestParam("datasourceName") String datasourceName) {
+    Result<List<String>> getDatabases(@RequestParam("datasourceName") String datasourceName) {
         return Result.success(datasourceService.queryDatabaseByDatasourceName(datasourceName));
     }
 
     @GetMapping("/tables")
     Result<List<String>> getTableNames(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestParam("datasourceName") String datasourceName,
             @RequestParam("databaseName") String databaseName,
             @RequestParam("filterName") String filterName,
@@ -327,7 +317,6 @@ public class SeatunnelDatasourceController extends BaseController {
 
     @GetMapping("/schema")
     Result<List<TableField>> getTableFields(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
             @RequestParam("datasourceId") String datasourceId,
             @RequestParam(value = "databaseName", required = false) String databaseName,
             @RequestParam("tableName") String tableName) {
@@ -367,9 +356,7 @@ public class SeatunnelDatasourceController extends BaseController {
     }
 
     @GetMapping("/all-tables")
-    Result<List<DatabaseTables>> getTables(
-            @ApiIgnore @RequestAttribute(value = SESSION_USER) User loginUser,
-            @RequestParam("datasourceId") String datasourceId) {
+    Result<List<DatabaseTables>> getTables(@RequestParam("datasourceId") String datasourceId) {
         DatasourceDetailRes res = datasourceService.queryDatasourceDetailById(datasourceId);
         List<DatabaseTables> tables = new ArrayList<>();
         List<String> databases =

@@ -16,8 +16,8 @@
  */
 package org.apache.seatunnel.app.interceptor;
 
-import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.security.UserContext;
+import org.apache.seatunnel.app.security.UserContextHolder;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.apache.seatunnel.app.common.Constants.SESSION_USER;
+import static org.apache.seatunnel.app.common.Constants.SESSION_USER_CONTEXT;
 
 /**
  * Interceptor for managing user context in web requests. This interceptor sets up and cleans up the
@@ -48,12 +48,12 @@ public class UserContextInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler) {
-        User user = (User) request.getAttribute(SESSION_USER);
-        if (user != null) {
-            log.debug("Setting user context for user: {}", user.getUsername());
-            UserContext.setUser(user);
+        UserContext userContext = (UserContext) request.getAttribute(SESSION_USER_CONTEXT);
+        if (userContext != null) {
+            log.debug("Setting user context for user: {}", userContext.getUser().getUsername());
+            UserContextHolder.setUserContext(userContext);
         } else {
-            log.warn("No user found in request attributes");
+            log.warn("No user context found in request attributes");
         }
         return true;
     }
@@ -74,6 +74,6 @@ public class UserContextInterceptor implements HandlerInterceptor {
             Object handler,
             Exception ex) {
         log.debug("Clearing user context");
-        UserContext.clear();
+        UserContextHolder.clear();
     }
 }

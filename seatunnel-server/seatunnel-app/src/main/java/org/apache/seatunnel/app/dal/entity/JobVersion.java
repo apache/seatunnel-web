@@ -69,4 +69,7 @@ public class JobVersion {
 
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField("workspace_id")
+    private Long workspaceId;
 }

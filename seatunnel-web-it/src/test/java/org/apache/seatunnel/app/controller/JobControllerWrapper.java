@@ -18,12 +18,18 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.common.SeatunnelWebTestingBase;
+import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.request.job.JobCreateReq;
+import org.apache.seatunnel.app.domain.request.job.JobDAG;
+import org.apache.seatunnel.app.domain.request.job.PluginConfig;
+import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.util.List;
 
 public class JobControllerWrapper extends SeatunnelWebTestingBase {
 
@@ -43,5 +49,27 @@ public class JobControllerWrapper extends SeatunnelWebTestingBase {
     public Result<JobRes> getJob(long jobVersionId) {
         String response = sendRequest(urlWithParam("job/get/" + jobVersionId + "?"), null, "GET");
         return JSONTestUtils.parseObject(response, new TypeReference<Result<JobRes>>() {});
+    }
+
+    public JobCreateReq convertJobResToJobCreateReq(JobRes jobRes) {
+        JobCreateReq jobCreateReq = new JobCreateReq();
+
+        // Assuming JobRes contains JobConfigRes and List<PluginConfig> and JobDAG
+        JobConfigRes jobConfigRes = jobRes.getJobConfig();
+        List<PluginConfig> pluginConfigs = jobRes.getPluginConfigs();
+        JobDAG jobDAG = jobRes.getJobDAG();
+
+        // Populate JobCreateReq with data from JobRes
+        JobConfig jobConfig = new JobConfig();
+        jobConfig.setName(jobConfigRes.getName());
+        jobConfig.setDescription(jobConfigRes.getDescription());
+        jobConfig.setEnv(jobConfigRes.getEnv());
+        jobConfig.setEngine(jobConfigRes.getEngine());
+
+        jobCreateReq.setJobConfig(jobConfig);
+        jobCreateReq.setPluginConfigs(pluginConfigs);
+        jobCreateReq.setJobDAG(jobDAG);
+
+        return jobCreateReq;
     }
 }

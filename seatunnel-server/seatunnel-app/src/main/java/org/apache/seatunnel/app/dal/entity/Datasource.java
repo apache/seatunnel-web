@@ -64,4 +64,7 @@ public class Datasource {
 
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField("workspace_id")
+    private Long workspaceId;
 }
