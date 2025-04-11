@@ -59,4 +59,6 @@ public interface IUserDao {
      * @return
      */
     List<User> queryEnabledUsers();
+
+    List<String> getUserNames(String searchName);
 }

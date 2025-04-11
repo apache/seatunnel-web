@@ -331,4 +331,11 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
         Long datasourceIdLong = Long.valueOf(datasourceId);
         return virtualTableDao.getVirtualDatabaseNames(datasourceIdLong);
     }
+
+    @Override
+    public List<String> getVirtualTableNamesWithinWorkspace(
+            String workspaceName, String searchName) {
+        return virtualTableDao.getDatasourceNames(
+                workspaceService.getWorkspaceIdOrCurrent(workspaceName), searchName);
+    }
 }

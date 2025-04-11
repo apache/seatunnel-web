@@ -38,4 +38,6 @@ public interface WorkspaceService {
     Workspace getDefaultWorkspace();
 
     Long getWorkspaceIdOrCurrent(String workspaceName);
+
+    List<String> getWorkspaceNames(String searchName);
 }

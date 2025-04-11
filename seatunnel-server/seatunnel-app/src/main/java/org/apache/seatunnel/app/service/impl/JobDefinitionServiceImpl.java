@@ -31,6 +31,7 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
+import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.access.AccessType;
 import org.apache.seatunnel.common.access.ResourceType;
@@ -71,6 +72,8 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     @Resource(name = "jobVersionDaoImpl")
     private IJobVersionDao jobVersionDao;
+
+    @Resource private WorkspaceService workspaceService;
 
     @Override
     @Transactional
@@ -204,6 +207,12 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
             permCheck(job.getName(), AccessType.DELETE);
         }
         jobDefinitionDao.delete(id);
+    }
+
+    @Override
+    public List<String> getJobDefinitionNames(String workspaceName, String searchName) {
+        return jobDefinitionDao.getJobDefinitionNames(
+                workspaceService.getWorkspaceIdOrCurrent(workspaceName), searchName);
     }
 
     private void permCheck(String resourceName, AccessType accessType) {

@@ -62,4 +62,9 @@ public class WorkspaceDaoImpl implements IWorkspaceDao {
     public List<Workspace> selectAllWorkspaces() {
         return workspaceMapper.selectList(new QueryWrapper<>());
     }
+
+    @Override
+    public List<String> getWorkspaceNames(String searchName) {
+        return workspaceMapper.getWorkspaceNames(searchName);
+    }
 }

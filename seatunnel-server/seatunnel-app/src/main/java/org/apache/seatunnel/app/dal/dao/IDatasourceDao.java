@@ -57,4 +57,6 @@ public interface IDatasourceDao {
     List<Datasource> selectByIds(List<Long> ids);
 
     List<Datasource> selectDatasourceByUserId(int userId);
+
+    List<String> getDatasourceNames(Long workspaceId, String searchName);
 }

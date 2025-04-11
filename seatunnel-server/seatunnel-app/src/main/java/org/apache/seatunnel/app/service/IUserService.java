@@ -25,6 +25,8 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 
+import java.util.List;
+
 public interface IUserService {
 
     AddUserRes add(AddUserReq addReq);
@@ -40,4 +42,6 @@ public interface IUserService {
     void disable(int id);
 
     UserSimpleInfoRes login(UserLoginReq req, String authType);
+
+    List<String> getUserNames(String searchName);
 }
