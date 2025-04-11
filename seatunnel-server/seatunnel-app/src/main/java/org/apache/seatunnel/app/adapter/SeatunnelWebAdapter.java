@@ -42,6 +42,8 @@ public class SeatunnelWebAdapter implements WebMvcConfigurer {
     public static final String LOGIN_INTERCEPTOR_PATH_PATTERN = "/**/*";
     public static final String LOGIN_PATH_PATTERN = "/seatunnel/api/v1/user/login**";
     public static final String REGISTER_PATH_PATTERN = "/users/register";
+    private static final String RESOURCE_NAME_PATH_PATTERN =
+            "/seatunnel/api/v1/resources/workspace";
 
     @Bean
     public AuthenticationInterceptor authenticationInterceptor() {
@@ -74,6 +76,7 @@ public class SeatunnelWebAdapter implements WebMvcConfigurer {
                 .excludePathPatterns(
                         LOGIN_PATH_PATTERN,
                         REGISTER_PATH_PATTERN,
+                        RESOURCE_NAME_PATH_PATTERN,
                         "/swagger-resources/**",
                         "/webjars/**",
                         "/v2/**",

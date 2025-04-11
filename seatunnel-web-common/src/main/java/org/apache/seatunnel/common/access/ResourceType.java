@@ -14,26 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.seatunnel.common.access;
 
-package org.apache.seatunnel.app.service;
+public enum ResourceType {
+    WORKSPACE,
+    DATASOURCE,
+    JOB,
+    USER,
+    VIRTUAL_TABLE;
 
-import org.apache.seatunnel.common.access.AccessInfo;
-import org.apache.seatunnel.common.access.AccessType;
-import org.apache.seatunnel.common.access.ResourceType;
-
-public interface ISeatunnelBaseService {
-
-    void funcPermissionCheck(String permissionKey, int userId);
-
-    void permissionCheck(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
-
-    boolean hasPermission(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
+    public String getName() {
+        return this.name().toLowerCase();
+    }
 }

@@ -22,9 +22,11 @@ import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
 import org.apache.seatunnel.app.domain.request.job.JobConfig;
 import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
-import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IJobConfigService;
 import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -48,14 +50,21 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
     @Resource private IJobDefinitionDao jobDefinitionDao;
 
     @Override
-    public JobConfigRes getJobConfig(long jobVersionId) throws JsonProcessingException {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_DETAIL, 0);
+    public JobConfigRes getJobConfig(long jobVersionId, boolean isPermissionChecked)
+            throws JsonProcessingException {
         JobVersion jobVersion = jobVersionDao.getVersionById(jobVersionId);
         if (jobVersion == null) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "job version not found.");
         }
         JobDefinition jobDefinition = jobDefinitionDao.getJob(jobVersion.getJobId());
+        if (!isPermissionChecked) {
+            permissionCheck(
+                    jobDefinition.getName(),
+                    ResourceType.JOB,
+                    AccessType.READ,
+                    UserContextHolder.getAccessInfo());
+        }
         JobConfigRes jobConfigRes = new JobConfigRes();
         jobConfigRes.setName(jobDefinition.getName());
         jobConfigRes.setId(jobVersion.getId());
@@ -70,14 +79,21 @@ public class JobConfigServiceImpl extends SeatunnelBaseServiceImpl implements IJ
 
     @Override
     @Transactional
-    public void updateJobConfig(long jobVersionId, JobConfig jobConfig)
+    public void updateJobConfig(long jobVersionId, JobConfig jobConfig, boolean isPermissionChecked)
             throws JsonProcessingException {
         Integer userId = ServletUtils.getCurrentUserId();
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_CONFIG_UPDATE, 0);
         JobVersion version = jobVersionDao.getVersionById(jobVersionId);
         if (version == null) {
             throw new SeatunnelException(
                     SeatunnelErrorEnum.RESOURCE_NOT_FOUND, "job version not found.");
+        }
+        JobDefinition existingJobDefinition = jobDefinitionDao.getJob(version.getJobId());
+        if (!isPermissionChecked && existingJobDefinition != null) {
+            permissionCheck(
+                    existingJobDefinition.getName(),
+                    ResourceType.JOB,
+                    AccessType.UPDATE,
+                    UserContextHolder.getAccessInfo());
         }
         JobDefinition jobDefinition = new JobDefinition();
         jobDefinition.setId(version.getJobId());

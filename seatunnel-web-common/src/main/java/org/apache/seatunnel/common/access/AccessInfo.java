@@ -15,25 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.service;
+package org.apache.seatunnel.common.access;
 
-import org.apache.seatunnel.common.access.AccessInfo;
-import org.apache.seatunnel.common.access.AccessType;
-import org.apache.seatunnel.common.access.ResourceType;
+import lombok.Data;
 
-public interface ISeatunnelBaseService {
+import java.util.Set;
 
-    void funcPermissionCheck(String permissionKey, int userId);
-
-    void permissionCheck(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
-
-    boolean hasPermission(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
+@Data
+public class AccessInfo {
+    private String username;
+    private String workspaceName;
+    private Set<String> userGroups;
+    private Set<String> userRoles;
 }

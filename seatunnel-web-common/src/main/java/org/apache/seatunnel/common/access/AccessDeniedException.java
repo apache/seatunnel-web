@@ -15,25 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.service;
+package org.apache.seatunnel.common.access;
 
-import org.apache.seatunnel.common.access.AccessInfo;
-import org.apache.seatunnel.common.access.AccessType;
-import org.apache.seatunnel.common.access.ResourceType;
+public class AccessDeniedException extends RuntimeException {
+    public AccessDeniedException(String message) {
+        super(message);
+    }
 
-public interface ISeatunnelBaseService {
-
-    void funcPermissionCheck(String permissionKey, int userId);
-
-    void permissionCheck(
+    public static void accessDenied(
+            String userName,
             String resourceName,
             ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
-
-    boolean hasPermission(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
+            AccessType accessType) {
+        throw new AccessDeniedException(
+                String.format(
+                        "Access denied: user=%s, resource=%s, resource-type=%s, operation=%s",
+                        userName, resourceName, resourceType.getName(), accessType.getName()));
+    }
 }

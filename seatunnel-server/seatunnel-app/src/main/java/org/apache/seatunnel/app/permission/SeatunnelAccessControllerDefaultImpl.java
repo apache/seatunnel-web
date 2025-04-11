@@ -15,25 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.service;
+package org.apache.seatunnel.app.permission;
 
 import org.apache.seatunnel.common.access.AccessInfo;
 import org.apache.seatunnel.common.access.AccessType;
 import org.apache.seatunnel.common.access.ResourceType;
+import org.apache.seatunnel.common.access.SeatunnelAccessController;
 
-public interface ISeatunnelBaseService {
+public class SeatunnelAccessControllerDefaultImpl implements SeatunnelAccessController {
 
-    void funcPermissionCheck(String permissionKey, int userId);
-
-    void permissionCheck(
+    @Override
+    public void authorizeAccess(
             String resourceName,
             ResourceType resourceType,
             AccessType accessType,
-            AccessInfo accessInfo);
+            AccessInfo accessInfo) {
+        // Default implementation: Allow all access
+        // You can add your custom logic here
+    }
 
-    boolean hasPermission(
+    @Override
+    public boolean hasPermission(
             String resourceName,
             ResourceType resourceType,
             AccessType accessType,
-            AccessInfo accessInfo);
+            AccessInfo accessInfo) {
+        return true;
+    }
 }

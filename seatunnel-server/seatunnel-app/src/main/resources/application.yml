@@ -59,6 +59,7 @@ seatunnel-web:
       keys-to-encrypt:
         - password
         - auth
+  access-controller-class: org.apache.seatunnel.app.permission.SeatunnelAccessControllerDefaultImpl
 ---
 spring:
   config:

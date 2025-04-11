@@ -23,6 +23,7 @@ import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 import org.apache.seatunnel.app.security.JwtUtils;
 import org.apache.seatunnel.app.security.UserContext;
+import org.apache.seatunnel.common.access.AccessInfo;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -106,7 +107,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         UserContext userContext = new UserContext();
         userContext.setUser(user);
         userContext.setWorkspaceId(workspaceIdFromToken);
-        userContext.setWorkspaceName((String) map.get("workspaceName"));
+
+        AccessInfo accessInfo = new AccessInfo();
+        accessInfo.setUsername(user.getUsername());
+        accessInfo.setWorkspaceName((String) map.get("workspaceName"));
+        userContext.setAccessInfo(accessInfo);
+
         request.setAttribute(Constants.SESSION_USER_CONTEXT, userContext);
 
         request.setAttribute("userId", userId);

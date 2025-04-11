@@ -55,6 +55,7 @@ import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.VirtualTableDetailRes;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.service.IJobMetricsService;
@@ -65,6 +66,8 @@ import org.apache.seatunnel.app.utils.ConfigShadeUtil;
 import org.apache.seatunnel.app.utils.JobUtils;
 import org.apache.seatunnel.app.utils.SeaTunnelConfigUtil;
 import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.ExceptionUtils;
 import org.apache.seatunnel.common.utils.JsonUtils;
@@ -137,12 +140,17 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
     public JobExecutorRes createExecuteResource(
             @NonNull Long jobDefineId, JobExecParam executeParam) {
         int userId = ServletUtils.getCurrentUserId();
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_RESOURCE, userId);
         log.info(
                 "receive createExecuteResource request, userId:{}, jobDefineId:{}",
                 userId,
                 jobDefineId);
         JobDefinition job = jobDefinitionDao.getJob(jobDefineId);
+        permissionCheck(
+                job.getName(),
+                ResourceType.JOB,
+                AccessType.EXECUTE,
+                UserContextHolder.getAccessInfo());
+
         JobVersion latestVersion = jobVersionDao.getLatestVersion(job.getId());
         JobInstance jobInstance = new JobInstance();
         String jobConfig = createJobConfig(latestVersion, executeParam);
@@ -370,7 +378,6 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
     public void complete(
             @NonNull Long jobInstanceId, @NonNull String jobEngineId, JobResult jobResult) {
         int userId = ServletUtils.getCurrentUserId();
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_EXECUTOR_COMPLETE, userId);
         JobInstance jobInstance = jobInstanceDao.getJobInstanceMapper().selectById(jobInstanceId);
         jobMetricsService.syncJobDataToDb(jobInstance, jobEngineId);
         jobInstance.setJobStatus(jobResult.getStatus());

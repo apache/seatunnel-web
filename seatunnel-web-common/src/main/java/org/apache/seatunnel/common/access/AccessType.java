@@ -15,25 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.app.service;
+package org.apache.seatunnel.common.access;
 
-import org.apache.seatunnel.common.access.AccessInfo;
-import org.apache.seatunnel.common.access.AccessType;
-import org.apache.seatunnel.common.access.ResourceType;
+public enum AccessType {
+    CREATE,
+    READ,
+    UPDATE,
+    DELETE,
+    EXECUTE;
 
-public interface ISeatunnelBaseService {
-
-    void funcPermissionCheck(String permissionKey, int userId);
-
-    void permissionCheck(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
-
-    boolean hasPermission(
-            String resourceName,
-            ResourceType resourceType,
-            AccessType accessType,
-            AccessInfo accessInfo);
+    public String getName() {
+        return this.name().toLowerCase();
+    }
 }

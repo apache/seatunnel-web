@@ -20,8 +20,11 @@ package org.apache.seatunnel.app.service.impl;
 import org.apache.seatunnel.app.dal.dao.IWorkspaceDao;
 import org.apache.seatunnel.app.dal.entity.Workspace;
 import org.apache.seatunnel.app.domain.request.workspace.WorkspaceReq;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.ParamValidationException;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
@@ -29,19 +32,22 @@ import org.apache.seatunnel.server.common.SeatunnelException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkspaceServiceImpl extends SeatunnelBaseServiceImpl implements WorkspaceService {
-    @Autowired private IWorkspaceDao workspaceDao;
+    @Resource private IWorkspaceDao workspaceDao;
 
     @Override
     public Long createWorkspace(WorkspaceReq workspaceReq) {
         validateWorkspaceParam(workspaceReq);
+        permCheck(workspaceReq.getWorkspaceName(), AccessType.CREATE);
         Workspace workspaceByName =
                 workspaceDao.selectWorkspaceByName(workspaceReq.getWorkspaceName());
         if (workspaceByName != null) {
@@ -95,6 +101,7 @@ public class WorkspaceServiceImpl extends SeatunnelBaseServiceImpl implements Wo
                     SeatunnelErrorEnum.RESOURCE_NOT_FOUND,
                     "Workspace with id " + id + " not found.");
         }
+        permCheck(workspace.getWorkspaceName(), AccessType.UPDATE);
         validateWorkspaceParam(workspaceReq);
 
         // Check if the workspace name is being changed and if it already exists in the database
@@ -115,6 +122,7 @@ public class WorkspaceServiceImpl extends SeatunnelBaseServiceImpl implements Wo
     public boolean deleteWorkspace(Long id) {
         Workspace workspace = workspaceDao.selectWorkspaceById(id);
         if (null != workspace) {
+            permCheck(workspace.getWorkspaceName(), AccessType.DELETE);
             return workspaceDao.deleteWorkspaceById(id);
         }
         return false;
@@ -122,28 +130,14 @@ public class WorkspaceServiceImpl extends SeatunnelBaseServiceImpl implements Wo
 
     @Override
     public List<Workspace> getAllWorkspaces() {
-        return workspaceDao.selectAllWorkspaces();
+        return workspaceDao.selectAllWorkspaces().stream()
+                .filter(workspace -> hasReadPerm(workspace.getWorkspaceName()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Workspace getDefaultWorkspace() {
         return getWorkspace("default");
-    }
-
-    @Override
-    public Long getWorkspaceIdOrDefault(Long workspaceId) {
-        if (workspaceId == null || workspaceId == 0 || workspaceId == 1) {
-            return getDefaultWorkspace().getId();
-        } else {
-            // Check if the workspace exists
-            Workspace workspaceById = getWorkspace(workspaceId);
-            if (workspaceById == null) {
-                throw new SeatunnelException(
-                        SeatunnelErrorEnum.RESOURCE_NOT_FOUND,
-                        "Workspace with id " + workspaceId + " not found.");
-            }
-            return workspaceById.getId();
-        }
     }
 
     public Long getWorkspaceIdOrCurrent(String workspaceName) {
@@ -153,5 +147,21 @@ public class WorkspaceServiceImpl extends SeatunnelBaseServiceImpl implements Wo
         } else {
             return getWorkspace(workspaceName).getId();
         }
+    }
+
+    private void permCheck(String resourceName, AccessType accessType) {
+        permissionCheck(
+                resourceName,
+                ResourceType.WORKSPACE,
+                accessType,
+                UserContextHolder.getAccessInfo());
+    }
+
+    private boolean hasReadPerm(String resourceName) {
+        return hasPermission(
+                resourceName,
+                ResourceType.WORKSPACE,
+                AccessType.READ,
+                UserContextHolder.getAccessInfo());
     }
 }

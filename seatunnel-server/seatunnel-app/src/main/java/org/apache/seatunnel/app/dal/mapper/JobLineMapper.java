@@ -27,7 +27,5 @@ import java.util.List;
 
 public interface JobLineMapper extends BaseMapper<JobLine> {
 
-    void deleteLinesByVersionId(@Param("versionId") long jobVersionId);
-
     void insertBatchLines(@Param("lines") List<JobLine> lines);
 }
