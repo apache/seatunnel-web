@@ -47,4 +47,6 @@ public interface IJobDefinitionService {
     boolean getUsedByDataSourceIdAndVirtualTable(long datasourceId, String tableName);
 
     void deleteJob(long id);
+
+    List<String> getJobDefinitionNames(String workspaceName, String searchName);
 }

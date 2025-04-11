@@ -164,4 +164,9 @@ public class WorkspaceServiceImpl extends SeatunnelBaseServiceImpl implements Wo
                 AccessType.READ,
                 UserContextHolder.getAccessInfo());
     }
+
+    @Override
+    public List<String> getWorkspaceNames(String searchName) {
+        return workspaceDao.getWorkspaceNames(searchName);
+    }
 }

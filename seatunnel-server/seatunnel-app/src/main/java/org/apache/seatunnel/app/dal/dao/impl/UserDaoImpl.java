@@ -147,4 +147,9 @@ public class UserDaoImpl implements IUserDao {
     public List<User> queryEnabledUsers() {
         return userMapper.queryEnabledUsers();
     }
+
+    @Override
+    public List<String> getUserNames(String searchName) {
+        return userMapper.queryUserNames(searchName);
+    }
 }

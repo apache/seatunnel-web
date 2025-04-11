@@ -26,8 +26,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -158,5 +160,17 @@ public class VirtualTableDaoImpl implements IVirtualTableDao {
                                 .eq("datasource_id", datasourceId)
                                 .eq("workspace_id", getCurrentWorkspaceId()))
                 > 0;
+    }
+
+    @Override
+    public List<String> getDatasourceNames(Long workspaceId, String searchName) {
+        LambdaQueryWrapper<VirtualTable> query = Wrappers.<VirtualTable>lambdaQuery();
+        query.eq(VirtualTable::getWorkspaceId, workspaceId);
+        if (StringUtils.isNotEmpty(searchName)) {
+            query.like(VirtualTable::getVirtualDatabaseName, "%" + searchName + "%");
+        }
+        return virtualTableMapper.selectList(query).stream()
+                .map(VirtualTable::getVirtualDatabaseName)
+                .collect(Collectors.toList());
     }
 }

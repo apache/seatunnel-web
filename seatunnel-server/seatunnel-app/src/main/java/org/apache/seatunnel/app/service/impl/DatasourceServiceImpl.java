@@ -35,6 +35,7 @@ import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.ITableSchemaService;
+import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
 import org.apache.seatunnel.app.utils.ConfigShadeUtil;
@@ -98,6 +99,8 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     protected static final String DEFAULT_DATASOURCE_PLUGIN_VERSION = "1.0.0";
 
     @Autowired private ConfigShadeUtil configShadeUtil;
+
+    @Resource private WorkspaceService workspaceService;
 
     @Override
     public String createDatasource(
@@ -605,6 +608,12 @@ public class DatasourceServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public List<String> getDatasourceNames(String workspaceName, String searchName) {
+        return datasourceDao.getDatasourceNames(
+                workspaceService.getWorkspaceIdOrCurrent(workspaceName), searchName);
     }
 
     private void permCheck(String resourceName, AccessType accessType) {

@@ -247,4 +247,6 @@ public interface IDatasourceService {
             String datasourceName, String databaseName, String filterName, Integer size) {
         return new ArrayList<>();
     }
+
+    List<String> getDatasourceNames(String workspaceName, String searchName);
 }

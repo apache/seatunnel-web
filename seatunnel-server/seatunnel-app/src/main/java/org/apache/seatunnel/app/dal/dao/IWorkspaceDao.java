@@ -33,4 +33,6 @@ public interface IWorkspaceDao {
     boolean deleteWorkspaceById(Long id);
 
     List<Workspace> selectAllWorkspaces();
+
+    List<String> getWorkspaceNames(String searchName);
 }

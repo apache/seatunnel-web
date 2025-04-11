@@ -30,6 +30,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import javax.annotation.Resource;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
 
@@ -173,5 +174,17 @@ public class DatasourceDaoImpl implements IDatasourceDao {
                 new QueryWrapper<Datasource>()
                         .eq("create_user_id", userId)
                         .eq("workspace_id", getCurrentWorkspaceId()));
+    }
+
+    @Override
+    public List<String> getDatasourceNames(Long workspaceId, String searchName) {
+        QueryWrapper<Datasource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("workspace_id", workspaceId);
+        if (searchName != null) {
+            queryWrapper.like("datasource_name", "%" + searchName + "%");
+        }
+        return datasourceMapper.selectList(queryWrapper).stream()
+                .map(Datasource::getDatasourceName)
+                .collect(Collectors.toList());
     }
 }

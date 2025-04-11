@@ -245,6 +245,11 @@ public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserSe
         return info;
     }
 
+    @Override
+    public List<String> getUserNames(String searchName) {
+        return userDaoImpl.getUserNames(searchName);
+    }
+
     private void permCheck(String resourceName, AccessType accessType) {
         permissionCheck(
                 resourceName, ResourceType.USER, accessType, UserContextHolder.getAccessInfo());

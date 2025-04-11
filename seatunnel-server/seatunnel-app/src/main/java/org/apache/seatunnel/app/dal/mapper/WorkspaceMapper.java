@@ -19,14 +19,10 @@ package org.apache.seatunnel.app.dal.mapper;
 
 import org.apache.seatunnel.app.dal.entity.Workspace;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
 public interface WorkspaceMapper extends BaseMapper<Workspace> {
-    List<Workspace> getWorkspaceByName(@Param("workspaceName") String workspaceName);
-
     List<String> getWorkspaceNames(String searchName);
 }

@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -35,6 +36,7 @@ import lombok.NonNull;
 import javax.annotation.Resource;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
 
@@ -106,5 +108,17 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
                 Wrappers.<JobDefinition>lambdaQuery()
                         .eq(JobDefinition::getId, id)
                         .eq(JobDefinition::getWorkspaceId, getCurrentWorkspaceId()));
+    }
+
+    @Override
+    public List<String> getJobDefinitionNames(Long workspaceId, String searchName) {
+        LambdaQueryWrapper<JobDefinition> query = Wrappers.<JobDefinition>lambdaQuery();
+        query.eq(JobDefinition::getWorkspaceId, workspaceId);
+        if (StringUtils.isNotEmpty(searchName)) {
+            query.like(JobDefinition::getName, "%" + searchName + "%");
+        }
+        return jobMapper.selectList(query).stream()
+                .map(JobDefinition::getName)
+                .collect(Collectors.toList());
     }
 }
