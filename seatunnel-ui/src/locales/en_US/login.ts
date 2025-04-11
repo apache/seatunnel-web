@@ -21,5 +21,8 @@ export default {
   username: 'Username',
   password: 'Password',
   username_tips: 'Please input username',
-  password_tips: 'Please input password'
+  password_tips: 'Please input password',
+  use_ldap: 'Ldap Authentication',
+  select_workspace: 'Select Workspace',
+  select_workspace_tips: 'Please select workspace'
 }

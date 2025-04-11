@@ -24,6 +24,8 @@ import {
   NFormItem,
   NInput,
   NButton,
+  NCheckbox,
+  NSelect,
   useMessage
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
@@ -86,10 +88,26 @@ const Login = defineComponent({
                     onKeydown={withKeys(this.handleLogin, ['enter'])}
                   />
                 </NFormItem>
+                <NFormItem
+                    label={this.t('login.select_workspace')}
+                    label-style={{ color: 'black' }}
+                    path='selectedWorkspace'
+                >
+                  <NSelect
+                      options={this.workspaces.map(workspace => ({ label: workspace, value: workspace }))}
+                      v-model={[this.loginForm.selectedWorkspace, 'value']}
+                      placeholder={this.t('login.select_workspace_tips')}
+                  />
+                </NFormItem>
+                <NFormItem>
+                  <NCheckbox v-model={this.loginForm.useLdap} onUpdateChecked={(value) => this.loginForm.useLdap = value} >
+                    {this.t('login.use_ldap')}
+                  </NCheckbox>
+                </NFormItem>
               </NForm>
               <NButton
                 type='info'
-                disabled={!this.loginForm.username || !this.loginForm.password}
+                disabled={!this.loginForm.username || !this.loginForm.password || !this.loginForm.selectedWorkspace}
                 style={{ width: '100%' }}
                 onClick={this.handleLogin}
               >

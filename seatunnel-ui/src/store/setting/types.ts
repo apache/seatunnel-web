@@ -23,6 +23,7 @@ interface SettingStore {
   fillet: number
   requestTime: number
   locales: Locales
+  workspaces: string[]
 }
 
 export { SettingStore, Locales }
