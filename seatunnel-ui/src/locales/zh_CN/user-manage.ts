@@ -34,6 +34,7 @@ export default {
   model_validate_tips: '必填字段',
   username_tips: '必填字段，数字，字母大小写，50 个字符',
   password_tips: '必填字段，数字，字母大小写，6 个字符',
+  use_ldap: 'Ldap 认证',
   user_delete_tips:
     '是否删除用户？ 删除后无法恢复'
 }

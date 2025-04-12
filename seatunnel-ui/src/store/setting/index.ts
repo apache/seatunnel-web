@@ -25,7 +25,8 @@ export const useSettingStore = defineStore({
     dataUniqueValue: false,
     fillet: 15,
     requestTime: 6000,
-    locales: 'en_US'
+    locales: 'en_US',
+    workspaces: []
   }),
   persist: true,
   getters: {
@@ -43,6 +44,9 @@ export const useSettingStore = defineStore({
     },
     getLocales(): Locales {
       return this.locales
+    },
+    getWorkspaces(): string[] {
+      return this.workspaces
     }
   },
   actions: {
@@ -60,6 +64,9 @@ export const useSettingStore = defineStore({
     },
     setLocales(lang: Locales): void {
       this.locales = lang
+    },
+    setWorkspaces(workspaces: string[]): void {
+      this.workspaces = workspaces
     }
   }
 })

@@ -24,6 +24,11 @@ interface UserList {
 interface UserLogin {
   password: string
   username: string
+  workspace?: string
+}
+
+interface SeatunnelHeader {
+  headers: any | {}
 }
 
 interface UserDetail extends UserLogin {
@@ -36,4 +41,4 @@ interface UserDetail extends UserLogin {
   updateTime?: any | null
 }
 
-export { UserList, UserLogin, UserDetail }
+export { UserList, UserLogin, UserDetail, SeatunnelHeader }
