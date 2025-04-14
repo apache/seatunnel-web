@@ -16,21 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.seatunnel.datasource.plugin.cdc.postgresql;
 
-package org.apache.seatunnel.datasource.plugin.cdc.mysql;
-
+import org.apache.seatunnel.datasource.plugin.api.DataSourceChannel;
+import org.apache.seatunnel.datasource.plugin.api.DataSourceFactory;
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
-import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
 
-public class MysqlCDCDataSourceConfig {
+import com.google.auto.service.AutoService;
 
-    public static final String PLUGIN_NAME = "MySQL-CDC";
+import java.util.Collections;
+import java.util.Set;
 
-    public static final DataSourcePluginInfo MYSQL_CDC_DATASOURCE_PLUGIN_INFO =
-            DataSourcePluginInfo.builder()
-                    .name(PLUGIN_NAME)
-                    .icon(PLUGIN_NAME)
-                    .version("1.0")
-                    .type(DatasourcePluginTypeEnum.DATABASE.getCode())
-                    .build();
+@AutoService(DataSourceFactory.class)
+public class PostgresCDCDataSourceFactory implements DataSourceFactory {
+
+    @Override
+    public String factoryIdentifier() {
+        return "Postgres-CDC";
+    }
+
+    @Override
+    public Set<DataSourcePluginInfo> supportedDataSources() {
+        return Collections.singleton(
+                PostgresCDCDataSourceConfig.POSTGRES_CDC_DATASOURCE_PLUGIN_INFO);
+    }
+
+    @Override
+    public DataSourceChannel createChannel() {
+        return new PostgresCDCDataSourceChannel();
+    }
 }
