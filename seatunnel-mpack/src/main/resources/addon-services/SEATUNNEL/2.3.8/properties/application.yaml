@@ -1,0 +1,87 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+server:
+  port: {{web_server_port}}
+  ssl:
+    enabled: {{seatunnel_web_ssl_enabled}}
+    key-store: {{seatunnel_web_ssl_keystore}}
+    key-store-password: {{seatunnel_web_ssl_keystore_password}}
+    key-store-type: {{seatunnel_web_ssl_keystore_type}}
+    key-alias: {{seatunnel_web_ssl_keystore_key_alias}}
+spring:
+  application:
+    name: seatunnel-web
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    driver-class-name: {{db_driver_class}}
+    url: {{db_url}}
+    username: {{db_username}}
+    password: {{db_password}}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  ldap:
+    url: ldap://localhost:389
+    search:
+      base: ou=people,dc=example,dc=com
+      filter: (uid={0})
+      domain: example.com
+  authentication:
+    providers:
+      - DB
+      #- LDAP # LDAP authentication is disabled by default
+  async-config:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 100
+seatunnel-web:
+  job-definition:
+    write-to-file : {{write_job_definition_to_file}}
+  datasource:
+    encryption:
+      type: {{datasource_encryption_type}}
+      keys-to-encrypt:
+        - password
+        - auth
+  access-controller-class: {{access_controller_class}}
+jwt:
+  expireTime: {{jwt_expire_time}}
+  secretKey: {{jwt_secret_key}}
+  algorithm: {{jwt_algorithm}}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  sql:
+    init:
+      schema-locations: classpath*:script/seatunnel_server_h2.sql
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:seatunnel;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true
+    username: sa
+    password: sa
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        trace: false
+        web-allow-others: false

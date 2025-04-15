@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+    <property>
+        <name>backup_count</name>
+        <value>1</value>
+        <display-name>Backup Count</display-name>
+        <description>Backup count is a parameter that defines the number of synchronous backups. Backup count should be min(1, max(5, N/2)), where N is the number of cluster nodes.</description>
+        <value-attributes>
+            <type>int</type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>seatunnel_config_content</name>
+        <display-name>Seatunnel Configuration</display-name>
+        <description>Seatunnel configuration template to provide unlimited flexibility</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>seatunnel.yaml</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>jvm_options</name>
+        <display-name>Seatunnel JVM Options</display-name>
+        <description>Configuration settings for Seatunnel process, including heap size, heap dump, metaspace, and
+            garbage collection.
+        </description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>jvm_options</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>jvm_client_options</name>
+        <display-name>Seatunnel-client JVM Options</display-name>
+        <description>Seatunnel-client JVM options including head size, heap dump etc.</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>jvm_client_options</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>log4j2_properties</name>
+        <display-name>Log4j2 Configuration</display-name>
+        <description>Seatunnel log4j configuration</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>log4j2.properties</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>log4j2_client_properties</name>
+        <display-name>Client Log4j2 Configuration</display-name>
+        <description>Seatunnel-client log4j2 configuration</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>log4j2_client.properties</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>seatunnel_env</name>
+        <display-name>Seatunnel Environment Configuration</display-name>
+        <description>Configure Spark and Flink Home</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>seatunnel-env.sh</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+</configuration>
