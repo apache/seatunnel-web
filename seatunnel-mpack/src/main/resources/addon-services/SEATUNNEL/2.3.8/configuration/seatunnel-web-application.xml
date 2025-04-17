@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+    <property require-input="true">
+        <name>http_port</name>
+        <value>8801</value>
+        <display-name>Seatunnel-web HTTP Port</display-name>
+        <description>Seatunnel-web http port</description>
+        <value-attributes>
+            <type>int</type>
+        </value-attributes>
+    </property>
+    <property require-input="true">
+        <name>db_driver_class</name>
+        <value>com.mysql.cj.jdbc.Driver</value>
+        <display-name>Driver Class</display-name>
+        <description>The jdbc class name used to connect to the remote data source</description>
+    </property>
+    <property require-input="true">
+        <name>db_url</name>
+        <value>jdbc:mysql://localhost:3306/seatunnel?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;allowPublicKeyRetrieval=true</value>
+        <display-name>URL</display-name>
+        <description>The URL of the JDBC connection</description>
+    </property>
+    <property require-input="true">
+        <name>db_username</name>
+        <value>seatunnel_user</value>
+        <display-name>User Name</display-name>
+        <description>Connection instance user name</description>
+    </property>
+    <property require-input="true">
+        <name>db_password</name>
+        <value>seaTunnel_1234</value>
+        <property-type>PASSWORD</property-type>
+        <display-name>Password</display-name>
+        <description>Connection instance password</description>
+        <value-attributes>
+            <overridable>false</overridable>
+            <type>password</type>
+        </value-attributes>
+    </property>
+    <property require-input="false">
+        <name>write_job_definition_to_file</name>
+        <value>true</value>
+        <display-name>Write Job Definition to File</display-name>
+        <description>Boolean property to determine if job definitions should be written to a file for execution
+        </description>
+        <value-attributes>
+            <type>boolean</type>
+        </value-attributes>
+    </property>
+    <property require-input="true">
+        <name>datasource_encryption_type</name>
+        <value>base64</value>
+        <display-name>Datasource Encryption Type</display-name>
+        <description>The type of encryption used for the datasource</description>
+        <value-attributes>
+            <type>string</type>
+        </value-attributes>
+    </property>
+    <property require-input="true">
+        <name>jwt_expire_time</name>
+        <value>86400</value>
+        <display-name>JWT Expire time(second)</display-name>
+        <description>JSON Web Token(JWT) expire time in seconds. Default is 86400 seconds or 24 hour</description>
+        <value-attributes>
+            <type>int</type>
+        </value-attributes>
+    </property>
+    <property require-input="true">
+        <name>jwt_secret_key</name>
+        <value>https://github.com/apache/seatunnel</value>
+        <display-name>JWT Secret Key</display-name>
+        <description>A JWT secret key is a string used to sign and verify the authenticity of a JSON Web Token (JWT). It
+            ensures that the token has not been tampered with. The secret key is shared between the server and the
+            client and must be kept secure.
+        </description>
+    </property>
+    <property require-input="true">
+        <name>jwt_algorithm</name>
+        <value>HS256</value>
+        <display-name>JWT Algorithm</display-name>
+        <description>The JWT algorithm specifies the cryptographic method used to secure the JSON Web Token. The
+            algorithm ensures the integrity and authenticity of the token.
+        </description>
+    </property>
+    <property require-input="true">
+        <name>seatunnel.web.ssl.enabled</name>
+        <value>false</value>
+        <display-name>Seatunnel-web SSL Enabled</display-name>
+        <description>Boolean property to enable or disable SSL for Seatunnel-web</description>
+        <value-attributes>
+            <type>boolean</type>
+        </value-attributes>
+    </property>
+    <property require-input="true">
+        <name>https_port</name>
+        <value>8443</value>
+        <display-name>Seatunnel-web HTTPS Port</display-name>
+        <description>Seatunnel-web https port</description>
+        <value-attributes>
+            <type>int</type>
+        </value-attributes>
+        <depends-on>
+            <property>
+                <name>seatunnel.web.ssl.enabled</name>
+                <value>true</value>
+            </property>
+        </depends-on>
+    </property>
+    <property require-input="true">
+        <name>seatunnel.web.ssl.keystore</name>
+        <value>/etc/security/serverKeys/keystore.jks</value>
+        <display-name>Seatunnel-web Keystore</display-name>
+        <description>Path to the keystore file for Seatunnel-web</description>
+        <depends-on>
+            <property>
+                <name>seatunnel.web.ssl.enabled</name>
+                <value>true</value>
+            </property>
+        </depends-on>
+    </property>
+    <property require-input="true">
+        <name>seatunnel.web.ssl.keystore.password</name>
+        <value>keystorePassword</value>
+        <property-type>PASSWORD</property-type>
+        <display-name>Seatunnel-web Keystore Password</display-name>
+        <description>Password for the keystore file</description>
+        <value-attributes>
+            <type>password</type>
+        </value-attributes>
+        <depends-on>
+            <property>
+                <name>seatunnel.web.ssl.enabled</name>
+                <value>true</value>
+            </property>
+        </depends-on>
+    </property>
+    <property require-input="true">
+        <name>seatunnel.web.ssl.keystore.type</name>
+        <value>JKS</value>
+        <display-name>Seatunnel-web Keystore Type</display-name>
+        <description>Type of the keystore (e.g., JKS, PKCS12)</description>
+        <depends-on>
+            <property>
+                <name>seatunnel.web.ssl.enabled</name>
+                <value>true</value>
+            </property>
+        </depends-on>
+    </property>
+    <property require-input="true">
+        <name>seatunnel.web.ssl.keystore.key.alias</name>
+        <value>ambari-key-alias</value>
+        <display-name>Seatunnel-web Keystore Key Alias</display-name>
+        <description>Alias for the key in the keystore</description>
+        <depends-on>
+            <property>
+                <name>seatunnel.web.ssl.enabled</name>
+                <value>true</value>
+            </property>
+        </depends-on>
+    </property>
+    <property>
+        <name>seatunnel_web_config_content</name>
+        <display-name>Seatunnel-web Configuration</display-name>
+        <description>Seatunnel-web configuration template to provide unlimited flexibility</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>application.yaml</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>seatunnel_web_log_config_content</name>
+        <display-name>Seatunnel-web Log Config</display-name>
+        <description>Seatunnel-web log config</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>logback-spring.xml</property-file-name>
+            <property-file-type>xml</property-file-type>
+        </value-attributes>
+    </property>
+    <property>
+        <name>seatunnel_web_env</name>
+        <display-name>Seatunnel-web Environment Configuration</display-name>
+        <description>Configure JVM related configuration</description>
+        <property-type>VALUE_FROM_PROPERTY_FILE</property-type>
+        <value/>
+        <value-attributes>
+            <type>content</type>
+            <property-file-name>seatunnel-web-env.sh</property-file-name>
+            <property-file-type>text</property-file-type>
+        </value-attributes>
+    </property>
+</configuration>

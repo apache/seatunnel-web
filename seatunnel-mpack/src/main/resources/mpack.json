@@ -1,0 +1,37 @@
+{
+  "type": "full-release",
+  "name": "seatunnel-mpack",
+  "version": "1.0.0.0",
+  "description": "Seatunnel Management Pack",
+  "prerequisites": {
+    "min_ambari_version": "3.0.0",
+    "min-stack-versions" : [
+      {
+        "stack_name" : "BIGTOP", "stack_version" : "3.3.0"
+      } ]
+  },
+  "artifacts": [
+    {
+      "name" : "seatunnel-extension-definitions",
+      "type" : "extension-definitions",
+      "source_dir": "extensions"
+    },
+    {
+      "name": "seatunnel-stack-addon-service-definitions",
+      "type": "stack-addon-service-definitions",
+      "source_dir": "addon-services",
+      "service_versions_map": [
+        {
+          "service_name" : "SEATUNNEL",
+          "service_version" : "2.3.8",
+          "applicable_stacks" : [
+            {
+              "stack_name" : "BIGTOP",
+              "stack_version" : "3.3.0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

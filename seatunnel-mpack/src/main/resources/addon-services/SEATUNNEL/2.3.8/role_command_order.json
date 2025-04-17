@@ -1,0 +1,11 @@
+{
+  "general_deps": {
+    "_comment": "dependencies for Seatunnel"
+  },
+  "commandParams": {
+    "roleCommandOrder": {
+      "SEATUNNEL-START": ["SEATUNNEL-WEB-START"],
+      "SEATUNNEL-WEB-STOP": ["SEATUNNEL-STOP"]
+    }
+  }
+}

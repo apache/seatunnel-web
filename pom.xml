@@ -38,6 +38,7 @@
         <module>seatunnel-datasource</module>
         <module>seatunnel-web-dist</module>
         <module>seatunnel-web-it</module>
+        <module>seatunnel-mpack</module>
     </modules>
 
     <properties>
