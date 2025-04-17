@@ -17,7 +17,7 @@
 package org.apache.seatunnel.app.bean.env;
 
 import org.apache.seatunnel.api.configuration.util.OptionRule;
-import org.apache.seatunnel.api.env.EnvOptionRule;
+import org.apache.seatunnel.api.options.EnvOptionRule;
 import org.apache.seatunnel.app.dynamicforms.AbstractFormOption;
 import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
@@ -37,7 +37,7 @@ public class JobEnvCache {
     @Getter private final FormStructure envFormStructure;
 
     public JobEnvCache() {
-        OptionRule envOptionRules = EnvOptionRule.getEnvOptionRules();
+        OptionRule envOptionRules = new EnvOptionRule().optionRule();
         envFormStructure =
                 SeaTunnelOptionRuleWrapper.wrapper(
                         envOptionRules.getOptionalOptions(),

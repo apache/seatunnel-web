@@ -26,9 +26,9 @@ import org.apache.seatunnel.shade.com.typesafe.config.ConfigValue;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueFactory;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigValueType;
 
-import org.apache.seatunnel.api.common.CommonOptions;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.env.ParsingMode;
+import org.apache.seatunnel.api.options.ConnectorCommonOptions;
 import org.apache.seatunnel.app.bean.connector.ConnectorCache;
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
 import org.apache.seatunnel.app.config.EncryptionConfig;
@@ -223,7 +223,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                         if (inputLines.containsKey(pluginId)) {
                             config =
                                     addTableName(
-                                            CommonOptions.RESULT_TABLE_NAME.key(),
+                                            ConnectorCommonOptions.PLUGIN_OUTPUT.key(),
                                             inputLines.get(pluginId),
                                             config);
                             if (!sourceMap.containsKey(task.getConnectorType())) {
@@ -269,14 +269,14 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                         if (inputLines.containsKey(pluginId)) {
                             config =
                                     addTableName(
-                                            CommonOptions.RESULT_TABLE_NAME.key(),
+                                            ConnectorCommonOptions.PLUGIN_OUTPUT.key(),
                                             inputLines.get(pluginId),
                                             config);
                         }
                         if (targetLines.containsKey(pluginId)) {
                             config =
                                     addTableName(
-                                            CommonOptions.SOURCE_TABLE_NAME.key(),
+                                            ConnectorCommonOptions.PLUGIN_INPUT.key(),
                                             targetLines.get(pluginId),
                                             config);
                         }
@@ -293,7 +293,7 @@ public class JobInstanceServiceImpl extends SeatunnelBaseServiceImpl
                         if (targetLines.containsKey(pluginId)) {
                             config =
                                     addTableName(
-                                            CommonOptions.SOURCE_TABLE_NAME.key(),
+                                            ConnectorCommonOptions.PLUGIN_INPUT.key(),
                                             targetLines.get(pluginId),
                                             config);
                             if (!sinkMap.containsKey(task.getConnectorType())) {

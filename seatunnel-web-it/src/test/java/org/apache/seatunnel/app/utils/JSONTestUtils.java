@@ -17,13 +17,13 @@
 
 package org.apache.seatunnel.app.utils;
 
+import org.apache.seatunnel.api.common.PluginIdentifier;
 import org.apache.seatunnel.app.common.Constants;
 import org.apache.seatunnel.app.domain.ConnectorInfoDeserializer;
 import org.apache.seatunnel.app.domain.JobExecutorResDeserializer;
 import org.apache.seatunnel.app.domain.PluginIdentifierDeserializer;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 
 import org.apache.commons.lang3.StringUtils;
 

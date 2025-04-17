@@ -16,6 +16,7 @@
  */
 package org.apache.seatunnel.app.thirdparty.framework;
 
+import org.apache.seatunnel.api.common.PluginIdentifier;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.api.source.SupportColumnProjection;
 import org.apache.seatunnel.api.table.factory.Factory;
@@ -27,7 +28,6 @@ import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.plugin.discovery.AbstractPluginDiscovery;
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 import org.apache.seatunnel.plugin.discovery.seatunnel.SeaTunnelSinkPluginDiscovery;
 
 import lombok.NonNull;
