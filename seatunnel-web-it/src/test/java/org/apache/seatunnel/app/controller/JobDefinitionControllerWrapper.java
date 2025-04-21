@@ -25,9 +25,11 @@ import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
 import org.apache.seatunnel.app.utils.JSONTestUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
+import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
@@ -46,6 +48,15 @@ public class JobDefinitionControllerWrapper extends SeatunnelWebTestingBase {
         Result<Long> result = createJobDefinition(jobReq);
         assertTrue(result.isSuccess());
         return result.getData();
+    }
+
+    public void createJobExpectingFailure(String jobName) {
+        JobReq jobReq = new JobReq();
+        jobReq.setName(jobName);
+        jobReq.setDescription(jobName + " description");
+        jobReq.setJobType(BusinessMode.DATA_INTEGRATION);
+        Result<Long> result = createJobDefinition(jobReq);
+        assertEquals(SeatunnelErrorEnum.ACCESS_DENIED.getCode(), result.getCode());
     }
 
     public Result<PageInfo<JobDefinitionRes>> getJobDefinition(

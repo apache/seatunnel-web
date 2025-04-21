@@ -30,4 +30,6 @@ public class UserLoginLogDto {
     private String token;
 
     private Boolean tokenStatus;
+
+    private Long workspaceId;
 }

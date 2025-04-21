@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -35,6 +36,9 @@ import lombok.NonNull;
 import javax.annotation.Resource;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
 
 @Repository
 public class JobDefinitionDaoImpl implements IJobDefinitionDao {
@@ -43,17 +47,25 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
 
     @Override
     public void add(JobDefinition job) {
+        job.setWorkspaceId(getCurrentWorkspaceId());
         jobMapper.insert(job);
     }
 
     @Override
     public JobDefinition getJob(long id) {
-        return jobMapper.selectById(id);
+        return jobMapper.selectOne(
+                Wrappers.<JobDefinition>lambdaQuery()
+                        .eq(JobDefinition::getId, id)
+                        .eq(JobDefinition::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public void updateJob(JobDefinition jobDefinition) {
-        jobMapper.updateById(jobDefinition);
+        jobMapper.update(
+                jobDefinition,
+                Wrappers.<JobDefinition>lambdaUpdate()
+                        .eq(JobDefinition::getId, jobDefinition.getId())
+                        .eq(JobDefinition::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
@@ -62,11 +74,15 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
         IPage<JobDefinitionRes> jobDefinitionIPage;
         if (StringUtils.isEmpty(jobMode)) {
             jobDefinitionIPage =
-                    jobMapper.queryJobListPaging(new Page<>(pageNo, pageSize), searchName);
+                    jobMapper.queryJobListPaging(
+                            new Page<>(pageNo, pageSize), searchName, getCurrentWorkspaceId());
         } else {
             jobDefinitionIPage =
                     jobMapper.queryJobListPagingWithJobMode(
-                            new Page<>(pageNo, pageSize), searchName, jobMode);
+                            new Page<>(pageNo, pageSize),
+                            searchName,
+                            jobMode,
+                            getCurrentWorkspaceId());
         }
         PageInfo<JobDefinitionRes> jobs = new PageInfo<>();
         jobs.setData(jobDefinitionIPage.getRecords());
@@ -78,16 +94,31 @@ public class JobDefinitionDaoImpl implements IJobDefinitionDao {
 
     @Override
     public List<JobDefinition> getJobList(@NonNull String name) {
-        return jobMapper.queryJobList(name);
+        return jobMapper.queryJobList(name, getCurrentWorkspaceId());
     }
 
     @Override
     public JobDefinition getJobByName(@NonNull String name) {
-        return jobMapper.queryJob(name);
+        return jobMapper.queryJob(name, getCurrentWorkspaceId());
     }
 
+    @Override
     public void delete(long id) {
         jobMapper.delete(
-                Wrappers.lambdaQuery(new JobDefinition()).and(i -> i.eq(JobDefinition::getId, id)));
+                Wrappers.<JobDefinition>lambdaQuery()
+                        .eq(JobDefinition::getId, id)
+                        .eq(JobDefinition::getWorkspaceId, getCurrentWorkspaceId()));
+    }
+
+    @Override
+    public List<String> getJobDefinitionNames(Long workspaceId, String searchName) {
+        LambdaQueryWrapper<JobDefinition> query = Wrappers.<JobDefinition>lambdaQuery();
+        query.eq(JobDefinition::getWorkspaceId, workspaceId);
+        if (StringUtils.isNotEmpty(searchName)) {
+            query.like(JobDefinition::getName, "%" + searchName + "%");
+        }
+        return jobMapper.selectList(query).stream()
+                .map(JobDefinition::getName)
+                .collect(Collectors.toList());
     }
 }

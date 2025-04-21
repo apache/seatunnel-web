@@ -22,6 +22,8 @@ import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
 import org.apache.seatunnel.app.dal.entity.UserLoginLog;
 import org.apache.seatunnel.app.security.JwtUtils;
+import org.apache.seatunnel.app.security.UserContext;
+import org.apache.seatunnel.common.access.AccessInfo;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -78,7 +80,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             response.setStatus(HttpStatus.UNAUTHORIZED_401);
             return false;
         }
-        final UserLoginLog userLoginLog = userDaoImpl.getLastLoginLog(userId);
+        long workspaceIdFromToken = ((Number) map.get("workspaceId")).longValue();
+        final UserLoginLog userLoginLog = userDaoImpl.getLastLoginLog(userId, workspaceIdFromToken);
         if (Objects.isNull(userLoginLog) || !userLoginLog.getTokenStatus()) {
             log.info("userLoginLog does not exist");
             response.setStatus(HttpStatus.UNAUTHORIZED_401);
@@ -100,7 +103,18 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 "Setting user to request attributes: userId={}, username={}",
                 user.getId(),
                 user.getUsername());
-        request.setAttribute(Constants.SESSION_USER, user);
+
+        UserContext userContext = new UserContext();
+        userContext.setUser(user);
+        userContext.setWorkspaceId(workspaceIdFromToken);
+
+        AccessInfo accessInfo = new AccessInfo();
+        accessInfo.setUsername(user.getUsername());
+        accessInfo.setWorkspaceName((String) map.get("workspaceName"));
+        userContext.setAccessInfo(accessInfo);
+
+        request.setAttribute(Constants.SESSION_USER_CONTEXT, userContext);
+
         request.setAttribute("userId", userId);
         return true;
     }

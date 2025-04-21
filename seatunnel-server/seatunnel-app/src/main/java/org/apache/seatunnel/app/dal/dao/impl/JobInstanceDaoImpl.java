@@ -21,6 +21,7 @@ import org.apache.seatunnel.app.dal.dao.IJobInstanceDao;
 import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.dal.mapper.JobInstanceMapper;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.app.utils.ServletUtils;
 import org.apache.seatunnel.common.constants.JobMode;
 
 import org.springframework.stereotype.Repository;
@@ -31,7 +32,6 @@ import lombok.NonNull;
 
 import javax.annotation.Resource;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,25 +39,35 @@ import java.util.List;
 public class JobInstanceDaoImpl implements IJobInstanceDao {
     @Resource private JobInstanceMapper jobInstanceMapper;
 
+    private Long getWorkspaceId() {
+        return ServletUtils.getCurrentWorkspaceId();
+    }
+
     @Override
     public JobInstance getJobInstance(@NonNull Long jobInstanceId) {
-        return jobInstanceMapper.selectById(jobInstanceId);
+        return jobInstanceMapper.selectOne(
+                new LambdaQueryWrapper<JobInstance>()
+                        .eq(JobInstance::getId, jobInstanceId)
+                        .eq(JobInstance::getWorkspaceId, getWorkspaceId()));
     }
 
     @Override
     public JobInstance getJobInstanceByEngineId(@NonNull Long jobEngineId) {
         return jobInstanceMapper.selectOne(
-                new LambdaQueryWrapper<>(new JobInstance())
-                        .eq(JobInstance::getJobEngineId, jobEngineId));
+                new LambdaQueryWrapper<JobInstance>()
+                        .eq(JobInstance::getJobEngineId, jobEngineId)
+                        .eq(JobInstance::getWorkspaceId, getWorkspaceId()));
     }
 
     @Override
     public void update(@NonNull JobInstance jobInstance) {
+        jobInstance.setWorkspaceId(getWorkspaceId());
         jobInstanceMapper.updateById(jobInstance);
     }
 
     @Override
     public void insert(@NonNull JobInstance jobInstance) {
+        jobInstance.setWorkspaceId(getWorkspaceId());
         jobInstanceMapper.insert(jobInstance);
     }
 
@@ -74,27 +84,30 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
             String jobDefineName,
             JobMode jobMode) {
         return jobInstanceMapper.queryJobInstanceListPaging(
-                page, startTime, endTime, jobDefineName, jobMode);
+                page, startTime, endTime, jobDefineName, jobMode, getWorkspaceId());
     }
 
     @Override
     public List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList) {
-        ArrayList<JobInstance> jobInstances = new ArrayList<>();
-        for (long jobInstanceId : jobInstanceIdList) {
-            JobInstance jobInstance = jobInstanceMapper.selectById(jobInstanceId);
-            jobInstances.add(jobInstance);
-        }
-
-        return jobInstances;
+        return jobInstanceMapper.selectList(
+                new LambdaQueryWrapper<JobInstance>()
+                        .in(JobInstance::getId, jobInstanceIdList)
+                        .eq(JobInstance::getWorkspaceId, getWorkspaceId()));
     }
 
     @Override
     public JobInstance getJobExecutionStatus(@NonNull Long jobInstanceId) {
-        return jobInstanceMapper.getJobExecutionStatus(jobInstanceId);
+        return jobInstanceMapper.selectOne(
+                new LambdaQueryWrapper<JobInstance>()
+                        .eq(JobInstance::getId, jobInstanceId)
+                        .eq(JobInstance::getWorkspaceId, getWorkspaceId()));
     }
 
     @Override
     public void deleteById(@NonNull Long jobInstanceId) {
-        jobInstanceMapper.deleteById(jobInstanceId);
+        jobInstanceMapper.delete(
+                new LambdaQueryWrapper<JobInstance>()
+                        .eq(JobInstance::getId, jobInstanceId)
+                        .eq(JobInstance::getWorkspaceId, getWorkspaceId()));
     }
 }

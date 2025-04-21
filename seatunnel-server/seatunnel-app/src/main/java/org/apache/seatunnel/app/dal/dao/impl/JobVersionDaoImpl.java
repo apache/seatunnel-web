@@ -27,9 +27,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import javax.annotation.Resource;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
 
 @Repository
 public class JobVersionDaoImpl implements IJobVersionDao {
@@ -38,35 +38,48 @@ public class JobVersionDaoImpl implements IJobVersionDao {
 
     @Override
     public void createVersion(JobVersion jobVersion) {
+        jobVersion.setWorkspaceId(getCurrentWorkspaceId());
         jobVersionMapper.insert(jobVersion);
     }
 
     @Override
     public void updateVersion(JobVersion version) {
+        version.setWorkspaceId(getCurrentWorkspaceId());
         jobVersionMapper.updateById(version);
     }
 
     @Override
     public JobVersion getLatestVersion(long jobId) {
-        Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("job_id", jobId);
-        return jobVersionMapper.selectByMap(queryMap).get(0);
+        return jobVersionMapper.selectOne(
+                new QueryWrapper<JobVersion>()
+                        .eq("job_id", jobId)
+                        .eq("workspace_id", getCurrentWorkspaceId())
+                        .orderByDesc("create_time")
+                        .last("LIMIT 1"));
     }
 
     @Override
     public List<JobVersion> getLatestVersionByJobIds(List<Long> jobIds) {
-        QueryWrapper<JobVersion> wrapper = new QueryWrapper<>();
-        wrapper.in("job_id", jobIds);
-        return jobVersionMapper.selectList(wrapper);
+        return jobVersionMapper.selectList(
+                new QueryWrapper<JobVersion>()
+                        .in("job_id", jobIds)
+                        .eq("workspace_id", getCurrentWorkspaceId())
+                        .orderByDesc("create_time"));
     }
 
     @Override
     public JobVersion getVersionById(long jobVersionId) {
-        return jobVersionMapper.selectById(jobVersionId);
+        return jobVersionMapper.selectOne(
+                new QueryWrapper<JobVersion>()
+                        .eq("id", jobVersionId)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 
     @Override
     public List<JobVersion> getVersionsByIds(List<Long> jobVersionIds) {
-        return jobVersionMapper.selectBatchIds(jobVersionIds);
+        return jobVersionMapper.selectList(
+                new QueryWrapper<JobVersion>()
+                        .in("id", jobVersionIds)
+                        .eq("workspace_id", getCurrentWorkspaceId()));
     }
 }

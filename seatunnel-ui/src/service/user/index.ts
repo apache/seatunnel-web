@@ -16,7 +16,7 @@
  */
 
 import { axios } from '@/service/service'
-import type { UserList, UserLogin, UserDetail } from '@/service/user/types'
+import type { UserList, UserLogin, SeatunnelHeader, UserDetail } from '@/service/user/types'
 
 export function userList(params: UserList): any {
   return axios({
@@ -34,11 +34,19 @@ export function userAdd(data: UserDetail): any {
   })
 }
 
-export function userLogin(data: UserLogin): any {
+export function userLogin(data: UserLogin, config: SeatunnelHeader): any {
   return axios({
     url: '/user/login',
     method: 'post',
-    data
+    data,
+    headers: config.headers
+  })
+}
+
+export function fetchWorkspaces(): any {
+  return axios({
+    url: '/resources/workspace',
+    method: 'get'
   })
 }
 

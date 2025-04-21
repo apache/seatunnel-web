@@ -48,4 +48,6 @@ public interface IVirtualTableDao {
     List<String> getVirtualDatabaseNames(Long datasourceId);
 
     boolean checkHasVirtualTable(Long datasourceId);
+
+    List<String> getDatasourceNames(Long workspaceId, String searchName);
 }

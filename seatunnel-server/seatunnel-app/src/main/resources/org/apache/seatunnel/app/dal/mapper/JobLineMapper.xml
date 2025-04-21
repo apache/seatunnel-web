@@ -24,19 +24,17 @@
     <result column="target_plugin_id" jdbcType="BIGINT" property="targetPluginId"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    <result column="workspace_id" jdbcType="BIGINT" property="workspaceId"/>
   </resultMap>
-  <delete id="deleteLinesByVersionId">
-    delete from t_st_job_line where version_id = #{versionId}
-  </delete>
-
   <insert id="insertBatchLines">
-    insert into t_st_job_line (id, version_id, input_plugin_id, target_plugin_id)
+    insert into t_st_job_line (id, version_id, input_plugin_id, target_plugin_id, workspace_id)
     values
     <foreach collection="lines" item="line" separator=",">
       (#{line.id},
       #{line.versionId},
       #{line.inputPluginId},
-      #{line.targetPluginId})
+      #{line.targetPluginId},
+      #{line.workspaceId})
     </foreach>
   </insert>
 </mapper>

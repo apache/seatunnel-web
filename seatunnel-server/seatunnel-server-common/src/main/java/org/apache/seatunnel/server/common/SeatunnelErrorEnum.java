@@ -91,6 +91,7 @@ public enum SeatunnelErrorEnum {
             40005, "load engine metrics error", "load engine metrics error. error msg is [%s]"),
     JOB_NO_VALUE_FOUND_FOR_PLACEHOLDER(
             40006, "No value found for placeholder", "No value found for placeholder: [%s]"),
+    INVALID_OPERATION(40007, "invalid operation", "invalid operation [%s]"),
 
     JOB_RUN_GENERATE_UUID_ERROR(50001, "generate uuid error", "generate uuid error"),
     /* datasource and virtual table */
@@ -139,7 +140,8 @@ public enum SeatunnelErrorEnum {
     INVALID_PARAM(60019, "", "param [%s] is invalid. %s"),
     TASK_NAME_ALREADY_EXISTS(60020, "task name already exists", "task [%s] already exists"),
     RESOURCE_NOT_FOUND(404, "", "%s"),
-    ;
+    RESOURCE_ALREADY_EXISTS(60021, "resource already exists", "resource [%s] already exists"),
+    ACCESS_DENIED(403, "Access denied", "%s");
 
     private final int code;
     private final String msg;

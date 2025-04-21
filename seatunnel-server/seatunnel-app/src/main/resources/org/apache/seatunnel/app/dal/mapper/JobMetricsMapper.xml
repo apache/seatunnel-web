@@ -27,10 +27,11 @@
         <result column="read_qps" jdbcType="BIGINT" property="readQps"/>
         <result column="write_qps" jdbcType="BIGINT" property="writeQps"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="workspace_id" jdbcType="BIGINT" property="workspaceId"/>
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , `job_instance_id`, `pipeline_id`, read_row_count, write_row_count, source_table_names, sink_table_names, read_qps, write_qps, status
+        , `job_instance_id`, `pipeline_id`, read_row_count, write_row_count, source_table_names, sink_table_names, read_qps, write_qps, status, workspace_id
     </sql>
     <insert id="insert" parameterType="org.apache.seatunnel.app.dal.entity.JobMetrics">
         insert into `t_st_job_metrics` (<include refid="Base_Column_List"/>, `create_user_id`, `update_user_id`)
@@ -44,6 +45,7 @@
                 #{read_qps,jdbcType=BIGINT},
                 #{write_qps,jdbcType=BIGINT},
                 #{status,jdbcType=VARCHAR},
+                #{workspaceId,jdbcType=BIGINT},
                 #{createUserId,jdbcType=BIGINT},
                 #{updateUserId,jdbcType=BIGINT})
     </insert>
@@ -52,7 +54,7 @@
         select
         <include refid="Base_Column_List"/>
         from t_st_job_metrics
-        where 1=1
+        where workspace_id = #{workspaceId}
         <if test="jobInstanceId != null and jobInstanceId > 0">
             and job_instance_id = #{jobInstanceId}
         </if>
@@ -72,6 +74,7 @@
             #{metrics.readQps},
             #{metrics.writeQps},
             #{metrics.status},
+            #{metrics.workspaceId},
             #{metrics.createUserId},
             #{metrics.updateUserId})
         </foreach>

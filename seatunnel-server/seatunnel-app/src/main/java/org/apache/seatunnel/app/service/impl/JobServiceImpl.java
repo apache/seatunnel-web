@@ -26,10 +26,13 @@ import org.apache.seatunnel.app.domain.request.job.JobTaskInfo;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.response.job.JobConfigRes;
 import org.apache.seatunnel.app.domain.response.job.JobRes;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IJobConfigService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobService;
 import org.apache.seatunnel.app.service.IJobTaskService;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
 import org.apache.seatunnel.server.common.ParamValidationException;
@@ -52,7 +55,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class JobServiceImpl implements IJobService {
+public class JobServiceImpl extends SeatunnelBaseServiceImpl implements IJobService {
 
     @Resource private IJobDefinitionService jobService;
     @Resource private IJobTaskService jobTaskService;
@@ -61,6 +64,11 @@ public class JobServiceImpl implements IJobService {
     @Override
     @Transactional
     public long createJob(JobCreateReq jobCreateRequest) throws JsonProcessingException {
+        permissionCheck(
+                jobCreateRequest.getJobConfig().getName(),
+                ResourceType.JOB,
+                AccessType.CREATE,
+                UserContextHolder.getAccessInfo());
         JobReq jobDefinition = getJobDefinition(jobCreateRequest.getJobConfig());
         long jobId = jobService.createJob(jobDefinition);
         createTasks(jobCreateRequest, jobId);
@@ -90,7 +98,7 @@ public class JobServiceImpl implements IJobService {
                 pluginNameVsPluginId.put(pluginIdKey, newPluginId);
             }
         }
-        jobConfigService.updateJobConfig(jobId, jobCreateRequest.getJobConfig());
+        jobConfigService.updateJobConfig(jobId, jobCreateRequest.getJobConfig(), true);
         JobDAG jobDAG = jobCreateRequest.getJobDAG();
         // Replace the plugin name with plugin id
         List<Edge> edges = jobDAG.getEdges();
@@ -136,13 +144,21 @@ public class JobServiceImpl implements IJobService {
     @Override
     public void updateJob(long jobVersionId, JobCreateReq jobCreateReq)
             throws JsonProcessingException {
+        JobConfigRes jobConfig = jobConfigService.getJobConfig(jobVersionId, true);
+        if (jobConfig != null) {
+            permissionCheck(
+                    jobConfig.getName(),
+                    ResourceType.JOB,
+                    AccessType.UPDATE,
+                    UserContextHolder.getAccessInfo());
+        }
         jobTaskService.deleteTaskByVersionId(jobVersionId);
         createTasks(jobCreateReq, jobVersionId);
     }
 
     @Override
     public JobRes getJob(long jobVersionId) throws JsonProcessingException {
-        JobConfigRes jobConfig = jobConfigService.getJobConfig(jobVersionId);
+        JobConfigRes jobConfig = jobConfigService.getJobConfig(jobVersionId, false);
         JobTaskInfo taskConfig = jobTaskService.getTaskConfig(jobVersionId);
         return new JobRes(jobConfig, taskConfig.getPlugins(), new JobDAG(taskConfig.getEdges()));
     }

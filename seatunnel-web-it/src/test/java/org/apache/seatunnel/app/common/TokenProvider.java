@@ -35,6 +35,10 @@ public class TokenProvider {
         userLoginReq.setUsername("admin");
         userLoginReq.setPassword("admin");
         Result<UserSimpleInfoRes> loginResponse = seatunnelWebTestingBase.login(userLoginReq);
-        TokenProvider.token = loginResponse.getData().getToken();
+        setToken(loginResponse.getData().getToken());
+    }
+
+    public static void setToken(String token) {
+        TokenProvider.token = token;
     }
 }

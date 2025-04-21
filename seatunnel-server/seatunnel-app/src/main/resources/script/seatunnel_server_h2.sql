@@ -70,8 +70,9 @@ CREATE TABLE t_st_datasource (
                                  update_user_id INT NOT NULL,
                                  create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                  update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                 workspace_id BIGINT NOT NULL,
                                  PRIMARY KEY (id),
-                                 UNIQUE (datasource_name)
+                                 UNIQUE (datasource_name, workspace_id)
 );
 
 -- Table structure for t_st_job_definition
@@ -85,8 +86,9 @@ CREATE TABLE t_st_job_definition (
                                      update_user_id INT NOT NULL,
                                      create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                      update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                     workspace_id BIGINT NOT NULL,
                                      PRIMARY KEY (id),
-                                     UNIQUE (name)
+                                     UNIQUE (name, workspace_id)
 );
 
 -- Table structure for t_st_job_instance
@@ -106,6 +108,7 @@ CREATE TABLE t_st_job_instance (
                                    end_time TIMESTAMP(3) DEFAULT NULL,
                                    job_type VARCHAR(50) NOT NULL,
                                    error_message VARCHAR(4096) DEFAULT NULL,
+                                   workspace_id BIGINT NOT NULL,
                                    PRIMARY KEY (id)
 );
 
@@ -116,6 +119,7 @@ CREATE TABLE t_st_job_instance_history (
                                            dag CLOB NOT NULL,
                                            create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                            update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                           workspace_id BIGINT NOT NULL,
                                            PRIMARY KEY (id)
 );
 
@@ -128,8 +132,9 @@ CREATE TABLE t_st_job_line (
                                target_plugin_id VARCHAR(50) NOT NULL,
                                create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                               workspace_id BIGINT NOT NULL,
                                PRIMARY KEY (id),
-                               INDEX job_line_version_index (version_id)
+                               INDEX job_line_version_index (version_id, workspace_id)
 );
 
 -- Table structure for t_st_job_metrics
@@ -150,6 +155,7 @@ CREATE TABLE t_st_job_metrics (
                                   update_user_id INT DEFAULT NULL,
                                   create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                   update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                  workspace_id BIGINT NOT NULL,
                                   PRIMARY KEY (id)
 );
 
@@ -171,8 +177,9 @@ CREATE TABLE t_st_job_task (
                                type VARCHAR(50) NOT NULL,
                                create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                               workspace_id BIGINT NOT NULL,
                                PRIMARY KEY (id),
-                               INDEX job_task_plugin_id_index (plugin_id)
+                               INDEX job_task_plugin_id_index (plugin_id, workspace_id)
 );
 
 -- Table structure for t_st_job_version
@@ -189,6 +196,7 @@ CREATE TABLE t_st_job_version (
                                   update_user_id INT NOT NULL,
                                   create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                   update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                  workspace_id BIGINT NOT NULL,
                                   PRIMARY KEY (id)
 );
 
@@ -206,6 +214,7 @@ CREATE TABLE t_st_virtual_table (
                                     update_user_id INT NOT NULL,
                                     create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                     update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                                    workspace_id BIGINT NOT NULL,
                                     PRIMARY KEY (id)
 );
 
@@ -225,6 +234,36 @@ CREATE TABLE "user" (
 
 -- Records of user
 INSERT INTO "user" ("username", "password", "status", "type") VALUES ('admin', '7f97da8846fed829bb8d1fd9f8030f3b', 0, 0);
+
+-- ----------------------------
+-- Table structure for user_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS user_login_log;
+CREATE TABLE user_login_log (
+                                id BIGINT NOT NULL AUTO_INCREMENT,
+                                user_id INT NOT NULL,
+                                token CLOB NOT NULL,
+                                token_status TINYINT NOT NULL,
+                                create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                                update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+                                workspace_id BIGINT NOT NULL,
+                                PRIMARY KEY (id)
+);
+
+-- ----------------------------
+-- Workspace related tables
+-- ----------------------------
+DROP TABLE IF EXISTS "workspace";
+CREATE TABLE workspace (
+                           id BIGINT NOT NULL AUTO_INCREMENT,
+                           workspace_name VARCHAR(255) NOT NULL,
+                           description VARCHAR(255) DEFAULT NULL,
+                           create_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                           update_time TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+                           PRIMARY KEY (id)
+);
+
+INSERT INTO workspace (workspace_name, description) VALUES ('default', 'default workspace');
 
 -- Records of user_login_log
 -- No equivalent records provided for the user_login_log table in the provided SQL script.

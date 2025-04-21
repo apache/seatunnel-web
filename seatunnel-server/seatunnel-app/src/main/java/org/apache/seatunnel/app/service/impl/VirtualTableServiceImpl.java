@@ -33,6 +33,7 @@ import org.apache.seatunnel.app.dynamicforms.FormStructure;
 import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IVirtualTableService;
+import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.thirdparty.datasource.DataSourceClientFactory;
 import org.apache.seatunnel.app.thirdparty.framework.SeaTunnelOptionRuleWrapper;
 import org.apache.seatunnel.app.utils.ServletUtils;
@@ -70,6 +71,8 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
 
     @Resource(name = "datasourceDaoImpl")
     IDatasourceDao datasourceDao;
+
+    @Autowired private WorkspaceService workspaceService;
 
     @Autowired private ConnectorDataSourceMapperConfig dataSourceMapperConfig;
 
@@ -329,52 +332,10 @@ public class VirtualTableServiceImpl extends SeatunnelBaseServiceImpl
         return virtualTableDao.getVirtualDatabaseNames(datasourceIdLong);
     }
 
-    private VirtualTableFieldRes convertVirtualTableFieldReq(VirtualTableFieldReq req) {
-
-        return VirtualTableFieldRes.builder()
-                .fieldName(req.getFieldName())
-                .fieldType(req.getFieldType())
-                .nullable(req.getNullable())
-                .defaultValue(req.getDefaultValue())
-                .fieldComment(req.getFieldComment())
-                .primaryKey(req.getPrimaryKey())
-                .build();
+    @Override
+    public List<String> getVirtualTableNamesWithinWorkspace(
+            String workspaceName, String searchName) {
+        return virtualTableDao.getDatasourceNames(
+                workspaceService.getWorkspaceIdOrCurrent(workspaceName), searchName);
     }
-
-    /* private VirtualTableDetailRes convertVirtualTableDetailResponse(VirtualTableDetailResponse response) {
-        VirtualTableDetailRes res = new VirtualTableDetailRes();
-        res.setTableId(response.getId().toString());
-        res.setTableName(response.getTableName());
-        res.setDatabaseName(response.getDatabaseName());
-        res.setDescription(response.getDescription());
-        res.setCreateTime(response.getCreateTime());
-        res.setUpdateTime(response.getUpdateTime());
-
-        res.setFields(convertVirtualTableFieldResponse(response.getFields()));
-
-        List<Integer> userIds = new ArrayList<>();
-        userIds.add(Integer.parseInt(response.getCreateUserId()));
-        userIds.add(Integer.parseInt(response.getUpdateUserId()));
-        Map<Integer, String> userNames = queryUserNamesByIds(userIds);
-        res.setCreateUserName(userNames.get(Integer.parseInt(response.getCreateUserId())));
-        res.setUpdateUserName(userNames.get(Integer.parseInt(response.getUpdateUserId())));
-        return res;
-    }
-
-    private List<VirtualTableFieldRes> convertVirtualTableFieldResponse(List<VirtualTableFieldResponse> fieldResponses) {
-        List<VirtualTableFieldRes> fields = new ArrayList<>();
-        if (fieldResponses != null && !fieldResponses.isEmpty()) {
-            for (VirtualTableFieldResponse fieldResponse : fieldResponses) {
-                VirtualTableFieldRes field = new VirtualTableFieldRes();
-                field.setFieldName(fieldResponse.getName());
-                field.setFieldType(fieldResponse.getType());
-                field.setNullable(fieldResponse.getNullable());
-                field.setDefaultValue(fieldResponse.getDefaultValue());
-                field.setFieldComment(fieldResponse.getComment());
-                field.setPrimaryKey(fieldResponse.getPrimaryKey());
-                fields.add(field);
-            }
-        }
-        return fields;
-    }*/
 }

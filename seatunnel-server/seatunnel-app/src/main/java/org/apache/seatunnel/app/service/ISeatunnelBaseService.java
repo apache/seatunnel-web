@@ -17,16 +17,23 @@
 
 package org.apache.seatunnel.app.service;
 
-import java.util.List;
+import org.apache.seatunnel.common.access.AccessInfo;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 
 public interface ISeatunnelBaseService {
 
     void funcPermissionCheck(String permissionKey, int userId);
 
-    void funcAndResourcePermissionCheck(
-            String permissionKey, String resourceType, List resourceCodes, int userId);
+    void permissionCheck(
+            String resourceName,
+            ResourceType resourceType,
+            AccessType accessType,
+            AccessInfo accessInfo);
 
-    void resourcePostHandle(String sourceType, List resourceCodes, int userId);
-
-    List availableResourceRange(String resourceType, int userId);
+    boolean hasPermission(
+            String resourceName,
+            ResourceType resourceType,
+            AccessType accessType,
+            AccessInfo accessInfo);
 }

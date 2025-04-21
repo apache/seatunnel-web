@@ -51,7 +51,7 @@ public interface IUserDao {
 
     void disableToken(int userId);
 
-    UserLoginLog getLastLoginLog(Integer userId);
+    UserLoginLog getLastLoginLog(Integer userId, Long workspaceId);
 
     /**
      * query enabled users
@@ -59,4 +59,6 @@ public interface IUserDao {
      * @return
      */
     List<User> queryEnabledUsers();
+
+    List<String> getUserNames(String searchName);
 }

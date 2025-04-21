@@ -25,11 +25,14 @@ import org.apache.seatunnel.app.dal.entity.JobInstance;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.metrics.JobSummaryMetricsRes;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.BaseService;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobMetricsService;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.app.utils.PageInfo;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -50,10 +53,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJobInstanceDto> {
+public class TaskInstanceServiceImpl extends SeatunnelBaseServiceImpl
+        implements ITaskInstanceService<SeaTunnelJobInstanceDto> {
 
     @Autowired IJobInstanceDao jobInstanceDao;
 
@@ -88,13 +93,19 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
                         new Page<>(pageNo, pageSize), startDate, endDate, jobDefineName, jobMode);
 
         List<SeaTunnelJobInstanceDto> records = jobInstanceIPage.getRecords();
-        if (CollectionUtils.isEmpty(records)) {
+        List<SeaTunnelJobInstanceDto> filteredRecords =
+                records.stream()
+                        .filter(
+                                jobDefinitionRes ->
+                                        hasReadPerm(jobDefinitionRes.getJobDefineName()))
+                        .collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(filteredRecords)) {
             return result;
         }
-        addRunningTimeToResult(records);
-        jobPipelineSummaryMetrics(records, jobMode);
+        addRunningTimeToResult(filteredRecords);
+        jobPipelineSummaryMetrics(filteredRecords, jobMode);
         pageInfo.setTotal((int) jobInstanceIPage.getTotal());
-        pageInfo.setTotalList(records);
+        pageInfo.setTotalList(filteredRecords);
         result.setData(pageInfo);
         return result;
     }
@@ -214,5 +225,10 @@ public class TaskInstanceServiceImpl implements ITaskInstanceService<SeaTunnelJo
     public Result<Void> deleteJobInstanceById(long jobInstanceId) {
         jobInstanceDao.deleteById(jobInstanceId);
         return Result.success();
+    }
+
+    private boolean hasReadPerm(String resourceName) {
+        return hasPermission(
+                resourceName, ResourceType.JOB, AccessType.READ, UserContextHolder.getAccessInfo());
     }
 }

@@ -33,6 +33,7 @@
     <description>Production ready big data processing product based on Apache Spark and Apache Flink.</description>
 
     <modules>
+        <module>seatunnel-web-common</module>
         <module>seatunnel-server</module>
         <module>seatunnel-datasource</module>
         <module>seatunnel-web-dist</module>
@@ -1572,6 +1573,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>${maven-site-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

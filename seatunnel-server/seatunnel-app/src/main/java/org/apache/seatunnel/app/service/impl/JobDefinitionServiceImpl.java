@@ -29,9 +29,12 @@ import org.apache.seatunnel.app.domain.request.job.DataSourceOption;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
-import org.apache.seatunnel.app.permission.constants.SeatunnelFuncPermissionKeyConstant;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
+import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.common.constants.JobMode;
 import org.apache.seatunnel.common.utils.JsonUtils;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
@@ -70,11 +73,13 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     @Resource(name = "jobVersionDaoImpl")
     private IJobVersionDao jobVersionDao;
 
+    @Resource private WorkspaceService workspaceService;
+
     @Override
     @Transactional
     public long createJob(JobReq jobReq) throws CodeGenerateUtils.CodeGenerateException {
         Integer userId = ServletUtils.getCurrentUserId();
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_CREATE, userId);
+        permCheck(jobReq.getName(), AccessType.CREATE);
         long uuid = CodeGenerateUtils.getInstance().genCode();
         jobDefinitionDao.add(
                 JobDefinition.builder()
@@ -111,7 +116,6 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
     @Override
     public PageInfo<JobDefinitionRes> getJob(
             String searchName, Integer pageNo, Integer pageSize, String jobMode) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_VIEW, 0);
         if (StringUtils.isNotEmpty(jobMode)) {
             try {
                 JobMode.valueOf(jobMode);
@@ -120,13 +124,27 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
                         SeatunnelErrorEnum.ILLEGAL_STATE, "Unsupported JobMode");
             }
         }
-        return jobDefinitionDao.getJob(searchName, pageNo, pageSize, jobMode);
+        PageInfo<JobDefinitionRes> job =
+                jobDefinitionDao.getJob(searchName, pageNo, pageSize, jobMode);
+        if (CollectionUtils.isEmpty(job.getData())) {
+            return job;
+        }
+
+        List<JobDefinitionRes> filteredJobs =
+                job.getData().stream()
+                        .filter(jobDefinitionRes -> hasReadPerm(jobDefinitionRes.getName()))
+                        .collect(Collectors.toList());
+
+        PageInfo<JobDefinitionRes> jobs = new PageInfo<>();
+        jobs.setData(filteredJobs);
+        jobs.setPageSize(pageSize);
+        jobs.setPageNo(pageNo);
+        jobs.setTotalCount(filteredJobs.size());
+        return jobs;
     }
 
     @Override
     public Map<Long, String> getJob(@NonNull String name) {
-
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_VIEW, 0);
         List<JobDefinition> job = jobDefinitionDao.getJobList(name);
         if (CollectionUtils.isEmpty(job)) {
             return new HashMap<>();
@@ -135,7 +153,9 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
         Map<Long, String> jobDefineMap = new HashMap<>();
         job.forEach(
                 jobDefine -> {
-                    jobDefineMap.put(jobDefine.getId(), jobDefine.getName());
+                    if (hasReadPerm(jobDefine.getName())) {
+                        jobDefineMap.put(jobDefine.getId(), jobDefine.getName());
+                    }
                 });
 
         return jobDefineMap;
@@ -143,8 +163,11 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public JobDefinition getJobDefinitionByJobId(long jobId) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_DETAIL, 0);
-        return jobDefinitionDao.getJob(jobId);
+        JobDefinition job = jobDefinitionDao.getJob(jobId);
+        if (null != job) {
+            permCheck(job.getName(), AccessType.READ);
+        }
+        return job;
     }
 
     @Override
@@ -179,7 +202,26 @@ public class JobDefinitionServiceImpl extends SeatunnelBaseServiceImpl
 
     @Override
     public void deleteJob(long id) {
-        funcPermissionCheck(SeatunnelFuncPermissionKeyConstant.JOB_DEFINITION_DELETE, 0);
+        JobDefinition job = jobDefinitionDao.getJob(id);
+        if (job != null) {
+            permCheck(job.getName(), AccessType.DELETE);
+        }
         jobDefinitionDao.delete(id);
+    }
+
+    @Override
+    public List<String> getJobDefinitionNames(String workspaceName, String searchName) {
+        return jobDefinitionDao.getJobDefinitionNames(
+                workspaceService.getWorkspaceIdOrCurrent(workspaceName), searchName);
+    }
+
+    private void permCheck(String resourceName, AccessType accessType) {
+        permissionCheck(
+                resourceName, ResourceType.JOB, accessType, UserContextHolder.getAccessInfo());
+    }
+
+    private boolean hasReadPerm(String resourceName) {
+        return hasPermission(
+                resourceName, ResourceType.JOB, AccessType.READ, UserContextHolder.getAccessInfo());
     }
 }

@@ -547,6 +547,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
                         metrics.setJobInstanceId(jobInstance.getId());
                         metrics.setCreateUserId(userId);
                         metrics.setUpdateUserId(userId);
+                        metrics.setWorkspaceId(jobInstance.getWorkspaceId());
                     });
 
             if (!jobMetricsFromEngine.isEmpty()) {
@@ -674,6 +675,7 @@ public class JobMetricsServiceImpl extends SeatunnelBaseServiceImpl implements I
             jobMetrics.setJobInstanceId(jobInstance.getId());
             jobMetrics.setCreateUserId(userId);
             jobMetrics.setUpdateUserId(userId);
+            jobMetrics.setWorkspaceId(ServletUtils.getCurrentWorkspaceId());
             list.add(jobMetrics);
         }
         if (!list.isEmpty()) {

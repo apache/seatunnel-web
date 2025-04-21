@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.NO_SUCH_USER;
 import static org.apache.seatunnel.server.common.SeatunnelErrorEnum.USER_ALREADY_EXISTS;
 
@@ -125,6 +126,7 @@ public class UserDaoImpl implements IUserDao {
         log.setToken(dto.getToken());
         log.setTokenStatus(dto.getTokenStatus());
         log.setUserId(dto.getUserId());
+        log.setWorkspaceId(dto.getWorkspaceId());
 
         userLoginLogMapper.insert(log);
         return log.getId();
@@ -132,16 +134,22 @@ public class UserDaoImpl implements IUserDao {
 
     @Override
     public void disableToken(int userId) {
-        userLoginLogMapper.updateStatus(userId, UserTokenStatusEnum.DISABLE.enable());
+        userLoginLogMapper.updateStatus(
+                userId, UserTokenStatusEnum.DISABLE.enable(), getCurrentWorkspaceId());
     }
 
     @Override
-    public UserLoginLog getLastLoginLog(Integer userId) {
-        return userLoginLogMapper.checkLastTokenEnable(userId);
+    public UserLoginLog getLastLoginLog(Integer userId, Long workspaceId) {
+        return userLoginLogMapper.checkLastTokenEnable(userId, workspaceId);
     }
 
     @Override
     public List<User> queryEnabledUsers() {
         return userMapper.queryEnabledUsers();
+    }
+
+    @Override
+    public List<String> getUserNames(String searchName) {
+        return userMapper.queryUserNames(searchName);
     }
 }

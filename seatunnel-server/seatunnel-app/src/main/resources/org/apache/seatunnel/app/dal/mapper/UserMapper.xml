@@ -104,4 +104,9 @@
         from `user`
         where status = 0
     </select>
+    <select id="queryUserNames" resultType="java.lang.String">
+        select username
+        from `user`
+        where #{searchName} IS NULL OR username LIKE concat('%', #{searchName}, '%')
+    </select>
 </mapper>

@@ -37,7 +37,6 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
             @Param("startTime") Date startTime,
             @Param("endTime") Date endTime,
             @Param("jobDefineName") String jobDefineName,
-            @Param("jobMode") JobMode jobMode);
-
-    JobInstance getJobExecutionStatus(@Param("jobInstanceId") Long jobInstanceId);
+            @Param("jobMode") JobMode jobMode,
+            @Param("workspaceId") Long workspaceId);
 }

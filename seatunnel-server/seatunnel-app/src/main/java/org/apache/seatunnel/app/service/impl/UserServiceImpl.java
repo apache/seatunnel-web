@@ -22,6 +22,7 @@ import org.apache.seatunnel.app.common.UserTokenStatusEnum;
 import org.apache.seatunnel.app.config.SeatunnelAuthenticationProvidersConfig;
 import org.apache.seatunnel.app.dal.dao.IUserDao;
 import org.apache.seatunnel.app.dal.entity.User;
+import org.apache.seatunnel.app.dal.entity.Workspace;
 import org.apache.seatunnel.app.domain.dto.user.ListUserDto;
 import org.apache.seatunnel.app.domain.dto.user.UpdateUserDto;
 import org.apache.seatunnel.app.domain.dto.user.UserLoginLogDto;
@@ -33,12 +34,17 @@ import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
 import org.apache.seatunnel.app.security.JwtUtils;
+import org.apache.seatunnel.app.security.UserContextHolder;
 import org.apache.seatunnel.app.security.authentication.strategy.IAuthenticationStrategy;
 import org.apache.seatunnel.app.security.authentication.strategy.impl.DBAuthenticationStrategy;
 import org.apache.seatunnel.app.security.authentication.strategy.impl.LDAPAuthenticationStrategy;
 import org.apache.seatunnel.app.service.IRoleService;
 import org.apache.seatunnel.app.service.IUserService;
+import org.apache.seatunnel.app.service.WorkspaceService;
 import org.apache.seatunnel.app.utils.PasswordUtils;
+import org.apache.seatunnel.app.utils.ServletUtils;
+import org.apache.seatunnel.common.access.AccessType;
+import org.apache.seatunnel.common.access.ResourceType;
 import org.apache.seatunnel.server.common.PageData;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
@@ -59,10 +65,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl extends SeatunnelBaseServiceImpl implements IUserService {
     @Resource private IUserDao userDaoImpl;
 
     @Resource private IRoleService roleServiceImpl;
+
+    @Resource private WorkspaceService workspaceService;
 
     @Resource private JwtUtils jwtUtils;
 
@@ -92,9 +100,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AddUserRes add(AddUserReq addReq) {
+        permCheck(addReq.getUsername(), AccessType.CREATE);
         // 1. check duplicate user first
         userDaoImpl.checkUserExists(addReq.getUsername());
-
         // 2. add a new user.
         final UpdateUserDto dto =
                 UpdateUserDto.builder()
@@ -118,6 +126,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void update(UpdateUserReq updateReq) {
+        permCheck(updateReq.getUsername(), AccessType.UPDATE);
         final UpdateUserDto dto =
                 UpdateUserDto.builder()
                         .id(updateReq.getUserId())
@@ -135,6 +144,16 @@ public class UserServiceImpl implements IUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(int id) {
+        // can't delete yourself
+        if (ServletUtils.getCurrentUserId() == id) {
+            throw new SeatunnelException(
+                    SeatunnelErrorEnum.INVALID_OPERATION, "Can't delete yourself");
+        }
+        User user = userDaoImpl.getById(id);
+        if (user == null) {
+            return;
+        }
+        permCheck(user.getUsername(), AccessType.DELETE);
         userDaoImpl.delete(id);
         roleServiceImpl.deleteByUserId(id);
     }
@@ -148,7 +167,10 @@ public class UserServiceImpl implements IUserService {
                 userDaoImpl.list(dto, userListReq.getRealPageNo(), userListReq.getPageSize());
 
         final List<UserSimpleInfoRes> data =
-                userPageData.getData().stream().map(this::translate).collect(Collectors.toList());
+                userPageData.getData().stream()
+                        .filter(user -> hasReadPerm(user.getUsername()))
+                        .map(this::translate)
+                        .collect(Collectors.toList());
         final PageInfo<UserSimpleInfoRes> pageInfo = new PageInfo<>();
         pageInfo.setPageNo(userListReq.getPageNo());
         pageInfo.setPageSize(userListReq.getPageSize());
@@ -160,12 +182,20 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void enable(int id) {
-        userDaoImpl.enable(id);
+        User user = userDaoImpl.getById(id);
+        if (user != null) {
+            permCheck(user.getUsername(), AccessType.UPDATE);
+            userDaoImpl.enable(id);
+        }
     }
 
     @Override
     public void disable(int id) {
-        userDaoImpl.disable(id);
+        User user = userDaoImpl.getById(id);
+        if (user != null) {
+            permCheck(user.getUsername(), AccessType.UPDATE);
+            userDaoImpl.disable(id);
+        }
     }
 
     @Override
@@ -178,7 +208,19 @@ public class UserServiceImpl implements IUserService {
         IAuthenticationStrategy strategy = strategies.get(authType);
         User user = strategy.authenticate(req);
         UserSimpleInfoRes translate = translate(user);
-        final String token = jwtUtils.genToken(translate.toMap());
+        Workspace workspace;
+        if (StringUtils.isNotEmpty(req.getWorkspaceName())
+                && !req.getWorkspaceName().equals("default")) {
+            workspace = workspaceService.getWorkspace(req.getWorkspaceName());
+        } else {
+            // get user default workspace
+            workspace = workspaceService.getDefaultWorkspace();
+        }
+
+        Map<String, Object> map = translate.toMap();
+        map.put("workspaceName", workspace.getWorkspaceName());
+        map.put("workspaceId", workspace.getId());
+        final String token = jwtUtils.genToken(map);
         translate.setToken(token);
 
         final UserLoginLogDto logDto =
@@ -186,6 +228,7 @@ public class UserServiceImpl implements IUserService {
                         .token(token)
                         .tokenStatus(UserTokenStatusEnum.ENABLE.enable())
                         .userId(user.getId())
+                        .workspaceId(workspace.getId())
                         .build();
         userDaoImpl.insertLoginLog(logDto);
         return translate;
@@ -200,5 +243,23 @@ public class UserServiceImpl implements IUserService {
         info.setUpdateTime(user.getUpdateTime());
         info.setName(user.getUsername());
         return info;
+    }
+
+    @Override
+    public List<String> getUserNames(String searchName) {
+        return userDaoImpl.getUserNames(searchName);
+    }
+
+    private void permCheck(String resourceName, AccessType accessType) {
+        permissionCheck(
+                resourceName, ResourceType.USER, accessType, UserContextHolder.getAccessInfo());
+    }
+
+    private boolean hasReadPerm(String resourceName) {
+        return hasPermission(
+                resourceName,
+                ResourceType.USER,
+                AccessType.READ,
+                UserContextHolder.getAccessInfo());
     }
 }

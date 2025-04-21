@@ -29,6 +29,8 @@ import javax.annotation.Resource;
 
 import java.util.List;
 
+import static org.apache.seatunnel.app.utils.ServletUtils.getCurrentWorkspaceId;
+
 @Service
 public class JobLineDaoImpl implements IJobLineDao {
 
@@ -36,17 +38,24 @@ public class JobLineDaoImpl implements IJobLineDao {
 
     @Override
     public void deleteLinesByVersionId(long jobVersionId) {
-        jobLineMapper.deleteLinesByVersionId(jobVersionId);
+        jobLineMapper.delete(
+                Wrappers.lambdaQuery(new JobLine())
+                        .eq(JobLine::getVersionId, jobVersionId)
+                        .eq(JobLine::getWorkspaceId, getCurrentWorkspaceId()));
     }
 
     @Override
     public void insertLines(List<JobLine> lines) {
+        Long workspaceId = getCurrentWorkspaceId();
+        lines.forEach(line -> line.setWorkspaceId(workspaceId));
         jobLineMapper.insertBatchLines(lines);
     }
 
     @Override
     public List<JobLine> getLinesByVersionId(long jobVersionId) {
         return jobLineMapper.selectList(
-                Wrappers.lambdaQuery(new JobLine()).eq(JobLine::getVersionId, jobVersionId));
+                Wrappers.lambdaQuery(new JobLine())
+                        .eq(JobLine::getVersionId, jobVersionId)
+                        .eq(JobLine::getWorkspaceId, getCurrentWorkspaceId()));
     }
 }

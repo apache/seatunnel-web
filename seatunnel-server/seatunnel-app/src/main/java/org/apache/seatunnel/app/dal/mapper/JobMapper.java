@@ -30,14 +30,19 @@ import java.util.List;
 public interface JobMapper extends BaseMapper<JobDefinition> {
 
     IPage<JobDefinitionRes> queryJobListPaging(
-            IPage<JobDefinition> page, @Param("searchName") String searchName);
+            IPage<JobDefinition> page,
+            @Param("searchName") String searchName,
+            @Param("workspaceId") Long workspaceId);
 
     IPage<JobDefinitionRes> queryJobListPagingWithJobMode(
             IPage<JobDefinition> page,
             @Param("searchName") String searchName,
-            @Param("jobMode") String jobMode);
+            @Param("jobMode") String jobMode,
+            @Param("workspaceId") Long workspaceId);
 
-    List<JobDefinition> queryJobList(@Param("searchName") String searchName);
+    List<JobDefinition> queryJobList(
+            @Param("searchName") String searchName, @Param("workspaceId") Long workspaceId);
 
-    JobDefinition queryJob(@Param("searchName") String searchName);
+    JobDefinition queryJob(
+            @Param("searchName") String searchName, @Param("workspaceId") Long workspaceId);
 }

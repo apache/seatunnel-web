@@ -41,4 +41,6 @@ public interface IJobDefinitionDao {
     JobDefinition getJobByName(@NonNull String name);
 
     void delete(long id);
+
+    List<String> getJobDefinitionNames(Long workspaceIdOrCurrent, String searchName);
 }

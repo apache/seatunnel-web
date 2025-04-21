@@ -50,4 +50,6 @@ public interface IVirtualTableService {
     List<String> getVirtualTableNames(String databaseName, String datasourceId);
 
     List<String> getVirtualDatabaseNames(String datasourceId);
+
+    List<String> getVirtualTableNamesWithinWorkspace(String workspaceName, String searchName);
 }
