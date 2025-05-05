@@ -44,9 +44,6 @@ public interface IJobMetricsService {
     public List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
             @NonNull JobInstance jobInstance);
 
-    JobDAG getJobDAG(@NonNull Integer userId, @NonNull Long jobInstanceId)
-            throws JsonProcessingException;
-
     ImmutablePair<Long, String> getInstanceIdAndEngineId(@NonNull String key);
 
     void syncJobDataToDb(@NonNull JobInstance jobInstance, @NonNull String jobEngineId);
