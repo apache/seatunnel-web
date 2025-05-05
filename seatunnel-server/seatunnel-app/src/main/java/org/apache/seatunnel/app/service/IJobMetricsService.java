@@ -40,6 +40,7 @@ public interface IJobMetricsService {
     List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(@NonNull Long jobInstanceId);
 
     JobDAG getJobDAG(@NonNull Long jobInstanceId) throws JsonProcessingException;
+
     public List<JobPipelineDetailMetricsRes> getJobPipelineDetailMetricsRes(
             @NonNull JobInstance jobInstance);
 
