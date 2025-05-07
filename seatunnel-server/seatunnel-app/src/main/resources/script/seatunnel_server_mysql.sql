@@ -284,3 +284,32 @@ CREATE TABLE `workspace`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 INSERT INTO `seatunnel`.`workspace`(`workspace_name`,`description`) values ('default', 'default workspace');
+
+
+DROP TABLE IF EXISTS `t_st_job_metrics_history`;
+-- auto-generated definition
+create table t_st_job_metrics_history
+(
+    id                 bigint                                    not null
+        primary key,
+    job_instance_id    bigint                                    not null,
+    pipeline_id        int(20)                                   not null,
+    read_row_count     bigint                                    not null,
+    write_row_count    bigint                                    not null,
+    source_table_names varchar(200)                              null,
+    sink_table_names   varchar(200)                              null,
+    read_qps           bigint                                    null,
+    write_qps          bigint                                    null,
+    record_delay       bigint                                    null,
+    status             varchar(20)                               null,
+    create_user_id     int(20)                                   not null,
+    update_user_id     int(20)                                   null,
+    create_time        timestamp(3) default CURRENT_TIMESTAMP(3) not null,
+    update_time        timestamp(3) default CURRENT_TIMESTAMP(3) not null on update CURRENT_TIMESTAMP(3)
+)
+    collate = utf8mb4_bin
+    row_format = DYNAMIC;
+
+create index idx_job_instance_id_create_time
+    on t_st_job_metrics_history (job_instance_id, create_time);
+

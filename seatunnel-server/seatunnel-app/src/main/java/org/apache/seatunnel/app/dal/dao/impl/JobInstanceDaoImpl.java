@@ -88,6 +88,11 @@ public class JobInstanceDaoImpl implements IJobInstanceDao {
     }
 
     @Override
+    public List<JobInstance> getAllRunningJobInstance() {
+        return jobInstanceMapper.getAllRunningJobInstance();
+    }
+
+    @Override
     public List<JobInstance> getAllJobInstance(@NonNull List<Long> jobInstanceIdList) {
         return jobInstanceMapper.selectList(
                 new LambdaQueryWrapper<JobInstance>()

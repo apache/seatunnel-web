@@ -29,6 +29,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.Date;
+import java.util.List;
 
 @Mapper
 public interface JobInstanceMapper extends BaseMapper<JobInstance> {
@@ -39,4 +40,8 @@ public interface JobInstanceMapper extends BaseMapper<JobInstance> {
             @Param("jobDefineName") String jobDefineName,
             @Param("jobMode") JobMode jobMode,
             @Param("workspaceId") Long workspaceId);
+
+    JobInstance getJobExecutionStatus(@Param("jobInstanceId") Long jobInstanceId);
+
+    List<JobInstance> getAllRunningJobInstance();
 }
