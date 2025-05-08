@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-export HOSTNAME="127.0.0.1"
+export HOSTNAME="192.168.199.1"
 export PORT="3306"
 export USERNAME="root"
-export PASSWORD="123456"
+export PASSWORD="root_Mysql_123690"
