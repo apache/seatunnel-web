@@ -25,9 +25,9 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/seatunnel?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.199.1:3306/seatunnel?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: 123456
+    password: root_Mysql_123690
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -35,7 +35,7 @@ spring:
 jwt:
   expireTime: 86400
   # please add key when deploy
-  secretKey:
+  secretKey: UjMwdEtlWV8hOVptQExxIzVYcFYyRWFRCg==
   algorithm: HS256
 
 ---
