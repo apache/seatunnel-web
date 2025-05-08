@@ -17,7 +17,7 @@
 
 package org.apache.seatunnel.app.domain.response.connector;
 
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
+import org.apache.seatunnel.api.common.PluginIdentifier;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -16,11 +16,10 @@
  */
 package org.apache.seatunnel.app.domain;
 
+import org.apache.seatunnel.api.common.PluginIdentifier;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +31,7 @@ public class ConnectorInfoDeserializer extends JsonDeserializer<ConnectorInfo> {
     @Override
     public ConnectorInfo deserialize(
             JsonParser jsonParser, DeserializationContext deserializationContext)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         JsonNode pluginIdentifierNode = node.get("pluginIdentifier");
         String artifactId = node.get("artifactId").asText();

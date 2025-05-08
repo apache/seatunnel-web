@@ -17,6 +17,7 @@
 
 package org.apache.seatunnel.app.service.impl;
 
+import org.apache.seatunnel.api.common.PluginIdentifier;
 import org.apache.seatunnel.api.table.catalog.DataTypeConvertor;
 import org.apache.seatunnel.api.table.factory.DataTypeConvertorFactory;
 import org.apache.seatunnel.api.table.type.SeaTunnelDataType;
@@ -33,7 +34,6 @@ import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.common.utils.FileUtils;
 import org.apache.seatunnel.datasource.plugin.api.model.TableField;
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 import org.apache.seatunnel.plugin.discovery.seatunnel.SeaTunnelSinkPluginDiscovery;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
