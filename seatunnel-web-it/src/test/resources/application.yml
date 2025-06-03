@@ -56,6 +56,9 @@ seatunnel-web:
         - password
         - auth
   access-controller-class: org.apache.seatunnel.app.common.AccessControllerTestingImp
+  telemetry:
+    enabled: false
+    port: 8803
 
 ---
 spring:
