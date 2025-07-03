@@ -16,8 +16,8 @@
  */
 package org.apache.seatunnel.app.domain;
 
+import org.apache.seatunnel.api.common.PluginIdentifier;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
