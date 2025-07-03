@@ -17,6 +17,7 @@
 
 package org.apache.seatunnel.app.bean.connector;
 
+import org.apache.seatunnel.api.common.PluginIdentifier;
 import org.apache.seatunnel.api.configuration.util.OptionRule;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorFeature;
 import org.apache.seatunnel.app.domain.response.connector.ConnectorInfo;
@@ -25,7 +26,6 @@ import org.apache.seatunnel.app.thirdparty.framework.PluginDiscoveryUtil;
 import org.apache.seatunnel.common.config.Common;
 import org.apache.seatunnel.common.config.DeployMode;
 import org.apache.seatunnel.common.constants.PluginType;
-import org.apache.seatunnel.plugin.discovery.PluginIdentifier;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 

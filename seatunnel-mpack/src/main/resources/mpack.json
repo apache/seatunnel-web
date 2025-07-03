@@ -23,7 +23,7 @@
       "service_versions_map": [
         {
           "service_name" : "SEATUNNEL",
-          "service_version" : "2.3.8",
+          "service_version" : "2.3.11",
           "applicable_stacks" : [
             {
               "stack_name" : "BIGTOP",

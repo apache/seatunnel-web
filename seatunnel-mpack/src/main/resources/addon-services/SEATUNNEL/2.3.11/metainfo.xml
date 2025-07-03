@@ -22,7 +22,7 @@
       <name>SEATUNNEL</name>
       <displayName>Seatunnel</displayName>
       <comment>SeaTunnel is a next-generation super high-performance, distributed, massive data integration tool.</comment>
-      <version>2.3.8</version>
+      <version>2.3.11</version>
       <components>
         <component>
           <name>SEATUNNEL</name>

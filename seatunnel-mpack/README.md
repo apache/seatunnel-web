@@ -15,7 +15,7 @@ Execute the following command to install the Seatunnel MPack on the Ambari serve
 ```bash
 ambari-server install-mpack --mpack=${mpack_url} --verbose
 # Example:
-ambari-server install-mpack --mpack=http://localhost:8080/myrepo/mpack-mpack-2.3.8.tar.gz --verbose
+ambari-server install-mpack --mpack=http://localhost:8080/myrepo/mpack-mpack-2.3.11.tar.gz --verbose
 
 # Specify the local path to the MPack tarball if it is available on your system:
 # Example:
