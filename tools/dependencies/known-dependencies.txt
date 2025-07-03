@@ -145,6 +145,7 @@ seatunnel-plugin-discovery-2.3.11.jar
 seatunnel-transforms-v2-2.3.11.jar
 seatunnel-config-sql-2.3.11.jar
 seatunnel-hazelcast-shade-2.3.11-optional.jar
+seatunnel-arrow-2.3.11-optional.jar
 serializer-api-2.3.11.jar
 serializer-protobuf-2.3.11.jar
 swagger-annotations-2.2.14.jar
