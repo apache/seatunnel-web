@@ -116,7 +116,7 @@ public class MysqlJdbcDataSourceChannel implements DataSourceChannel {
         try (Connection ignored = getConnection(requestParams)) {
             return true;
         } catch (Exception e) {
-            throw new DataSourcePluginException("check jdbc connectivity failed", e);
+            throw new DataSourcePluginException(e.getMessage(), e);
         }
     }
 
