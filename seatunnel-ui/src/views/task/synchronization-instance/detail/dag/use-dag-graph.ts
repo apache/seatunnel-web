@@ -18,7 +18,7 @@
 import { Graph } from '@antv/x6'
 import { useCanvasTheme } from './theme-manager'
 
-// 画布配置选项
+
 export interface CanvasOptions {
   enableGrid?: boolean
   enableMinimap?: boolean
@@ -43,24 +43,24 @@ export function useDagGraph(
   minimapContainer: HTMLElement,
   options: CanvasOptions = {}
 ) {
-  // 创建最简单的画布实例，确保能正常显示
+
   const graphInstance = new Graph({
     container: dagContainer,
     autoResize: true,
     
-    // 基础网格
+
     grid: {
       size: 20,
       visible: true,
       type: 'dot'
     },
     
-    // 基础背景
+
     background: {
       color: '#FAFAFA'
     },
     
-    // 基础小地图
+
     minimap: minimapContainer ? {
       enabled: true,
       container: minimapContainer,
@@ -69,7 +69,7 @@ export function useDagGraph(
       padding: 10
     } : false,
     
-    // 基础交互
+
     selecting: {
       enabled: true,
       multiple: true,
@@ -77,7 +77,7 @@ export function useDagGraph(
       movable: true
     },
     
-    // 基础连接
+
     connecting: {
       allowBlank: false,
       allowLoop: false,
@@ -90,27 +90,27 @@ export function useDagGraph(
   console.log('Graph instance created:', graphInstance)
   console.log('Container element:', dagContainer)
   
-  // 监听主题变化
+
   const { canvasColors } = useCanvasTheme()
   const updateTheme = () => {
     const colors = canvasColors.value
     
-    // 更新背景颜色
+
     graphInstance.drawBackground({
       color: colors.background
     })
   }
   
-  // 监听主题变化事件
+
   window.addEventListener('canvas-theme-change', updateTheme)
   
-  // 添加缩放级别监听
+
   graphInstance.on('scale', ({ sx }: any) => {
     const container = dagContainer
     const gridElement = container.querySelector('.x6-graph-grid')
     
     if (gridElement) {
-      // 根据缩放级别调整网格透明度
+
       let opacity = 1
       if (sx < 0.5) {
         opacity = 0.3
@@ -129,7 +129,7 @@ export function useDagGraph(
     }
   })
   
-  // 添加性能监控
+
   let frameCount = 0
   let lastTime = performance.now()
   
@@ -140,7 +140,7 @@ export function useDagGraph(
     if (currentTime - lastTime >= 1000) {
       const fps = Math.round((frameCount * 1000) / (currentTime - lastTime))
       
-      // 如果帧率过低，启用性能模式
+
       if (fps < 30) {
         dagContainer.classList.add('canvas-performance-mode')
       } else {
@@ -154,7 +154,7 @@ export function useDagGraph(
     requestAnimationFrame(monitorPerformance)
   }
   
-  // 启动性能监控
+
   requestAnimationFrame(monitorPerformance)
   
   return graphInstance

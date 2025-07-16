@@ -47,7 +47,7 @@ const TaskDefinition = defineComponent({
     const graph = ref<Graph>()
     const { getJobConfig, getJobDag } = useTaskDefinition(t)
 
-    // 初始化主题管理器
+
     const { } = useCanvasTheme()
 
     const initGraph = () => {

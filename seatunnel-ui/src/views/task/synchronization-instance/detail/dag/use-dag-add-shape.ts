@@ -114,27 +114,14 @@ export function useDagAddShape(
     })
 
     nodes[i].child.forEach((n: any) => {
-      // 根据节点类型确定连接点
+
       const nodeType = (n.nodeType && n.nodeType.toLowerCase()) || 
         (n.label.toLowerCase().includes('source') ? 'source' : 
          n.label.toLowerCase().includes('sink') ? 'sink' : 'transform');
       
-      // 根据节点类型设置连接点
+
       const portItems = [];
-      if (nodeType !== 'sink') {
-        portItems.push({ 
-          id: 'output', 
-          group: 'output',
-          args: { magnet: true } // 确保连接点可以拖拽连接
-        });
-      }
-      if (nodeType !== 'source') {
-        portItems.push({ 
-          id: 'input', 
-          group: 'input',
-          args: { magnet: true } // 确保连接点可以拖拽连接
-        });
-      }
+
       
       group.addChild(
         graph.addNode({

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// 现代化节点样式 - 精致美观版本
+
 .dag-node {
   display: flex !important;
   align-items: center !important;
@@ -28,7 +28,7 @@
   min-width: 180px !important;
   box-sizing: border-box !important;
   
-  // 精致的现代化样式
+
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
   border: 1px solid #e2e8f0 !important;
   border-radius: 16px !important;
@@ -37,23 +37,23 @@
     0 2px 6px rgba(0, 0, 0, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
   
-  // 确保文字和内容可见
+
   color: #1f2937 !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-size: 13px !important;
   font-weight: 500 !important;
   line-height: 1.4 !important;
   
-  // 强制显示和层级
+
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 100 !important;
   overflow: visible !important;
   
-  // 平滑过渡效果
+
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
   
-  // 悬停效果 - 更精致
+
   &:hover {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
     box-shadow: 
@@ -64,7 +64,7 @@
     filter: brightness(1.05);
   }
   
-  // 选中状态
+
   &.selected,
   &:focus {
     border-color: #6366f1 !important;
@@ -74,7 +74,7 @@
   }
 }
 
-// 动画定义
+
 @keyframes node-entrance {
   0% {
     opacity: 0;
@@ -113,7 +113,7 @@
   }
 }
 
-// 节点图标容器
+
 .dag-node-icon {
   width: 24px;
   height: 24px;
@@ -131,7 +131,7 @@
   }
 }
 
-// 节点标签样式
+
 .dag-node-label {
   flex: 1;
   display: flex;
@@ -152,7 +152,7 @@
   }
 }
 
-// 节点连接点
+
 .dag-node-port {
   position: absolute;
   width: 10px;
@@ -183,7 +183,7 @@
   }
 }
 
-// 画布容器样式
+
 .container {
   height: 100%;
   width: 100%;
@@ -199,7 +199,7 @@
   background: transparent;
 }
 
-// 现代化小地图样式
+
 .minimap {
   position: absolute;
   right: 20px;
@@ -210,17 +210,17 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   
-  // 过渡效果
+
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   
-  // 悬停效果
+
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
   }
 }
 
-// 现代化连接线样式
+
 :global {
   /* 连接线创建时的样式 */
   .x6-edge.x6-edge-creating .x6-edge-path {
@@ -236,7 +236,7 @@
     }
   }
   
-  // 只隐藏右上角的工具按钮，但保留文本
+
   .x6-node-tool-remove,
   .x6-node-tool-button {
     display: none !important;
@@ -244,7 +244,7 @@
     opacity: 0 !important;
   }
   
-  // 确保工具按钮中的文本可见
+
   .x6-node-tools {
     visibility: visible !important;
     opacity: 1 !important;
@@ -257,7 +257,7 @@
     display: block !important;
   }
   
-  // 确保文本标签正确显示
+
   .x6-node-tool text {
     visibility: visible !important;
     opacity: 1 !important;
@@ -266,14 +266,14 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   }
   
-  // 隐藏连接点但保留功能
+
   .x6-port,
   .x6-port-body {
     opacity: 0 !important;
     visibility: hidden !important;
   }
   
-  // 确保连接块正确显示
+
   .x6-node {
     .x6-node-content {
       visibility: visible !important;
@@ -282,7 +282,7 @@
     }
   }
   
-  // X6 连接线样式覆盖
+
   .x6-edge {
     .x6-edge-path {
       stroke: #9CA3AF !important;
@@ -293,14 +293,14 @@
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     
-    // 箭头样式
+
     .x6-edge-marker {
       fill: #9CA3AF !important;
       stroke: #9CA3AF !important;
       filter: none !important;
     }
     
-    // 悬停效果
+
     &:hover {
       .x6-edge-path {
         stroke: #4B5563 !important;
@@ -314,7 +314,7 @@
       }
     }
     
-    // 选中状态
+
     &.selected {
       .x6-edge-path {
         stroke: #3b82f6 !important;
@@ -325,7 +325,7 @@
     }
   }
   
-  // 数据流动画
+
   @keyframes edge-flow {
     0% {
       stroke-dashoffset: 0;
@@ -335,7 +335,7 @@
     }
   }
   
-  // 连接线标签样式
+
   .x6-edge-label {
     background: rgba(255, 255, 255, 0.95) !important;
     border: 1px solid #e2e8f0 !important;
@@ -349,7 +349,7 @@
   }
 }
 
-// 暗黑主题适配
+
 [data-theme="dark"] {
   .container {
     background: #111827;
@@ -384,7 +384,7 @@
     border-color: #111827;
   }
   
-  // 暗黑主题下的连接线
+
   :global {
     .x6-edge {
       .x6-edge-path {

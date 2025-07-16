@@ -17,13 +17,13 @@
 
 import { CanvasDesignTokens } from './design-tokens'
 
-// 连接线数据接口
+
 export interface ModernEdgeData {
   id: string
   source: string
   target: string
   
-  // 视觉属性
+
   style?: {
     stroke?: string
     strokeWidth?: number
@@ -31,30 +31,30 @@ export interface ModernEdgeData {
     animated?: boolean
   }
   
-  // 状态属性
+
   status?: 'normal' | 'active' | 'error' | 'warning' | 'success'
   
-  // 数据流属性
+
   dataFlow?: {
     direction?: 'forward' | 'backward' | 'bidirectional'
     speed?: 'slow' | 'normal' | 'fast'
     volume?: number
   }
   
-  // 交互属性
+
   isSelected?: boolean
   isHovered?: boolean
   
-  // 标签
+
   label?: string
   
-  // 元数据
+
   metadata?: {
     [key: string]: any
   }
 }
 
-// 连接线配置选项
+
 export interface EdgeOptions {
   router?: 'normal' | 'smooth' | 'orthogonal'
   connector?: 'normal' | 'rounded' | 'smooth'
@@ -77,23 +77,13 @@ export function useDagEdge(options: EdgeOptions = {}) {
   return {
     inherit: 'edge',
     
-    // 路由器配置 - 控制连接线路径
+
     router: {
       name: 'orth'
     },
     connector: {
       name: 'normal'
     },
-    connector: {
-      name: 'normal'
-    },
-    
-    // 连接器配置 - 控制连接线样式
-    connector: {
-      name: 'smooth'
-    },
-    
-    // 基础样式属性
     attrs: {
       line: {
         stroke: CanvasDesignTokens.colors.connections.default,
@@ -103,14 +93,14 @@ export function useDagEdge(options: EdgeOptions = {}) {
         fill: 'none',
         class: 'modern-edge',
         
-        // 动画效果
+
         ...(finalOptions.animated && {
           strokeDasharray: '8,4',
           class: 'modern-edge modern-edge-animated'
         })
       },
       
-      // 箭头配置
+
       ...(finalOptions.showArrow && {
         targetMarker: {
           name: 'block',
@@ -122,7 +112,7 @@ export function useDagEdge(options: EdgeOptions = {}) {
         }
       }),
       
-      // 交互区域（增加点击区域）
+
       ...(finalOptions.interactive && {
         wrap: {
           stroke: 'transparent',
@@ -134,7 +124,7 @@ export function useDagEdge(options: EdgeOptions = {}) {
       })
     },
     
-    // 默认标签配置
+
     defaultLabel: {
       markup: [
         {
@@ -175,13 +165,13 @@ export function useDagEdge(options: EdgeOptions = {}) {
       }
     },
     
-    // 事件处理
+
     events: {
       'edge:mouseenter': ({ edge }: any) => {
         const data = edge.getData() || {}
         edge.setData({ ...data, isHovered: true })
         
-        // 添加悬停样式
+
         edge.attr('line/class', 'modern-edge modern-edge:hover')
         edge.attr('line/stroke', CanvasDesignTokens.colors.connections.hover)
         edge.attr('line/strokeWidth', CanvasDesignTokens.sizes.connection.strokeWidthHover)
@@ -191,7 +181,7 @@ export function useDagEdge(options: EdgeOptions = {}) {
         const data = edge.getData() || {}
         edge.setData({ ...data, isHovered: false })
         
-        // 移除悬停样式
+
         const isSelected = data.isSelected
         edge.attr('line/class', isSelected ? 'modern-edge is-selected' : 'modern-edge')
         edge.attr('line/stroke', isSelected 
@@ -206,7 +196,7 @@ export function useDagEdge(options: EdgeOptions = {}) {
         const data = edge.getData() || {}
         edge.setData({ ...data, isSelected: true })
         
-        // 添加选中样式
+
         edge.attr('line/class', 'modern-edge is-selected')
         edge.attr('line/stroke', CanvasDesignTokens.colors.connections.selected)
         edge.attr('line/strokeWidth', CanvasDesignTokens.sizes.connection.strokeWidthHover)
@@ -216,7 +206,7 @@ export function useDagEdge(options: EdgeOptions = {}) {
         const data = edge.getData() || {}
         edge.setData({ ...data, isSelected: false })
         
-        // 移除选中样式
+
         edge.attr('line/class', 'modern-edge')
         edge.attr('line/stroke', CanvasDesignTokens.colors.connections.default)
         edge.attr('line/strokeWidth', CanvasDesignTokens.sizes.connection.strokeWidth)
@@ -225,7 +215,7 @@ export function useDagEdge(options: EdgeOptions = {}) {
   }
 }
 
-// 工具函数：创建连接线数据
+
 export function createEdgeData(
   id: string,
   source: string,
@@ -251,7 +241,7 @@ export function createEdgeData(
   }
 }
 
-// 工具函数：更新连接线状态
+
 export function updateEdgeStatus(
   edge: any,
   status: 'normal' | 'active' | 'error' | 'warning' | 'success'
@@ -259,7 +249,7 @@ export function updateEdgeStatus(
   const data = edge.getData() || {}
   edge.setData({ ...data, status })
   
-  // 应用状态样式
+
   const statusColors = {
     normal: CanvasDesignTokens.colors.connections.default,
     active: CanvasDesignTokens.colors.connections.animated,
@@ -279,7 +269,7 @@ export function updateEdgeStatus(
   edge.attr('line/stroke', statusColors[status])
   edge.attr('line/class', statusClasses[status])
   
-  // 错误状态添加虚线
+
   if (status === 'error') {
     edge.attr('line/strokeDasharray', '5,5')
   } else if (status === 'warning') {
@@ -289,7 +279,7 @@ export function updateEdgeStatus(
   }
 }
 
-// 工具函数：启用数据流动画
+
 export function enableDataFlowAnimation(
   edge: any,
   speed: 'slow' | 'normal' | 'fast' = 'normal'

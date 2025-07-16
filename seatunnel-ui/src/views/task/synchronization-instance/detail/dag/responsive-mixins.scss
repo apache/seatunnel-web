@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * 响应式断点和混入函数
- * 支持不同屏幕尺寸的画布适配
- */
-
-// 断点定义
 $canvas-breakpoints: (
   'mobile': 768px,
   'tablet': 1024px,
@@ -28,7 +22,7 @@ $canvas-breakpoints: (
   'wide': 1920px
 ) !default;
 
-// 响应式混入函数
+
 @mixin canvas-respond-to($breakpoint) {
   @if map-has-key($canvas-breakpoints, $breakpoint) {
     @media (min-width: map-get($canvas-breakpoints, $breakpoint)) {
@@ -39,7 +33,7 @@ $canvas-breakpoints: (
   }
 }
 
-// 最大宽度响应式混入
+
 @mixin canvas-respond-to-max($breakpoint) {
   @if map-has-key($canvas-breakpoints, $breakpoint) {
     @media (max-width: map-get($canvas-breakpoints, $breakpoint) - 1px) {
@@ -50,7 +44,7 @@ $canvas-breakpoints: (
   }
 }
 
-// 范围响应式混入
+
 @mixin canvas-respond-between($min-breakpoint, $max-breakpoint) {
   @if map-has-key($canvas-breakpoints, $min-breakpoint) and map-has-key($canvas-breakpoints, $max-breakpoint) {
     @media (min-width: map-get($canvas-breakpoints, $min-breakpoint)) and (max-width: map-get($canvas-breakpoints, $max-breakpoint) - 1px) {
@@ -61,30 +55,30 @@ $canvas-breakpoints: (
   }
 }
 
-// 高分辨率屏幕混入
+
 @mixin canvas-high-dpi {
   @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     @content;
   }
 }
 
-// 触摸设备混入
+
 @mixin canvas-touch-device {
   @media (hover: none) and (pointer: coarse) {
     @content;
   }
 }
 
-// 非触摸设备混入
+
 @mixin canvas-no-touch {
   @media (hover: hover) and (pointer: fine) {
     @content;
   }
 }
 
-// 节点响应式尺寸混入
+
 @mixin canvas-node-responsive {
-  // 移动设备
+
   @include canvas-respond-to-max('mobile') {
     width: var(--canvas-node-width);
     height: var(--canvas-node-height);
@@ -97,19 +91,19 @@ $canvas-breakpoints: (
     }
   }
   
-  // 平板设备
+
   @include canvas-respond-between('mobile', 'desktop') {
     width: calc(var(--canvas-node-width) * 0.9);
     height: calc(var(--canvas-node-height) * 0.95);
   }
   
-  // 桌面设备
+
   @include canvas-respond-to('desktop') {
     width: var(--canvas-node-width);
     height: var(--canvas-node-height);
   }
   
-  // 宽屏设备
+
   @include canvas-respond-to('wide') {
     width: calc(var(--canvas-node-width) * 1.1);
     height: calc(var(--canvas-node-height) * 1.1);
@@ -117,43 +111,43 @@ $canvas-breakpoints: (
   }
 }
 
-// 小地图响应式混入
+
 @mixin canvas-minimap-responsive {
-  // 移动设备 - 隐藏或缩小小地图
+
   @include canvas-respond-to-max('mobile') {
     width: calc(var(--canvas-minimap-width) * 0.75);
     height: calc(var(--canvas-minimap-height) * 0.75);
     right: var(--canvas-spacing-md);
     bottom: var(--canvas-spacing-md);
     
-    // 在非常小的屏幕上隐藏
+
     @media (max-width: 480px) {
       display: none;
     }
   }
   
-  // 平板设备
+
   @include canvas-respond-between('mobile', 'desktop') {
     width: calc(var(--canvas-minimap-width) * 0.9);
     height: calc(var(--canvas-minimap-height) * 0.9);
   }
   
-  // 桌面设备
+
   @include canvas-respond-to('desktop') {
     width: var(--canvas-minimap-width);
     height: var(--canvas-minimap-height);
   }
   
-  // 宽屏设备
+
   @include canvas-respond-to('wide') {
     width: calc(var(--canvas-minimap-width) * 1.1);
     height: calc(var(--canvas-minimap-height) * 1.1);
   }
 }
 
-// 连接线响应式混入
+
 @mixin canvas-connection-responsive {
-  // 移动设备 - 更粗的连接线便于触摸
+
   @include canvas-respond-to-max('mobile') {
     stroke-width: calc(var(--canvas-connection-stroke-width) * 1.5);
     
@@ -162,11 +156,11 @@ $canvas-breakpoints: (
     }
   }
   
-  // 触摸设备优化
+
   @include canvas-touch-device {
     stroke-width: calc(var(--canvas-connection-stroke-width) * 1.2);
     
-    // 增加触摸区域
+
     &::before {
       content: '';
       position: absolute;
@@ -180,9 +174,9 @@ $canvas-breakpoints: (
   }
 }
 
-// 画布容器响应式混入
+
 @mixin canvas-container-responsive {
-  // 移动设备
+
   @include canvas-respond-to-max('mobile') {
     padding: var(--canvas-spacing-sm);
     
@@ -206,14 +200,14 @@ $canvas-breakpoints: (
     }
   }
   
-  // 平板设备
+
   @include canvas-respond-between('mobile', 'desktop') {
     .canvas-sidebar {
       width: 280px;
     }
   }
   
-  // 桌面设备
+
   @include canvas-respond-to('desktop') {
     .canvas-sidebar {
       width: 320px;
@@ -221,51 +215,51 @@ $canvas-breakpoints: (
   }
 }
 
-// 字体响应式混入
+
 @mixin canvas-typography-responsive {
-  // 移动设备
+
   @include canvas-respond-to-max('mobile') {
     font-size: calc(var(--canvas-font-size-node) * 0.9);
     line-height: calc(var(--canvas-line-height-node) * 1.1);
   }
   
-  // 高分辨率屏幕
+
   @include canvas-high-dpi {
     font-weight: calc(var(--canvas-font-weight-node) - 100);
   }
   
-  // 宽屏设备
+
   @include canvas-respond-to('wide') {
     font-size: calc(var(--canvas-font-size-node) * 1.1);
   }
 }
 
-// 间距响应式混入
+
 @mixin canvas-spacing-responsive($property: 'padding') {
-  // 移动设备 - 减少间距
+
   @include canvas-respond-to-max('mobile') {
     #{$property}: calc(var(--canvas-spacing-md) * 0.75);
   }
   
-  // 平板设备
+
   @include canvas-respond-between('mobile', 'desktop') {
     #{$property}: calc(var(--canvas-spacing-md) * 0.9);
   }
   
-  // 桌面设备
+
   @include canvas-respond-to('desktop') {
     #{$property}: var(--canvas-spacing-md);
   }
   
-  // 宽屏设备 - 增加间距
+
   @include canvas-respond-to('wide') {
     #{$property}: calc(var(--canvas-spacing-md) * 1.2);
   }
 }
 
-// 阴影响应式混入
+
 @mixin canvas-shadow-responsive {
-  // 移动设备 - 减少阴影
+
   @include canvas-respond-to-max('mobile') {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     
@@ -274,7 +268,7 @@ $canvas-breakpoints: (
     }
   }
   
-  // 桌面设备 - 标准阴影
+
   @include canvas-respond-to('desktop') {
     box-shadow: var(--canvas-shadow-node);
     
@@ -283,7 +277,7 @@ $canvas-breakpoints: (
     }
   }
   
-  // 高分辨率屏幕 - 增强阴影
+
   @include canvas-high-dpi {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     
@@ -293,20 +287,20 @@ $canvas-breakpoints: (
   }
 }
 
-// 动画响应式混入
+
 @mixin canvas-animation-responsive {
-  // 移动设备 - 减少动画
+
   @include canvas-respond-to-max('mobile') {
     transition-duration: calc(var(--canvas-animation-normal) * 0.8);
   }
   
-  // 用户偏好 - 减少动画
+
   @media (prefers-reduced-motion: reduce) {
     transition: none !important;
     animation: none !important;
   }
   
-  // 低性能设备 - 简化动画
+
   @media (update: slow) {
     transition-duration: calc(var(--canvas-animation-fast) * 0.5);
     animation-duration: calc(var(--canvas-animation-normal) * 0.5);

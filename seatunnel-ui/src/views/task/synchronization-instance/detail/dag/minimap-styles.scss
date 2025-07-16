@@ -15,16 +15,11 @@
  * limitations under the License.
  */
 
-/**
- * 现代化小地图样式
- * 包含圆角边框、半透明背景和交互控制
- */
-
 @import './canvas-variables.scss';
 @import './canvas-animations.scss';
 @import './responsive-mixins.scss';
 
-// 小地图容器
+
 .modern-minimap {
   position: absolute;
   right: var(--canvas-spacing-lg);
@@ -38,23 +33,23 @@
   backdrop-filter: blur(8px);
   z-index: var(--canvas-z-index-minimap);
   
-  // 响应式适配
+
   @include canvas-minimap-responsive;
   
-  // 过渡效果
+
   transition: all var(--canvas-animation-normal) var(--canvas-easing-default);
   
-  // 悬停效果
+
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
   }
   
-  // 入场动画
+
   animation: canvas-minimap-fade-in var(--canvas-animation-slow) var(--canvas-easing-bounce);
 }
 
-// 小地图头部
+
 .modern-minimap__header {
   display: flex;
   align-items: center;
@@ -70,24 +65,24 @@
   }
 }
 
-// 小地图标题
+
 .modern-minimap__title {
   font-size: var(--canvas-font-size-minimap);
   font-weight: var(--canvas-font-weight-minimap);
   color: var(--canvas-connection-default);
   margin: 0;
   
-  // 响应式字体
+
   @include canvas-typography-responsive;
 }
 
-// 小地图控制按钮组
+
 .modern-minimap__controls {
   display: flex;
   gap: var(--canvas-spacing-xs);
 }
 
-// 小地图控制按钮
+
 .modern-minimap__zoom-in,
 .modern-minimap__zoom-out,
 .modern-minimap__reset,
@@ -105,7 +100,7 @@
   font-size: 12px;
   font-weight: 500;
   
-  // 过渡效果
+
   transition: all var(--canvas-animation-fast) var(--canvas-easing-default);
   
   &:hover {
@@ -118,7 +113,7 @@
     transform: scale(0.95);
   }
   
-  // 响应式尺寸
+
   @include canvas-respond-to-max('mobile') {
     width: 18px;
     height: 18px;
@@ -126,22 +121,22 @@
   }
 }
 
-// 小地图视口容器
+
 .modern-minimap__viewport {
   position: relative;
   width: 100%;
-  height: calc(100% - 40px); // 减去头部高度
+  height: calc(100% - 40px);
   overflow: hidden;
   border-radius: 0 0 var(--canvas-border-radius-minimap) var(--canvas-border-radius-minimap);
 }
 
-// 小地图内容区域
+
 .modern-minimap__content {
   width: 100%;
   height: 100%;
   position: relative;
   
-  // X6 小地图容器样式覆盖
+
   .x6-graph-minimap {
     border: none !important;
     border-radius: 0 !important;
@@ -149,7 +144,7 @@
     background: transparent !important;
   }
   
-  // 小地图中的节点样式
+
   .x6-node {
     opacity: 0.8;
     
@@ -161,7 +156,7 @@
       ry: 2 !important;
     }
     
-    // 不同类型节点的颜色
+
     &[data-node-type="source"] rect {
       fill: var(--canvas-node-source-secondary) !important;
       stroke: var(--canvas-node-source-primary) !important;
@@ -178,7 +173,7 @@
     }
   }
   
-  // 小地图中的连接线样式
+
   .x6-edge {
     opacity: 0.6;
     
@@ -189,7 +184,7 @@
   }
 }
 
-// 小地图视口指示器
+
 .modern-minimap__indicator {
   position: absolute;
   border: 2px solid var(--canvas-minimap-viewport-border);
@@ -198,10 +193,10 @@
   pointer-events: none;
   z-index: 10;
   
-  // 过渡效果
+
   transition: all var(--canvas-animation-fast) var(--canvas-easing-default);
   
-  // 指示器动画
+
   &.is-moving {
     transition: none;
   }
@@ -212,7 +207,7 @@
   }
 }
 
-// 指示器脉冲动画
+
 @keyframes canvas-minimap-indicator-pulse {
   0%, 100% {
     opacity: 0.6;
@@ -222,7 +217,7 @@
   }
 }
 
-// 小地图工具提示
+
 .modern-minimap__tooltip {
   position: absolute;
   bottom: 100%;
@@ -239,14 +234,14 @@
   pointer-events: none;
   z-index: var(--canvas-z-index-tooltip);
   
-  // 过渡效果
+
   transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
   
   &.is-visible {
     opacity: 1;
   }
   
-  // 工具提示箭头
+
   &::after {
     content: '';
     position: absolute;
@@ -258,7 +253,7 @@
   }
 }
 
-// 小地图状态指示器
+
 .modern-minimap__status {
   position: absolute;
   top: var(--canvas-spacing-sm);
@@ -283,7 +278,7 @@
   }
 }
 
-// 小地图折叠状态
+
 .modern-minimap.is-collapsed {
   width: 40px;
   height: 40px;
@@ -306,14 +301,14 @@
   }
 }
 
-// 小地图拖拽状态
+
 .modern-minimap.is-dragging {
   cursor: grabbing;
   transform: rotate(2deg);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
-// 小地图全屏模式
+
 .modern-minimap.is-fullscreen {
   position: fixed;
   top: 50%;
@@ -347,7 +342,7 @@
   }
 }
 
-// 小地图遮罩层（全屏模式）
+
 .modern-minimap-overlay {
   position: fixed;
   top: 0;
@@ -365,7 +360,7 @@
   }
 }
 
-// 暗黑主题适配
+
 [data-theme="dark"] {
   .modern-minimap {
     border-color: var(--canvas-grid);

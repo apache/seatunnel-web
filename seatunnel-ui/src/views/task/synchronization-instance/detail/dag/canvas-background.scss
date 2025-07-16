@@ -15,15 +15,10 @@
  * limitations under the License.
  */
 
-/**
- * 现代化画布背景样式
- * 包含动态网格、对齐辅助线和主题适配
- */
-
 @import './canvas-variables.scss';
 @import './canvas-animations.scss';
 
-// 画布容器基础样式
+
 .canvas-container {
   position: relative;
   width: 100%;
@@ -31,11 +26,11 @@
   overflow: hidden;
   background: var(--canvas-bg);
   
-  // 主题切换过渡
+
   transition: background-color var(--canvas-animation-normal) var(--canvas-easing-default);
 }
 
-// 现代化网格背景
+
 .canvas-grid-background {
   position: absolute;
   top: 0;
@@ -45,22 +40,22 @@
   pointer-events: none;
   z-index: var(--canvas-z-index-canvas);
   
-  // 基础网格样式
+
   background-color: var(--canvas-bg);
   background-image: 
-    // 主网格
+
     radial-gradient(circle at 1px 1px, var(--canvas-grid) 1px, transparent 0),
-    // 次网格
+
     radial-gradient(circle at 10px 10px, var(--canvas-grid-secondary) 0.5px, transparent 0);
   background-size: 20px 20px, 100px 100px;
   background-position: 0 0, 0 0;
   
-  // 网格透明度动画
+
   opacity: 1;
   transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default),
               background-size var(--canvas-animation-normal) var(--canvas-easing-default);
   
-  // 缩放时的网格适配
+
   &.zoom-small {
     background-size: 10px 10px, 50px 50px;
     opacity: 0.6;
@@ -77,14 +72,14 @@
   }
 }
 
-// 点状网格变体
+
 .canvas-grid-dots {
   background-image: 
     radial-gradient(circle, var(--canvas-grid) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
-// 线状网格变体
+
 .canvas-grid-lines {
   background-image: 
     linear-gradient(var(--canvas-grid) 1px, transparent 1px),
@@ -92,7 +87,7 @@
   background-size: 20px 20px;
 }
 
-// 十字网格变体
+
 .canvas-grid-cross {
   background-image: 
     linear-gradient(var(--canvas-grid) 1px, transparent 1px),
@@ -101,7 +96,7 @@
   background-size: 20px 20px, 20px 20px, 100px 100px;
 }
 
-// 对齐辅助线
+
 .canvas-guide-lines {
   position: absolute;
   top: 0;
@@ -134,12 +129,12 @@
       box-shadow: 0 0 2px rgba(59, 130, 246, 0.3);
     }
     
-    // 辅助线动画
+
     animation: canvas-guide-line-pulse 1s ease-in-out;
   }
 }
 
-// 辅助线脉冲动画
+
 @keyframes canvas-guide-line-pulse {
   0%, 100% {
     opacity: 0.8;
@@ -151,7 +146,7 @@
   }
 }
 
-// 画布水印/标识
+
 .canvas-watermark {
   position: absolute;
   bottom: var(--canvas-spacing-lg);
@@ -169,7 +164,7 @@
   }
 }
 
-// 画布边界指示器
+
 .canvas-boundary {
   position: absolute;
   border: 2px dashed var(--canvas-grid);
@@ -184,17 +179,17 @@
   }
   
   &.boundary-content {
-    // 内容边界
+
     border-color: var(--canvas-node-state-success);
   }
   
   &.boundary-viewport {
-    // 视口边界
+
     border-color: var(--canvas-node-state-warning);
   }
 }
 
-// 画布中心点指示器
+
 .canvas-center-indicator {
   position: absolute;
   top: 50%;
@@ -227,7 +222,7 @@
   }
 }
 
-// 画布缩放指示器
+
 .canvas-zoom-indicator {
   position: absolute;
   top: var(--canvas-spacing-lg);
@@ -255,7 +250,7 @@
   }
 }
 
-// 画布性能模式
+
 .canvas-performance-mode {
   .canvas-grid-background {
     background-image: none;
@@ -272,7 +267,7 @@
   }
 }
 
-// 画布调试模式
+
 .canvas-debug-mode {
   .canvas-boundary {
     opacity: 0.5 !important;
@@ -291,7 +286,7 @@
   }
 }
 
-// 响应式适配
+
 @media (max-width: 768px) {
   .canvas-grid-background {
     background-size: 15px 15px, 75px 75px;
@@ -318,7 +313,7 @@
   }
 }
 
-// 高分辨率屏幕适配
+
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .canvas-grid-background {
     background-size: 20px 20px, 100px 100px;
@@ -333,10 +328,10 @@
   }
 }
 
-// 暗黑主题特殊适配
+
 [data-theme="dark"] {
   .canvas-grid-background {
-    // 暗黑主题下的网格更加微妙
+
     opacity: 0.8;
   }
   

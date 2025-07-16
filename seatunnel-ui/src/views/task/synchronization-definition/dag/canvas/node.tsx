@@ -57,7 +57,7 @@ const Node = defineComponent({
       icon.value = JsonPathImg
     }
 
-    // 计算边框颜色和样式 - 现代简约配色
+
     const getBorderStyle = () => {
       if (isError) {
         return '4px solid #F87171'

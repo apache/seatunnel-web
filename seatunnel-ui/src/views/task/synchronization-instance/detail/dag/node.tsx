@@ -34,7 +34,7 @@ const Node = defineComponent({
     const node = getNode()
     const nodeData = node?.getData() || {} as ModernNodeData
     
-    // 提取节点数据
+
     const {
       name = 'Unknown',
       nodeType,
@@ -52,31 +52,31 @@ const Node = defineComponent({
       metadata = {}
     } = nodeData
     
-    // 确定节点类型
+
     const actualNodeType = computed(() => 
       determineNodeType(nodeType, connectorType, name)
     )
     
-    // 获取节点图标
+
     const getNodeIcon = (type: NodeType) => {
-      // 如果元数据中有自定义图标，优先使用
+
       if (metadata.icon) {
         return metadata.icon
       }
       
       switch (type) {
         case 'source':
-          return '📊' // 数据源图标
+          return '📊'
         case 'sink':
-          return '🎯' // 目标图标
+          return '🎯'
         case 'transform':
-          return '⚙️' // 转换图标
+          return '⚙️'
         default:
           return null
       }
     }
     
-    // 计算节点类名
+
     const nodeClass = computed(() => {
       return {
         [styles['dag-node']]: true,
@@ -93,9 +93,9 @@ const Node = defineComponent({
       }
     })
     
-    // 计算边框颜色和样式
+
     const getBorderStyle = () => {
-      // 如果有主题设置，优先使用主题中的颜色
+
       if (theme) {
         if (status === 'error') {
           return `4px solid ${getNodeStateColor('error')}`
@@ -106,7 +106,7 @@ const Node = defineComponent({
         }
       }
       
-      // 回退到默认颜色
+
       if (status === 'error') {
         return '4px solid #F87171'
       } else if (status === 'warning') {
@@ -122,9 +122,9 @@ const Node = defineComponent({
       }
     }
 
-    // 计算背景样式
+
     const getBackgroundStyle = () => {
-      // 如果有主题设置，优先使用主题中的渐变
+
       if (theme) {
         if (status === 'error') {
           return 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)'
@@ -135,7 +135,7 @@ const Node = defineComponent({
         }
       }
       
-      // 回退到默认渐变
+
       if (status === 'error') {
         return 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)'
       } else if (status === 'warning') {
@@ -151,7 +151,7 @@ const Node = defineComponent({
       }
     }
     
-    // 计算阴影样式
+
     const getShadowStyle = () => {
       if (isSelected) {
         return CanvasDesignTokens.shadows.nodeSelected
@@ -164,12 +164,12 @@ const Node = defineComponent({
       }
     }
     
-    // 获取状态颜色
+
     const getStatusColor = () => {
       return getNodeStateColor(status)
     }
     
-    // 计算节点样式
+
     const nodeStyle = computed(() => ({
       borderLeft: getBorderStyle(),
       background: getBackgroundStyle(),
@@ -181,7 +181,7 @@ const Node = defineComponent({
       zIndex: style.zIndex || CanvasDesignTokens.zIndex.nodes
     }))
     
-    // 获取文本颜色
+
     const getTextColor = () => {
       return theme?.textColor || '#374151'
     }

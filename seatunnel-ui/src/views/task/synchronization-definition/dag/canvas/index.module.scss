@@ -30,7 +30,6 @@
   background: transparent;
 }
 
-// 现代化小地图样式
 .minimap {
   position: absolute;
   right: 20px;
@@ -41,17 +40,14 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   
-  // 过渡效果
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   
-  // 悬停效果
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
   }
 }
 
-// 暗黑主题下的小地图
 [data-theme="dark"] {
   .minimap {
     background: rgba(17, 24, 39, 0.95);
@@ -64,23 +60,19 @@
   }
 }
 
-// 现代化节点样式 - 简约美观设计
 .dag-node {
   display: flex;
   align-items: center;
   height: 100%;
   position: relative;
   
-  // 现代化基础样式 - 简约设计
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   
-  // 简单过渡效果
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   
-  // 悬停效果
   &:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
@@ -106,7 +98,6 @@
   }
 }
 
-// 状态指示器
 .dag-node-status {
   position: absolute;
   top: -2px;
@@ -117,11 +108,11 @@
   border: 2px solid #fff;
   z-index: 10;
   
-  // 脉冲动画
+
   animation: status-pulse 2s ease-in-out infinite;
 }
 
-// 动画定义
+
 @keyframes node-entrance {
   0% {
     opacity: 0;
@@ -144,7 +135,7 @@
   }
 }
 
-// 暗黑主题适配
+
 [data-theme="dark"] {
   .dag-node {
     background: linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);

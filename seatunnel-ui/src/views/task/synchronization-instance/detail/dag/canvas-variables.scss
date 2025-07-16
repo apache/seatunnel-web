@@ -15,42 +15,36 @@
  * limitations under the License.
  */
 
-/**
- * 现代化画布 CSS 变量系统
- * 支持主题切换和统一的样式管理
- */
-
-// 基础变量定义
 :root {
-  // 节点颜色变量 - Source (数据源)
+
   --canvas-node-source-primary: #10B981;
   --canvas-node-source-secondary: #D1FAE5;
   --canvas-node-source-border: #059669;
   --canvas-node-source-text: #065F46;
   --canvas-node-source-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
   
-  // 节点颜色变量 - Sink (数据目标)
+
   --canvas-node-sink-primary: #3B82F6;
   --canvas-node-sink-secondary: #DBEAFE;
   --canvas-node-sink-border: #1D4ED8;
   --canvas-node-sink-text: #1E3A8A;
   --canvas-node-sink-gradient: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
   
-  // 节点颜色变量 - Transform (数据转换)
+
   --canvas-node-transform-primary: #8B5CF6;
   --canvas-node-transform-secondary: #EDE9FE;
   --canvas-node-transform-border: #7C3AED;
   --canvas-node-transform-text: #5B21B6;
   --canvas-node-transform-gradient: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
   
-  // 节点状态颜色
+
   --canvas-node-state-idle: #6B7280;
   --canvas-node-state-running: #F59E0B;
   --canvas-node-state-success: #10B981;
   --canvas-node-state-error: #EF4444;
   --canvas-node-state-warning: #F59E0B;
   
-  // 连接线颜色
+
   --canvas-connection-default: #6B7280;
   --canvas-connection-hover: #374151;
   --canvas-connection-active: #1F2937;
@@ -58,19 +52,19 @@
   --canvas-connection-animated: #3B82F6;
   --canvas-connection-gradient: linear-gradient(90deg, #6B7280 0%, #374151 100%);
   
-  // 画布背景颜色 (明亮主题)
+
   --canvas-bg: #FAFAFA;
   --canvas-grid: #E5E7EB;
   --canvas-grid-secondary: #F3F4F6;
   --canvas-guide-line: #3B82F6;
   
-  // 小地图颜色
+
   --canvas-minimap-bg: rgba(255, 255, 255, 0.95);
   --canvas-minimap-border: #E5E7EB;
   --canvas-minimap-viewport: rgba(59, 130, 246, 0.2);
   --canvas-minimap-viewport-border: #3B82F6;
   
-  // 阴影变量
+
   --canvas-shadow-node: 0 4px 12px rgba(0, 0, 0, 0.08);
   --canvas-shadow-node-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
   --canvas-shadow-node-active: 0 12px 32px rgba(0, 0, 0, 0.16);
@@ -78,13 +72,13 @@
   --canvas-shadow-minimap: 0 4px 16px rgba(0, 0, 0, 0.1);
   --canvas-shadow-tooltip: 0 2px 8px rgba(0, 0, 0, 0.1);
   
-  // 边框半径
+
   --canvas-border-radius-node: 8px;
   --canvas-border-radius-minimap: 6px;
   --canvas-border-radius-tooltip: 4px;
   --canvas-border-radius-button: 4px;
   
-  // 间距系统
+
   --canvas-spacing-xs: 4px;
   --canvas-spacing-sm: 8px;
   --canvas-spacing-md: 12px;
@@ -92,7 +86,7 @@
   --canvas-spacing-xl: 24px;
   --canvas-spacing-xxl: 32px;
   
-  // 字体系统
+
   --canvas-font-size-node: 12px;
   --canvas-font-weight-node: 500;
   --canvas-line-height-node: 1.2;
@@ -103,7 +97,7 @@
   --canvas-font-weight-minimap: 500;
   --canvas-line-height-minimap: 1.2;
   
-  // 动画变量
+
   --canvas-animation-fast: 150ms;
   --canvas-animation-normal: 250ms;
   --canvas-animation-slow: 350ms;
@@ -112,7 +106,7 @@
   --canvas-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --canvas-easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   
-  // 尺寸系统
+
   --canvas-node-width: 150px;
   --canvas-node-height: 36px;
   --canvas-node-min-width: 120px;
@@ -123,7 +117,7 @@
   --canvas-connection-stroke-width-hover: 3px;
   --canvas-connection-arrow-size: 8px;
   
-  // Z-index 层级
+
   --canvas-z-index-canvas: 1;
   --canvas-z-index-connections: 5;
   --canvas-z-index-nodes: 10;
@@ -132,30 +126,30 @@
   --canvas-z-index-modal: 3000;
 }
 
-// 暗黑主题变量覆盖
+
 [data-theme="dark"] {
-  // 画布背景颜色 (暗黑主题)
+
   --canvas-bg: #111827;
   --canvas-grid: #374151;
   --canvas-grid-secondary: #1F2937;
   --canvas-guide-line: #60A5FA;
   
-  // 小地图颜色 (暗黑主题)
+
   --canvas-minimap-bg: rgba(17, 24, 39, 0.95);
   --canvas-minimap-border: #374151;
   
-  // 节点在暗黑主题下的调整
+
   --canvas-node-source-secondary: rgba(16, 185, 129, 0.1);
   --canvas-node-sink-secondary: rgba(59, 130, 246, 0.1);
   --canvas-node-transform-secondary: rgba(139, 92, 246, 0.1);
   
-  // 连接线在暗黑主题下的调整
+
   --canvas-connection-default: #9CA3AF;
   --canvas-connection-hover: #D1D5DB;
   --canvas-connection-active: #F3F4F6;
 }
 
-// 响应式断点变量
+
 :root {
   --canvas-breakpoint-mobile: 768px;
   --canvas-breakpoint-tablet: 1024px;
@@ -163,7 +157,7 @@
   --canvas-breakpoint-wide: 1920px;
 }
 
-// 移动设备适配
+
 @media (max-width: 768px) {
   :root {
     --canvas-node-width: 120px;
@@ -176,7 +170,7 @@
   }
 }
 
-// 平板设备适配
+
 @media (min-width: 769px) and (max-width: 1024px) {
   :root {
     --canvas-node-width: 140px;
@@ -186,7 +180,7 @@
   }
 }
 
-// 高分辨率屏幕适配
+
 @media (min-width: 1920px) {
   :root {
     --canvas-node-width: 160px;

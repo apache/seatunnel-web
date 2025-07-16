@@ -15,37 +15,33 @@
  * limitations under the License.
  */
 
-/**
- * 现代化画布设计令牌系统
- * 定义统一的颜色、阴影、动画等设计变量
- */
 export const CanvasDesignTokens = {
-  // 颜色系统
+
   colors: {
-    // 节点颜色系统
+
     nodes: {
       source: {
-        primary: '#10B981',      // 绿色主色 - 数据源
-        secondary: '#D1FAE5',    // 浅绿背景
+        primary: '#10B981',
+        secondary: '#D1FAE5',
         gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
         border: '#059669',
         text: '#065F46'
       },
       sink: {
-        primary: '#3B82F6',      // 蓝色主色 - 数据目标
-        secondary: '#DBEAFE',    // 浅蓝背景
+        primary: '#3B82F6',
+        secondary: '#DBEAFE',
         gradient: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
         border: '#1D4ED8',
         text: '#1E3A8A'
       },
       transform: {
-        primary: '#8B5CF6',      // 紫色主色 - 数据转换
-        secondary: '#EDE9FE',    // 浅紫背景
+        primary: '#8B5CF6',
+        secondary: '#EDE9FE',
         gradient: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
         border: '#7C3AED',
         text: '#5B21B6'
       },
-      // 通用节点状态
+
       states: {
         idle: '#6B7280',
         running: '#F59E0B',
@@ -55,7 +51,7 @@ export const CanvasDesignTokens = {
       }
     },
     
-    // 连接线颜色
+
     connections: {
       default: '#6B7280',
       hover: '#374151',
@@ -65,7 +61,7 @@ export const CanvasDesignTokens = {
       animated: '#3B82F6'
     },
     
-    // 画布背景颜色
+
     canvas: {
       light: {
         background: '#FAFAFA',
@@ -81,7 +77,7 @@ export const CanvasDesignTokens = {
       }
     },
     
-    // 小地图颜色
+
     minimap: {
       background: 'rgba(255, 255, 255, 0.95)',
       backgroundDark: 'rgba(17, 24, 39, 0.95)',
@@ -92,7 +88,7 @@ export const CanvasDesignTokens = {
     }
   },
   
-  // 阴影系统
+
   shadows: {
     node: '0 4px 12px rgba(0, 0, 0, 0.08)',
     nodeHover: '0 8px 24px rgba(0, 0, 0, 0.12)',
@@ -102,7 +98,7 @@ export const CanvasDesignTokens = {
     tooltip: '0 2px 8px rgba(0, 0, 0, 0.1)'
   },
   
-  // 边框半径
+
   borderRadius: {
     node: '8px',
     minimap: '6px',
@@ -110,7 +106,7 @@ export const CanvasDesignTokens = {
     button: '4px'
   },
   
-  // 间距系统
+
   spacing: {
     xs: '4px',
     sm: '8px',
@@ -120,7 +116,7 @@ export const CanvasDesignTokens = {
     xxl: '32px'
   },
   
-  // 字体系统
+
   typography: {
     node: {
       fontSize: '12px',
@@ -139,9 +135,9 @@ export const CanvasDesignTokens = {
     }
   },
   
-  // 动画系统
+
   animations: {
-    // 持续时间
+
     duration: {
       fast: '150ms',
       normal: '250ms',
@@ -149,14 +145,14 @@ export const CanvasDesignTokens = {
       slower: '500ms'
     },
     
-    // 缓动函数
+
     easing: {
       default: 'cubic-bezier(0.4, 0, 0.2, 1)',
       bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       smooth: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     },
     
-    // 动画配置
+
     configs: {
       nodeEntrance: {
         duration: '350ms',
@@ -179,7 +175,7 @@ export const CanvasDesignTokens = {
     }
   },
   
-  // 尺寸系统
+
   sizes: {
     node: {
       width: 150,
@@ -200,7 +196,7 @@ export const CanvasDesignTokens = {
     }
   },
   
-  // Z-index 层级
+
   zIndex: {
     canvas: 1,
     nodes: 10,
@@ -211,12 +207,12 @@ export const CanvasDesignTokens = {
   }
 } as const
 
-// 类型定义
+
 export type NodeType = 'source' | 'sink' | 'transform'
 export type NodeState = 'idle' | 'running' | 'success' | 'error' | 'warning'
 export type Theme = 'light' | 'dark'
 
-// 工具函数
+
 export const getNodeColors = (type: NodeType) => {
   return CanvasDesignTokens.colors.nodes[type]
 }
