@@ -1,0 +1,309 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * 现代化连接线样式定义
+ * 包含平滑曲线、渐变色彩和动画效果
+ */
+
+@import './canvas-variables.scss';
+@import './canvas-animations.scss';
+@import './responsive-mixins.scss';
+
+// 连接线基础样式
+.modern-edge {
+  // 基础连接线样式
+  stroke: var(--canvas-connection-default);
+  stroke-width: var(--canvas-connection-stroke-width);
+  fill: none;
+  cursor: pointer;
+  
+  // 过渡效果
+  transition: stroke var(--canvas-animation-normal) var(--canvas-easing-default),
+              stroke-width var(--canvas-animation-normal) var(--canvas-easing-default),
+              opacity var(--canvas-animation-fast) var(--canvas-easing-default);
+  
+  // 响应式适配
+  @include canvas-connection-responsive;
+  
+  // 悬停效果
+  &:hover {
+    stroke: var(--canvas-connection-hover);
+    stroke-width: var(--canvas-connection-stroke-width-hover);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+  
+  // 选中状态
+  &.is-selected {
+    stroke: var(--canvas-connection-selected);
+    stroke-width: var(--canvas-connection-stroke-width-hover);
+    @extend .canvas-animate-connection-pulse;
+  }
+  
+  // 激活状态（数据流动）
+  &.is-active {
+    @extend .canvas-animate-data-flow;
+  }
+  
+  // 错误状态
+  &.is-error {
+    stroke: var(--canvas-node-state-error);
+    stroke-dasharray: 5, 5;
+    animation: canvas-connection-pulse 1s ease-in-out infinite;
+  }
+  
+  // 警告状态
+  &.is-warning {
+    stroke: var(--canvas-node-state-warning);
+    stroke-dasharray: 3, 3;
+  }
+  
+  // 成功状态
+  &.is-success {
+    stroke: var(--canvas-node-state-success);
+  }
+}
+
+// 连接线箭头样式
+.modern-edge-arrow {
+  fill: var(--canvas-connection-default);
+  stroke: none;
+  transition: fill var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  .modern-edge:hover & {
+    fill: var(--canvas-connection-hover);
+  }
+  
+  .modern-edge.is-selected & {
+    fill: var(--canvas-connection-selected);
+  }
+  
+  .modern-edge.is-error & {
+    fill: var(--canvas-node-state-error);
+  }
+  
+  .modern-edge.is-warning & {
+    fill: var(--canvas-node-state-warning);
+  }
+  
+  .modern-edge.is-success & {
+    fill: var(--canvas-node-state-success);
+  }
+}
+
+// 连接线标签样式
+.modern-edge-label {
+  font-size: var(--canvas-font-size-tooltip);
+  font-weight: var(--canvas-font-weight-tooltip);
+  fill: var(--canvas-connection-default);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  .modern-edge:hover & {
+    opacity: 1;
+    fill: var(--canvas-connection-hover);
+  }
+  
+  .modern-edge.is-selected & {
+    opacity: 1;
+    fill: var(--canvas-connection-selected);
+  }
+}
+
+// 连接线工具提示背景
+.modern-edge-tooltip-bg {
+  fill: rgba(255, 255, 255, 0.95);
+  stroke: var(--canvas-connection-default);
+  stroke-width: 1;
+  rx: var(--canvas-border-radius-tooltip);
+  ry: var(--canvas-border-radius-tooltip);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+  opacity: 0;
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  .modern-edge:hover & {
+    opacity: 1;
+  }
+  
+  [data-theme="dark"] & {
+    fill: rgba(17, 24, 39, 0.95);
+    stroke: var(--canvas-grid);
+  }
+}
+
+// 渐变连接线样式
+.modern-edge-gradient {
+  stroke: url(#connection-gradient);
+  
+  &:hover {
+    stroke: url(#connection-gradient-hover);
+  }
+  
+  &.is-selected {
+    stroke: url(#connection-gradient-selected);
+  }
+}
+
+// 数据流动画连接线
+.modern-edge-animated {
+  stroke-dasharray: 8, 4;
+  animation: canvas-data-flow 2s linear infinite;
+  
+  &.flow-fast {
+    animation-duration: 1s;
+  }
+  
+  &.flow-slow {
+    animation-duration: 4s;
+  }
+  
+  &.flow-reverse {
+    animation-direction: reverse;
+  }
+}
+
+// 连接线类型样式
+.modern-edge-type {
+  &.type-data {
+    stroke: var(--canvas-connection-default);
+  }
+  
+  &.type-control {
+    stroke: var(--canvas-node-state-warning);
+    stroke-dasharray: 4, 2;
+  }
+  
+  &.type-error {
+    stroke: var(--canvas-node-state-error);
+    stroke-dasharray: 2, 2;
+  }
+}
+
+// 连接线粗细变体
+.modern-edge-weight {
+  &.weight-thin {
+    stroke-width: 1px;
+  }
+  
+  &.weight-normal {
+    stroke-width: var(--canvas-connection-stroke-width);
+  }
+  
+  &.weight-thick {
+    stroke-width: calc(var(--canvas-connection-stroke-width) * 1.5);
+  }
+  
+  &.weight-bold {
+    stroke-width: calc(var(--canvas-connection-stroke-width) * 2);
+  }
+}
+
+// 连接线透明度变体
+.modern-edge-opacity {
+  &.opacity-ghost {
+    opacity: 0.3;
+  }
+  
+  &.opacity-faded {
+    opacity: 0.6;
+  }
+  
+  &.opacity-normal {
+    opacity: 1;
+  }
+}
+
+// 连接线路径样式
+.modern-edge-path {
+  &.path-straight {
+    // 直线连接
+  }
+  
+  &.path-curved {
+    // 贝塞尔曲线连接（默认）
+  }
+  
+  &.path-orthogonal {
+    // 正交连接
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  
+  &.path-smooth {
+    // 平滑曲线
+    stroke-linecap: round;
+  }
+}
+
+// 连接线交互区域（增加点击区域）
+.modern-edge-interaction {
+  stroke: transparent;
+  stroke-width: 12px;
+  fill: none;
+  cursor: pointer;
+  
+  // 触摸设备优化
+  @include canvas-touch-device {
+    stroke-width: 16px;
+  }
+}
+
+// 连接线高亮效果
+.modern-edge-highlight {
+  stroke: var(--canvas-connection-selected);
+  stroke-width: calc(var(--canvas-connection-stroke-width) * 2);
+  opacity: 0.3;
+  pointer-events: none;
+  
+  animation: canvas-connection-pulse 1.5s ease-in-out infinite;
+}
+
+// 连接线组合样式
+.modern-edge-group {
+  .modern-edge {
+    stroke-width: 1px;
+    opacity: 0.7;
+  }
+  
+  &:hover .modern-edge {
+    stroke-width: var(--canvas-connection-stroke-width);
+    opacity: 1;
+  }
+  
+  .modern-edge.is-primary {
+    stroke-width: var(--canvas-connection-stroke-width);
+    opacity: 1;
+  }
+}
+
+// 暗黑主题适配
+[data-theme="dark"] {
+  .modern-edge {
+    filter: brightness(1.2);
+  }
+  
+  .modern-edge-label {
+    fill: var(--canvas-connection-default);
+  }
+  
+  .modern-edge:hover {
+    filter: brightness(1.4) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+}

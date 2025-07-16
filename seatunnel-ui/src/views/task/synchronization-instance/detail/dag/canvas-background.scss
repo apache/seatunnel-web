@@ -1,0 +1,350 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * 现代化画布背景样式
+ * 包含动态网格、对齐辅助线和主题适配
+ */
+
+@import './canvas-variables.scss';
+@import './canvas-animations.scss';
+
+// 画布容器基础样式
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--canvas-bg);
+  
+  // 主题切换过渡
+  transition: background-color var(--canvas-animation-normal) var(--canvas-easing-default);
+}
+
+// 现代化网格背景
+.canvas-grid-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--canvas-z-index-canvas);
+  
+  // 基础网格样式
+  background-color: var(--canvas-bg);
+  background-image: 
+    // 主网格
+    radial-gradient(circle at 1px 1px, var(--canvas-grid) 1px, transparent 0),
+    // 次网格
+    radial-gradient(circle at 10px 10px, var(--canvas-grid-secondary) 0.5px, transparent 0);
+  background-size: 20px 20px, 100px 100px;
+  background-position: 0 0, 0 0;
+  
+  // 网格透明度动画
+  opacity: 1;
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default),
+              background-size var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  // 缩放时的网格适配
+  &.zoom-small {
+    background-size: 10px 10px, 50px 50px;
+    opacity: 0.6;
+  }
+  
+  &.zoom-large {
+    background-size: 40px 40px, 200px 200px;
+    opacity: 0.8;
+  }
+  
+  &.zoom-extra-large {
+    background-size: 80px 80px, 400px 400px;
+    opacity: 0.4;
+  }
+}
+
+// 点状网格变体
+.canvas-grid-dots {
+  background-image: 
+    radial-gradient(circle, var(--canvas-grid) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+// 线状网格变体
+.canvas-grid-lines {
+  background-image: 
+    linear-gradient(var(--canvas-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--canvas-grid) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+// 十字网格变体
+.canvas-grid-cross {
+  background-image: 
+    linear-gradient(var(--canvas-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--canvas-grid) 1px, transparent 1px),
+    radial-gradient(circle at 10px 10px, var(--canvas-grid-secondary) 2px, transparent 2px);
+  background-size: 20px 20px, 20px 20px, 100px 100px;
+}
+
+// 对齐辅助线
+.canvas-guide-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: calc(var(--canvas-z-index-nodes) + 1);
+  opacity: 0;
+  transition: opacity var(--canvas-animation-fast) var(--canvas-easing-default);
+  
+  &.is-active {
+    opacity: 1;
+  }
+  
+  .guide-line {
+    position: absolute;
+    background: var(--canvas-guide-line);
+    opacity: 0.8;
+    
+    &.horizontal {
+      width: 100%;
+      height: 1px;
+      box-shadow: 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+    
+    &.vertical {
+      width: 1px;
+      height: 100%;
+      box-shadow: 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+    
+    // 辅助线动画
+    animation: canvas-guide-line-pulse 1s ease-in-out;
+  }
+}
+
+// 辅助线脉冲动画
+@keyframes canvas-guide-line-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+// 画布水印/标识
+.canvas-watermark {
+  position: absolute;
+  bottom: var(--canvas-spacing-lg);
+  right: var(--canvas-spacing-lg);
+  font-size: 10px;
+  color: var(--canvas-grid);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: var(--canvas-z-index-canvas);
+  
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+// 画布边界指示器
+.canvas-boundary {
+  position: absolute;
+  border: 2px dashed var(--canvas-grid);
+  opacity: 0;
+  pointer-events: none;
+  z-index: var(--canvas-z-index-canvas);
+  
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  &.is-visible {
+    opacity: 0.3;
+  }
+  
+  &.boundary-content {
+    // 内容边界
+    border-color: var(--canvas-node-state-success);
+  }
+  
+  &.boundary-viewport {
+    // 视口边界
+    border-color: var(--canvas-node-state-warning);
+  }
+}
+
+// 画布中心点指示器
+.canvas-center-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--canvas-guide-line);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: var(--canvas-z-index-canvas);
+  
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  &.is-visible {
+    opacity: 0.6;
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    background: var(--canvas-guide-line);
+    border-radius: 50%;
+  }
+}
+
+// 画布缩放指示器
+.canvas-zoom-indicator {
+  position: absolute;
+  top: var(--canvas-spacing-lg);
+  left: var(--canvas-spacing-lg);
+  padding: var(--canvas-spacing-sm) var(--canvas-spacing-md);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--canvas-grid);
+  border-radius: var(--canvas-border-radius-tooltip);
+  font-size: 11px;
+  color: var(--canvas-connection-default);
+  opacity: 0;
+  pointer-events: none;
+  z-index: var(--canvas-z-index-tooltip);
+  
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  &.is-visible {
+    opacity: 1;
+  }
+  
+  [data-theme="dark"] & {
+    background: rgba(17, 24, 39, 0.9);
+    border-color: var(--canvas-grid);
+    color: var(--canvas-connection-default);
+  }
+}
+
+// 画布性能模式
+.canvas-performance-mode {
+  .canvas-grid-background {
+    background-image: none;
+    background-color: var(--canvas-bg);
+  }
+  
+  .canvas-guide-lines {
+    display: none;
+  }
+  
+  .canvas-center-indicator,
+  .canvas-zoom-indicator {
+    display: none;
+  }
+}
+
+// 画布调试模式
+.canvas-debug-mode {
+  .canvas-boundary {
+    opacity: 0.5 !important;
+  }
+  
+  .canvas-center-indicator {
+    opacity: 1 !important;
+  }
+  
+  .canvas-zoom-indicator {
+    opacity: 1 !important;
+  }
+  
+  .canvas-grid-background {
+    opacity: 1 !important;
+  }
+}
+
+// 响应式适配
+@media (max-width: 768px) {
+  .canvas-grid-background {
+    background-size: 15px 15px, 75px 75px;
+  }
+  
+  .canvas-watermark {
+    display: none;
+  }
+  
+  .canvas-zoom-indicator {
+    font-size: 10px;
+    padding: var(--canvas-spacing-xs) var(--canvas-spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .canvas-grid-background {
+    background-size: 12px 12px, 60px 60px;
+    opacity: 0.6;
+  }
+  
+  .canvas-guide-lines {
+    display: none;
+  }
+}
+
+// 高分辨率屏幕适配
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .canvas-grid-background {
+    background-size: 20px 20px, 100px 100px;
+  }
+  
+  .guide-line {
+    &.horizontal,
+    &.vertical {
+      transform: scale(0.5);
+      transform-origin: 0 0;
+    }
+  }
+}
+
+// 暗黑主题特殊适配
+[data-theme="dark"] {
+  .canvas-grid-background {
+    // 暗黑主题下的网格更加微妙
+    opacity: 0.8;
+  }
+  
+  .canvas-watermark {
+    color: var(--canvas-grid-secondary);
+  }
+  
+  .canvas-zoom-indicator {
+    backdrop-filter: blur(8px);
+  }
+}

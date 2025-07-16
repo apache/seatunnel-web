@@ -114,28 +114,46 @@ export function useDagAddShape(
     })
 
     nodes[i].child.forEach((n: any) => {
+      // 根据节点类型确定连接点
+      const nodeType = (n.nodeType && n.nodeType.toLowerCase()) || 
+        (n.label.toLowerCase().includes('source') ? 'source' : 
+         n.label.toLowerCase().includes('sink') ? 'sink' : 'transform');
+      
+      // 根据节点类型设置连接点
+      const portItems = [];
+      if (nodeType !== 'sink') {
+        portItems.push({ 
+          id: 'output', 
+          group: 'output',
+          args: { magnet: true } // 确保连接点可以拖拽连接
+        });
+      }
+      if (nodeType !== 'source') {
+        portItems.push({ 
+          id: 'input', 
+          group: 'input',
+          args: { magnet: true } // 确保连接点可以拖拽连接
+        });
+      }
+      
       group.addChild(
         graph.addNode({
           id: n.id,
-          // x: 50,
-          // y: 50,
-          // width: 120,
-          // height: 40,
+          x: 50,
+          y: 50,
+          width: 180,
+          height: 44,
           shape: DagNodeName,
-          // label: n.label,
           zIndex: 10,
-          // attrs: {
-          //   body: {
-          //     stroke: 'none',
-          //     fill: '#858585'
-          //   },
-          //   label: {
-          //     fill: '#fff',
-          //     fontSize: 12
-          //   }
-          // },
+          ports: {
+            items: portItems
+          },
           data: {
-            name: n.label
+            name: n.label,
+            nodeType: nodeType,
+            connectorType: n.label,
+            status: 'idle',
+            vertexId: n.vertexId
           }
         })
       )
@@ -146,12 +164,18 @@ export function useDagAddShape(
     graph.addEdge({
       shape: DagEdgeName,
       source: {
-        cell: e.source
+        cell: e.source,
+        port: 'output'
       },
       target: {
-        cell: e.target
+        cell: e.target,
+        port: 'input'
       },
-      id: e.id
+      id: e.id,
+      zIndex: 5,
+      data: {
+        animated: true
+      }
     })
   })
 }

@@ -1,0 +1,307 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * 现代化画布动画关键帧定义
+ * 包含节点、连接线和交互动画
+ */
+
+// 节点入场动画
+@keyframes canvas-node-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// 节点退场动画
+@keyframes canvas-node-exit {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+}
+
+// 节点脉冲动画（运行状态）
+@keyframes canvas-node-pulse {
+  0%, 100% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 8px rgba(59, 130, 246, 0);
+  }
+}
+
+// 节点成功状态脉冲
+@keyframes canvas-node-pulse-success {
+  0%, 100% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+// 节点错误状态脉冲
+@keyframes canvas-node-pulse-error {
+  0%, 100% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+// 节点警告状态脉冲
+@keyframes canvas-node-pulse-warning {
+  0%, 100% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: var(--canvas-shadow-node), 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+
+// 节点悬停发光效果
+@keyframes canvas-node-glow {
+  0% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+  }
+}
+
+// 数据流动画（连接线）
+@keyframes canvas-data-flow {
+  0% {
+    stroke-dashoffset: 20;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+// 连接线脉冲动画
+@keyframes canvas-connection-pulse {
+  0%, 100% {
+    stroke-width: var(--canvas-connection-stroke-width);
+    opacity: 1;
+  }
+  50% {
+    stroke-width: calc(var(--canvas-connection-stroke-width) * 1.5);
+    opacity: 0.8;
+  }
+}
+
+// 连接线激活动画
+@keyframes canvas-connection-active {
+  0% {
+    stroke-dasharray: 0, 10;
+  }
+  50% {
+    stroke-dasharray: 5, 5;
+  }
+  100% {
+    stroke-dasharray: 10, 0;
+  }
+}
+
+// 小地图淡入动画
+@keyframes canvas-minimap-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 工具提示淡入动画
+@keyframes canvas-tooltip-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// 画布缩放动画
+@keyframes canvas-zoom-in {
+  0% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// 选中状态呼吸动画
+@keyframes canvas-selection-breathe {
+  0%, 100% {
+    box-shadow: var(--canvas-shadow-node-selected);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+  }
+}
+
+// 拖拽状态动画
+@keyframes canvas-drag-shadow {
+  0% {
+    box-shadow: var(--canvas-shadow-node);
+  }
+  100% {
+    box-shadow: var(--canvas-shadow-node-active);
+  }
+}
+
+// 加载状态旋转动画
+@keyframes canvas-loading-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 主题切换过渡动画
+@keyframes canvas-theme-transition {
+  0% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+// 网格背景动画（缩放时）
+@keyframes canvas-grid-scale {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+// 连接点高亮动画
+@keyframes canvas-port-highlight {
+  0%, 100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+  50% {
+    background-color: var(--canvas-connection-selected);
+    transform: scale(1.2);
+  }
+}
+
+// 动画工具类
+.canvas-animate-entrance {
+  animation: canvas-node-entrance var(--canvas-animation-slow) var(--canvas-easing-bounce) forwards;
+}
+
+.canvas-animate-exit {
+  animation: canvas-node-exit var(--canvas-animation-normal) var(--canvas-easing-default) forwards;
+}
+
+.canvas-animate-pulse {
+  animation: canvas-node-pulse 2s var(--canvas-easing-default) infinite;
+}
+
+.canvas-animate-pulse-success {
+  animation: canvas-node-pulse-success 2s var(--canvas-easing-default) infinite;
+}
+
+.canvas-animate-pulse-error {
+  animation: canvas-node-pulse-error 2s var(--canvas-easing-default) infinite;
+}
+
+.canvas-animate-pulse-warning {
+  animation: canvas-node-pulse-warning 2s var(--canvas-easing-default) infinite;
+}
+
+.canvas-animate-glow {
+  animation: canvas-node-glow var(--canvas-animation-normal) var(--canvas-easing-default) forwards;
+}
+
+.canvas-animate-data-flow {
+  stroke-dasharray: 5, 5;
+  animation: canvas-data-flow 2s linear infinite;
+}
+
+.canvas-animate-connection-pulse {
+  animation: canvas-connection-pulse 1.5s var(--canvas-easing-default) infinite;
+}
+
+.canvas-animate-selection-breathe {
+  animation: canvas-selection-breathe 2s var(--canvas-easing-default) infinite;
+}
+
+.canvas-animate-drag-shadow {
+  animation: canvas-drag-shadow var(--canvas-animation-fast) var(--canvas-easing-default) forwards;
+}
+
+.canvas-animate-loading {
+  animation: canvas-loading-spin 1s linear infinite;
+}
+
+// 过渡效果类
+.canvas-transition-all {
+  transition: all var(--canvas-animation-normal) var(--canvas-easing-default);
+}
+
+.canvas-transition-transform {
+  transition: transform var(--canvas-animation-normal) var(--canvas-easing-default);
+}
+
+.canvas-transition-colors {
+  transition: background-color var(--canvas-animation-normal) var(--canvas-easing-default),
+              border-color var(--canvas-animation-normal) var(--canvas-easing-default),
+              color var(--canvas-animation-normal) var(--canvas-easing-default);
+}
+
+.canvas-transition-shadow {
+  transition: box-shadow var(--canvas-animation-normal) var(--canvas-easing-default);
+}
+
+.canvas-transition-opacity {
+  transition: opacity var(--canvas-animation-fast) var(--canvas-easing-default);
+}
+
+// 主题切换过渡
+.canvas-theme-transition {
+  transition: background-color var(--canvas-animation-normal) var(--canvas-easing-default),
+              border-color var(--canvas-animation-normal) var(--canvas-easing-default),
+              color var(--canvas-animation-normal) var(--canvas-easing-default),
+              box-shadow var(--canvas-animation-normal) var(--canvas-easing-default);
+}

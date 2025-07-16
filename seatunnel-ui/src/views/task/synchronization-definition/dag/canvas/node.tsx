@@ -57,11 +57,45 @@ const Node = defineComponent({
       icon.value = JsonPathImg
     }
 
+    // 计算边框颜色和样式 - 现代简约配色
+    const getBorderStyle = () => {
+      if (isError) {
+        return '4px solid #F87171'
+      } else if (unsaved) {
+        return '4px solid #FBBF24'
+      } else if (type === 'source') {
+        return '4px solid #34D399'
+      } else if (type === 'sink') {
+        return '4px solid #60A5FA'
+      } else if (type === 'transform') {
+        return '4px solid #A78BFA'
+      } else {
+        return '4px solid #60A5FA'
+      }
+    }
+
+    const getBackgroundStyle = () => {
+      if (isError) {
+        return 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)'
+      } else if (unsaved) {
+        return 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)'
+      } else if (type === 'source') {
+        return 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)'
+      } else if (type === 'sink') {
+        return 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)'
+      } else if (type === 'transform') {
+        return 'linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%)'
+      } else {
+        return 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)'
+      }
+    }
+
     return () => (
       <div
         class={styles['dag-node']}
         style={{
-          borderLeft: isError ? '4px solid #ff4d4f' : (unsaved ? '4px solid #faad14' : '4px solid #1890ff')
+          borderLeft: getBorderStyle(),
+          background: getBackgroundStyle()
         }}
       >
         <img src={icon.value} class={styles['dag-node-icon']} />
@@ -71,6 +105,14 @@ const Node = defineComponent({
             default: () => name
           }}
         </NTooltip>
+        
+        {/* 状态指示器 */}
+        {isError && (
+          <div class={styles['dag-node-status']} style={{ background: '#EF4444' }} />
+        )}
+        {unsaved && !isError && (
+          <div class={styles['dag-node-status']} style={{ background: '#F59E0B' }} />
+        )}
       </div>
     )
   }

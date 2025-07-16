@@ -22,25 +22,31 @@ import { DagEdgeName, DagNodeName } from './dag-setting'
 const updateParentNodePosition = (nodes: any, node: any) => {
   if (node.children && node.children.length) {
     const children = node.children
-    let minX = Number.MAX_VALUE
-    let maxX = 0
-    let minY = Number.MAX_VALUE
-    let maxY = 0
-    nodes
-      .filter((node: any) => children.includes(node.id))
-      .map((node: any) => {
-        minX = Math.min(minX, node.x)
-        maxX = Math.max(maxX, node.x)
-        minY = Math.min(minY, node.y)
-        maxY = Math.max(maxY, node.y)
-      })
+    const childNodes = nodes.filter((n: any) => children.includes(n.id));
+    if (childNodes.length === 0) return;
 
-    node.x = minX - 20
-    node.y = minY - 20
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+    childNodes.forEach((child: any) => {
+        const childX = child.x;
+        const childY = child.y;
+        const childWidth = child.size?.width || 180;
+        const childHeight = child.size?.height || 44;
+
+        minX = Math.min(minX, childX);
+        minY = Math.min(minY, childY);
+        maxX = Math.max(maxX, childX + childWidth);
+        maxY = Math.max(maxY, childY + childHeight);
+    });
+
+    const padding = 40;
+
+    node.x = minX - padding;
+    node.y = minY - padding;
     node.size = {
-      width: maxX - minX + 200,
-      height: maxY - minY + 80
-    }
+      width: (maxX - minX) + (2 * padding),
+      height: (maxY - minY) + (2 * padding)
+    };
   }
 }
 
