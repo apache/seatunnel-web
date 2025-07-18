@@ -1,0 +1,308 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$canvas-breakpoints: (
+  'mobile': 768px,
+  'tablet': 1024px,
+  'desktop': 1440px,
+  'wide': 1920px
+) !default;
+
+
+@mixin canvas-respond-to($breakpoint) {
+  @if map-has-key($canvas-breakpoints, $breakpoint) {
+    @media (min-width: map-get($canvas-breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn "Unknown breakpoint: #{$breakpoint}";
+  }
+}
+
+
+@mixin canvas-respond-to-max($breakpoint) {
+  @if map-has-key($canvas-breakpoints, $breakpoint) {
+    @media (max-width: map-get($canvas-breakpoints, $breakpoint) - 1px) {
+      @content;
+    }
+  } @else {
+    @warn "Unknown breakpoint: #{$breakpoint}";
+  }
+}
+
+
+@mixin canvas-respond-between($min-breakpoint, $max-breakpoint) {
+  @if map-has-key($canvas-breakpoints, $min-breakpoint) and map-has-key($canvas-breakpoints, $max-breakpoint) {
+    @media (min-width: map-get($canvas-breakpoints, $min-breakpoint)) and (max-width: map-get($canvas-breakpoints, $max-breakpoint) - 1px) {
+      @content;
+    }
+  } @else {
+    @warn "Unknown breakpoints: #{$min-breakpoint} or #{$max-breakpoint}";
+  }
+}
+
+
+@mixin canvas-high-dpi {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @content;
+  }
+}
+
+
+@mixin canvas-touch-device {
+  @media (hover: none) and (pointer: coarse) {
+    @content;
+  }
+}
+
+
+@mixin canvas-no-touch {
+  @media (hover: hover) and (pointer: fine) {
+    @content;
+  }
+}
+
+
+@mixin canvas-node-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    width: var(--canvas-node-width);
+    height: var(--canvas-node-height);
+    font-size: var(--canvas-font-size-node);
+    padding: var(--canvas-spacing-sm);
+    
+    .canvas-node-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+
+  @include canvas-respond-between('mobile', 'desktop') {
+    width: calc(var(--canvas-node-width) * 0.9);
+    height: calc(var(--canvas-node-height) * 0.95);
+  }
+  
+
+  @include canvas-respond-to('desktop') {
+    width: var(--canvas-node-width);
+    height: var(--canvas-node-height);
+  }
+  
+
+  @include canvas-respond-to('wide') {
+    width: calc(var(--canvas-node-width) * 1.1);
+    height: calc(var(--canvas-node-height) * 1.1);
+    font-size: calc(var(--canvas-font-size-node) * 1.1);
+  }
+}
+
+
+@mixin canvas-minimap-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    width: calc(var(--canvas-minimap-width) * 0.75);
+    height: calc(var(--canvas-minimap-height) * 0.75);
+    right: var(--canvas-spacing-md);
+    bottom: var(--canvas-spacing-md);
+    
+
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
+  
+
+  @include canvas-respond-between('mobile', 'desktop') {
+    width: calc(var(--canvas-minimap-width) * 0.9);
+    height: calc(var(--canvas-minimap-height) * 0.9);
+  }
+  
+
+  @include canvas-respond-to('desktop') {
+    width: var(--canvas-minimap-width);
+    height: var(--canvas-minimap-height);
+  }
+  
+
+  @include canvas-respond-to('wide') {
+    width: calc(var(--canvas-minimap-width) * 1.1);
+    height: calc(var(--canvas-minimap-height) * 1.1);
+  }
+}
+
+
+@mixin canvas-connection-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    stroke-width: calc(var(--canvas-connection-stroke-width) * 1.5);
+    
+    &:hover {
+      stroke-width: calc(var(--canvas-connection-stroke-width-hover) * 1.5);
+    }
+  }
+  
+
+  @include canvas-touch-device {
+    stroke-width: calc(var(--canvas-connection-stroke-width) * 1.2);
+    
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      bottom: -10px;
+      left: -10px;
+      right: -10px;
+      pointer-events: all;
+      background: transparent;
+    }
+  }
+}
+
+
+@mixin canvas-container-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    padding: var(--canvas-spacing-sm);
+    
+    .canvas-toolbar {
+      flex-direction: column;
+      gap: var(--canvas-spacing-sm);
+    }
+    
+    .canvas-sidebar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40vh;
+      transform: translateY(100%);
+      transition: transform var(--canvas-animation-normal) var(--canvas-easing-default);
+      
+      &.is-open {
+        transform: translateY(0);
+      }
+    }
+  }
+  
+
+  @include canvas-respond-between('mobile', 'desktop') {
+    .canvas-sidebar {
+      width: 280px;
+    }
+  }
+  
+
+  @include canvas-respond-to('desktop') {
+    .canvas-sidebar {
+      width: 320px;
+    }
+  }
+}
+
+
+@mixin canvas-typography-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    font-size: calc(var(--canvas-font-size-node) * 0.9);
+    line-height: calc(var(--canvas-line-height-node) * 1.1);
+  }
+  
+
+  @include canvas-high-dpi {
+    font-weight: calc(var(--canvas-font-weight-node) - 100);
+  }
+  
+
+  @include canvas-respond-to('wide') {
+    font-size: calc(var(--canvas-font-size-node) * 1.1);
+  }
+}
+
+
+@mixin canvas-spacing-responsive($property: 'padding') {
+
+  @include canvas-respond-to-max('mobile') {
+    #{$property}: calc(var(--canvas-spacing-md) * 0.75);
+  }
+  
+
+  @include canvas-respond-between('mobile', 'desktop') {
+    #{$property}: calc(var(--canvas-spacing-md) * 0.9);
+  }
+  
+
+  @include canvas-respond-to('desktop') {
+    #{$property}: var(--canvas-spacing-md);
+  }
+  
+
+  @include canvas-respond-to('wide') {
+    #{$property}: calc(var(--canvas-spacing-md) * 1.2);
+  }
+}
+
+
+@mixin canvas-shadow-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+  }
+  
+
+  @include canvas-respond-to('desktop') {
+    box-shadow: var(--canvas-shadow-node);
+    
+    &:hover {
+      box-shadow: var(--canvas-shadow-node-hover);
+    }
+  }
+  
+
+  @include canvas-high-dpi {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+
+@mixin canvas-animation-responsive {
+
+  @include canvas-respond-to-max('mobile') {
+    transition-duration: calc(var(--canvas-animation-normal) * 0.8);
+  }
+  
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+
+  @media (update: slow) {
+    transition-duration: calc(var(--canvas-animation-fast) * 0.5);
+    animation-duration: calc(var(--canvas-animation-normal) * 0.5);
+  }
+}

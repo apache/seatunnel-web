@@ -27,6 +27,7 @@ import { useDagEdge } from './dag/use-dag-edge'
 import { useTaskDefinition } from './use-task-definition'
 import styles from './task-definition.module.scss'
 import { useDagNode } from './dag/use-dag-node'
+import { useCanvasTheme } from './dag/theme-manager'
 
 interface IJobConfig {
   name: string
@@ -45,6 +46,9 @@ const TaskDefinition = defineComponent({
     const jobConfig = ref<IJobConfig>({} as IJobConfig)
     const graph = ref<Graph>()
     const { getJobConfig, getJobDag } = useTaskDefinition(t)
+
+
+    const { } = useCanvasTheme()
 
     const initGraph = () => {
       graph.value = useDagGraph(

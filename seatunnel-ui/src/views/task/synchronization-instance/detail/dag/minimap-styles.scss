@@ -1,0 +1,382 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import './canvas-variables.scss';
+@import './canvas-animations.scss';
+@import './responsive-mixins.scss';
+
+
+.modern-minimap {
+  position: absolute;
+  right: var(--canvas-spacing-lg);
+  bottom: var(--canvas-spacing-lg);
+  width: var(--canvas-minimap-width);
+  height: var(--canvas-minimap-height);
+  background: var(--canvas-minimap-bg);
+  border: 1px solid var(--canvas-minimap-border);
+  border-radius: var(--canvas-border-radius-minimap);
+  box-shadow: var(--canvas-shadow-minimap);
+  backdrop-filter: blur(8px);
+  z-index: var(--canvas-z-index-minimap);
+  
+
+  @include canvas-minimap-responsive;
+  
+
+  transition: all var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+  
+
+  animation: canvas-minimap-fade-in var(--canvas-animation-slow) var(--canvas-easing-bounce);
+}
+
+
+.modern-minimap__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--canvas-spacing-sm) var(--canvas-spacing-md);
+  border-bottom: 1px solid var(--canvas-minimap-border);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--canvas-border-radius-minimap) var(--canvas-border-radius-minimap) 0 0;
+  
+  [data-theme="dark"] & {
+    background: rgba(17, 24, 39, 0.5);
+    border-bottom-color: var(--canvas-grid);
+  }
+}
+
+
+.modern-minimap__title {
+  font-size: var(--canvas-font-size-minimap);
+  font-weight: var(--canvas-font-weight-minimap);
+  color: var(--canvas-connection-default);
+  margin: 0;
+  
+
+  @include canvas-typography-responsive;
+}
+
+
+.modern-minimap__controls {
+  display: flex;
+  gap: var(--canvas-spacing-xs);
+}
+
+
+.modern-minimap__zoom-in,
+.modern-minimap__zoom-out,
+.modern-minimap__reset,
+.modern-minimap__toggle {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: var(--canvas-connection-default);
+  border-radius: var(--canvas-border-radius-button);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  
+
+  transition: all var(--canvas-animation-fast) var(--canvas-easing-default);
+  
+  &:hover {
+    background: var(--canvas-minimap-viewport);
+    color: var(--canvas-connection-hover);
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+
+  @include canvas-respond-to-max('mobile') {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+}
+
+
+.modern-minimap__viewport {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+  overflow: hidden;
+  border-radius: 0 0 var(--canvas-border-radius-minimap) var(--canvas-border-radius-minimap);
+}
+
+
+.modern-minimap__content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  
+
+  .x6-graph-minimap {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  
+
+  .x6-node {
+    opacity: 0.8;
+    
+    rect {
+      fill: var(--canvas-grid-secondary) !important;
+      stroke: var(--canvas-grid) !important;
+      stroke-width: 1 !important;
+      rx: 2 !important;
+      ry: 2 !important;
+    }
+    
+
+    &[data-node-type="source"] rect {
+      fill: var(--canvas-node-source-secondary) !important;
+      stroke: var(--canvas-node-source-primary) !important;
+    }
+    
+    &[data-node-type="sink"] rect {
+      fill: var(--canvas-node-sink-secondary) !important;
+      stroke: var(--canvas-node-sink-primary) !important;
+    }
+    
+    &[data-node-type="transform"] rect {
+      fill: var(--canvas-node-transform-secondary) !important;
+      stroke: var(--canvas-node-transform-primary) !important;
+    }
+  }
+  
+
+  .x6-edge {
+    opacity: 0.6;
+    
+    path {
+      stroke: var(--canvas-connection-default) !important;
+      stroke-width: 1 !important;
+    }
+  }
+}
+
+
+.modern-minimap__indicator {
+  position: absolute;
+  border: 2px solid var(--canvas-minimap-viewport-border);
+  background: var(--canvas-minimap-viewport);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  
+
+  transition: all var(--canvas-animation-fast) var(--canvas-easing-default);
+  
+
+  &.is-moving {
+    transition: none;
+  }
+  
+  &.is-resizing {
+    border-style: dashed;
+    animation: canvas-minimap-indicator-pulse 1s ease-in-out infinite;
+  }
+}
+
+
+@keyframes canvas-minimap-indicator-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+
+.modern-minimap__tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: var(--canvas-spacing-sm);
+  padding: var(--canvas-spacing-xs) var(--canvas-spacing-sm);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 10px;
+  border-radius: var(--canvas-border-radius-tooltip);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: var(--canvas-z-index-tooltip);
+  
+
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  &.is-visible {
+    opacity: 1;
+  }
+  
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+
+.modern-minimap__status {
+  position: absolute;
+  top: var(--canvas-spacing-sm);
+  right: var(--canvas-spacing-sm);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  z-index: 10;
+  
+  &.status-loading {
+    background: var(--canvas-node-state-warning);
+    animation: canvas-loading-spin 1s linear infinite;
+  }
+  
+  &.status-ready {
+    background: var(--canvas-node-state-success);
+  }
+  
+  &.status-error {
+    background: var(--canvas-node-state-error);
+    animation: canvas-node-pulse-error 2s ease-in-out infinite;
+  }
+}
+
+
+.modern-minimap.is-collapsed {
+  width: 40px;
+  height: 40px;
+  
+  .modern-minimap__header {
+    padding: var(--canvas-spacing-xs);
+    border-bottom: none;
+  }
+  
+  .modern-minimap__title {
+    display: none;
+  }
+  
+  .modern-minimap__viewport {
+    display: none;
+  }
+  
+  .modern-minimap__toggle {
+    transform: rotate(180deg);
+  }
+}
+
+
+.modern-minimap.is-dragging {
+  cursor: grabbing;
+  transform: rotate(2deg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+
+.modern-minimap.is-fullscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  height: 60vh;
+  max-width: 800px;
+  max-height: 600px;
+  z-index: var(--canvas-z-index-modal);
+  
+  .modern-minimap__header {
+    padding: var(--canvas-spacing-md) var(--canvas-spacing-lg);
+  }
+  
+  .modern-minimap__title {
+    font-size: 14px;
+  }
+  
+  .modern-minimap__controls {
+    gap: var(--canvas-spacing-sm);
+  }
+  
+  .modern-minimap__zoom-in,
+  .modern-minimap__zoom-out,
+  .modern-minimap__reset,
+  .modern-minimap__toggle {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+}
+
+
+.modern-minimap-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--canvas-z-index-modal) - 1);
+  opacity: 0;
+  
+  transition: opacity var(--canvas-animation-normal) var(--canvas-easing-default);
+  
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+
+[data-theme="dark"] {
+  .modern-minimap {
+    border-color: var(--canvas-grid);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modern-minimap__tooltip {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--canvas-connection-default);
+    
+    &::after {
+      border-top-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+  
+  .modern-minimap-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}

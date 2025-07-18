@@ -18,42 +18,140 @@
 .container {
   height: 100%;
   width: 100%;
+  position: relative;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
 }
 
 .dag-container {
   height: 100%;
   width: 100%;
+  background: transparent;
 }
 
 .minimap {
   position: absolute;
   right: 20px;
   bottom: 60px;
-  border: dashed 1px #e4e4e4;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+[data-theme="dark"] {
+  .minimap {
+    background: rgba(17, 24, 39, 0.95);
+    border-color: #374151;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
 }
 
 .dag-node {
   display: flex;
   align-items: center;
   height: 100%;
-  background-color: #fff;
-  border: 1px solid #c2c8d5;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
 
   .dag-node-icon {
     width: 20px;
     height: 20px;
     margin: 0 10px;
+    flex-shrink: 0;
   }
 
   .dag-node-label {
-    width: 90px;
+    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
-    color: #666;
+    color: #374151;
     font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+}
+
+.dag-node-status {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  z-index: 10;
+  
+
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+
+@keyframes node-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+
+[data-theme="dark"] {
+  .dag-node {
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+    border-color: #374151;
+    backdrop-filter: blur(8px);
+    
+    .dag-node-label {
+      color: #d1d5db;
+    }
+    
+    &:hover .dag-node-label {
+      color: #f3f4f6;
+    }
+  }
+  
+  .dag-node-status {
+    border-color: #111827;
   }
 }

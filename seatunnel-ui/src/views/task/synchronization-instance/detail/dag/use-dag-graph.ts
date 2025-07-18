@@ -16,33 +16,146 @@
  */
 
 import { Graph } from '@antv/x6'
-import { DagEdgeName } from './dag-setting'
+import { useCanvasTheme } from './theme-manager'
+
+
+export interface CanvasOptions {
+  enableGrid?: boolean
+  enableMinimap?: boolean
+  enableScroller?: boolean
+  enableSelection?: boolean
+  enableKeyboard?: boolean
+  enableClipboard?: boolean
+  enableHistory?: boolean
+  gridSize?: number
+  minimapSize?: { width: number; height: number }
+  background?: {
+    color?: string
+    image?: string
+    size?: string
+    position?: string
+  }
+}
 
 export function useDagGraph(
   graph: any,
   dagContainer: HTMLElement,
-  minimapContainer: HTMLElement
+  minimapContainer: HTMLElement,
+  options: CanvasOptions = {}
 ) {
-  return new Graph({
+
+  const graphInstance = new Graph({
     container: dagContainer,
-    scroller: true,
+    autoResize: true,
+    
+
     grid: {
-      size: 10,
-      visible: true
+      size: 20,
+      visible: true,
+      type: 'dot'
     },
-    connecting: {
-      // router: 'orth',
-      allowBlank: false,
-      allowLoop: false,
-      createEdge() {
-        return graph.value?.createEdge({ shape: DagEdgeName })
-      }
+    
+
+    background: {
+      color: '#FAFAFA'
     },
-    minimap: {
+    
+
+    minimap: minimapContainer ? {
       enabled: true,
+      container: minimapContainer,
       width: 200,
       height: 120,
-      container: minimapContainer
+      padding: 10
+    } : false,
+    
+
+    selecting: {
+      enabled: true,
+      multiple: true,
+      rubberband: true,
+      movable: true
+    },
+    
+
+    connecting: {
+      allowBlank: false,
+      allowLoop: false,
+      allowNode: false,
+      allowEdge: false,
+      allowPort: true
     }
   })
+  
+  console.log('Graph instance created:', graphInstance)
+  console.log('Container element:', dagContainer)
+  
+
+  const { canvasColors } = useCanvasTheme()
+  const updateTheme = () => {
+    const colors = canvasColors.value
+    
+
+    graphInstance.drawBackground({
+      color: colors.background
+    })
+  }
+  
+
+  window.addEventListener('canvas-theme-change', updateTheme)
+  
+
+  graphInstance.on('scale', ({ sx }: any) => {
+    const container = dagContainer
+    const gridElement = container.querySelector('.x6-graph-grid')
+    
+    if (gridElement) {
+
+      let opacity = 1
+      if (sx < 0.5) {
+        opacity = 0.3
+        gridElement.classList.add('zoom-small')
+      } else if (sx > 2) {
+        opacity = 0.6
+        gridElement.classList.add('zoom-large')
+      } else if (sx > 4) {
+        opacity = 0.4
+        gridElement.classList.add('zoom-extra-large')
+      } else {
+        gridElement.classList.remove('zoom-small', 'zoom-large', 'zoom-extra-large')
+      }
+      
+      ;(gridElement as HTMLElement).style.opacity = opacity.toString()
+    }
+  })
+  
+
+  let frameCount = 0
+  let lastTime = performance.now()
+  
+  const monitorPerformance = () => {
+    frameCount++
+    const currentTime = performance.now()
+    
+    if (currentTime - lastTime >= 1000) {
+      const fps = Math.round((frameCount * 1000) / (currentTime - lastTime))
+      
+
+      if (fps < 30) {
+        dagContainer.classList.add('canvas-performance-mode')
+      } else {
+        dagContainer.classList.remove('canvas-performance-mode')
+      }
+      
+      frameCount = 0
+      lastTime = currentTime
+    }
+    
+    requestAnimationFrame(monitorPerformance)
+  }
+  
+
+  requestAnimationFrame(monitorPerformance)
+  
+  return graphInstance
 }

@@ -15,22 +15,400 @@
  * limitations under the License.
  */
 
+
 .dag-node {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  background-color: #fff;
-  border: 1px solid #c2c8d5;
-  border-left: 4px solid #5F95FF;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.06);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  height: 100% !important;
+  width: 100% !important;
+  position: relative !important;
+  padding: 12px 18px !important;
+  min-height: 44px !important;
+  min-width: 180px !important;
+  box-sizing: border-box !important;
+  
+
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  
+
+  color: #1f2937 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  
+
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 100 !important;
+  overflow: visible !important;
+  
+
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+
+  &:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    box-shadow: 
+      0 12px 32px rgba(0, 0, 0, 0.12),
+      0 6px 16px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-4px) scale(1.02) !important;
+    filter: brightness(1.05);
+  }
+  
+
+  &.selected,
+  &:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 
+      0 12px 32px rgba(0, 0, 0, 0.1),
+      0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+  }
 }
 
-.dag-node-label {
-  display: inline-block;
+
+@keyframes node-entrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulse-running {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+
+@keyframes pulse-success {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes pulse-error {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+
+.dag-node-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  
+  span {
+    display: block;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+}
+
+
+.dag-node-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    color: #1f2937 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+
+.dag-node-port {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6366f1;
+  border: 2px solid #fff;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 200;
+  
+  &.port-input {
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  &.port-output {
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  &:hover,
+  &.is-active {
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+  }
+}
+
+
+.container {
+  height: 100%;
   width: 100%;
-  text-align: center;
-  color: #666;
-  font-size: 12px;
+  position: relative;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.dag-container {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+}
+
+
+.minimap {
+  position: absolute;
+  right: 20px;
+  bottom: 60px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  
+
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+
+:global {
+  /* 连接线创建时的样式 */
+  .x6-edge.x6-edge-creating .x6-edge-path {
+    stroke: #6366f1 !important;
+    stroke-width: 2px !important;
+    stroke-dasharray: 5, 5 !important;
+    animation: edge-creating 0.5s linear infinite !important;
+  }
+  
+  @keyframes edge-creating {
+    to {
+      stroke-dashoffset: -10;
+    }
+  }
+  
+
+  .x6-node-tool-remove,
+  .x6-node-tool-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+
+  .x6-node-tools {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+  }
+  
+  .x6-node-tool {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+  }
+  
+
+  .x6-node-tool text {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+    font-size: 12px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+  
+
+  .x6-port,
+  .x6-port-body {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+  
+
+  .x6-node {
+    .x6-node-content {
+      visibility: visible !important;
+      opacity: 1 !important;
+      display: block !important;
+    }
+  }
+  
+
+  .x6-edge {
+    .x6-edge-path {
+      stroke: #9CA3AF !important;
+      stroke-width: 2px !important;
+      stroke-linecap: round !important;
+      stroke-linejoin: round !important;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+
+    .x6-edge-marker {
+      fill: #9CA3AF !important;
+      stroke: #9CA3AF !important;
+      filter: none !important;
+    }
+    
+
+    &:hover {
+      .x6-edge-path {
+        stroke: #4B5563 !important;
+        stroke-width: 2.5px !important;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15)) !important;
+      }
+      
+      .x6-edge-marker {
+        fill: #4B5563 !important;
+        stroke: #4B5563 !important;
+      }
+    }
+    
+
+    &.selected {
+      .x6-edge-path {
+        stroke: #3b82f6 !important;
+        stroke-width: 4px !important;
+        stroke-dasharray: 8 4 !important;
+        animation: edge-flow 2s linear infinite !important;
+      }
+    }
+  }
+  
+
+  @keyframes edge-flow {
+    0% {
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dashoffset: 12;
+    }
+  }
+  
+
+  .x6-edge-label {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+}
+
+
+[data-theme="dark"] {
+  .container {
+    background: #111827;
+    border-color: #374151;
+  }
+  
+  .minimap {
+    background: rgba(17, 24, 39, 0.95);
+    border-color: #374151;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+  
+  .dag-node {
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+    border-color: #374151;
+    backdrop-filter: blur(8px);
+    
+    .dag-node-label {
+      color: #d1d5db;
+    }
+    
+    &:hover .dag-node-label {
+      color: #f3f4f6;
+    }
+  }
+  
+  .dag-node-port {
+    border-color: #111827;
+  }
+  
+
+  :global {
+    .x6-edge {
+      .x6-edge-path {
+        stroke: #8b5cf6 !important;
+        filter: drop-shadow(0 2px 4px rgba(139, 92, 246, 0.3)) !important;
+      }
+      
+      .x6-edge-marker {
+        fill: #8b5cf6 !important;
+        stroke: #8b5cf6 !important;
+      }
+      
+      &:hover {
+        .x6-edge-path {
+          stroke: #a78bfa !important;
+          filter: drop-shadow(0 4px 8px rgba(167, 139, 250, 0.4)) !important;
+        }
+      }
+    }
+    
+    .x6-edge-label {
+      background: rgba(17, 24, 39, 0.95) !important;
+      border-color: #374151 !important;
+      color: #d1d5db !important;
+    }
+  }
 }
