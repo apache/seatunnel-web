@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,8 @@ public class MonitorTaskScheduler {
                 .writeQps(metrics.getWriteQps())
                 .recordDelay(metrics.getRecordDelay())
                 .status(metrics.getStatus())
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
                 .createUserId(-1)
                 .updateUserId(-1)
                 .build();
