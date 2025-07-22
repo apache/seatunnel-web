@@ -209,7 +209,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
               onClick: (row) => void handlePause(row.id)
             },
             {
-              text: "查看日志",
+              text: t('project.synchronization_instance.view_logs'),
               icon: h(AlignLeftOutlined),
               onClick: (row) => void handleViewLogs(row)
             },

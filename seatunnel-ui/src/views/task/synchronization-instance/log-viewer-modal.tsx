@@ -50,7 +50,7 @@ const LogViewerModal = defineComponent({
   setup(props) {
     const { t } = useI18n()
     
-    // 状态
+    // State
     const logNodes = ref<any[]>([])
     const selectedLogNode = ref('')
     const logContent = ref('')
@@ -63,17 +63,17 @@ const LogViewerModal = defineComponent({
     const refreshTimerId = ref<number | null>(null)
     const userScrolled = ref(false)
     
-    // 刷新间隔选项
+    // Refresh interval options
     const refreshIntervalOptions = [
-      { label: "关闭刷新", value: 0 },
-      { label: "1秒", value: 1 },
-      { label: "5秒", value: 5 },
-      { label: "10秒", value: 10 },
-      { label: "30秒", value: 30 },
-      { label: "60秒", value: 60 }
+      { label: t('project.synchronization_instance.refresh_off'), value: 0 },
+      { label: t('project.synchronization_instance.refresh_1s'), value: 1 },
+      { label: t('project.synchronization_instance.refresh_5s'), value: 5 },
+      { label: t('project.synchronization_instance.refresh_10s'), value: 10 },
+      { label: t('project.synchronization_instance.refresh_30s'), value: 30 },
+      { label: t('project.synchronization_instance.refresh_60s'), value: 60 }
     ]
     
-    // 获取日志节点列表
+    // Fetch log node list
     const fetchLogNodes = async () => {
       if (!props.jobId) return
       
@@ -84,7 +84,7 @@ const LogViewerModal = defineComponent({
         const response = await getLogNodes(props.jobId)
         console.log('Log nodes response:', response)
         
-        // 确保response.data是一个数组
+        // Ensure response.data is an array
         if (Array.isArray(response.data)) {
           logNodes.value = response.data
         } else {
@@ -104,16 +104,16 @@ const LogViewerModal = defineComponent({
         }
       } catch (err: any) {
         console.error('Error fetching log nodes:', err)
-        error.value = err.message || "获取日志列表失败"
+        error.value = err.message || t('project.synchronization_instance.fetch_logs_error')
         loading.value = false
       }
     }
     
-    // 获取日志内容
+    // Fetch log content
     const fetchLogContent = async () => {
       if (!selectedLogNode.value) return
       
-      // 只在首次加载时显示加载状态，避免刷新时闪烁
+      // Only show loading status on first load to avoid flicker when refreshing
       if (logContent.value === '') {
         loadingLogs.value = true
       }
@@ -124,26 +124,26 @@ const LogViewerModal = defineComponent({
         const response = await getLogContent(selectedLogNode.value)
         console.log('Log content response:', response)
         
-        // 检查response.data是否存在
+        // Check if response.data exists
         if (response && response.data !== undefined) {
-          // 确保日志内容是字符串
+          // Ensure log content is a string
           let newContent = '';
           if (typeof response.data === 'string') {
             newContent = response.data
           } else if (typeof response.data === 'object') {
-            // 如果是对象，尝试将其转换为字符串
+            // If it's an object, convert it to string
             newContent = JSON.stringify(response.data, null, 2)
           } else {
-            // 其他情况，尝试强制转换为字符串
+            // For other cases, force convert to string
             newContent = String(response.data)
           }
           
-          // 只更新内容，不替换整个内容，避免闪烁
+          // Only update content, not replace entire content, to avoid flicker
           if (newContent !== logContent.value) {
             logContent.value = newContent
             console.log('Log content updated:', newContent.substring(0, 100) + '...')
             
-            // 只有在自动滚动开启且用户没有手动滚动时才滚动到底部
+            // Only scroll to bottom when auto-scroll is enabled and user hasn't manually scrolled
             if (autoScroll.value && !userScrolled.value) {
               scrollToBottom()
             }
@@ -159,13 +159,13 @@ const LogViewerModal = defineComponent({
         loadingLogs.value = false
       } catch (err: any) {
         console.error('Error fetching log content:', err)
-        error.value = err.message || "获取日志内容失败"
+        error.value = err.message || t('project.synchronization_instance.fetch_log_content_error')
         loading.value = false
         loadingLogs.value = false
       }
     }
     
-    // 滚动到底部
+    // Scroll to bottom
     const scrollToBottom = () => {
       nextTick(() => {
         if (logContentRef.value) {
@@ -174,7 +174,7 @@ const LogViewerModal = defineComponent({
       })
     }
     
-    // 设置刷新定时器
+    // Set refresh timer
     const setupRefreshInterval = () => {
       clearRefreshTimer()
       
@@ -185,7 +185,7 @@ const LogViewerModal = defineComponent({
       }
     }
     
-    // 清除刷新定时器
+    // Clear refresh timer
     const clearRefreshTimer = () => {
       if (refreshTimerId.value !== null) {
         clearInterval(refreshTimerId.value)
@@ -193,12 +193,12 @@ const LogViewerModal = defineComponent({
       }
     }
     
-    // 手动刷新
+    // Manual refresh
     const handleRefresh = () => {
       fetchLogContent()
     }
     
-    // 处理滚动事件
+    // Handle scroll event
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLElement
       const isAtBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 10
@@ -206,18 +206,18 @@ const LogViewerModal = defineComponent({
       userScrolled.value = !isAtBottom
     }
     
-    // 处理节点选择变化
+    // Handle node selection change
     watch(() => selectedLogNode.value, () => {
       logContent.value = ''
       fetchLogContent()
     })
     
-    // 处理刷新间隔变化
+    // Handle refresh interval change
     watch(() => refreshInterval.value, () => {
       setupRefreshInterval()
     })
     
-    // 处理模态框显示状态变化
+    // Handle modal show status change
     watch(() => props.show, (newVal) => {
       if (newVal) {
         fetchLogNodes()
@@ -227,7 +227,7 @@ const LogViewerModal = defineComponent({
       }
     })
     
-    // 组件挂载
+    // Component mounted
     onMounted(() => {
       if (props.show) {
         fetchLogNodes()
@@ -235,7 +235,7 @@ const LogViewerModal = defineComponent({
       }
     })
     
-    // 组件卸载
+    // Component unmounted
     onUnmounted(() => {
       clearRefreshTimer()
     })
@@ -265,7 +265,7 @@ const LogViewerModal = defineComponent({
       <NModal
         show={this.show}
         onUpdateShow={(v: boolean) => this.$emit('update:show', v)}
-        title={"查看日志" + (this.jobName ? `: ${this.jobName}` : '')}
+        title={t('project.synchronization_instance.view_logs') + (this.jobName ? `: ${this.jobName}` : '')}
         style="width: 90%; max-width: 1600px;"
         preset="card"
       >
@@ -278,7 +278,7 @@ const LogViewerModal = defineComponent({
           
           <div class={styles['control-panel']}>
             <div class={styles['control-group']}>
-              <label class={styles['control-label']}>日志节点:</label>
+              <label class={styles['control-label']}>{t('project.synchronization_instance.log_node')}:</label>
               <NSelect
                 v-model:value={this.selectedLogNode}
                 options={this.logNodes.map(node => ({
@@ -293,11 +293,11 @@ const LogViewerModal = defineComponent({
             
             <div class={styles['control-group']}>
               <div class={styles['control-item']}>
-                <label class={styles['control-label']}>自动滚动:</label>
+                <label class={styles['control-label']}>{t('project.synchronization_instance.auto_scroll')}:</label>
                 <NSwitch v-model:value={this.autoScroll} />
               </div>
               <div class={styles['control-item']}>
-                <label class={styles['control-label']}>自动刷新:</label>
+                <label class={styles['control-label']}>{t('project.synchronization_instance.auto_refresh')}:</label>
                 <NSelect
                   v-model:value={this.refreshInterval}
                   options={this.refreshIntervalOptions}
@@ -305,7 +305,7 @@ const LogViewerModal = defineComponent({
                 />
               </div>
               <NButton onClick={this.handleRefresh} loading={this.loadingLogs} class={styles['refresh-button']}>
-                刷新
+                {t('project.synchronization_instance.refresh')}
               </NButton>
             </div>
           </div>
@@ -316,7 +316,7 @@ const LogViewerModal = defineComponent({
                 <NSpin size="large" />
               </div>
             ) : this.logNodes.length === 0 ? (
-              <NEmpty description="没有可用的日志" />
+              <NEmpty description={t('project.synchronization_instance.no_logs_available')} />
             ) : (
               <div 
                 class={styles['log-content']} 
@@ -326,7 +326,7 @@ const LogViewerModal = defineComponent({
                 {this.loadingLogs ? (
                   <NSpin size="small" />
                 ) : (
-                  <pre>{this.logContent || "暂无日志内容"}</pre>
+                  <pre>{this.logContent || t('project.synchronization_instance.no_log_content')}</pre>
                 )}
                 {/* 添加一个小提示，当用户手动滚动时显示 */}
                 {this.userScrolled && this.autoScroll && (
@@ -334,7 +334,7 @@ const LogViewerModal = defineComponent({
                     style="position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"
                     onClick={this.scrollToBottom}
                   >
-                    滚动到底部
+                    {t('project.synchronization_instance.scroll_to_bottom')}
                   </div>
                 )}
               </div>

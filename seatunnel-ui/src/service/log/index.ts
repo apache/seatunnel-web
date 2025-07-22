@@ -19,7 +19,7 @@ import { axios } from '@/service/service'
 import rawAxios from 'axios'
 import type { LogParams, LogRes, LogNode } from './types'
 
-// 查询任务日志
+// Query task logs
 export function queryLog(params: LogParams): Promise<LogRes> {
   return axios({
     url: '/log/detail',
@@ -28,37 +28,37 @@ export function queryLog(params: LogParams): Promise<LogRes> {
   })
 }
 
-// 获取日志节点列表
+// Get log node list
 export function getLogNodes(jobId: string | number): Promise<any> {
-  // 这里我们使用原生axios直接请求，避免添加/seatunnel/api/v1前缀
+  // Here we use raw axios to make direct requests, avoiding the addition of /seatunnel/api/v1 prefix
   return rawAxios.get(`/api/logs/${jobId}`, {
     params: { format: 'json' }
   })
 }
 
-// 获取日志内容
+// Get log content
 export function getLogContent(logUrl: string): Promise<{ data: string }> {
   console.log('Getting log content for URL:', logUrl);
   
-  // 处理外部URL
+  // Handle external URLs
   if (logUrl.startsWith('http')) {
     try {
-      // 从URL中提取路径部分
+      // Extract path part from URL
       const url = new URL(logUrl);
       const pathName = url.pathname;
       const search = url.search;
       
-      // 通过代理请求
+      // Request through proxy
       return rawAxios.get(`/api${pathName}${search}`);
     } catch (e) {
       console.error('Error fetching log content:', e);
       return Promise.reject(new Error('Failed to fetch log content'));
     }
   } else {
-    // 如果不是完整URL，则直接使用文件名
+    // If not a complete URL, use the file name directly
     const logFileName = logUrl.split('/').pop() || '';
     
-    // 通过原生axios直接请求，避免添加/seatunnel/api/v1前缀
+    // Directly request through raw axios, avoiding the addition of /seatunnel/api/v1 prefix
     return rawAxios.get(`/api/logs/content/${logFileName}`);
   }
 }

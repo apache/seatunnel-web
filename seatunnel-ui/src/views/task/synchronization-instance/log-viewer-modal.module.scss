@@ -25,18 +25,18 @@
 .control-group {
   display: flex;
   align-items: center;
-  gap: 16px; /* 控制组内元素间距 */
+  gap: 16px; /* Controls spacing between elements in the group */
 }
 
 .control-item {
   display: flex;
   align-items: center;
-  gap: 8px; /* 控制标签和控件之间的间距 */
+  gap: 8px; /* Controls spacing between labels and components */
 }
 
 .control-label {
   display: inline-block;
-  width: 70px; /* 固定标签宽度，确保对齐 */
+  width: 70px; /* Fixed label width to ensure alignment */
   text-align: right;
   margin-right: 8px;
   white-space: nowrap;
@@ -47,38 +47,38 @@
 }
 
 .log-content-container {
-  height: 70vh; /* 使用视口高度单位，确保在不同屏幕尺寸下都有足够的高度 */
-  min-height: 500px; /* 设置最小高度，确保在小屏幕上也有足够的空间 */
+  height: 70vh; /* Uses viewport height unit to ensure sufficient height on different screen sizes */
+  min-height: 500px; /* Sets minimum height to ensure enough space on small screens */
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  position: relative; /* 添加相对定位，以便内部元素可以使用绝对定位 */
-  margin-top: 10px; /* 添加顶部边距，与上方控件分隔 */
-  border-radius: 4px; /* 圆角边框 */
+  position: relative; /* Adds relative positioning for absolute positioning of child elements */
+  margin-top: 10px; /* Adds top margin to separate from controls above */
+  border-radius: 4px; /* Rounded corners */
 }
 
 .log-content {
   height: 100%;
-  overflow: auto !important; /* 强制显示滚动条 */
+  overflow: auto !important; /* Forces scrollbar to be visible */
   font-family: monospace;
-  font-size: 13px; /* 稍微增加字体大小以提高可读性 */
+  font-size: 13px; /* Slightly increased font size for better readability */
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-all;
   padding: 10px;
   background-color: #f5f5f5;
   border-radius: 4px;
-  border: 1px solid #e0e0e0; /* 添加边框以更清晰地区分日志内容区域 */
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* 添加内阴影以增强视觉效果 */
-  
+  border: 1px solid #e0e0e0; /* Adds border for clearer distinction of log content area */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Adds inner shadow for enhanced visual effect */
+
   pre {
     margin: 0;
-    height: auto; /* 改为auto以适应内容 */
-    min-height: 100%; /* 确保至少占满容器高度 */
-    overflow: visible; /* 让pre元素的内容可见，由父容器控制滚动 */
+    height: auto; /* Changed to auto to fit content */
+    min-height: 100%; /* Ensures it occupies at least the container's height */
+    overflow: visible; /* Makes pre element's content visible, controlled by parent container's scroll */
   }
   
-  /* 自定义滚动条样式 - 适用于Webkit浏览器 */
+  /* Custom scrollbar styles - for Webkit browsers */
   &::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -99,7 +99,7 @@
     background: #555;
   }
   
-  /* 适用于Firefox浏览器 */
+  /* For Firefox browsers */
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
 }
