@@ -46,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.net.ssl.SSLContext;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -68,10 +69,13 @@ public class EsRestClient implements AutoCloseable {
 
     public static EsRestClient createInstance(Config pluginConfig) {
         try {
-            List<String> hosts =
-                    JsonUtils.toList(
-                            pluginConfig.getString(ElasticSearchOptionRule.HOSTS.key()),
-                            String.class);
+            List<String> hosts;
+            String hostsConfig = pluginConfig.getString(ElasticSearchOptionRule.HOSTS.key());
+            try {
+                hosts = JsonUtils.toList(hostsConfig, String.class);
+            } catch (RuntimeException e) {
+                hosts = Collections.singletonList(hostsConfig);
+            }
             Optional<String> username = Optional.empty();
             Optional<String> password = Optional.empty();
             if (pluginConfig.hasPath(ElasticSearchOptionRule.USERNAME.key())) {
