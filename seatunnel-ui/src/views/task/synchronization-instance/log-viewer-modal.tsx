@@ -328,7 +328,7 @@ const LogViewerModal = defineComponent({
                 ) : (
                   <pre>{this.logContent || t('project.synchronization_instance.no_log_content')}</pre>
                 )}
-                {/* 添加一个小提示，当用户手动滚动时显示 */}
+                {/* Add a small hint that will be displayed when the user manually scrolls */}
                 {this.userScrolled && this.autoScroll && (
                   <div 
                     style="position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;"
