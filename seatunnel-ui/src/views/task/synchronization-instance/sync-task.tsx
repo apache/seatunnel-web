@@ -43,6 +43,7 @@ import {
 import { useI18n } from 'vue-i18n'
 import { stateType } from '@/common/common'
 import LogModal from '@/components/log-modal'
+import LogViewerModal from './log-viewer-modal'
 import { SearchOutlined, ReloadOutlined } from '@vicons/antd'
 import { useAsyncState } from '@vueuse/core'
 import { queryLog } from '@/service/log'
@@ -366,6 +367,12 @@ const SyncTask = defineComponent({
           logLoadingRef={this.logLoadingRef}
           onConfirmModal={() => (this.showModalRef = false)}
           onRefreshLogs={this.refreshLogs}
+        />
+        <LogViewerModal
+          show={this.showLogViewerModal}
+          jobId={this.currentJobId}
+          jobName={this.currentJobName}
+          onUpdateShow={(v: boolean) => this.showLogViewerModal = v}
         />
       </NSpace>
     )

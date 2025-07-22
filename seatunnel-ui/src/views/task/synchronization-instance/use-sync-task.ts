@@ -87,7 +87,18 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     datePickerRange: [
       format(subDays(startOfToday(), 30), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
-    ]
+    ],
+    // 日志查看相关状态
+    showLogViewerModal: ref(false),
+    currentJobId: ref(''),
+    currentJobName: ref(''),
+    logNodes: [] as any[],
+    selectedLogNode: ref(''),
+    logContent: ref(''),
+    logLoading: ref(false),
+    refreshInterval: ref(5),
+    autoScroll: ref(true),
+    refreshTimerId: ref(0)
   })
 
   const creatInstanceButtons = (variables: any) => {
@@ -190,7 +201,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
         {
           title: t('project.synchronization_instance.operation'),
           key: 'operation',
-          itemNum: 3,
+          itemNum: 4,
           buttons: [
             {
               text: t('project.workflow.recovery_suspend'),
@@ -201,6 +212,11 @@ export function useSyncTask(syncTaskType = 'BATCH') {
               text: t('project.workflow.pause'),
               icon: h(PauseCircleOutlined),
               onClick: (row) => void handlePause(row.id)
+            },
+            {
+              text: t('project.synchronization_instance.view_logs'),
+              icon: h(AlignLeftOutlined),
+              onClick: (row) => void handleViewLogs(row)
             },
             {
               isDelete: true,
@@ -256,6 +272,13 @@ export function useSyncTask(syncTaskType = 'BATCH') {
   const handleLog = (row: any) => {
     variables.showModalRef = true
     variables.row = row
+  }
+  
+  const handleViewLogs = (row: any) => {
+    variables.showLogViewerModal = true
+    variables.currentJobId = row.jobEngineId || row.id
+    variables.currentJobName = row.jobDefineName
+    console.log('handleViewLogs row:', row)
   }
 
   const handleCleanState = (row: any) => {
@@ -336,7 +359,8 @@ export function useSyncTask(syncTaskType = 'BATCH') {
     getTableData,
     onReset,
     batchBtnListClick,
-    creatInstanceButtons
+    creatInstanceButtons,
+    handleViewLogs
   }
 }
 

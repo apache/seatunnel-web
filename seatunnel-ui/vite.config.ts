@@ -47,6 +47,11 @@ export default defineConfig({
       '/seatunnel/api/v1': {
         target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
         changeOrigin: true
+      },
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }
