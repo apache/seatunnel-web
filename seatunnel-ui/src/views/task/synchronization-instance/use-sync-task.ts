@@ -58,7 +58,6 @@ import ErrorMessageHighlight from './error-message-highlight'
 export function useSyncTask(syncTaskType = 'BATCH') {
   const { t } = useI18n()
   const router: Router = useRouter()
-  // const projectStore = useProjectStore()
   const route = useRoute()
   const message = useMessage()
 
@@ -88,7 +87,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
       format(subDays(startOfToday(), 30), 'yyyy-MM-dd HH:mm:ss'),
       format(endOfToday(), 'yyyy-MM-dd HH:mm:ss')
     ],
-    // 日志查看相关状态
     showLogViewerModal: ref(false),
     currentJobId: ref(''),
     currentJobName: ref(''),
@@ -122,9 +120,6 @@ export function useSyncTask(syncTaskType = 'BATCH') {
           key: 'jobDefineName',
           ...COLUMN_WIDTH_CONFIG['link_name'],
           button: {
-            // disabled: (row: any) =>
-            //   !row.jobInstanceEngineId ||
-            //   !row.jobInstanceEngineId.includes('::'),
             onClick: (row: any) => {
               router.push({
                 path: `/task/synchronization-instance/${row.jobDefineId}`,
@@ -214,7 +209,7 @@ export function useSyncTask(syncTaskType = 'BATCH') {
               onClick: (row) => void handlePause(row.id)
             },
             {
-              text: t('project.synchronization_instance.view_logs'),
+              text: "查看日志",
               icon: h(AlignLeftOutlined),
               onClick: (row) => void handleViewLogs(row)
             },
