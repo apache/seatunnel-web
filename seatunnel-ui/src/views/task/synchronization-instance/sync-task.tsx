@@ -125,7 +125,7 @@ const SyncTask = defineComponent({
             variables.logLoadingRef = false
           }
         }),
-        {}
+        null
       )
 
       return state
