@@ -27,6 +27,8 @@ public interface IJobTaskService {
 
     JobTaskInfo getTaskConfig(long jobVersionId);
 
+    String exportJobConfig(long jobVersionId);
+
     JobTaskCheckRes saveJobDAG(long jobVersionId, JobDAG jobDAG);
 
     void saveSingleTask(long jobVersionId, PluginConfig pluginConfig);

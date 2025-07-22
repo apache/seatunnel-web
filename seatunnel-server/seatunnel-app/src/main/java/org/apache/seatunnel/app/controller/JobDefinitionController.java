@@ -81,6 +81,12 @@ public class JobDefinitionController {
         return Result.success(jobService.getJobDefinitionByJobId(jobId));
     }
 
+    @GetMapping("/export/{jobId}")
+    @ApiOperation(value = "export job definition as SeaTunnel conf", httpMethod = "GET")
+    Result<String> exportJobConfig(@PathVariable long jobId) {
+        return Result.success(jobTask.exportJobConfig(jobId));
+    }
+
     @DeleteMapping
     @ApiOperation(value = "delete job definition", httpMethod = "DELETE")
     Result<Void> deleteJobDefinition(
