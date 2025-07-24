@@ -15,26 +15,19 @@
  * limitations under the License.
  */
 
-interface IdReq {
+export interface LogParams {
   taskInstanceId: number
+  limit?: number
+  skipLineNum?: number
 }
 
-interface LogReq extends IdReq {
-  limit: number
-  skipLineNum: number
-}
-
-interface LogRes {
+export interface LogRes {
   log: string
-  currentLogLineNumber: number
   hasNext: boolean
 }
 
-interface TaskLogReq {
-  taskCode: number
-  commandId: number
-  skipLineNum: number
-  limit: number
+export interface LogNode {
+  node: string
+  logLink: string
+  logName: string
 }
-
-export { IdReq, LogReq, LogRes, TaskLogReq }

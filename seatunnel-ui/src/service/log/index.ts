@@ -16,10 +16,11 @@
  */
 
 import { axios } from '@/service/service'
-import { AxiosRequestConfig } from 'axios'
-import { IdReq, LogReq, TaskLogReq } from './types'
+import rawAxios from 'axios'
+import type { LogParams, LogRes, LogNode } from './types'
 
-export function queryLog(params: LogReq): any {
+// Query task logs
+export function queryLog(params: LogParams): Promise<LogRes> {
   return axios({
     url: '/log/detail',
     method: 'get',
@@ -27,20 +28,37 @@ export function queryLog(params: LogReq): any {
   })
 }
 
-export function downloadTaskLog(params: IdReq): any {
-  return axios({
-    url: '/log/download-log',
-    method: 'get',
-    params
+// Get log node list
+export function getLogNodes(jobId: string | number): Promise<any> {
+  // Here we use raw axios to make direct requests, avoiding the addition of /seatunnel/api/v1 prefix
+  return rawAxios.get(`/api/logs/${jobId}`, {
+    params: { format: 'json' }
   })
 }
 
-export function queryTaskLog(params: TaskLogReq): any {
-  return axios({
-    url: '/ws/studio/taskLog',
-    method: 'get',
-    params,
-    retry: 3,
-    retryDelay: 1000
-  } as AxiosRequestConfig)
+// Get log content
+export function getLogContent(logUrl: string): Promise<{ data: string }> {
+  console.log('Getting log content for URL:', logUrl);
+  
+  // Handle external URLs
+  if (logUrl.startsWith('http')) {
+    try {
+      // Extract path part from URL
+      const url = new URL(logUrl);
+      const pathName = url.pathname;
+      const search = url.search;
+      
+      // Request through proxy
+      return rawAxios.get(`/api${pathName}${search}`);
+    } catch (e) {
+      console.error('Error fetching log content:', e);
+      return Promise.reject(new Error('Failed to fetch log content'));
+    }
+  } else {
+    // If not a complete URL, use the file name directly
+    const logFileName = logUrl.split('/').pop() || '';
+    
+    // Directly request through raw axios, avoiding the addition of /seatunnel/api/v1 prefix
+    return rawAxios.get(`/api/logs/content/${logFileName}`);
+  }
 }
