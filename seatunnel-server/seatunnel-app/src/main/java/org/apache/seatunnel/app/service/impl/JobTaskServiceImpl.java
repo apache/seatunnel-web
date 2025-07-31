@@ -20,9 +20,11 @@ import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.seatunnel.shade.com.typesafe.config.ConfigFactory;
 
 import org.apache.seatunnel.app.config.ConnectorDataSourceMapperConfig;
+import org.apache.seatunnel.app.dal.dao.IJobDefinitionDao;
 import org.apache.seatunnel.app.dal.dao.IJobLineDao;
 import org.apache.seatunnel.app.dal.dao.IJobTaskDao;
 import org.apache.seatunnel.app.dal.dao.IJobVersionDao;
+import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.dal.entity.JobLine;
 import org.apache.seatunnel.app.dal.entity.JobTask;
 import org.apache.seatunnel.app.dal.entity.JobVersion;
@@ -95,6 +97,9 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
 
     @Resource(name = "jobVersionDaoImpl")
     private IJobVersionDao jobVersionDao;
+
+    @Resource(name = "jobDefinitionDaoImpl")
+    private IJobDefinitionDao jobDefinitionDao;
 
     @Resource private IDatasourceService datasourceService;
 
@@ -226,6 +231,16 @@ public class JobTaskServiceImpl extends SeatunnelBaseServiceImpl implements IJob
                                     }
                                 })
                         .collect(Collectors.toList()));
+    }
+
+    @Override
+    public String exportJobConfig(long jobDefinitionId) {
+        JobDefinition job = jobDefinitionDao.getJob(jobDefinitionId);
+        JobVersion latestVersion = jobVersionDao.getLatestVersion(job.getId());
+        List<JobTask> tasks = jobTaskDao.getTasksByVersionId(latestVersion.getId());
+        List<JobLine> lines = jobLineDao.getLinesByVersionId(latestVersion.getId());
+        return jobInstanceService.generateJobConfig(
+                job.getId(), tasks, lines, latestVersion.getEnv(), null);
     }
 
     @Override
