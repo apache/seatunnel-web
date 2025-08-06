@@ -22,6 +22,8 @@ import org.apache.seatunnel.engine.core.job.JobStatus;
 import org.apache.seatunnel.server.common.SeatunnelErrorEnum;
 import org.apache.seatunnel.server.common.SeatunnelException;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,8 @@ import java.util.regex.Pattern;
 
 public class JobUtils {
 
+    private static final List<String> SKIP_MATCH_KEY =
+            Lists.newArrayList("TABLE_NAME", "DATABASE_NAME");
     // The maximum length of the job execution error message, 4KB
     private static final int ERROR_MESSAGE_MAX_LENGTH = 4096;
     private static final Pattern placeholderPattern =
@@ -82,6 +86,10 @@ public class JobUtils {
         while (matcher.find()) {
             String escapeCharacter = matcher.group(1);
             String placeholderName = matcher.group(2);
+
+            if (SKIP_MATCH_KEY.contains(placeholderName.toUpperCase())) {
+                continue;
+            }
 
             if (escapeCharacter != null && !escapeCharacter.isEmpty()) {
                 String withoutEscape =

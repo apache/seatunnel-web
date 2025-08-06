@@ -17,6 +17,10 @@
 connector-datasource-mapper:
 
   connectorDatasourceMappers:
+    Doris:
+      dataSources:
+        - Doris
+
     Jdbc:
       dataSources:
         - JDBC-Mysql
@@ -73,6 +77,11 @@ connector-datasource-mapper:
         - Hive
 
   sourceDatasourceFeatures:
+    Doris:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
     JDBC-Mysql:
       businessMode:
         - DATA_INTEGRATION
@@ -173,6 +182,12 @@ connector-datasource-mapper:
         - SINGLE_TABLE
         - MULTIPLE_TABLE
   sinkDatasourceFeatures:
+    Doris:
+      businessMode:
+        - DATA_INTEGRATION
+      sceneMode:
+        - SINGLE_TABLE
+        - MULTIPLE_TABLE
     JDBC-Mysql:
       businessMode:
         - DATA_INTEGRATION
