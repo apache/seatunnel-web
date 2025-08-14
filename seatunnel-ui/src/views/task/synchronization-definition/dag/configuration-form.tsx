@@ -222,6 +222,7 @@ const ConfigurationForm = defineComponent({
               path='database'
             >
               <NSelect
+                tag={props.nodeType === 'sink'}
                 filterable
                 loading={state.databaseLoading}
                 multiple={state.model.sceneMode === 'SPLIT_TABLE'}
@@ -244,13 +245,14 @@ const ConfigurationForm = defineComponent({
                 path='tableName'
               >
                 <NSelect
+                  tag={props.nodeType === 'sink'}
                   filterable
                   loading={state.tableLoading}
                   options={state.tableOptions}
                   v-model={[state.model.tableName, 'value']}
                   onUpdateValue={onTableChange}
                   onSearch={onTableSearch}
-                  remote
+                  // remote
                   virtualScroll
                   clearable
                   tag={props.nodeType === 'sink'}
