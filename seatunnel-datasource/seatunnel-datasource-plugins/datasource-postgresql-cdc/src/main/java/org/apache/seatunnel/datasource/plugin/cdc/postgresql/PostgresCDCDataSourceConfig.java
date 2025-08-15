@@ -16,17 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.seatunnel.datasource.plugin.cdc.mysql;
+package org.apache.seatunnel.datasource.plugin.cdc.postgresql;
 
 import org.apache.seatunnel.datasource.plugin.api.DataSourcePluginInfo;
 import org.apache.seatunnel.datasource.plugin.api.DatasourcePluginTypeEnum;
 
-public class MysqlCDCDataSourceConfig {
+public class PostgresCDCDataSourceConfig {
 
-    public static final String PLUGIN_NAME = "MySQL-CDC";
+    public static final String PLUGIN_NAME = "Postgres-CDC";
 
-    public static final DataSourcePluginInfo MYSQL_CDC_DATASOURCE_PLUGIN_INFO =
+    public static final DataSourcePluginInfo POSTGRES_CDC_DATASOURCE_PLUGIN_INFO =
             DataSourcePluginInfo.builder()
                     .name(PLUGIN_NAME)
                     .icon(PLUGIN_NAME)
