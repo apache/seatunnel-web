@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
+import { getTableColumn } from '@/common/table'
 import { h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NPopover, NButton, NSpace } from 'naive-ui'
-import JsonHighlight from '../components/json-highlight'
-import { getTableColumn } from '@/common/table'
 
 import { useTableOperation } from '@/hooks'
+import JsonHighlight from '@/views/datasource/components/json-highlight'
 import { EditOutlined } from '@vicons/antd'
+import { NButton, NPopover } from 'naive-ui'
 
 export function useColumns(onCallback: Function) {
   const { t } = useI18n()
@@ -31,21 +31,25 @@ export function useColumns(onCallback: Function) {
       ...getTableColumn([{ key: 'id', title: t('datasource.id') }]),
       {
         title: t('datasource.datasource_name'),
-        key: 'datasourceName'
+        key: 'datasourceName',
+        align: 'center'
       },
       {
         title: t('datasource.datasource_user_name'),
-        key: 'createUserName'
+        key: 'createUserName',
+        align: 'center'
       },
       {
         title: t('datasource.datasource_type'),
         key: 'pluginName',
-        width: 180
+        width: 180,
+        align: 'center'
       },
       {
         title: t('datasource.datasource_parameter'),
         key: 'parameter',
         width: 180,
+        align: 'center',
         render: (row: any) => {
           return row.datasourceConfig
             ? h(
@@ -53,14 +57,20 @@ export function useColumns(onCallback: Function) {
                 { trigger: 'click' },
                 {
                   trigger: () =>
-                    h(NButton, { text: true }, {
-                      default: () => t('datasource.click_to_view')
-                    }),
+                    h(
+                      NButton,
+                      { text: true },
+                      {
+                        default: () => t('datasource.click_to_view')
+                      }
+                    ),
                   default: () =>
                     h(JsonHighlight, {
-                      params: JSON.stringify(
-                        row.datasourceConfig
-                      ) as string
+                      params: JSON.stringify({
+                        url: row.datasourceConfig.url,
+                        driver: row.datasourceConfig.driver,
+                        user: row.datasourceConfig.user
+                      })
                     })
                 }
               )
@@ -70,15 +80,18 @@ export function useColumns(onCallback: Function) {
       {
         title: t('datasource.description'),
         key: 'description',
+        align: 'center',
         render: (row: any) => row.description || '-'
       },
       {
         title: t('datasource.create_time'),
-        key: 'createTime',
+        align: 'center',
+        key: 'createTime'
       },
       {
         title: t('datasource.update_time'),
-        key: 'updateTime',
+        align: 'center',
+        key: 'updateTime'
       },
       useTableOperation({
         title: t('datasource.operation'),
