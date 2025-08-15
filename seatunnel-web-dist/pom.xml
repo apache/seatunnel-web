@@ -36,6 +36,10 @@
         <postgresql.version>42.4.3</postgresql.version>
         <sqlserver.version>9.2.1.jre8</sqlserver.version>
         <mysql-connector.version>8.0.28</mysql-connector.version>
+        <rpm.build.disable>true</rpm.build.disable>
+        <rpm.release.number>1</rpm.release.number>
+        <rpm.stack.root>/usr/bigtop</rpm.stack.root>
+        <rpm.version>${project.version}-${rpm.release.number}</rpm.version>
     </properties>
 
     <profiles>
@@ -477,6 +481,124 @@
                                         <descriptor>src/main/assembly/seatunnel-web-ci.xml</descriptor>
                                     </descriptors>
                                     <appendAssemblyId>false</appendAssemblyId>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>postinstall_script</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo append="false" file="${project.build.directory}/postinstall.sh">#!/bin/sh
+                                            mkdir -p ${rpm.stack.root}/current
+                                            ln -sfn ${rpm.stack.root}/${rpm.version}/seatunnel-web ${rpm.stack.root}/current
+                                            chmod 755 ${rpm.stack.root}/${rpm.version}/seatunnel-web/bin/*.sh
+                                            chmod 755 /etc/seatunnel-web/conf/*.sh</echo>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>postremove_script</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <target>
+                                        <echo append="false" file="${project.build.directory}/postremove.sh">#!/bin/sh
+                                            rm -f ${rpm.stack.root}/current/seatunnel-web
+                                            rm -rf ${rpm.stack.root}/${rpm.version}</echo>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>2.3.0</version>
+                        <executions>
+                            <execution>
+                                <id>generate-rpm</id>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <group>Development</group>
+                                    <name>seatunnel-web</name>
+                                    <version>${project.version}</version>
+                                    <release>${rpm.release.number}</release>
+                                    <needarch>x86_64</needarch>
+                                    <group>Application/Java</group>
+                                    <defaultFilemode>644</defaultFilemode>
+                                    <defaultDirmode>755</defaultDirmode>
+                                    <defaultUsername>root</defaultUsername>
+                                    <defaultGroupname>root</defaultGroupname>
+                                    <autoRequires>false</autoRequires>
+                                    <disabled>${rpm.build.disable}</disabled>
+                                    <mappings>
+                                        <mapping>
+                                            <directory>${rpm.stack.root}/${rpm.version}/seatunnel-web/</directory>
+                                            <sources>
+                                                <source>
+                                                    <location>${project.build.directory}/apache-seatunnel-web-${project.version}/apache-seatunnel-web-${project.version}/</location>
+                                                    <excludes>
+                                                        <exclude>conf/**</exclude>
+                                                    </excludes>
+                                                </source>
+                                            </sources>
+                                        </mapping>
+                                        <mapping>
+                                            <directory>/etc/seatunnel-web/</directory>
+                                            <sources>
+                                                <source>
+                                                    <location>${project.build.directory}/apache-seatunnel-web-${project.version}/apache-seatunnel-web-${project.version}/</location>
+                                                    <includes>
+                                                        <include>conf/**</include>
+                                                    </includes>
+                                                </source>
+                                            </sources>
+                                        </mapping>
+                                        <mapping>
+                                            <directory>/usr/sbin</directory>
+                                            <filemode>755</filemode>
+                                            <username>root</username>
+                                            <groupname>root</groupname>
+                                            <directoryIncluded>false</directoryIncluded>
+                                            <sources>
+                                                <source>
+                                                    <location>${project.basedir}/sbin/seatunnel-web</location>
+                                                </source>
+                                            </sources>
+                                        </mapping>
+                                        <mapping>
+                                            <directory>/etc/seatunnel-web/conf/</directory>
+                                            <filemode>755</filemode>
+                                            <sources>
+                                                <source>
+                                                    <location>${project.basedir}/conf/seatunnel-web-env.sh</location>
+                                                </source>
+                                            </sources>
+                                        </mapping>
+                                    </mappings>
+                                    <postinstallScriptlet>
+                                        <scriptFile>${project.build.directory}/postinstall.sh</scriptFile>
+                                        <fileEncoding>utf-8</fileEncoding>
+                                    </postinstallScriptlet>
+                                    <postremoveScriptlet>
+                                        <scriptFile>${project.build.directory}/postremove.sh</scriptFile>
+                                        <fileEncoding>utf-8</fileEncoding>
+                                    </postremoveScriptlet>
                                 </configuration>
                             </execution>
                         </executions>
