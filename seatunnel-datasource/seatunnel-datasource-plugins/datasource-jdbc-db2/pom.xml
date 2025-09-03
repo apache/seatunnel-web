@@ -63,10 +63,6 @@
             <artifactId>db2jcc</artifactId>
             <version>db2jcc4</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.seatunnel</groupId>
-            <artifactId>seatunnel-api</artifactId>
-        </dependency>
 
     </dependencies>
 

@@ -22,6 +22,7 @@ import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
 import org.apache.seatunnel.app.domain.request.job.JobExecParam;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutionStatus;
 import org.apache.seatunnel.app.domain.response.executor.JobExecutorRes;
+import org.apache.seatunnel.app.metrics.annotations.Counted;
 import org.apache.seatunnel.app.service.IJobExecutorService;
 import org.apache.seatunnel.app.service.IJobInstanceService;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
@@ -53,6 +54,7 @@ public class JobExecutorController {
     @Resource private IJobInstanceService jobInstanceService;
     @Resource private ITaskInstanceService<SeaTunnelJobInstanceDto> taskInstanceService;
 
+    @Counted(name = "execute_job_request", help = "Total number of execute job requests")
     @PostMapping("/execute")
     @ApiOperation(value = "Execute synchronization tasks", httpMethod = "POST")
     public Result<Long> jobExecutor(
@@ -77,6 +79,7 @@ public class JobExecutorController {
         }
     }
 
+    @Counted(name = "pause_job_request", help = "Total number of pause job requests")
     @GetMapping("/pause")
     public Result<Void> jobPause(
             @ApiParam(value = "jobInstanceId", required = true) @RequestParam Long jobInstanceId) {

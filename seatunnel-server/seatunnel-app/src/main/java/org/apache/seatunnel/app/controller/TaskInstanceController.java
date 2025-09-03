@@ -19,6 +19,8 @@ package org.apache.seatunnel.app.controller;
 
 import org.apache.seatunnel.app.common.Result;
 import org.apache.seatunnel.app.domain.dto.job.SeaTunnelJobInstanceDto;
+import org.apache.seatunnel.app.metrics.annotations.Counted;
+import org.apache.seatunnel.app.metrics.annotations.Timed;
 import org.apache.seatunnel.app.service.ITaskInstanceService;
 import org.apache.seatunnel.app.utils.PageInfo;
 import org.apache.seatunnel.common.constants.JobMode;
@@ -37,6 +39,8 @@ public class TaskInstanceController {
 
     @Autowired ITaskInstanceService<SeaTunnelJobInstanceDto> taskInstanceService;
 
+    @Counted(name = "number_of_job_metric_request", help = "total number of job metrics request")
+    @Timed(name = "job_metric_request_latency", help = "Latency of job metric api  in seconds")
     @GetMapping("/jobMetrics")
     @ApiOperation(value = "get the jobMetrics list ", httpMethod = "GET")
     public Result<PageInfo<SeaTunnelJobInstanceDto>> getTaskInstanceList(

@@ -29,6 +29,8 @@ import org.apache.seatunnel.app.domain.request.datasource.DatasourceReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceDetailRes;
 import org.apache.seatunnel.app.domain.response.datasource.DatasourceRes;
+import org.apache.seatunnel.app.metrics.annotations.Counted;
+import org.apache.seatunnel.app.metrics.annotations.Timed;
 import org.apache.seatunnel.app.service.IDatasourceService;
 import org.apache.seatunnel.app.utils.CartesianProductUtils;
 import org.apache.seatunnel.app.utils.PropertyUtils;
@@ -80,6 +82,8 @@ public class SeatunnelDatasourceController extends BaseController {
     private static final List<String> wsSupportDatasources =
             PropertyUtils.getList(Constants.WS_SUPPORT_DATASOURCES, Constants.COMMA);
 
+    @Counted(name = "create_datasource_requests", help = "Number of create datasource requests")
+    @Timed(name = "create_datasource_latency", help = "Latency of create datasource API")
     @ApiOperation(value = "create datasource", notes = "create datasource")
     @ApiImplicitParams({
         @ApiImplicitParam(
@@ -120,6 +124,10 @@ public class SeatunnelDatasourceController extends BaseController {
                         stringStringMap));
     }
 
+    @Counted(
+            name = "test_connection_requests",
+            help = "Number of test datasource connection requests")
+    @Timed(name = "test_connection_latency", help = "Latency of check datasource connection API")
     @ApiOperation(value = "test datasource connection", notes = "test datasource connection")
     @ApiImplicitParams({
         @ApiImplicitParam(
@@ -142,6 +150,8 @@ public class SeatunnelDatasourceController extends BaseController {
                         req.getPluginName(), DEFAULT_PLUGIN_VERSION, req.getDatasourceConfig()));
     }
 
+    @Counted(name = "update_datasource_requests", help = "Number of update datasource requests")
+    @Timed(name = "update_datasource_latency", help = "Latency of update datasource API")
     @ApiOperation(value = "update datasource", notes = "update datasource")
     @ApiImplicitParams({
         @ApiImplicitParam(
@@ -176,6 +186,8 @@ public class SeatunnelDatasourceController extends BaseController {
                         stringStringMap));
     }
 
+    @Counted(name = "delete_datasource_requests", help = "Number of delete datasource requests")
+    @Timed(name = "delete_datasource_latency", help = "Latency of delete datasource API")
     @ApiOperation(value = "delete datasource by id", notes = "delete datasource by id")
     @DeleteMapping("/{id}")
     Result<Boolean> deleteDatasource(@PathVariable("id") String id) {

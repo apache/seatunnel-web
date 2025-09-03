@@ -25,6 +25,8 @@ import org.apache.seatunnel.app.domain.request.user.UserLoginReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.user.AddUserRes;
 import org.apache.seatunnel.app.domain.response.user.UserSimpleInfoRes;
+import org.apache.seatunnel.app.metrics.annotations.Counted;
+import org.apache.seatunnel.app.metrics.annotations.Timed;
 import org.apache.seatunnel.app.service.IUserService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -110,6 +112,8 @@ public class UserController {
         return Result.success();
     }
 
+    @Counted(name = "user_login", help = "total number of user login request")
+    @Timed(name = "user_login_request_latency", help = "Latency of login request in seconds")
     @PostMapping("/login")
     public Result<UserSimpleInfoRes> login(
             @RequestBody UserLoginReq req,

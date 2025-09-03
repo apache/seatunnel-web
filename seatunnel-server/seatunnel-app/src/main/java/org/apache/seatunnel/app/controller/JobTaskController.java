@@ -22,6 +22,8 @@ import org.apache.seatunnel.app.domain.request.job.JobDAG;
 import org.apache.seatunnel.app.domain.request.job.JobTaskInfo;
 import org.apache.seatunnel.app.domain.request.job.PluginConfig;
 import org.apache.seatunnel.app.domain.response.job.JobTaskCheckRes;
+import org.apache.seatunnel.app.metrics.annotations.Counted;
+import org.apache.seatunnel.app.metrics.annotations.Timed;
 import org.apache.seatunnel.app.service.IJobTaskService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +46,10 @@ public class JobTaskController {
 
     @Resource private IJobTaskService jobTaskService;
 
+    @Counted(name = "save_job_dag_request", help = "Total number of save job dag requests")
+    @Timed(
+            name = "save_job_dag_request_latency",
+            help = "Latency of save job dag request in seconds")
     @PostMapping("/dag/{jobVersionId}")
     @ApiOperation(value = "save job dag", httpMethod = "POST")
     Result<JobTaskCheckRes> saveJobDAG(
@@ -59,6 +65,10 @@ public class JobTaskController {
         return Result.success(jobTaskService.getTaskConfig(jobVersionId));
     }
 
+    @Counted(name = "save_job_task_request", help = "Total number of save job task requests")
+    @Timed(
+            name = "save_job_task_request_latency",
+            help = "Latency of save job task request in seconds")
     @PostMapping("/task/{jobVersionId}")
     @ApiOperation(value = "save or update single task", httpMethod = "POST")
     Result<Void> saveSingleTask(
@@ -77,6 +87,10 @@ public class JobTaskController {
         return Result.success(jobTaskService.getSingleTask(jobVersionId, pluginId));
     }
 
+    @Counted(name = "delete_job_task_request", help = "Total number of delete job task requests")
+    @Timed(
+            name = "delete_job_task_request_latency",
+            help = "Latency of delete job task request in seconds")
     @DeleteMapping("/task/{jobVersionId}")
     @ApiOperation(value = "delete single task", httpMethod = "DELETE")
     Result<Void> deleteSingleTask(

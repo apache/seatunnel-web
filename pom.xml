@@ -99,6 +99,7 @@
         <swagger-annotations.version>1.5.10</swagger-annotations.version>
         <hibernate.validator.version>6.2.2.Final</hibernate.validator.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
+        <prometheus.simpleclient.version>0.16.0</prometheus.simpleclient.version>
         <jsoup.version>1.14.3</jsoup.version>
         <jwt.version>0.10.7</jwt.version>
         <cron-utils.version>9.1.6</cron-utils.version>
@@ -114,6 +115,7 @@
         <log4j.version>1.2.17</log4j.version>
         <log4j-core.version>2.17.1</log4j-core.version>
         <slf4j.version>1.7.36</slf4j.version>
+        <tomcat-embed-core.version>9.0.108</tomcat-embed-core.version>
         <skip.spotless>false</skip.spotless>
     </properties>
 
@@ -378,6 +380,29 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid-spring-boot-starter.version}</version>
             </dependency>
+            <!-- Metric Dependencies -->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient</artifactId>
+                <version>${prometheus.simpleclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_common</artifactId>
+                <version>${prometheus.simpleclient.version}</version>
+            </dependency>
+            <!-- Hotspot JVM metrics-->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_hotspot</artifactId>
+                <version>${prometheus.simpleclient.version}</version>
+            </dependency>
+            <!-- Exposition HTTPServer-->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_httpserver</artifactId>
+                <version>${prometheus.simpleclient.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
@@ -547,6 +572,12 @@
                 <artifactId>auto-service-annotations</artifactId>
                 <version>${auto-service-annotation.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat-embed-core.version}</version>
             </dependency>
 
             <dependency>

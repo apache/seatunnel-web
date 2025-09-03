@@ -22,6 +22,8 @@ import org.apache.seatunnel.app.dal.entity.JobDefinition;
 import org.apache.seatunnel.app.domain.request.job.JobReq;
 import org.apache.seatunnel.app.domain.response.PageInfo;
 import org.apache.seatunnel.app.domain.response.job.JobDefinitionRes;
+import org.apache.seatunnel.app.metrics.annotations.Counted;
+import org.apache.seatunnel.app.metrics.annotations.Timed;
 import org.apache.seatunnel.app.service.IJobDefinitionService;
 import org.apache.seatunnel.app.service.IJobTaskService;
 import org.apache.seatunnel.server.common.CodeGenerateUtils;
@@ -54,6 +56,12 @@ public class JobDefinitionController {
      *
      * @return created job id
      */
+    @Counted(
+            name = "create_job_definition_request",
+            help = "Total number of create job definition requests")
+    @Timed(
+            name = "create_job_definition_request_latency",
+            help = "Latency of create job definition API in seconds")
     @PostMapping
     @ApiOperation(value = "create job definition", httpMethod = "POST")
     Result<Long> createJobDefinition(@RequestBody JobReq jobReq)
@@ -65,6 +73,9 @@ public class JobDefinitionController {
         }
     }
 
+    @Counted(
+            name = "get_job_definitions_request",
+            help = "Total number of get job definitions request")
     @GetMapping
     @ApiOperation(value = "get job definition", httpMethod = "GET")
     Result<PageInfo<JobDefinitionRes>> getJobDefinition(
@@ -75,12 +86,21 @@ public class JobDefinitionController {
         return Result.success(jobService.getJob(searchName, pageNo, pageSize, jobMode));
     }
 
+    @Counted(
+            name = "get_job_definition_by_id_request",
+            help = "Total number of get job definition by id requests")
     @GetMapping("/{jobId}")
     @ApiOperation(value = "get job definition", httpMethod = "GET")
     Result<JobDefinition> getJobDefinition(@PathVariable long jobId) {
         return Result.success(jobService.getJobDefinitionByJobId(jobId));
     }
 
+    @Counted(
+            name = "delete_job_definition_request",
+            help = "Total number of delete job definition requests")
+    @Timed(
+            name = "delete_job_definition_request_latency",
+            help = "Latency of delete job definition API in seconds")
     @DeleteMapping
     @ApiOperation(value = "delete job definition", httpMethod = "DELETE")
     Result<Void> deleteJobDefinition(

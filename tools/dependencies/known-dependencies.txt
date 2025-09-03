@@ -168,7 +168,8 @@ simpleclient_httpserver-0.16.0.jar
 simpleclient_tracer_common-0.16.0.jar
 simpleclient_tracer_otel-0.16.0.jar
 simpleclient_tracer_otel_agent-0.16.0.jar
-
+tomcat-annotations-api-9.0.108.jar
+tomcat-embed-core-9.0.108.jar
 
 
 
