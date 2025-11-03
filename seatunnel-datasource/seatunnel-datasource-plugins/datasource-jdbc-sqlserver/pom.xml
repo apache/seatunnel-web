@@ -25,7 +25,7 @@
     <artifactId>datasource-jdbc-sqlserver</artifactId>
 
     <properties>
-        <sqlserver.version>9.2.1.jre8</sqlserver.version>
+        <sqlserver.version>10.2.4.jre8</sqlserver.version>
     </properties>
 
     <dependencies>
