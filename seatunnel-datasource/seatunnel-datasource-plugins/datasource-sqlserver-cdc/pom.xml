@@ -25,7 +25,7 @@
     <artifactId>datasource-sqlserver-cdc</artifactId>
 
     <properties>
-        <sqlserver.version>9.2.1.jre8</sqlserver.version>
+        <sqlserver.version>11.1.0.jre8-preview</sqlserver.version>
     </properties>
 
     <dependencies>
