@@ -109,7 +109,7 @@
         <aws-java-sdk-bundle.version>1.11.271</aws-java-sdk-bundle.version>
         <spotless.version>2.29.0</spotless.version>
         <logback.version>1.2.3</logback.version>
-        <log4j2.version>2.17.1</log4j2.version>
+        <log4j2.version>2.25.3</log4j2.version>
         <commons-logging.version>1.2</commons-logging.version>
         <log4j.version>1.2.17</log4j.version>
         <log4j-core.version>2.17.1</log4j-core.version>
