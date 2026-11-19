@@ -1,4 +1,6 @@
-# Apache SeaTunnel
+# Apache SeaTunnel Web
+
+> **Retired and unsupported.** Apache SeaTunnel Web is no longer maintained. No further releases or security fixes are planned. Do not deploy Web 1.0.2 ([CVE-2026-128981](https://www.openwall.com/lists/oss-security/2026/11/18/3)). To submit and manage jobs, use the [SeaTunnel Engine (Zeta) CLI](https://seatunnel.apache.org/docs/3.1.0/engines/zeta/user-command/). This retirement applies only to SeaTunnel Web; the core Apache SeaTunnel project remains active. See the [retirement announcement](https://mail-archive.com/dev%40seatunnel.apache.org/msg01327.html).
 
 <img src="https://seatunnel.apache.org/image/logo.png" alt="seatunnel logo" height="200px" align="right" />
 

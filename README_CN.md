@@ -1,4 +1,6 @@
-# Apache SeaTunnel
+# Apache SeaTunnel Web
+
+> **已退役，停止支持。** Apache SeaTunnel Web 已不再维护，不再计划发布新版本或安全修复。请勿部署 Web 1.0.2（[CVE-2026-128981](https://www.openwall.com/lists/oss-security/2026/11/18/3)）。如需提交和管理作业，请使用 [SeaTunnel Engine（Zeta）命令行工具](https://seatunnel.apache.org/docs/3.1.0/engines/zeta/user-command/)。本次退役仅涉及 SeaTunnel Web，Apache SeaTunnel 主项目继续维护。详见[退役公告](https://mail-archive.com/dev%40seatunnel.apache.org/msg01327.html)。
 
 <img src="https://seatunnel.apache.org/image/logo.png" alt="seatunnel logo" height="200px" align="right" />
 
